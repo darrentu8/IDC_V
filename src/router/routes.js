@@ -6,17 +6,26 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') }
     ]
-  }, {
+  },
+  {
     path: '/new',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('src/pages/StartNew.vue') }
     ]
-  }, {
+  },
+  {
     path: '/grid',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('src/pages/PickGrid.vue') }
+    ]
+  },
+  {
+    path: '/flow',
+    component: () => import('layouts/FlowLayout.vue'),
+    children: [
+      { path: '', component: () => import('src/pages/FlowPage.vue') }
     ]
   },
 

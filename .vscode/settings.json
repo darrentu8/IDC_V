@@ -12,7 +12,14 @@
     "typescript",
     "vue"
   ],
+  // 儲存自動修正 ESLint
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+  },
   "[vue]": {
-    "editor.defaultFormatter": "Vue.volar"
-  }
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+  },
 }
