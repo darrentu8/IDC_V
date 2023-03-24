@@ -1,11 +1,13 @@
 <template>
   <q-list>
-    <q-toolbar class="text-primary bg-grey-3">
+    <q-toolbar class="text-primary bg-grey-4">
       <div class="q-pa-md q-gutter-sm">
-        <q-btn color="secondary" size="md">
+        <q-btn class="q-pt-sm" color="grey-1" text-color="grey-9" size="sx" stack>
+          <q-icon name="img:/icon/preview.svg" color="white" size="xs" />
           Preview
         </q-btn>
-        <q-btn color="primary" size="md" @click="exportFile()">
+        <q-btn class="q-pt-sm" color="grey-1" text-color="grey-9" size="sx" stack @click="exportFile()">
+          <q-icon name="img:/icon/export.svg" color="white" size="xs" />
           Export
         </q-btn>
       </div>

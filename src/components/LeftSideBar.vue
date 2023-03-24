@@ -4,7 +4,7 @@
       <q-toolbar-title class="text-subtitle1">
         Default layout
       </q-toolbar-title>
-      <q-btn color="primary" size="md">
+      <q-btn color="primary" size="md" @click="backToGrid()">
         Change widget
       </q-btn>
     </q-toolbar>
@@ -18,19 +18,28 @@
     </svg>
   </div>
   <q-scroll-area style="
-          height: calc(100% - 250px);
-          margin-top: 250px;
-          border-right: 1px solid #ddd;
-        ">
+                    height: calc(100% - 250px);
+                    margin-top: 250px;
+                    border-right: 1px solid #ddd;
+                  ">
     <q-list padding>
       <EditWidgetList v-for="widget in widgetLists" :key="widget.title" :title="widget.title" :icon="widget.icon" />
     </q-list>
   </q-scroll-area>
 </template>
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useWidgetListStore } from 'src/stores/widget'
 import EditWidgetList from './EditWidgetList.vue'
+
+const router = useRouter()
 const widgetStore = useWidgetListStore()
 const widgetLists = computed(() => widgetStore.widgetList)
+
+const backToGrid = () => {
+  router.push({ path: '/grid' })
+}
+onMounted(() => {
+})
 </script>
