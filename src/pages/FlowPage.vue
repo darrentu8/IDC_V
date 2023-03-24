@@ -1,12 +1,19 @@
 <template>
   <q-page class="flex flex-center">
-    <img alt="Quasar logo" src="~assets/quasar-logo-vertical.svg" style="width: 200px; height: 200px">
+    <ContentSetting />
+    <StoreFlow />
   </q-page>
 </template>
 
 <script>
+import ContentSetting from 'src/components/ContentSetting.vue'
+import StoreFlow from 'src/components/StoreFlow.vue'
 import { defineComponent } from 'vue'
 export default defineComponent({
-  name: 'FlowPage'
+  name: 'FlowPage',
+  components: {
+    ContentSetting,
+    StoreFlow
+  }
 })
 </script>
