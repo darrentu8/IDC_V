@@ -1,11 +1,11 @@
 <template>
   <q-item-label v-if="interactives" header>Interactive</q-item-label>
   <q-item-label v-for="(interactive, index) in interactives" :key="index" class="q-mx-md">
-    <q-select filled v-model="interactive.model" :options="interactive.options" :label="interactive.label" />
+    <q-select filled dense v-model="interactive.model" :options="interactive.options" :label="interactive.label" />
   </q-item-label>
   <q-item-label v-if="outputs" header>Output</q-item-label>
   <q-item-label v-for="(output, index) in outputs" :key="index" class="q-mx-md">
-    <q-select filled v-model="output.model" :options="output.options" :label="output.label" />
+    <q-select filled dense v-model="output.model" :options="output.options" :label="output.label" />
   </q-item-label>
 </template>
 

@@ -4,7 +4,7 @@
       <q-toolbar-title class="text-subtitle1">
         Default layout
       </q-toolbar-title>
-      <q-btn flat color="primary" size="md">
+      <q-btn color="primary" size="md">
         Change widget
       </q-btn>
     </q-toolbar>
@@ -18,10 +18,10 @@
     </svg>
   </div>
   <q-scroll-area style="
-        height: calc(100% - 250px);
-        margin-top: 250px;
-        border-right: 1px solid #ddd;
-      ">
+          height: calc(100% - 250px);
+          margin-top: 250px;
+          border-right: 1px solid #ddd;
+        ">
     <q-list padding>
       <EditWidgetList v-for="widget in widgetLists" :key="widget.title" :title="widget.title" :icon="widget.icon" />
     </q-list>
