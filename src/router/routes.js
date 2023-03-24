@@ -4,7 +4,7 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/IndexPage.vue') }
+      { path: '', component: () => import('pages/StartNew.vue') }
     ]
   },
   {
@@ -20,8 +20,13 @@ const routes = [
     children: [
       { path: '', component: () => import('src/pages/PickGrid.vue') }
     ]
-  },
-  {
+  }, {
+    path: '/customize',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('src/pages/CustomizeGrid.vue') }
+    ]
+  }, {
     path: '/flow',
     component: () => import('layouts/FlowLayout.vue'),
     children: [

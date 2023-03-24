@@ -1,8 +1,8 @@
 <template>
     <div class="static-grid-view-wrapper" :style="{ width: `${viewWidth}px` }">
         <grid-layout :layout="viewLayout" :col-num="viewColCount" :maxRows="viewRowCount"
-            :row-height="((viewWidth * 1400 / 1920 - 5 * viewRowCount) / viewRowCount)" :is-draggable="false"
-            :is-resizable="false" :vertical-compact="true" :margin="[5, 5]">
+            :row-height="((viewWidth * 1400 / 1920) / viewRowCount) - 5" :is-draggable="false" :is-resizable="false"
+            :vertical-compact="true" :margin="[5, 5]">
             <grid-item static v-for="item in viewLayout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i"
                 :key="item.i">
                 <div class="fit flex flex-center bg-grey-3 rounded-borders">

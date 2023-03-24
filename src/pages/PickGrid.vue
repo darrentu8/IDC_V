@@ -1,6 +1,6 @@
 <template>
     <q-page class="flex flex-center">
-        <div class="row q-gutter-md" style="min-width: 800px; max-width: 1400px;">
+        <div class="row q-gutter-md" style="min-width: 800px; max-width: 1400px;" @click="toCustomize">
             <div class="flex flex-center" style="width:192px;height:145px;cursor: pointer;">
                 <div class="flex flex-center"
                     style="border: 1px solid #2B2B2B; border-radius: 10px; width: 95%; height: 95%">
@@ -59,7 +59,9 @@ export default {
         }
     },
     methods: {
-
+        toCustomize() {
+            // this.$router.push({ path: '/customize' })
+        }
     }
 }
 </script>
