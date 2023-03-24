@@ -28,7 +28,7 @@ const routes = [
     ]
   }, {
     path: '/flow',
-    component: () => import('layouts/FlowLayout.vue'),
+    component: () => import('src/layouts/FlowLayout.vue'),
     children: [
       { path: '', component: () => import('src/pages/FlowPage.vue') }
     ]
