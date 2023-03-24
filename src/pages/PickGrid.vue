@@ -60,7 +60,7 @@ export default {
     },
     methods: {
         toCustomize() {
-            // this.$router.push({ path: '/customize' })
+            this.$router.push({ path: '/customize' })
         }
     }
 }

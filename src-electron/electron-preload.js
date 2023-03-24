@@ -27,3 +27,20 @@
  *   }
  * }
  */
+const { contextBridge } = require('electron')
+import path from 'path'
+import fs from 'fs'
+
+contextBridge.exposeInMainWorld('myAPI', {
+    loadFileTest: () => {
+        const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER, 'test.json')
+
+        return fs.readFileSync(publicFolder, 'utf8', (err, data) => {
+            if (err) {
+                console.log(err)
+                return
+            }
+            console.log(data)
+        })
+    }
+})
