@@ -12,18 +12,30 @@
       <q-slide-transition class="col-12 bordered">
         <div v-show="expandedFlow">
           <q-card flat square bordered class="">
-            <div class="flowRow flex items-center q-py-md">
-              <div class="col-2 q-px-md">
+            <div class="flowRow row items-center q-py-md q-pr-xl">
+              <div class="col-2 text-center">
                 <q-chip>Default</q-chip>
               </div>
-              <div class="col-10">
-                <q-card flat square bordered class="flowBox">
-                  <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
-                  </q-img>
-                  <q-card-section class="q-pa-sm">
-                    <div class="text-subtitle2">State 1</div>
-                  </q-card-section>
-                </q-card>
+              <div class="col-10 row inline no-wrap scroll" style="max-height: 139px;">
+                <div class="flowBoxWrap flex items-center">
+                  <q-card flat square bordered horizontal class="flowBox">
+                    <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
+                    </q-img>
+                    <q-card-section horizontal class="q-pa-sm">
+                      <div class="text-subtitle2">State 1</div>
+                    </q-card-section>
+                  </q-card>
+                  <div class="flowBoxAction">
+                    <q-btn flat class="" text-color="grey-7" color="grey-4" round dense icon="file_copy" />
+                  </div>
+                  <div class="q-ma-sx">
+                    <q-btn unelevated class="" text-color="grey-7" color="grey-4" round dense icon="link" />
+                  </div>
+                </div>
+                <!-- 刪除 -->
+                <div class="absolute-right q-ma-xs">
+                  <q-btn class="" color="grey" round flat dense icon="clear" @click="expandedFlow = !expandedFlow" />
+                </div>
               </div>
             </div>
             <div flat square class="flowRow text-center q-pa-md">
@@ -75,7 +87,15 @@ export default defineComponent({
   }
 }
 
+.flowBoxWrap {
+  min-width: 220px;
+}
+
 .flowBox {
   min-width: 150px;
+}
+
+.flowBoxAction {
+  height: 138px;
 }
 </style>
