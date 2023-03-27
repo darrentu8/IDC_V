@@ -30,17 +30,21 @@
 const { contextBridge } = require('electron')
 import path from 'path'
 import fs from 'fs'
+import xml2js from 'xml2js'
 
 contextBridge.exposeInMainWorld('myAPI', {
     loadFileTest: () => {
         const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER, 'test.json')
 
-        return fs.readFileSync(publicFolder, 'utf8', (err, data) => {
-            if (err) {
-                console.log(err)
-                return
-            }
-            console.log(data)
-        })
+        return fs.readFileSync(publicFolder, 'utf8')
+    },
+    exportXmlFile: (data) => {
+        const builder = new xml2js.Builder()
+        const xml = builder.buildObject(data)
+
+        const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER, 'test.xml')
+        fs.writeFileSync(publicFolder, xml)
+
+        return xml
     }
 })

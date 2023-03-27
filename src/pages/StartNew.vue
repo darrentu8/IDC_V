@@ -8,11 +8,18 @@
         <q-btn @click="loadFileTest" color="grey-3" text-color="black" label="Load File Test"
           style="width: 140px;border-radius: 10px;" />
       </div>
+      <div class="col">
+        <q-btn @click="exportFile" color="grey-3" text-color="black" label="Export XML Test"
+          style="width: 140px;border-radius: 10px;" />
+      </div>
     </div>
   </q-page>
 </template>
 
 <script>
+
+let testFileData = null
+
 export default {
   name: 'StartNew',
   data() {
@@ -22,8 +29,13 @@ export default {
   },
   methods: {
     loadFileTest() {
-      const testFile = window.myAPI.loadFileTest()
-      alert(testFile)
+      const testFileString = window.myAPI.loadFileTest()
+      alert(testFileString)
+      testFileData = JSON.parse(testFileString)
+    },
+    exportFile() {
+      const xmlFileString = window.myAPI.exportXmlFile(testFileData)
+      alert(xmlFileString)
     }
   }
 }

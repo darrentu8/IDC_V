@@ -8,7 +8,7 @@
                     label="column count" />
                 <q-btn outline @click="addGrid" color="primary" icon="add" label="Add Grid" />
             </div>
-            <div class="row q-mt-lg relative-position" :style="{ width: `${width}px`, height: `${width * 1400 / 1920}px` }">
+            <div class="row q-mt-lg relative-position" :style="{ width: `${width}px`, height: `${width * 1080 / 1920}px` }">
                 <div class="absolute fit column">
                     <div class="col row" v-for="i in rowCount" :key="i">
                         <div class="col" style="border: 1px solid lightgray;padding: 5px;" v-for="k in colCount" :key="k" />
@@ -16,7 +16,7 @@
                 </div>
                 <grid-layout class="fit" v-model:layout="layout" :col-num="colCount" :maxRows="rowCount"
                     :prevent-collision="true" :responsive="false" :vertical-compact="false"
-                    :row-height="((width * 1400 / 1920) / rowCount)" :margin="[0, 0]">
+                    :row-height="((width * 1080 / 1920) / rowCount)" :margin="[0, 0]">
                     <grid-item v-for="item in layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i"
                         :key="item.i">
                         <div class="fit flex flex-center">

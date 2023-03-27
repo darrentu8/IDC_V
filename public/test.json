@@ -1,37 +1,36 @@
 {
-    "type": "line",
-    "version": "5.2.4",
-    "originX": "left",
-    "originY": "top",
-    "left": 461,
-    "top": 378,
-    "width": 241,
-    "height": 165,
-    "fill": "#3A87FD00",
-    "stroke": "#3A87FDFF",
-    "strokeWidth": 5,
-    "strokeDashArray": [],
-    "strokeLineCap": "butt",
-    "strokeDashOffset": 0,
-    "strokeLineJoin": "miter",
-    "strokeUniform": true,
-    "strokeMiterLimit": 4,
-    "scaleX": 1,
-    "scaleY": 1,
-    "angle": 0,
-    "flipX": false,
-    "flipY": false,
-    "opacity": 1,
-    "shadow": null,
-    "visible": true,
-    "backgroundColor": "",
-    "fillRule": "nonzero",
-    "paintFirst": "fill",
-    "globalCompositeOperation": "source-over",
-    "skewX": 0,
-    "skewY": 0,
-    "x1": -120.5,
-    "x2": 120.5,
-    "y1": -82.5,
-    "y2": 82.5
+    "NovoDS": {
+        "Description": "",
+        "Playlist_UUID": "",
+        "Layout_Type": "0",
+        "Version": "1.1",
+        "Model_Type": "ds200",
+        "Pages": {
+            "Page": {
+                "Description": "",
+                "BackgroundMusic": "",
+                "SerialNumber": "Page 1",
+                "AudioSource": "",
+                "BgMusicApplyToAll": "false",
+                "ID": "Page 1",
+                "FreeDesignerMode": "false",
+                "BackgroundImageSize": "160",
+                "BackgroundImage": "",
+                "Layout": "Portrait 14",
+                "Row": "6",
+                "BackgroundMusicSize": "160",
+                "BackgroundMusicUrl": "",
+                "Column": "2",
+                "Orientation": "1"
+            }
+        },
+        "Timeline": {
+            "Looping": "true",
+            "Item": {
+                "Page": "Page 1",
+                "Duration": "1800",
+                "selfclosing": "true"
+            }
+        }
+    }
 }
