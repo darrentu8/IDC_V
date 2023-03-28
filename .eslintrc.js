@@ -54,6 +54,7 @@ module.exports = {
   rules: {
 
     // allow async-await
+    'camelcase': 'off',
     'generator-star-spacing': 'off',
     // allow paren-less arrow functions
     'arrow-parens': 'off',

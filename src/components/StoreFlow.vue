@@ -58,20 +58,9 @@ export default defineComponent({
   setup() {
     return {
       expandedFlow: ref(true),
-      contentData: {
-        media: {
-          source: '',
-          viewType: '',
-          fileUpload: '',
-          scaleType: '',
-          palyEnd: '',
-          audio: '',
-          duration: '',
-          detectOrientation: false,
-          repeatVideo: false
-        }
-      }
-
+      sectionData: [
+        { x: 0, y: 0, w: 1, h: 2, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }, { x: 1, y: 1, w: 1, h: 1, i: '3' }
+      ]
     }
   }
 

@@ -18,10 +18,10 @@
     </svg>
   </div>
   <q-scroll-area style="
-                    height: calc(100% - 250px);
-                    margin-top: 250px;
-                    border-right: 1px solid #ddd;
-                  ">
+                        height: calc(100% - 250px);
+                        margin-top: 250px;
+                        border-right: 1px solid #ddd;
+                      ">
     <q-list padding>
       <EditWidgetList v-for="widget in widgetLists" :key="widget.title" :title="widget.title" :icon="widget.icon" />
     </q-list>
