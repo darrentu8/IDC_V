@@ -12,20 +12,8 @@
                     </div>
                 </div>
             </div>
-            <GridViewStatic :view-layout="layouts[0]" :view-row-count="1" :view-col-count="2" :view-width="192" />
-            <GridViewStatic :view-layout="layouts[1]" :view-row-count="2" :view-col-count="2" :view-width="192" />
-            <GridViewStatic :view-layout="layouts[2]" :view-row-count="2" :view-col-count="3" :view-width="192" />
-            <GridViewStatic :view-layout="layouts[3]" :view-row-count="1" :view-col-count="4" :view-width="192" />
-            <GridViewStatic :view-layout="layouts[4]" :view-row-count="2" :view-col-count="2" :view-width="192" />
-            <GridViewStatic :view-layout="layouts[5]" :view-row-count="1" :view-col-count="1" :view-width="192" />
-            <GridViewStatic :view-layout="layouts[6]" :view-row-count="2" :view-col-count="3" :view-width="192" />
-            <GridViewStatic :view-layout="layouts[7]" :view-row-count="4" :view-col-count="4" :view-width="192" />
-            <GridViewStatic :view-layout="layouts[8]" :view-row-count="2" :view-col-count="2" :view-width="192" />
-            <GridViewStatic :view-layout="layouts[9]" :view-row-count="2" :view-col-count="3" :view-width="192" />
-            <GridViewStatic :view-layout="layouts[10]" :view-row-count="2" :view-col-count="7" :view-width="192" />
-            <GridViewStatic :view-layout="layouts[11]" :view-row-count="3" :view-col-count="4" :view-width="192" />
-            <GridViewStatic :view-layout="layouts[12]" :view-row-count="2" :view-col-count="3" :view-width="192" />
-            <GridViewStatic :view-layout="layouts[13]" :view-row-count="10" :view-col-count="10" :view-width="192" />
+            <GridViewStatic @click="toFlow" v-for="(grid, index) in grids" :key="index" :view-layout="grid.layout"
+                :view-row-count="grid.rowCount" :view-col-count="grid.colCount" :view-width="200" />
         </div>
     </q-page>
 </template>
@@ -40,25 +28,84 @@ export default {
     },
     data() {
         return {
-            layouts: [
-                [{ x: 0, y: 0, w: 1, h: 1, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }],
-                [{ x: 0, y: 0, w: 1, h: 2, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }, { x: 1, y: 1, w: 1, h: 1, i: '3' }],
-                [{ x: 0, y: 0, w: 1, h: 1, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }, { x: 2, y: 0, w: 1, h: 1, i: '3' }, { x: 0, y: 1, w: 3, h: 1, i: '4' }],
-                [{ x: 0, y: 0, w: 3, h: 1, i: '1' }, { x: 3, y: 0, w: 1, h: 1, i: '2' }],
-                [{ x: 0, y: 0, w: 1, h: 1, i: '1' }, { x: 0, y: 1, w: 1, h: 1, i: '2' }, { x: 1, y: 0, w: 1, h: 2, i: '3' }],
-                [{ x: 0, y: 0, w: 1, h: 1, i: '1' }],
-                [{ x: 0, y: 0, w: 1, h: 1, i: '1' }, { x: 1, y: 0, w: 2, h: 1, i: '2' }, { x: 1, y: 1, w: 3, h: 1, i: '3' }],
-                [{ x: 0, y: 0, w: 3, h: 2, i: '1' }, { x: 0, y: 2, w: 3, h: 2, i: '2' }, { x: 3, y: 0, w: 1, h: 4, i: '3' }],
-                [{ x: 0, y: 0, w: 1, h: 1, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }, { x: 0, y: 1, w: 1, h: 1, i: '3' }, { x: 1, y: 1, w: 1, h: 1, i: '4' }],
-                [{ x: 0, y: 0, w: 1, h: 2, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }, { x: 2, y: 0, w: 1, h: 1, i: '3' }, { x: 1, y: 1, w: 1, h: 1, i: '4' }, { x: 2, y: 1, w: 1, h: 1, i: '5' }],
-                [{ x: 0, y: 0, w: 7, h: 1, i: '1' }, { x: 0, y: 1, w: 2, h: 1, i: '2' }, { x: 2, y: 1, w: 3, h: 1, i: '3' }, { x: 5, y: 1, w: 2, h: 1, i: '4' }],
-                [{ x: 0, y: 0, w: 1, h: 2, i: '1' }, { x: 1, y: 0, w: 3, h: 2, i: '2' }, { x: 0, y: 2, w: 1, h: 1, i: '3' }, { x: 1, y: 0, w: 3, h: 1, i: '4' }],
-                [{ x: 0, y: 0, w: 1, h: 1, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }, { x: 2, y: 0, w: 1, h: 1, i: '3' }, { x: 0, y: 1, w: 1, h: 1, i: '4' }, { x: 1, y: 1, w: 1, h: 1, i: '5' }, { x: 2, y: 1, w: 1, h: 1, i: '6' }],
-                [{ x: 0, y: 0, w: 10, h: 3, i: '1' }, { x: 0, y: 3, w: 6, h: 7, i: '2' }, { x: 6, y: 3, w: 2, h: 2, i: '3' }, { x: 8, y: 3, w: 2, h: 2, i: '4' }, { x: 6, y: 5, w: 4, h: 3, i: '5' }, { x: 6, y: 8, w: 4, h: 2, i: '6' }]
+            grids: [
+                {
+                    rowCount: 1,
+                    colCount: 2,
+                    layout: [{ x: 0, y: 0, w: 1, h: 1, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }]
+                },
+                {
+                    rowCount: 2,
+                    colCount: 2,
+                    layout: [{ x: 0, y: 0, w: 1, h: 2, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }, { x: 1, y: 1, w: 1, h: 1, i: '3' }]
+                },
+                {
+                    rowCount: 2,
+                    colCount: 3,
+                    layout: [{ x: 0, y: 0, w: 1, h: 1, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }, { x: 2, y: 0, w: 1, h: 1, i: '3' }, { x: 0, y: 1, w: 3, h: 1, i: '4' }]
+                },
+                {
+                    rowCount: 1,
+                    colCount: 4,
+                    layout: [{ x: 0, y: 0, w: 3, h: 1, i: '1' }, { x: 3, y: 0, w: 1, h: 1, i: '2' }]
+                },
+                {
+                    rowCount: 2,
+                    colCount: 2,
+                    layout: [{ x: 0, y: 0, w: 1, h: 1, i: '1' }, { x: 0, y: 1, w: 1, h: 1, i: '2' }, { x: 1, y: 0, w: 1, h: 2, i: '3' }]
+                },
+                {
+                    rowCount: 1,
+                    colCount: 1,
+                    layout: [{ x: 0, y: 0, w: 1, h: 1, i: '1' }]
+                },
+                {
+                    rowCount: 2,
+                    colCount: 3,
+                    layout: [{ x: 0, y: 0, w: 1, h: 1, i: '1' }, { x: 1, y: 0, w: 2, h: 1, i: '2' }, { x: 1, y: 1, w: 3, h: 1, i: '3' }]
+                },
+                {
+                    rowCount: 4,
+                    colCount: 4,
+                    layout: [{ x: 0, y: 0, w: 3, h: 2, i: '1' }, { x: 0, y: 2, w: 3, h: 2, i: '2' }, { x: 3, y: 0, w: 1, h: 4, i: '3' }]
+                },
+                {
+                    rowCount: 2,
+                    colCount: 2,
+                    layout: [{ x: 0, y: 0, w: 1, h: 1, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }, { x: 0, y: 1, w: 1, h: 1, i: '3' }, { x: 1, y: 1, w: 1, h: 1, i: '4' }]
+                },
+                {
+                    rowCount: 2,
+                    colCount: 3,
+                    layout: [{ x: 0, y: 0, w: 1, h: 2, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }, { x: 2, y: 0, w: 1, h: 1, i: '3' }, { x: 1, y: 1, w: 1, h: 1, i: '4' }, { x: 2, y: 1, w: 1, h: 1, i: '5' }]
+                },
+                {
+                    rowCount: 2,
+                    colCount: 7,
+                    layout: [{ x: 0, y: 0, w: 7, h: 1, i: '1' }, { x: 0, y: 1, w: 2, h: 1, i: '2' }, { x: 2, y: 1, w: 3, h: 1, i: '3' }, { x: 5, y: 1, w: 2, h: 1, i: '4' }]
+                },
+                {
+                    rowCount: 3,
+                    colCount: 4,
+                    layout: [{ x: 0, y: 0, w: 1, h: 2, i: '1' }, { x: 1, y: 0, w: 3, h: 2, i: '2' }, { x: 0, y: 2, w: 1, h: 1, i: '3' }, { x: 1, y: 0, w: 3, h: 1, i: '4' }]
+                },
+                {
+                    rowCount: 2,
+                    colCount: 3,
+                    layout: [{ x: 0, y: 0, w: 1, h: 1, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }, { x: 2, y: 0, w: 1, h: 1, i: '3' }, { x: 0, y: 1, w: 1, h: 1, i: '4' }, { x: 1, y: 1, w: 1, h: 1, i: '5' }, { x: 2, y: 1, w: 1, h: 1, i: '6' }]
+                },
+                {
+                    rowCount: 10,
+                    colCount: 10,
+                    layout: [{ x: 0, y: 0, w: 10, h: 3, i: '1' }, { x: 0, y: 3, w: 6, h: 7, i: '2' }, { x: 6, y: 3, w: 2, h: 2, i: '3' }, { x: 8, y: 3, w: 2, h: 2, i: '4' }, { x: 6, y: 5, w: 4, h: 3, i: '5' }, { x: 6, y: 8, w: 4, h: 2, i: '6' }]
+                }
             ]
         }
     },
     methods: {
+        toFlow() {
+            this.$router.push({ path: '/flow' })
+        },
         toCustomize() {
             this.$router.push({ path: '/customize' })
         }
