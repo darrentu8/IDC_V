@@ -27,12 +27,30 @@
  *   }
  * }
  */
-const { contextBridge } = require('electron')
+import { contextBridge } from 'electron'
+import { BrowserWindow } from '@electron/remote'
 import path from 'path'
 import fs from 'fs'
 import xml2js from 'xml2js'
 
 contextBridge.exposeInMainWorld('myAPI', {
+    minimize() {
+        BrowserWindow.getFocusedWindow().minimize()
+    },
+
+    toggleMaximize() {
+        const win = BrowserWindow.getFocusedWindow()
+
+        if (win.isMaximized()) {
+            win.unmaximize()
+        } else {
+            win.maximize()
+        }
+    },
+
+    close() {
+        BrowserWindow.getFocusedWindow().close()
+    },
     loadFileTest: () => {
         const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER, 'test.json')
 

@@ -2,7 +2,7 @@
   "name": "idc-vue",
   "version": "0.0.1",
   "description": "A Quasar Project",
-  "productName": "IDC",
+  "productName": "Interactive Editor",
   "author": "darren <darrentu8@gmail.com>",
   "private": true,
   "scripts": {
@@ -12,6 +12,7 @@
     "build": "quasar build"
   },
   "dependencies": {
+    "@electron/remote": "^2.0.9",
     "@quasar/extras": "^1.0.0",
     "axios": "^1.2.1",
     "pinia": "^2.0.11",
