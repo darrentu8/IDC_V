@@ -4,11 +4,11 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/StartNew.vue') }
+      { path: '', component: () => import('pages/PickGrid.vue') }
     ]
   },
   {
-    path: '/new',
+    path: '/test',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('src/pages/StartNew.vue') }

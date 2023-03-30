@@ -1,20 +1,74 @@
 <template>
-    <q-page class="flex flex-center">
-        <div class="row q-gutter-md" style="min-width: 800px; max-width: 1400px;">
-            <div class="flex flex-center" style="width:192px;height:145px;cursor: pointer;" @click="toCustomize">
-                <div class="flex flex-center"
-                    style="border: 1px solid #2B2B2B; border-radius: 10px; width: 95%; height: 95%">
-                    <div class="column">
-                        <div class="row flex-center"> <q-icon name="edit" size="2.4em" /></div>
-                        <div class="row flex-center">
-                            <div class="text-subtitle1">Customize</div>
-                        </div>
+    <q-page>
+        <div class="q-pt-md row fit overflow-hidden">
+            <div class="q-pa-sm" style="width:250px">
+                <div class="text-body1 q-pl-xs">New Interactive Play List</div>
+                <div class="q-pa-sm">
+                    <div class="q-pa-sm text-subtitle2 text-bold">Screen Orientation</div>
+                    <div>
+                        <q-option-group :options="options" type="radio" v-model="radio" />
                     </div>
                 </div>
             </div>
-            <GridViewStatic @click="toFlow" v-for="(grid, index) in grids" :key="index" :view-layout="grid.layout"
-                :view-row-count="grid.rowCount" :view-col-count="grid.colCount" :view-width="200" />
+            <div class="q-pa-sm" style="width:680px">
+                <div class="row q-gutter-sm">
+                    <div class="flex flex-center q-pa-xs cursor-pointer" @click="toCustomize">
+                        <div class="flex flex-center bg-grey-3" style="border: 1px solid #2B2B2B; border-radius: 10px;"
+                            :style="{ width: `${200}px`, height: `${200 * 1080 / 1920}px` }">
+                            <div class="column">
+                                <div class="row flex-center"> <q-icon name="edit" size="2.4em" /></div>
+                                <div class="row flex-center">
+                                    <div class="text-subtitle1">Customize</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <GridViewStatic @click="chooseGrid(grid)" v-for="(grid, index) in grids" :key="index"
+                        :view-layout="grid.layout" :view-row-count="grid.rowCount" :view-col-count="grid.colCount"
+                        :view-width="200" />
+                </div>
+            </div>
+            <div class="col q-pa-sm">
+                <div>
+                    <div class="text-body1">Play List Name</div>
+                    <q-input filled dense square />
+                </div>
+                <div class="q-pt-sm">
+                    <div class="text-body1">Play List Name</div>
+                    <q-input type="textarea" filled dense square />
+                </div>
+                <div class="q-pt-sm">
+                    <div class="text-body1">Select layout</div>
+                    <div class="text-body2">Grids:</div>
+                    <div class="text-body2">Region size:</div>
+                    <div class="text-body2">Region location :</div>
+                    <div class="text-body2">Dimension :</div>
+                    <div class="text-body2">Ratio :</div>
+                </div>
+                <div v-if="currentGrid" class="q-pt-sm flex flex-center">
+                    <div style="width:100%">
+                        <grid-layout :layout="currentGrid.layout" :col-num="currentGrid.colCount"
+                            :maxRows="currentGrid.rowCount" :row-height="265 / currentGrid.rowCount" :is-draggable="false"
+                            :is-resizable="false" :vertical-compact="true" :margin="[0, 0]">
+                            <grid-item static v-for="(item, index) in currentGrid.layout" :x="item.x" :y="item.y"
+                                :w="item.w" :h="item.h" :i="item.i" :key="item.i">
+                                <div class="fit cursor-pointer">
+                                    <div class="bg-grey-3 rounded-borders  flex flex-center"
+                                        style="width: calc(100% - 3px); height: calc(100% - 3px);">
+                                        {{ index + 1 }}
+                                    </div>
+                                </div>
+                            </grid-item>
+                        </grid-layout>
+                    </div>
+                </div>
+                <div v-if="currentGrid" class="q-pt-md q-gutter-md row reverse flex flex-center">
+                    <q-btn outline color="primary" label="Cancel" />
+                    <q-btn outline @click="toFlow" color="primary" label="Create" />
+                </div>
+            </div>
         </div>
+
     </q-page>
 </template>
 
@@ -28,6 +82,15 @@ export default {
     },
     data() {
         return {
+            drawerLeft: true,
+            drawerRight: true,
+            radio: 0,
+            options: [
+                { label: 'Landscape', value: 0 },
+                { label: 'Landscape(flipped)', value: 1 },
+                { label: 'Portrait', value: 2 },
+                { label: 'Portrait(flipped)', value: 3 }
+            ],
             grids: [
                 {
                     rowCount: 1,
@@ -99,10 +162,15 @@ export default {
                     colCount: 10,
                     layout: [{ x: 0, y: 0, w: 10, h: 3, i: '1' }, { x: 0, y: 3, w: 6, h: 7, i: '2' }, { x: 6, y: 3, w: 2, h: 2, i: '3' }, { x: 8, y: 3, w: 2, h: 2, i: '4' }, { x: 6, y: 5, w: 4, h: 3, i: '5' }, { x: 6, y: 8, w: 4, h: 2, i: '6' }]
                 }
-            ]
+            ],
+            currentGrid: null
         }
     },
     methods: {
+        chooseGrid(grid) {
+            this.currentGrid = grid
+            console.log(this.currentGrid)
+        },
         toFlow() {
             this.$router.push({ path: '/flow' })
         },

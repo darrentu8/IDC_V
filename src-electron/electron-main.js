@@ -22,8 +22,8 @@ function createWindow() {
    */
   mainWindow = new BrowserWindow({
     icon: path.resolve(__dirname, 'icons/icon.png'), // tray icon
-    width: 1300,
-    height: 750,
+    width: 1366,
+    height: 768,
     frame: false,
     useContentSize: true,
     webPreferences: {
