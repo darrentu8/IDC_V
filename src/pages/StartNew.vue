@@ -5,7 +5,11 @@
         <q-btn to="/grid" color="grey-3" text-color="black" label="New" style="width: 140px;border-radius: 10px;" />
       </div>
       <div class="col">
-        <q-btn @click="loadFileTest" color="grey-3" text-color="black" label="Load File Test"
+        <q-btn @click="loadJSONTest" color="grey-3" text-color="black" label="Load JSON Test"
+          style="width: 140px;border-radius: 10px;" />
+      </div>
+      <div class="col">
+        <q-btn @click="loadXMLTest" color="grey-3" text-color="black" label="Load XML Test"
           style="width: 140px;border-radius: 10px;" />
       </div>
       <div class="col">
@@ -28,10 +32,16 @@ export default {
     }
   },
   methods: {
-    loadFileTest() {
-      const testFileString = window.myAPI.loadFileTest()
+    loadJSONTest() {
+      const testFileString = window.myAPI.loadJSONTest()
       alert(testFileString)
       testFileData = JSON.parse(testFileString)
+    },
+    loadXMLTest() {
+      const textXMLString = window.myAPI.loadXMLTest()
+      textXMLString.then(data => {
+        alert(data)
+      })
     },
     exportFile() {
       const xmlFileString = window.myAPI.exportXmlFile(testFileData)

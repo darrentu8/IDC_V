@@ -28,7 +28,7 @@
  * }
  */
 import { contextBridge } from 'electron'
-import { BrowserWindow } from '@electron/remote'
+import { BrowserWindow, app } from '@electron/remote'
 import path from 'path'
 import fs from 'fs'
 import xml2js from 'xml2js'
@@ -51,17 +51,54 @@ contextBridge.exposeInMainWorld('myAPI', {
     close() {
         BrowserWindow.getFocusedWindow().close()
     },
-    loadFileTest: () => {
-        const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER, 'test.json')
+    loadJSONTest: () => {
+        const fileName = 'test.json'
 
-        return fs.readFileSync(publicFolder, 'utf8')
+        const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER)
+        const sourceFile = path.join(publicFolder, fileName)
+
+        const targetFolder = path.join(app.getPath('appData'), 'IDC')
+        if (!fs.existsSync(targetFolder)) {
+            fs.mkdirSync(targetFolder)
+        }
+
+        const targetFile = path.join(targetFolder, fileName)
+        if (!fs.existsSync(targetFile)) {
+            fs.copyFileSync(sourceFile, targetFile)
+        }
+
+        return fs.readFileSync(targetFile, 'utf8')
+    },
+    loadXMLTest: () => {
+        const fileName = 'index.xml'
+
+        const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER)
+        const sourceFile = path.join(publicFolder, fileName)
+
+        const targetFolder = path.join(app.getPath('appData'), 'IDC')
+        if (!fs.existsSync(targetFolder)) {
+            fs.mkdirSync(targetFolder)
+        }
+
+        const targetFile = path.join(targetFolder, fileName)
+        if (!fs.existsSync(targetFile)) {
+            fs.copyFileSync(sourceFile, targetFile)
+        }
+
+        const xml = fs.readFileSync(targetFile)
+        const parser = new xml2js.Parser()
+
+        return parser.parseStringPromise(xml)
     },
     exportXmlFile: (data) => {
+        const fileName = 'test.xml'
+
+        const targetFolder = path.join(app.getPath('appData'), 'IDC', fileName)
+
         const builder = new xml2js.Builder()
         const xml = builder.buildObject(data)
 
-        const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER, 'test.xml')
-        fs.writeFileSync(publicFolder, xml)
+        fs.writeFileSync(targetFolder, xml)
 
         return xml
     }

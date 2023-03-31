@@ -1,0 +1,25 @@
+<?xml version='1.0'?>
+<NovoDS Version="1.1" Playlist_UUID="" Description="" Layout_Type="0" Model_Type="ds200">
+    <Pages>
+        <Page BgMusicApplyToAll="false" BackgroundMusic="" SerialNumber="Page 1" BackgroundImageSize="0" Orientation="1" Column="1" BackgroundMusicUrl="" Description="" Layout="Portrait 5" ID="Page 1" BackgroundMusicSize="0" BackgroundImage="" Row="3" AudioSource="" FreeDesignerMode="false">
+            <Section isFixedRatio="false" Y="0" Width="1" SectionValid="1" Index="0" Z="0" is169="false" Height="1" X="0" ContentType="Misc" ID="Twitter_1">
+                <Content widgetType="Twitter" Twitter_ShowItems="0" Twitter_Display_Widget="Listview" Twitter_Speed="Medium" fontSize="28" Twitter_DisplayType="Twitter_Account" font="Roboto-Light" Twitter_Account="" Live_Update_ID="Page 1-1" Twitter_Hashtag="" Twitter_UpdateFrequency="30" textColor="#ffffffff" backgroundColor="#00000000">
+                    <AttachmentFiles/>
+                </Content>
+            </Section>
+            <Section isFixedRatio="false" Y="1" Width="1" SectionValid="1" Index="1" Z="0" is169="false" Height="1" X="0" ContentType="Misc" ID="Weather_2">
+                <Content widgetType="Weather" theme_type="Classic" Weather_Country="" Weather_Units_of_Temperature="Celsius" Weather_backgroundImage="" Weather_theme="Dark" font="Roboto-Light" Weather_Forecast_Day="5" Live_Update_ID="Page 1-2" Weather_Type="Location" Weather_main_area_style="0" textColor="#ffffffff" backgroundColor="#00000000" Weather_UpdateFrequency="30" Weather_Lang="en" Weather_City="">
+                    <AttachmentFiles/>
+                </Content>
+            </Section>
+            <Section isFixedRatio="false" Y="2" Width="1" SectionValid="1" Index="2" Z="0" is169="false" Height="1" X="0" ContentType="Misc" ID="HDMI_3">
+                <Content widgetType="Camera" Camera_isFillArea="false" Live_Update_ID="Page 1-3">
+                    <AttachmentFiles/>
+                </Content>
+            </Section>
+        </Page>
+    </Pages>
+    <Timeline Looping="true">
+        <Item Duration="1800" Page="Page 1"/>
+    </Timeline>
+</NovoDS>

@@ -1,5 +1,5 @@
 <template>
-    <q-page>
+    <q-page class="flex flex-center" style="min-width: 1366px;">
         <div class="q-pt-md row fit overflow-hidden">
             <div class="q-pa-sm" style="width:250px">
                 <div class="text-body1 q-pl-xs">New Interactive Play List</div>
@@ -169,7 +169,6 @@ export default {
     methods: {
         chooseGrid(grid) {
             this.currentGrid = grid
-            console.log(this.currentGrid)
         },
         toFlow() {
             this.$router.push({ path: '/flow' })
