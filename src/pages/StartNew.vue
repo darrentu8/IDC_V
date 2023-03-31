@@ -40,7 +40,7 @@ export default {
     loadXMLTest() {
       const textXMLString = window.myAPI.loadXMLTest()
       textXMLString.then(data => {
-        alert(data)
+        alert(JSON.stringify(data))
       })
     },
     exportFile() {
