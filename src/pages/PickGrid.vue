@@ -52,8 +52,9 @@
                             :is-resizable="false" :vertical-compact="true" :margin="[0, 0]">
                             <grid-item static v-for="(item, index) in currentGrid.layout" :x="item.x" :y="item.y"
                                 :w="item.w" :h="item.h" :i="item.i" :key="item.i">
-                                <div class="fit cursor-pointer">
-                                    <div class="bg-grey-3 rounded-borders  flex flex-center"
+                                <div class="fit cursor-pointer" @click="chooseCube(item.i)">
+                                    <div class="Frounded-borders  flex flex-center grid-cube"
+                                        :class="{ 'bg-grey-3': currentCube !== item.i, 'bg-cyan-13': currentCube === item.i }"
                                         style="width: calc(100% - 3px); height: calc(100% - 3px);">
                                         {{ index + 1 }}
                                     </div>
@@ -163,12 +164,16 @@ export default {
                     layout: [{ x: 0, y: 0, w: 10, h: 3, i: '1' }, { x: 0, y: 3, w: 6, h: 7, i: '2' }, { x: 6, y: 3, w: 2, h: 2, i: '3' }, { x: 8, y: 3, w: 2, h: 2, i: '4' }, { x: 6, y: 5, w: 4, h: 3, i: '5' }, { x: 6, y: 8, w: 4, h: 2, i: '6' }]
                 }
             ],
-            currentGrid: null
+            currentGrid: null,
+            currentCube: null
         }
     },
     methods: {
         chooseGrid(grid) {
             this.currentGrid = grid
+        },
+        chooseCube(id) {
+            this.currentCube = id
         },
         toFlow() {
             this.$router.push({ path: '/flow' })
@@ -179,4 +184,8 @@ export default {
     }
 }
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.grid-cube:hover {
+    filter: brightness(0.9)
+}
+</style>
