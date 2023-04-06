@@ -1,35 +1,41 @@
 import { defineStore } from 'pinia'
-
 export const useWidgetListStore = defineStore('widgetList', {
   state: () => ({
-    widgetList: [
+    widgetOption: [
       {
-        title: 'Text-1',
-        icon: 'img:/icon/text.png',
-        active: true
+        label: 'text',
+        value: 'text',
+        icon: 'img:/icon/text.png'
       },
       {
-        title: 'Media-1',
-        icon: 'img:/icon/media.png',
-        active: false
+        label: 'media',
+        value: 'media',
+        icon: 'img:/icon/media.png'
       },
       {
-        title: 'Twitter-1',
-        icon: 'img:/icon/twitter.png',
-        active: false
+        label: 'twitter',
+        value: 'twitter',
+        icon: 'img:/icon/twitter.png'
       },
       {
-        title: 'Webpage-1',
-        icon: 'img:/icon/webpage.png',
-        active: false
+        label: 'webpage',
+        value: 'webpage',
+        icon: 'img:/icon/webpage.png'
       }
-  ],
-  currentWidget: {}
-}),
-  getters: {},
+    ],
+    widgetListData: null,
+    currentWidget: {}
+  }),
+  getters: {
+    getWidgetListData() {
+      return this.widgetListData
+    }
+  },
   actions: {
-    SetWidgetList (widgetList) {
-      this.widgetList = widgetList
+    setWidgetListData(data) {
+      if (data) {
+        this.widgetListData = data
+      }
     }
   }
 })

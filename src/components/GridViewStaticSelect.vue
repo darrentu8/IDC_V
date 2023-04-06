@@ -5,8 +5,8 @@
       :vertical-compact="true" :margin="[5, 5]">
       <grid-item class="gridItem" static v-for="item in viewLayout" :x="item.x" :y="item.y" :w="item.w" :h="item.h"
         :i="item.i" :key="item.i">
-        <div class="fit flex flex-center rounded-borders"
-          :class="[item.selected ? ['bg-light-blue-2', 'active'] : 'bg-grey-3']">
+        <div @click="selectGrid(item.i)" class="fit flex flex-center rounded-borders"
+          :class="[currentGridIndex === item.i ? ['bg-light-blue-2', 'active'] : 'bg-grey-3']">
           {{ item.i }}
         </div>
       </grid-item>
@@ -15,12 +15,16 @@
 </template>
 
 <script setup>
-import { toRefs } from 'vue'
-// import { useLayoutStore } from 'src/stores/layout'
-// const LayoutStore = useLayoutStore()
+import { computed, toRefs } from 'vue'
+import { useLayoutStore } from 'src/stores/layout'
+const LayoutStore = useLayoutStore()
 const props = defineProps(['viewRowCount', 'viewColCount', 'viewLayout', 'viewWidth'])
 const { viewRowCount, viewColCount, viewLayout, viewWidth } = toRefs(props)
 
+const currentGridIndex = computed(() => LayoutStore.currentGridIndex)
+const selectGrid = (i) => {
+  LayoutStore.SetCurrentGrid(i)
+}
 </script>
 <style lang="scss" scoped>
 .gridItem:hover {

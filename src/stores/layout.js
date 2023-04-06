@@ -1,32 +1,36 @@
 import { defineStore } from 'pinia'
+import { useWidgetListStore } from './widget'
+const widgetStore = useWidgetListStore()
 
 export const useLayoutStore = defineStore('layout', {
   state: () => ({
     layout: {
       rowCount: 1,
       colCount: 2,
-      layout: [{ selected: true, x: 0, y: 0, w: 1, h: 1, i: '1' }, { selected: false, x: 1, y: 0, w: 1, h: 1, i: '2' }]
-    }
-    // slect{
-    // xs: 16,
-    // ys: 16,
-    // w: 618,
-    // h: 348,
-    // section: [],
-    // startDraw: null,
-    // currentRect: null,
-    // hoverColor: 'rgba(62,62,141, 0.6)' // "#55B3FF"
+      layout: [{ x: 0, y: 0, w: 1, h: 1, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }]
+    },
+    currentGridIndex: '1'
   }),
-  getters: {},
+  getters: {
+  },
   actions: {
     SetLayout(layout) {
       this.layout = layout
+      this.SetWidgetList()
     },
-    SetSelect(layout, i) {
-      layout.forEach(e => {
-        e.active = false
-      })
-      this.layout[i].select = true
+    SetWidgetList() {
+      const Data = this.layout.layout
+      const arrayData = Data.map((e, i) => ({
+        id: Data[i].i,
+        title: Data[i].i,
+        type: '',
+        active: false
+      }))
+      widgetStore.setWidgetListData(arrayData)
+    },
+    SetCurrentGrid(i) {
+      console.log('currentGridIndex', i)
+      this.currentGridIndex = i
     }
   }
 })
