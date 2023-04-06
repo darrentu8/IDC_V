@@ -8,20 +8,14 @@
         Change widget
       </q-btn>
     </q-toolbar>
-    <svg width="300" height="200" style="border: 1px solid; background: #fff;" viewbox="0,0,100,160"
-      preserveAspectRatio="xMidYMid slice">
-      <rect width="40" height="30" x="0" y="0" fill="#c00"></rect>
-      <rect width="40" height="30" x="60" y="0" fill="#f80"></rect>
-      <rect width="40" height="30" x="0" y="130" fill="#09c"></rect>
-      <rect width="40" height="30" x="60" y="130" fill="#0c0"></rect>
-      <rect width="40" height="30" x="30" y="65" fill="#000"></rect>
-    </svg>
+    <GridViewStaticSelect :view-layout="layouts.layout" :view-row-count="layouts.rowCount"
+      :view-col-count="layouts.colCount" :view-width="280" />
   </div>
   <q-scroll-area style="
-                        height: calc(100% - 250px);
-                        margin-top: 250px;
-                        border-right: 1px solid #ddd;
-                      ">
+                              height: calc(100% - 250px);
+                              margin-top: 250px;
+                              border-right: 1px solid #ddd;
+                              ">
     <q-list padding>
       <EditWidgetList v-for="widget in widgetLists" :key="widget.title" :title="widget.title" :icon="widget.icon" />
     </q-list>
@@ -30,13 +24,16 @@
 <script setup>
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import GridViewStaticSelect from 'src/components/GridViewStaticSelect.vue'
+import { useLayoutStore } from 'src/stores/layout'
 import { useWidgetListStore } from 'src/stores/widget'
 import EditWidgetList from './EditWidgetList.vue'
 
 const router = useRouter()
+const LayoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
+const layouts = computed(() => LayoutStore.layout)
 const widgetLists = computed(() => widgetStore.widgetList)
-
 const backToGrid = () => {
   router.push({ path: '/grid' })
 }
