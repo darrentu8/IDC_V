@@ -6,12 +6,19 @@
     </q-item-section>
     <q-item-section>
       <q-select dense outlined v-model="type" :id="id" :options="options" @update:model-value="selectWidget(id, type)"
-        emit-value>
+        label="Select a widget" emit-value>
         <template v-slot:append>
           <q-icon v-if="type == 'TEXT'" name="img:/icon/text.png" />
           <q-icon v-if="type == 'MEDIA'" name="img:/icon/media.png" />
           <q-icon v-if="type == 'TWITTER'" name="img:/icon/twitter.png" />
           <q-icon v-if="type == 'WEBPAGE'" name="img:/icon/webpage.png" />
+        </template>
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              No Widget
+            </q-item-section>
+          </q-item>
         </template>
         <template v-slot:option="scope">
           <q-item v-bind="scope.itemProps">
