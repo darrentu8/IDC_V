@@ -3,39 +3,46 @@ export const useWidgetListStore = defineStore('widgetList', {
   state: () => ({
     widgetOption: [
       {
-        label: 'text',
-        value: 'text',
+        label: 'TEXT',
+        value: 'TEXT',
         icon: 'img:/icon/text.png'
       },
       {
-        label: 'media',
-        value: 'media',
+        label: 'MEDIA',
+        value: 'MEDIA',
         icon: 'img:/icon/media.png'
       },
       {
-        label: 'twitter',
-        value: 'twitter',
+        label: 'TWITTER',
+        value: 'TWITTER',
         icon: 'img:/icon/twitter.png'
       },
       {
-        label: 'webpage',
-        value: 'webpage',
+        label: 'WEBPAGE',
+        value: 'WEBPAGE',
         icon: 'img:/icon/webpage.png'
       }
     ],
     widgetListData: null,
+    currentListIndex: '1',
     currentWidget: {}
   }),
   getters: {
-    getWidgetListData() {
+    GetWidgetListData() {
       return this.widgetListData
     }
   },
   actions: {
-    setWidgetListData(data) {
+    SetWidgetListData(data) {
       if (data) {
         this.widgetListData = data
       }
+    },
+    SetCurrentListIndex(i) {
+      this.currentListIndex = i
+    },
+    SetWidget(id, data) {
+      this.widgetListData[id - 1].type = data
     }
   }
 })

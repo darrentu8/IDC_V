@@ -26,11 +26,12 @@ export const useLayoutStore = defineStore('layout', {
         type: '',
         active: false
       }))
-      widgetStore.setWidgetListData(arrayData)
+      widgetStore.SetWidgetListData(arrayData)
     },
     SetCurrentGrid(i) {
       console.log('currentGridIndex', i)
       this.currentGridIndex = i
+      widgetStore.SetCurrentListIndex(i)
     }
   }
 })

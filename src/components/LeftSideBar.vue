@@ -12,8 +12,8 @@
   <q-item-label header class="q-pb-xs">Selected widget</q-item-label>
   <q-scroll-area style="height: calc(100% - 250px);">
     <q-list padding>
-      <EditWidgetList v-for="widget in widgetLists" :key="widget.id" :type="widget.type" :title="widget.title"
-        :options="widgetOptions" />
+      <EditWidgetList v-for="widget in widgetLists" :id="widget.id" :key="widget.id" :type="widget.type"
+        :title="widget.title" :options="widgetOptions" />
     </q-list>
   </q-scroll-area>
 </template>
@@ -29,8 +29,9 @@ const router = useRouter()
 const LayoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
 const layouts = computed(() => LayoutStore.layout)
-const widgetLists = computed(() => widgetStore.getWidgetListData)
+const widgetLists = computed(() => widgetStore.GetWidgetListData)
 const widgetOptions = computed(() => widgetStore.widgetOption)
+
 const backToGrid = () => {
   router.push({ path: '/grid' })
 }
