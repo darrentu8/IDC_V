@@ -26,6 +26,7 @@ export const useLayoutStore = defineStore('layout', {
         type: '',
         active: false
       }))
+      console.log('arrayData', arrayData)
       widgetStore.SetWidgetListData(arrayData)
     },
     SetCurrentGrid(i) {
