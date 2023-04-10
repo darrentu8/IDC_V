@@ -44,7 +44,7 @@ export default {
       })
     },
     exportFile() {
-      const xmlFileString = window.myAPI.exportXmlFile(testFileData)
+      const xmlFileString = window.myAPI.exportXmlFile(testFileData, 'TestPlayList')
       alert(xmlFileString)
     }
   }

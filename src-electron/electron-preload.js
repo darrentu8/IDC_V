@@ -90,15 +90,25 @@ contextBridge.exposeInMainWorld('myAPI', {
 
         return parser.parseStringPromise(xml)
     },
-    exportXmlFile: (data) => {
+    exportXmlFile: (data, folderName) => {
         const fileName = 'test.xml'
 
-        const targetFolder = path.join(app.getPath('appData'), 'IDC', fileName)
+        const playListFolder = path.join(app.getPath('appData'), 'IDC', 'Playlist')
+        if (!fs.existsSync(playListFolder)) {
+            fs.mkdirSync(playListFolder)
+        }
+
+        const targetFolder = path.join(playListFolder, folderName)
+        if (!fs.existsSync(targetFolder)) {
+            fs.mkdirSync(targetFolder)
+        }
+
+        const targetFile = path.join(targetFolder, fileName)
 
         const builder = new xml2js.Builder()
         const xml = builder.buildObject(data)
 
-        fs.writeFileSync(targetFolder, xml)
+        fs.writeFileSync(targetFile, xml)
 
         return xml
     }
