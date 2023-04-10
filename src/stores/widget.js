@@ -23,7 +23,20 @@ export const useWidgetListStore = defineStore('widgetList', {
         icon: 'img:/icon/webpage.png'
       }
     ],
-    widgetListData: null,
+    widgetListData: [
+      {
+        id: '1',
+        title: '1',
+        type: '',
+        active: false
+      },
+      {
+        id: '2',
+        title: '2',
+        type: '',
+        active: false
+      }
+    ],
     currentListIndex: '1',
     currentWidget: {}
   }),

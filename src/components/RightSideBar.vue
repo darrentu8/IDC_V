@@ -1,15 +1,21 @@
 <template>
   <q-list>
-    <q-toolbar class="text-primary bg-grey-4 justify-end">
+    <q-toolbar class="text-primary bg-grey-4 justify-center">
       <div class="q-pa-md q-gutter-sm">
+        <q-btn class="" color="grey-2" text-color="grey-9" size="sx" stack @click="exportFile()"
+          style="line-height: 1.615em;">
+          <!-- <q-icon name="img:/icon/export.svg" color="white" size="xs" /> -->
+          Hardware
+          <br>configuration
+        </q-btn>
         <q-btn class="q-pt-sm" color="grey-2" text-color="grey-9" size="sx" stack @click="exportFile()">
           <q-icon name="img:/icon/export.svg" color="white" size="xs" />
           Export
         </q-btn>
-        <q-btn class="q-pt-sm" color="grey-2" text-color="grey-9" size="sx" stack>
+        <!-- <q-btn class="q-pt-sm" color="grey-2" text-color="grey-9" size="sx" stack>
           <q-icon name="img:/icon/preview.svg" color="white" size="xs" />
           Preview
-        </q-btn>
+        </q-btn> -->
       </div>
     </q-toolbar>
     <q-item-label header>
