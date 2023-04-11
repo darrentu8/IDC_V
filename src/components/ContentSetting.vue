@@ -9,11 +9,12 @@
           @click="expandedContent = !expandedContent" />
       </q-item-label>
 
-      <div class="col-5">
+      <div class="col-12">
         <q-slide-transition>
-          <div v-show="expandedContent" class="row q-pa-md">
-            <q-card @mouseover="showEdit = true" @mouseleave="showEdit = false" flat square bordered horizontal
-              class="cursor-pointer flowBox">
+          <div v-show="expandedContent" class="row q-py-md no-wrap"
+            style="max-height: 170px; overflow-y: hidden; overflow-x: scroll;">
+            <q-card v-for="(state, Index) in widgetLists" :key="state.Index" flat square bordered horizontal
+              class="cursor-pointer flowBox q-ml-md">
               <q-img src="">
                 <div class="absolute-full flex flex-center bg-gery text-white">
                 </div>
@@ -22,7 +23,7 @@
                 </div>
               </q-img>
               <q-card-section horizontal class="q-pa-sm">
-                <div class="text-subtitle2">State 1</div>
+                <div class="text-subtitle2">State {{ Index + 1 }}</div>
               </q-card-section>
             </q-card>
             <q-card flat square bordered horizontal class="flowBox q-ml-md">
@@ -36,13 +37,19 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
+import { useWidgetListStore } from 'src/stores/widget'
+// import { ref, nextTick, computed, toRef } from 'vue'
+const widgetStore = useWidgetListStore()
+const widgetLists = computed(() => widgetStore.GetWidgetListData)
+
 export default defineComponent({
   name: 'ContentSetting',
   components: {
   },
   setup() {
     return {
+      widgetLists,
       expandedContent: ref(true),
       showEdit: ref(false),
       contentData: {
