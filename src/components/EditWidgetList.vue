@@ -1,17 +1,18 @@
 <!-- eslint-disable vue/no-v-text-v-html-on-component -->
 <template>
-  <q-item v-if="renderComponent" clickable :active="currentGridIndex === id" @click="setIndex(id)" active-class="active">
+  <q-item v-if="renderComponent" clickable :active="currentGridIndex == Index" @click="setIndex(Index)"
+    active-class="active">
     <q-item-section avatar>
-      <q-item-label>{{ title }}</q-item-label>
+      <q-item-label>{{ Index + 1 }}</q-item-label>
     </q-item-section>
     <q-item-section>
-      <q-select dense outlined v-model="type" :id="id" :options="options" @update:model-value="selectWidget(id, type)"
-        label="Select a widget" emit-value>
+      <q-select dense outlined v-model="ContentType" :options="options"
+        @update:model-value="selectWidget(Index, ContentType)" label="Select a widget" emit-value>
         <template v-slot:append>
-          <q-icon v-if="type == 'TEXT'" name="img:/icon/text.png" />
-          <q-icon v-if="type == 'MEDIA'" name="img:/icon/media.png" />
-          <q-icon v-if="type == 'TWITTER'" name="img:/icon/twitter.png" />
-          <q-icon v-if="type == 'WEBPAGE'" name="img:/icon/webpage.png" />
+          <q-icon v-if="ContentType == 'TEXT'" name="img:/icon/text.png" />
+          <q-icon v-if="ContentType == 'MEDIA'" name="img:/icon/media.png" />
+          <q-icon v-if="ContentType == 'TWITTER'" name="img:/icon/twitter.png" />
+          <q-icon v-if="ContentType == 'WEBPAGE'" name="img:/icon/webpage.png" />
         </template>
         <template v-slot:no-option>
           <q-item>
@@ -43,15 +44,11 @@ const layoutStore = useLayoutStore()
 const widgetListStore = useWidgetListStore()
 const currentGridIndex = computed(() => layoutStore.currentGridIndex)
 const props = defineProps({
-  id: {
-    type: String,
+  Index: {
+    type: Number,
     required: true
   },
-  title: {
-    type: String,
-    required: true
-  },
-  type: {
+  ContentType: {
     type: String,
     required: true
   },
@@ -60,16 +57,17 @@ const props = defineProps({
     required: true
   }
 })
-const { type } = toRef(props)
-const setIndex = (id) => {
-  console.log('id', id)
-  widgetListStore.SetCurrentListIndex(id)
-  layoutStore.SetCurrentGrid(id)
+const { ContentType } = toRef(props)
+const setIndex = (Index) => {
+  // console.log('Index', Index)
+  widgetListStore.SetCurrentListIndex(Index)
+  layoutStore.SetCurrentGrid(Index)
 }
-const selectWidget = (id, type) => {
-  // console.log('id', id)
-  // console.log('type', type)
-  widgetListStore.SetCurrentListIndex(id)
+const selectWidget = (Index, ContentType) => {
+  // console.log('Index', Index)
+  // console.log('ContentType', ContentType)
+  widgetListStore.SetCurrentListIndex(Index)
+  widgetListStore.SetWidget(Index, ContentType)
   updateList(false)
 }
 const renderComponent = ref(true)

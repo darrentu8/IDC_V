@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <q-list class="col-12">
-      <q-item-label class="flex justify-between q-pa-sm items-center bg-grey-4">
+      <q-item-label class="flex justify-between q-pa-sm items-center head-title">
         <div class="col-12">
           Story Flow
         </div>
@@ -9,10 +9,10 @@
           @click="expandedFlow = !expandedFlow" />
       </q-item-label>
 
-      <q-slide-transition class="col-12 bordered">
+      <q-slide-transition class="col-12">
         <div v-show="expandedFlow">
-          <q-card flat square bordered class="">
-            <div class="flowRow row items-center q-py-md q-pr-xl">
+          <q-card flat square class="">
+            <div class="row items-center q-py-md q-pr-xl">
               <div class="col-2 text-center">
                 <q-chip>Default</q-chip>
               </div>
@@ -33,12 +33,12 @@
                   </div>
                 </div>
                 <!-- 刪除 -->
-                <div class="absolute-right q-ma-xs">
+                <!-- <div class="absolute-right q-ma-xs">
                   <q-btn class="" color="grey" round flat dense icon="clear" @click="expandedFlow = !expandedFlow" />
-                </div>
+                </div> -->
               </div>
             </div>
-            <div flat square class="flowRow text-center q-pa-md">
+            <div flat square class="text-center q-pa-md">
               <q-btn unelevated rounded color="grey-2" text-color="black" label="New flow" />
             </div>
           </q-card>

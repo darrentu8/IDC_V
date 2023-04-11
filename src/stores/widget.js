@@ -26,14 +26,14 @@ export const useWidgetListStore = defineStore('widgetList', {
     widgetListData: [
       {
         id: '1',
-        title: '1',
-        type: '',
+        ContentType: '',
+        section: [],
         active: false
       },
       {
         id: '2',
-        title: '2',
-        type: '',
+        ContentType: '',
+        section: [],
         active: false
       }
     ],
@@ -54,8 +54,8 @@ export const useWidgetListStore = defineStore('widgetList', {
     SetCurrentListIndex(i) {
       this.currentListIndex = i
     },
-    SetWidget(id, data) {
-      this.widgetListData[id - 1].type = data
+    SetWidget(Index, ContentType) {
+      this.widgetListData[Index].ContentType = ContentType
     }
   }
 })

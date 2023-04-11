@@ -12,8 +12,8 @@
   <q-item-label header class="q-pb-xs">Selected widget</q-item-label>
   <q-scroll-area style="height: calc(100% - 250px);">
     <q-list padding>
-      <EditWidgetList v-for="widget in widgetLists" :id="widget.id" :key="widget.id" :type="widget.type"
-        :title="widget.title" :options="widgetOptions" />
+      <EditWidgetList v-for="(widget, Index) in widgetLists" :Index="Index" :key="widget.id"
+        :ContentType="widget.ContentType" :options="widgetOptions" />
     </q-list>
   </q-scroll-area>
 </template>
