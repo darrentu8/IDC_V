@@ -2,3 +2,11 @@
 .head-title {
   border-bottom: 1px solid #000;
 }
+.del-card {
+  margin-top: -8px;
+  margin-right: -8px;
+  display: none;
+}
+.flowBox:hover > .del-card {
+  display: block;
+}

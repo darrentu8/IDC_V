@@ -1,28 +1,28 @@
 <template>
-  <q-list>
-    <q-toolbar class="text-primary bg-grey-4 justify-center">
-      <div class="q-pa-md q-gutter-sm">
-        <q-btn class="" color="grey-2" text-color="grey-9" size="sx" stack @click="exportFile()"
-          style="line-height: 1.615em;">
-          <!-- <q-icon name="img:/icon/export.svg" color="white" size="xs" /> -->
-          Hardware
-          <br>configuration
-        </q-btn>
-        <q-btn class="q-pt-sm" color="grey-2" text-color="grey-9" size="sx" stack @click="exportFile()">
-          <q-icon name="img:/icon/export.svg" color="white" size="xs" />
-          Export
-        </q-btn>
-        <!-- <q-btn class="q-pt-sm" color="grey-2" text-color="grey-9" size="sx" stack>
+  <q-toolbar class="text-primary bg-grey-4 justify-center">
+    <div class="q-pa-md q-gutter-sm">
+      <q-btn class="" color="grey-2" text-color="grey-9" size="sx" stack @click="exportFile()"
+        style="line-height: 1.615em;">
+        <!-- <q-icon name="img:/icon/export.svg" color="white" size="xs" /> -->
+        Hardware
+        <br>configuration
+      </q-btn>
+      <q-btn class="q-pt-sm" color="grey-2" text-color="grey-9" size="sx" stack @click="exportFile()">
+        <q-icon name="img:/icon/export.svg" color="white" size="xs" />
+        Export
+      </q-btn>
+      <!-- <q-btn class="q-pt-sm" color="grey-2" text-color="grey-9" size="sx" stack>
           <q-icon name="img:/icon/preview.svg" color="white" size="xs" />
           Preview
         </q-btn> -->
-      </div>
-    </q-toolbar>
+    </div>
+  </q-toolbar>
+  <q-scroll-area style="height: calc(100% - 86px);">
     <q-item-label header>
       Connection settings
     </q-item-label>
     <ConnectionSettingList />
-  </q-list>
+  </q-scroll-area>
 </template>
 <script>
 import ConnectionSettingList from './ConnectionSettingList.vue'

@@ -13,8 +13,8 @@
         <q-slide-transition>
           <div v-show="expandedContent" class="row q-py-md no-wrap"
             style="max-height: 170px; overflow-y: hidden; overflow-x: scroll;">
-            <q-card v-for="(state, Index) in widgetLists" :key="state.Index" flat square bordered horizontal
-              class="cursor-pointer flowBox q-ml-md">
+            <q-card v-for="(state, Index) in widgetListData[currentSection].Content.State" :key="state.id" flat square
+              bordered horizontal class="cursor-pointer flowBox q-ml-md">
               <q-img src="">
                 <div class="absolute-full flex flex-center bg-gery text-white">
                 </div>
@@ -22,12 +22,17 @@
                   <q-icon size="22px" name="edit" />
                 </div>
               </q-img>
-              <q-card-section horizontal class="q-pa-sm">
+              <q-card-section horizontal class="q-pa-xs">
                 <div class="text-subtitle2">State {{ Index + 1 }}</div>
               </q-card-section>
+              <!-- 刪除 -->
+              <div v-if="currentStateLength > 1" class="absolute-right del-card">
+                <q-btn size="sm" class="" color="negative" round dense icon="clear" @click="delState(state.id)" />
+              </div>
             </q-card>
             <q-card flat square bordered horizontal class="flowBox q-ml-md">
-              <q-btn flat size="22px" class="q-px-xl q-py-xs full-width full-height" color="light-blue" icon="add" />
+              <q-btn @click="addState()" flat size="22px" class="q-px-xl q-py-xs full-width full-height"
+                color="light-blue" icon="add" />
             </q-card>
           </div>
         </q-slide-transition>
@@ -38,18 +43,31 @@
 
 <script>
 import { defineComponent, ref, computed } from 'vue'
+import { useLayoutStore } from 'src/stores/layout'
 import { useWidgetListStore } from 'src/stores/widget'
 // import { ref, nextTick, computed, toRef } from 'vue'
+const layoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
-const widgetLists = computed(() => widgetStore.GetWidgetListData)
-
+const widgetListData = computed(() => widgetStore.GetWidgetListData)
+const currentStateLength = computed(() => widgetStore.GetCurrentStateLength)
+const currentSection = computed(() => layoutStore.GetCurrentSection)
+const addState = () => {
+  widgetStore.AddState()
+}
+const delState = (id) => {
+  widgetStore.DelState(id)
+}
 export default defineComponent({
   name: 'ContentSetting',
   components: {
   },
   setup() {
     return {
-      widgetLists,
+      addState,
+      delState,
+      currentStateLength,
+      widgetListData,
+      currentSection,
       expandedContent: ref(true),
       showEdit: ref(false),
       contentData: {

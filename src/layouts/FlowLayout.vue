@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh Lpr lFf">
+  <q-layout view="hHh LpR lFf">
     <q-header>
       <q-bar class="q-electron-drag bg-grey-3 text-black">
         <div>Interactive Editor</div>
@@ -16,7 +16,8 @@
     <q-page-container>
       <router-view />
     </q-page-container>
-    <q-drawer v-model="rightDrawerOpen" side="right" show-if-above bordered class="bg-grey-3">
+    <q-drawer v-model="rightDrawerOpen" side="right" show-if-above bordered class="bg-grey-3" :width="300"
+      :breakpoint="400">
       <RightSideBar />
     </q-drawer>
   </q-layout>

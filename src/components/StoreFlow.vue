@@ -11,7 +11,7 @@
 
       <q-slide-transition class="col-12">
         <div v-show="expandedFlow">
-          <div v-for="(flow, Index) in widgetLists" :key="Index" class="flowBoxWrap">
+          <div v-for="(flow, Index) in widgetListData[currentSection].Content.State" :key="flow.id" class="flowBoxWrap">
             <q-card flat square class="">
               <div class="row items-center q-py-md q-pr-xl">
                 <div class="col-2 text-center">
@@ -23,7 +23,7 @@
                     <q-card flat square bordered horizontal class="flowBox">
                       <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
                       </q-img>
-                      <q-card-section horizontal class="q-pa-sm">
+                      <q-card-section horizontal class="q-pa-xs">
                         <div class="text-subtitle2">State 1</div>
                       </q-card-section>
                     </q-card>
@@ -35,17 +35,13 @@
                     </div>
                   </div>
                   <!-- 刪除 -->
-                  <!-- <div class="absolute-right q-ma-xs">
+                  <div class="absolute-right q-ma-xs">
                     <q-btn class="" color="grey" round flat dense icon="clear" @click="expandedFlow = !expandedFlow" />
-                  </div> -->
+                  </div>
                 </div>
               </div>
             </q-card>
           </div>
-
-          <!-- <div flat square class="text-center q-pa-md">
-                <q-btn unelevated rounded color="grey-2" text-color="black" label="New flow" />
-              </div> -->
 
         </div>
       </q-slide-transition>
@@ -55,16 +51,21 @@
 
 <script>
 import { defineComponent, ref, computed } from 'vue'
+import { useLayoutStore } from 'src/stores/layout'
 import { useWidgetListStore } from 'src/stores/widget'
+
+const layoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
-const widgetLists = computed(() => widgetStore.GetWidgetListData)
+const currentSection = computed(() => layoutStore.GetCurrentSection)
+const widgetListData = computed(() => widgetStore.GetWidgetListData)
 export default defineComponent({
   name: 'ContentSetting',
   components: {
   },
   setup() {
     return {
-      widgetLists,
+      currentSection,
+      widgetListData,
       expandedFlow: ref(true),
       sectionData: [
         { x: 0, y: 0, w: 1, h: 2, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }, { x: 1, y: 1, w: 1, h: 1, i: '3' }

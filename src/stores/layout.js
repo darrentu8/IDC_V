@@ -48,8 +48,7 @@ export const useLayoutStore = defineStore('layout', {
         }
       }
     },
-    Section: {
-      ID: '',
+    SectionData: {
       Index: '',
       X: '',
       Y: '',
@@ -96,9 +95,12 @@ export const useLayoutStore = defineStore('layout', {
       colCount: 2,
       layout: [{ x: 0, y: 0, w: 1, h: 1, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }]
     },
-    currentGridIndex: '0'
+    currentSection: 0
   }),
   getters: {
+    GetCurrentSection() {
+      return this.currentSection
+    }
   },
   actions: {
     SetLayout(layout) {
@@ -115,7 +117,8 @@ export const useLayoutStore = defineStore('layout', {
     },
     SetWidgetList() {
       const Data = this.layout.layout
-      const defaultData = Data.map((e, i) => ({
+      // Section
+      const Section = Data.map((e, i) => ({
         Index: e.i,
         X: e.x,
         Y: e.y,
@@ -151,20 +154,19 @@ export const useLayoutStore = defineStore('layout', {
           MediaItem: null,
           State: [
             {
-              id: '0',
+              id: 0,
               File: null,
               Event: null
             }
           ]
         }
       }))
-      console.log('defaultData', defaultData)
-      widgetStore.SetWidgetListData(defaultData)
+      console.log('Section', Section)
+      widgetStore.SetWidgetListData(Section)
     },
-    SetCurrentGrid(i) {
-      console.log('currentGridIndex', i)
-      this.currentGridIndex = i
-      widgetStore.SetCurrentListIndex(i)
+    SetCurrentSection(i) {
+      console.log('currentSection', i)
+      this.currentSection = i
     }
   }
 })

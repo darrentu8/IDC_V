@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-v-text-v-html-on-component -->
 <template>
-  <q-item v-if="renderComponent" clickable :active="currentGridIndex == Index" @click="setIndex(Index)"
+  <q-item v-if="renderComponent" clickable :active="currentSection == Index" @click="setIndex(Index)"
     active-class="active">
     <q-item-section avatar>
       <q-item-label>{{ Index + 1 }}</q-item-label>
@@ -42,7 +42,7 @@ import { useWidgetListStore } from 'src/stores/widget'
 import { ref, nextTick, computed, toRef } from 'vue'
 const layoutStore = useLayoutStore()
 const widgetListStore = useWidgetListStore()
-const currentGridIndex = computed(() => layoutStore.currentGridIndex)
+const currentSection = computed(() => layoutStore.currentSection)
 const props = defineProps({
   Index: {
     type: Number,
@@ -60,8 +60,7 @@ const props = defineProps({
 const { ContentType } = toRef(props)
 const setIndex = (Index) => {
   // console.log('Index', Index)
-  widgetListStore.SetCurrentListIndex(Index)
-  layoutStore.SetCurrentGrid(Index)
+  layoutStore.SetCurrentSection(Index)
 }
 const selectWidget = (Index, ContentType) => {
   // console.log('Index', Index)

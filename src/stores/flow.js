@@ -29,7 +29,7 @@ export const useFlowStore = defineStore('flow', {
       console.log('arrayData', arrayData)
       widgetStore.SetWidgetListData(arrayData)
     },
-    SetCurrentGrid(i) {
+    SetCurrentSection(i) {
       console.log('currentGridIndex', i)
       this.currentGridIndex = i
       widgetStore.SetCurrentListIndex(i)
