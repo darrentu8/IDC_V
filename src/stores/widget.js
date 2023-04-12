@@ -128,6 +128,13 @@ export const useWidgetListStore = defineStore('widgetList', {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
       return this.widgetListData[currentSection].Content.State.length
+    },
+    GetCurrentStateData() {
+      const layoutStore = useLayoutStore()
+      const currentSection = layoutStore.currentSection
+      const Data = this.widgetListData[currentSection].Content.State.filter((e, i) => i !== this.currentState)
+      console.log('Data', Data)
+      return Data
     }
   },
   actions: {

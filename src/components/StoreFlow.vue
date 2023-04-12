@@ -36,6 +36,9 @@
                     <q-card flat square bordered horizontal class="flowBox q-ml-md" style="height: 130.69px;">
                       <q-btn @click="addState()" flat size="22px" class="q-px-xl q-py-xs full-width full-height"
                         color="grey-5" icon="add" />
+                      <q-popup-edit v-model="currentStateData" buttons v-slot="scope">
+                        <q-select v-model="scope.value" dense autofocus @update:model-value="scope.set" />
+                      </q-popup-edit>
                     </q-card>
                   </div>
                   <!-- 刪除 state -->
@@ -64,6 +67,7 @@ import { useWidgetListStore } from 'src/stores/widget'
 const layoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
 const currentSection = computed(() => layoutStore.GetCurrentSection)
+const currentStateData = computed(() => widgetStore.GetCurrentStateData)
 const widgetListData = computed(() => widgetStore.GetWidgetListData)
 export default defineComponent({
   name: 'ContentSetting',
@@ -73,7 +77,9 @@ export default defineComponent({
     return {
       currentSection,
       widgetListData,
+      currentStateData,
       expandedFlow: ref(true),
+      popupSetState: ref(''),
       sectionData: [
         { x: 0, y: 0, w: 1, h: 2, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }, { x: 1, y: 1, w: 1, h: 1, i: '3' }
       ]
