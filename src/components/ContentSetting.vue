@@ -14,11 +14,11 @@
           <div v-show="expandedContent" class="row q-py-md no-wrap"
             style="max-height: 170px; overflow-y: hidden; overflow-x: scroll;">
             <q-card v-for="(state, Index) in widgetListData[currentSection].Content.State" :key="state.id" flat square
-              bordered horizontal class="cursor-pointer flowBox q-ml-md">
-              <q-img src="">
+              bordered horizontal @click="setCurrentState(Index)" class="cursor-pointer flowBox q-ml-md">
+              <q-img src="" style="min-height: 98.69px;">
                 <div class="absolute-full flex flex-center bg-gery text-white">
                 </div>
-                <div v-if="showEdit" class="absolute-full text-subtitle2 flex flex-center">
+                <div v-if="currentState === Index" class="absolute-full text-subtitle2 flex flex-center">
                   <q-icon size="22px" name="edit" />
                 </div>
               </q-img>
@@ -31,8 +31,8 @@
               </div>
             </q-card>
             <q-card flat square bordered horizontal class="flowBox q-ml-md">
-              <q-btn @click="addState()" flat size="22px" class="q-px-xl q-py-xs full-width full-height"
-                color="light-blue" icon="add" />
+              <q-btn @click="addState()" flat size="22px" class="q-px-xl q-py-xs full-width full-height" color="grey-5"
+                icon="add" />
             </q-card>
           </div>
         </q-slide-transition>
@@ -49,10 +49,14 @@ import { useWidgetListStore } from 'src/stores/widget'
 const layoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
 const widgetListData = computed(() => widgetStore.GetWidgetListData)
+const currentState = computed(() => widgetStore.GetCurrentState)
 const currentStateLength = computed(() => widgetStore.GetCurrentStateLength)
 const currentSection = computed(() => layoutStore.GetCurrentSection)
 const addState = () => {
   widgetStore.AddState()
+}
+const setCurrentState = (Index) => {
+  widgetStore.SetCurrentState(Index)
 }
 const delState = (id) => {
   widgetStore.DelState(id)
@@ -64,7 +68,9 @@ export default defineComponent({
   setup() {
     return {
       addState,
+      setCurrentState,
       delState,
+      currentState,
       currentStateLength,
       widgetListData,
       currentSection,

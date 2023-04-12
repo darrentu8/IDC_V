@@ -27,20 +27,27 @@
                         <div class="text-subtitle2">State 1</div>
                       </q-card-section>
                     </q-card>
-                    <div class="flowBoxAction">
+                    <!-- <div class="flowBoxAction">
                       <q-btn flat class="" text-color="grey-7" color="grey-4" round dense icon="file_copy" />
+                    </div> -->
+                    <div class="q-ml-md">
+                      <q-btn unelevated class="" text-color="grey-7" color="grey-4" round icon="link" />
                     </div>
-                    <div class="q-ma-sx">
-                      <q-btn unelevated class="" text-color="grey-7" color="grey-4" round dense icon="link" />
-                    </div>
+                    <q-card flat square bordered horizontal class="flowBox q-ml-md" style="height: 130.69px;">
+                      <q-btn @click="addState()" flat size="22px" class="q-px-xl q-py-xs full-width full-height"
+                        color="grey-5" icon="add" />
+                    </q-card>
                   </div>
-                  <!-- 刪除 -->
-                  <div class="absolute-right q-ma-xs">
+                  <!-- 刪除 state -->
+                  <!-- <div class="absolute-right q-ma-xs">
                     <q-btn class="" color="grey" round flat dense icon="clear" @click="expandedFlow = !expandedFlow" />
-                  </div>
+                  </div> -->
                 </div>
               </div>
             </q-card>
+            <div flat square class="text-center q-pa-md">
+              <q-btn unelevated round dense color="grey-2" text-color="positive" icon="add" />
+            </div>
           </div>
 
         </div>

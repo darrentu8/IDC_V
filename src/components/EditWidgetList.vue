@@ -63,9 +63,9 @@ const setIndex = (Index) => {
   layoutStore.SetCurrentSection(Index)
 }
 const selectWidget = (Index, ContentType) => {
-  // console.log('Index', Index)
-  // console.log('ContentType', ContentType)
-  widgetListStore.SetCurrentListIndex(Index)
+  console.log('Index', Index)
+  console.log('ContentType', ContentType)
+  widgetListStore.SetCurrentState(Index)
   widgetListStore.SetWidget(Index, ContentType)
   updateList(false)
 }

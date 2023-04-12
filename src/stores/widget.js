@@ -121,6 +121,9 @@ export const useWidgetListStore = defineStore('widgetList', {
     GetWidgetListData() {
       return this.widgetListData
     },
+    GetCurrentState() {
+      return this.currentState
+    },
     GetCurrentStateLength() {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
@@ -136,6 +139,9 @@ export const useWidgetListStore = defineStore('widgetList', {
     },
     SetWidget(Index, ContentType) {
       this.widgetListData[Index].ContentType = ContentType
+    },
+    SetCurrentState(Index) {
+      this.currentState = Index
     },
     AddState() {
       const layoutStore = useLayoutStore()
