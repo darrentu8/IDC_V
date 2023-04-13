@@ -22,8 +22,11 @@
                   <q-icon size="22px" name="edit" />
                 </div>
               </q-img>
-              <q-card-section horizontal class="q-pa-xs">
-                <div class="text-subtitle2">State {{ Index + 1 }}</div>
+              <q-card-section v-if="state.title !== ''" horizontal class="q-pa-xs">
+                <div class="text-subtitle2">{{ state.title }}</div>
+              </q-card-section>
+              <q-card-section v-else horizontal class="q-pa-xs">
+                <div class="text-subtitle2">State {{ Number(Index + 1) }}</div>
               </q-card-section>
               <!-- 刪除 -->
               <div v-if="currentStateLength > 1" class="absolute-right del-card">

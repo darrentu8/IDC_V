@@ -2,7 +2,7 @@
   <q-layout view="hHh LpR lFf">
     <q-header>
       <q-bar class="q-electron-drag bg-grey-3 text-black">
-        <div>Interactive Editor</div>
+        <div>Signage Editor</div>
         <q-space />
         <q-btn dense flat icon="minimize" @click="minimize" />
         <q-btn dense flat icon="crop_square" @click="toggleMaximize" />

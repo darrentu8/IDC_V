@@ -63,9 +63,10 @@ export const useWidgetListStore = defineStore('widgetList', {
           MediaItem: null,
           State: [
             {
-              id: 0,
-              File: null,
-              Event: null
+              id: uid(),
+              title: '',
+              File: [],
+              Event: []
             }
           ]
         }
@@ -106,14 +107,27 @@ export const useWidgetListStore = defineStore('widgetList', {
           MediaItem: null,
           State: [
             {
-              id: 0,
-              File: null,
-              Event: null
+              id: uid(),
+              title: 'State',
+              File: [],
+              Event: []
             }
           ]
         }
       }
     ],
+    StateData: {
+      id: '',
+      title: 'State',
+      File: [],
+      Event: []
+    },
+    EventData: {
+      type: '',
+      gpio_number: '',
+      next_state_id: '',
+      Action: []
+    },
     currentState: 0,
     currentWidget: {}
   }),
@@ -129,12 +143,25 @@ export const useWidgetListStore = defineStore('widgetList', {
       const currentSection = layoutStore.currentSection
       return this.widgetListData[currentSection].Content.State.length
     },
-    GetCurrentStateData() {
+    GetCurrentStateOptions() {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      const Data = this.widgetListData[currentSection].Content.State.filter((e, i) => i !== this.currentState)
-      console.log('Data', Data)
-      return Data
+      const oData = this.widgetListData[currentSection].Content.State.map((e, i) => {
+        if (e.title === '') {
+          return {
+            id: e.id,
+            title: 'State' + ' ' + (i + 1)
+          }
+        } else {
+          return {
+            id: e.id,
+            title: e.title
+          }
+        }
+      })
+      // const Data = oData.filter((e, i) => e[i] !== this.currentState)
+      // console.log('Data', Data)
+      return oData
     }
   },
   actions: {
@@ -153,11 +180,39 @@ export const useWidgetListStore = defineStore('widgetList', {
     AddState() {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
+      const arr = this.widgetListData[currentSection].Content.State
+      let getLastNumber = Math.max(...arr.map(p => p.id))
+      if (getLastNumber === 0) {
+        getLastNumber = 1
+      }
       this.widgetListData[currentSection].Content.State.push({
         id: uid(),
-        File: null,
-        Event: null
+        File: [],
+        Event: [],
+        title: ''
       })
+    },
+    AddStateEvent(Index) {
+      const layoutStore = useLayoutStore()
+      const currentSection = layoutStore.currentSection
+      this.widgetListData[currentSection].Content.State[Index].Event.push({
+        id: uid(),
+        type: '',
+        gpio_number: '',
+        next_state_id: '',
+        Action: []
+      })
+    },
+    SetFlowState(Index, EventIndex, currentStateData) {
+      console.log('Index', Index)
+      console.log('EventIndex', EventIndex)
+      console.log('currentStateData', currentStateData)
+      const layoutStore = useLayoutStore()
+      const currentSection = layoutStore.currentSection
+      this.widgetListData[currentSection].Content.State[Index].Event[EventIndex] = {
+        ...this.EventData,
+        next_state_id: currentStateData.id
+      }
     },
     DelState(ID) {
       const layoutStore = useLayoutStore()

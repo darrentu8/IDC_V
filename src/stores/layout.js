@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { useWidgetListStore } from './widget'
+import { uid } from 'quasar'
 const widgetStore = useWidgetListStore()
 
 export const useLayoutStore = defineStore('layout', {
@@ -37,7 +38,7 @@ export const useLayoutStore = defineStore('layout', {
           BackgroundMusicSize: '',
           Script: '',
           BackgroundMusic: '',
-          Section: null
+          Section: []
         }
       },
       Timeline: {
@@ -78,16 +79,17 @@ export const useLayoutStore = defineStore('layout', {
         duration: '',
         Live_Update_port: '',
         Live_Update_Show_Status: '',
-        AttachmentFiles: null,
-        MediaItem: null,
-        State: null
+        AttachmentFiles: [],
+        MediaItem: [],
+        State: []
       }
     },
     StateData: [
       {
-        id: '',
-        File: null,
-        Event: null
+        id: uid(),
+        title: '',
+        File: [],
+        Event: []
       }
     ],
     layout: {
@@ -148,15 +150,14 @@ export const useLayoutStore = defineStore('layout', {
           duration: '',
           Live_Update_port: '',
           Live_Update_Show_Status: '',
-          AttachmentFiles: {
-            File: null
-          },
-          MediaItem: null,
+          AttachmentFiles: [],
+          MediaItem: [],
           State: [
             {
-              id: 0,
-              File: null,
-              Event: null
+              id: uid(),
+              title: '',
+              File: [],
+              Event: []
             }
           ]
         }
