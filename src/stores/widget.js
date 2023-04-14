@@ -211,7 +211,8 @@ export const useWidgetListStore = defineStore('widgetList', {
       const currentSection = layoutStore.currentSection
       this.widgetListData[currentSection].Content.State[Index].Event[EventIndex] = {
         ...this.EventData,
-        next_state_id: currentStateData.title
+        next_state_id: currentStateData.id,
+        title: currentStateData.title
       }
     },
     DelState(ID) {
@@ -219,6 +220,14 @@ export const useWidgetListStore = defineStore('widgetList', {
       const currentSection = layoutStore.currentSection
       const Data = this.widgetListData[currentSection].Content.State.filter(e => e.id !== ID)
       this.widgetListData[currentSection].Content.State = Data
+    },
+    DelStateEvent(ID, Index) {
+      console.log('ID', ID)
+      console.log('Index', Index)
+      const layoutStore = useLayoutStore()
+      const currentSection = layoutStore.currentSection
+      const Data = this.widgetListData[currentSection].Content.State[Index].Event.filter(e => e.id !== ID)
+      this.widgetListData[currentSection].Content.State[Index].Event = Data
     }
   }
 })

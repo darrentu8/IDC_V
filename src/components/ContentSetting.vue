@@ -19,7 +19,7 @@
                 <div class="absolute-full flex flex-center bg-gery text-white">
                 </div>
                 <div v-if="currentState === Index" class="absolute-full text-subtitle2 flex flex-center">
-                  <q-icon size="22px" name="edit" />
+                  <q-icon size="16px" name="edit" />
                 </div>
               </q-img>
               <q-card-section v-if="state.title !== ''" horizontal class="q-pa-xs">
@@ -34,7 +34,7 @@
               </div>
             </q-card>
             <q-card flat square bordered horizontal class="flowBox q-ml-md">
-              <q-btn @click="addState()" flat size="22px" class="q-px-xl q-py-xs full-width full-height" color="grey-5"
+              <q-btn @click="addState()" flat size="16px" class="q-px-xl q-py-xs full-width full-height" color="grey-5"
                 icon="add" />
             </q-card>
           </div>

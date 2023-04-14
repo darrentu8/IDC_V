@@ -30,7 +30,7 @@
                 </q-card>
               </div>
               <!-- Flow Events -->
-              <div class="no-wrap scroll" style="min-height: 139px;">
+              <div class="no-wrap" style="min-height: 139px;">
                 <div class="flex items-center">
                   <div v-if="currentStateLength > 1">
                     <!-- 有Event -->
@@ -40,49 +40,59 @@
                         <div class="q-mr-md q-ml-lg">
                           <q-btn unelevated class="" text-color="grey-7" color="grey-4" round icon="link" />
                         </div>
-                        <q-card v-if="EventData.next_state_id" flat square bordered horizontal class="flowBox q-ml-md"
-                          style="height: 130.69px;">
+                        <q-card v-if="EventData.next_state_id !== undefined" flat square bordered horizontal
+                          class="flowBox q-ml-md" style="height: 130.69px;">
                           <q-btn flat size="16px" class="full-width full-height" color="grey-5">{{
                             EventData.next_state_id }}</q-btn>
-                          <q-popup-edit v-if="!popEditHide" v-model="EventData.next_state_id" v-slot="scope">
+                          <q-popup-edit v-model="EventData.next_state_id" v-slot="scope">
                             <q-select v-model="scope.value" :options="currentStateOptions" option-value="id"
                               option-label="title" dense autofocus
                               @update:model-value="setFlowState(Index, EventIndex, scope.value)" />
                           </q-popup-edit>
+                          <!-- 刪除 -->
+                          <div v-if="stateData.Event.length > 1" class="absolute-right del-card">
+                            <q-btn size="sm" class="" color="negative" round dense icon="clear"
+                              @click="delStateEvent(EventData.id, Index)" />
+                          </div>
                         </q-card>
                         <q-card v-else flat square bordered horizontal class="flowBox q-ml-md" style="height: 130.69px;">
                           <q-btn flat size="16px" class="full-width full-height" color="grey-5" icon="add" />
-                          <q-popup-edit v-if="!popEditHide" v-model="EventData.next_state_id" v-slot="scope">
+                          <q-popup-edit v-model="EventData.next_state_id" v-slot="scope">
                             <q-select v-model="scope.value" :options="currentStateOptions" option-value="id"
                               option-label="title" dense autofocus
                               @update:model-value="setFlowState(Index, EventIndex, scope.value)" />
                           </q-popup-edit>
+                          <!-- 刪除 -->
+                          <div v-if="stateData.Event.length > 1" class="absolute-right del-card">
+                            <q-btn size="sm" class="" color="negative" round dense icon="clear"
+                              @click="delStateEvent(EventData.id, Index)" />
+                          </div>
                         </q-card>
                       </div>
                     </div>
                     <!-- 無Event -->
-                    <div v-else-if="!stateData.Event.length" class="flex items-center">
-                      <div class="q-mr-md q-ml-lg">
+                    <div v-else-if="!stateData.Event.length" class="flex items-center q-mb-md">
+                      <!-- <div class="q-mr-md q-ml-lg">
                         <q-btn unelevated class="" text-color="grey-7" color="grey-4" round icon="link" />
                       </div>
                       <q-card flat square bordered horizontal class="flowBox q-ml-md" style="height: 130.69px;">
-                        <q-btn flat size="22px" class="full-width full-height" color="grey-5" icon="add" />
-                        <q-popup-edit v-if="!popEditHide" v-model="currentStateDataInput" v-slot="scope">
+                        <q-btn flat size="16px" class="full-width full-height" color="grey-5" icon="add" />
+                        <q-popup-edit v-if="!popEdit" v-model="currentStateDataInput" v-slot="scope">
                           <q-select v-model="scope.value" label="Select State" :options="currentStateOptions"
                             option-value="id" option-label="title" dense autofocus
                             @update:model-value="setFlowState(Index, EventIndex, scope.value)" />
                         </q-popup-edit>
-                      </q-card>
+                      </q-card> -->
                     </div>
                   </div>
                   <div v-else-if="currentStateLength = 1">
-                    <div>
-                      <div class="flex items-center">
+                    <!-- <div>
+                      <div class="flex items-center q-mb-md">
                         <div class="q-mr-md q-ml-lg">
                           <q-btn disabled unelevated class="" text-color="grey-7" color="grey-4" round icon="link" />
                         </div>
                         <q-card flat square bordered horizontal class="flowBox q-ml-md" style="height: 130.69px;">
-                          <q-btn disabled flat size="22px" class="full-width full-height" color="grey-5" icon="add" />
+                          <q-btn disabled flat size="16px" class="full-width full-height" color="grey-5" icon="add" />
                           <q-popup-edit disable v-model="currentStateDataInput" v-slot="scope">
                             <q-select v-model="scope.value" label="Select State" :options="currentStateOptions"
                               option-value="id" option-label="title" dense autofocus
@@ -90,7 +100,7 @@
                           </q-popup-edit>
                         </q-card>
                       </div>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
               </div>
@@ -100,7 +110,7 @@
               <q-btn class="" color="grey" round flat dense icon="clear" @click="expandedFlow = !expandedFlow" />
             </div> -->
             <!-- Add Flow Btn -->
-            <div flat square class="text-center q-pa-md">
+            <div flat square class="text-center q-mb-md">
               <q-btn :disable="currentStateLength <= 1" @click="addStateEvent(Index)" unelevated round dense
                 color="grey-2" text-color="positive" icon="add" />
             </div>
@@ -112,11 +122,16 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, ref, computed } from 'vue'
+<script setup>
+import { ref, computed } from 'vue'
 import { useLayoutStore } from 'src/stores/layout'
 import { useWidgetListStore } from 'src/stores/widget'
 
+const expandedFlow = ref(true)
+const popEdit = ref(true)
+// const sectionData = ref([
+//   { x: 0, y: 0, w: 1, h: 2, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }, { x: 1, y: 1, w: 1, h: 1, i: '3' }
+// ])
 const layoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
 const currentSection = computed(() => layoutStore.GetCurrentSection)
@@ -125,34 +140,17 @@ const currentStateOptions = computed(() => widgetStore.GetCurrentStateOptions)
 const widgetListData = computed(() => widgetStore.GetWidgetListData)
 const setFlowState = (Index, EventIndex = 0, currentStateData) => {
   widgetStore.SetFlowState(Index, EventIndex, currentStateData)
-  this.popEditHide = true
+  popEdit.value = false
 }
 const addStateEvent = (Index) => {
   widgetStore.AddStateEvent(Index)
 }
-export default defineComponent({
-  name: 'ContentSetting',
-  components: {
-  },
-  setup() {
-    return {
-      currentSection,
-      widgetListData,
-      currentStateLength,
-      currentStateOptions,
-      setFlowState,
-      addStateEvent,
-      currentStateDataInput: ref(),
-      expandedFlow: ref(true),
-      popEditHide: ref(false),
-      popupSetState: ref(''),
-      sectionData: [
-        { x: 0, y: 0, w: 1, h: 2, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }, { x: 1, y: 1, w: 1, h: 1, i: '3' }
-      ]
-    }
-  }
-
-})
+const delStateEvent = (ID, Index) => {
+  widgetStore.DelStateEvent(ID, Index)
+}
+// const mapCurrentStateOptions = computed((state) => {
+//   return state !== undefined ? (currentStateOptions.value.map((item, i) => i === state)) : state
+// })
 </script>
 <style lang="scss">
 .flowRow {
