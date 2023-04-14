@@ -211,7 +211,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       const currentSection = layoutStore.currentSection
       this.widgetListData[currentSection].Content.State[Index].Event[EventIndex] = {
         ...this.EventData,
-        next_state_id: currentStateData.id
+        next_state_id: currentStateData.title
       }
     },
     DelState(ID) {
