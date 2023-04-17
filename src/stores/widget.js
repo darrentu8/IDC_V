@@ -150,17 +150,17 @@ export const useWidgetListStore = defineStore('widgetList', {
         if (e.title === '') {
           return {
             id: e.id,
+            stateIndex: i,
             title: 'State' + ' ' + (i + 1)
           }
         } else {
           return {
             id: e.id,
+            stateIndex: i,
             title: e.title
           }
         }
       })
-      // const Data = oData.filter((e, i) => e[i] !== this.currentState)
-      // console.log('Data', Data)
       return oData
     }
   },
@@ -204,14 +204,12 @@ export const useWidgetListStore = defineStore('widgetList', {
       })
     },
     SetFlowState(Index, EventIndex, currentStateData) {
-      console.log('Index', Index)
-      console.log('EventIndex', EventIndex)
-      console.log('currentStateData', currentStateData)
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
       this.widgetListData[currentSection].Content.State[Index].Event[EventIndex] = {
         ...this.EventData,
-        next_state_id: currentStateData.id,
+        id: currentStateData.id,
+        next_state_id: currentStateData.stateIndex,
         title: currentStateData.title
       }
     },
@@ -221,12 +219,10 @@ export const useWidgetListStore = defineStore('widgetList', {
       const Data = this.widgetListData[currentSection].Content.State.filter(e => e.id !== ID)
       this.widgetListData[currentSection].Content.State = Data
     },
-    DelStateEvent(ID, Index) {
-      console.log('ID', ID)
-      console.log('Index', Index)
+    DelStateEvent(ID, Index, EventIndex) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      const Data = this.widgetListData[currentSection].Content.State[Index].Event.filter(e => e.id !== ID)
+      const Data = this.widgetListData[currentSection].Content.State[Index].Event.filter((e, i) => i !== EventIndex)
       this.widgetListData[currentSection].Content.State[Index].Event = Data
     }
   }
