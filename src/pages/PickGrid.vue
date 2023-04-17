@@ -64,7 +64,7 @@
                     </div>
                 </div>
                 <div v-if="currentGrid" class="q-pt-md q-gutter-md row reverse flex flex-center">
-                    <q-btn outline color="primary" label="Cancel" />
+                    <q-btn outline @click="toHardware" color="primary" label="Cancel" />
                     <q-btn outline @click="toFlow" color="primary" label="Create" />
                 </div>
             </div>
@@ -182,6 +182,9 @@ export default {
             layoutStore.SetLayout(this.currentGrid)
 
             this.$router.push({ path: '/flow' })
+        },
+        toHardware() {
+            this.$router.push({ path: '/hardware' })
         },
         toCustomize() {
             this.$router.push({ path: '/customize' })

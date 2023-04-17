@@ -27,6 +27,12 @@ const routes = [
       { path: '', component: () => import('src/pages/CustomizeGrid.vue') }
     ]
   }, {
+    path: '/hardware',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('src/pages/Hardware.vue') }
+    ]
+  }, {
     path: '/flow',
     component: () => import('src/layouts/FlowLayout.vue'),
     children: [
