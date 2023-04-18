@@ -11,3 +11,16 @@
 .flowBox:hover > .del-card {
   display: block;
 }
+.q-btn.theme {
+  margin-top: 0;
+  height: 50px;
+  word-wrap: unset;
+  line-height: 1.4em;
+  text-transform: unset;
+  margin: 0 5px;
+}
+.theme-tab-btn {
+  float: right;
+  right: 0;
+  position: absolute;
+}

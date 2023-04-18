@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="q-mx-sm">
     <grid-layout :layout="viewLayout" :col-num="viewColCount" :maxRows="viewRowCount"
       :row-height="((viewWidth * 1400 / 1920) / viewRowCount) - 5" :is-draggable="false" :is-resizable="false"
       :vertical-compact="true" :margin="[5, 5]">
