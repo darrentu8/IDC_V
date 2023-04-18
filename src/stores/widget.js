@@ -219,6 +219,12 @@ export const useWidgetListStore = defineStore('widgetList', {
       const Data = this.widgetListData[currentSection].Content.State.filter(e => e.id !== ID)
       this.widgetListData[currentSection].Content.State = Data
     },
+    DelFlow(ID, Index, EventIndex) {
+      const layoutStore = useLayoutStore()
+      const currentSection = layoutStore.currentSection
+      const Data = this.widgetListData[currentSection].Content.State.filter(e => e.id !== ID)
+      this.widgetListData[currentSection].Content.State = Data
+    },
     DelStateEvent(ID, Index, EventIndex) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection

@@ -77,13 +77,13 @@
               </div>
             </div>
             <!-- 刪除 state -->
-            <!-- <div class="absolute-right q-ma-xs">
-              <q-btn class="" color="grey" round flat dense icon="clear" @click="expandedFlow = !expandedFlow" />
-            </div> -->
+            <div class="absolute-right q-ma-xs">
+              <q-btn class="" color="grey" round flat dense icon="clear" @click="delFlow(Index, EventIndex)" />
+            </div>
             <!-- Add Flow Btn -->
             <div flat square class="text-center q-mb-md">
-              <q-btn :disable="currentStateLength <= 1" @click="addStateEvent(Index)" unelevated round dense
-                color="grey-2" text-color="positive" icon="add" />
+              <q-btn @click="addStateEvent(Index)" unelevated round dense color="grey-2" text-color="positive"
+                icon="add" />
             </div>
           </div>
         </div>
@@ -106,7 +106,7 @@ const popEdit = ref(true)
 const layoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
 const currentSection = computed(() => layoutStore.GetCurrentSection)
-const currentStateLength = computed(() => widgetStore.GetCurrentStateLength)
+// const currentStateLength = computed(() => widgetStore.GetCurrentStateLength)
 const currentStateOptions = computed(() => widgetStore.GetCurrentStateOptions)
 const widgetListData = computed(() => widgetStore.GetWidgetListData)
 const setFlowState = (Index, EventIndex = 0, currentStateData) => {
@@ -115,6 +115,9 @@ const setFlowState = (Index, EventIndex = 0, currentStateData) => {
 }
 const addStateEvent = (Index) => {
   widgetStore.AddStateEvent(Index)
+}
+const delFlow = (ID, Index, EventIndex) => {
+  widgetStore.DelFlow(ID, Index, EventIndex)
 }
 const delStateEvent = (ID, Index, EventIndex) => {
   widgetStore.DelStateEvent(ID, Index, EventIndex)
@@ -139,6 +142,7 @@ const mapCurrentStateOptions = computed(() => {
 .flowBoxWrap {
   min-width: 220px;
   border-bottom: 1px dotted #E5E5E5;
+  position: relative;
 }
 
 .flowBox {
