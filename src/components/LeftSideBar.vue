@@ -1,10 +1,13 @@
 <template>
-  <q-toolbar class="text-primary bg-grey-3">
-    <q-toolbar-title class="text-subtitle1">
-      Default layout
-    </q-toolbar-title>
-    <q-btn color="primary" size="md" @click="backToGrid()">
-      Change widget
+  <q-toolbar class="q-px-md q-my-md flex justify-center">
+    <q-btn class="theme col-6 text-no-wrap" unelevated color="grey-4" text-color="grey-9" size="md" @click="backToGrid()">
+      Playlist detail
+    </q-btn>
+    <q-space />
+    <q-btn class="theme col-6" unelevated color="grey-4" text-color="grey-9" size="md" stack @click="exportFile()">
+      <!-- <q-icon name="img:/icon/export.svg" color="white" size="xs" /> -->
+      Hardware
+      <br>configuration
     </q-btn>
   </q-toolbar>
   <GridViewStaticSelect :view-layout="layouts.layout" :view-row-count="layouts.rowCount"
