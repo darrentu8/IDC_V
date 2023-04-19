@@ -1,75 +1,88 @@
 <template>
     <q-page class="flex flex-center" style="min-width: 1366px;">
-        <div class="q-pt-md row fit overflow-hidden">
-            <div class="q-pa-sm" style="width:250px">
-                <div class="text-body1 q-pl-xs">New Interactive Play List</div>
-                <div class="q-pa-sm">
-                    <div class="q-pa-sm text-subtitle2 text-bold">Screen Orientation</div>
-                    <div>
-                        <q-option-group :options="options" type="radio" v-model="radio" />
-                    </div>
-                </div>
+        <div class="column">
+            <div class="row" style="height:30px">
+                <div class="text-body1 text-bold" style="margin:auto 20px">Select layout </div>
             </div>
-            <div class="q-pa-sm" style="width:680px">
-                <div class="row q-gutter-sm">
-                    <div class="flex flex-center q-pa-xs cursor-pointer" @click="toCustomize">
-                        <div class="flex flex-center bg-grey-3" style="border: 1px solid #2B2B2B; border-radius: 10px;"
-                            :style="{ width: `${200}px`, height: `${200 * 1080 / 1920}px` }">
-                            <div class="column">
-                                <div class="row flex-center"> <q-icon name="edit" size="2.4em" /></div>
-                                <div class="row flex-center">
-                                    <div class="text-subtitle1">Customize</div>
+            <div class="col row overflow-hidden">
+                <div class="q-pa-sm" style="width:580px">
+                    <div class="row q-gutter-sm">
+                        <div class="flex flex-center q-pa-xs cursor-pointer" @click="toCustomize">
+                            <div class="flex flex-center bg-grey-3" style="border: 1px solid #2B2B2B; border-radius: 10px;"
+                                :style="{ width: `${gridWidth}px`, height: `${gridWidth * 1080 / 1920}px` }">
+                                <div class="column">
+                                    <div class="row flex-center"> <q-icon name="edit" size="2.4em" /></div>
+                                    <div class="row flex-center">
+                                        <div class="text-subtitle1">Customize</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <GridViewStatic @click="chooseGrid(grid)" v-for="(grid, index) in grids" :key="index"
+                            :view-layout="grid.layout" :view-row-count="grid.rowCount" :view-col-count="grid.colCount"
+                            :view-width="gridWidth" />
                     </div>
-                    <GridViewStatic @click="chooseGrid(grid)" v-for="(grid, index) in grids" :key="index"
-                        :view-layout="grid.layout" :view-row-count="grid.rowCount" :view-col-count="grid.colCount"
-                        :view-width="200" />
+                </div>
+                <div class="col q-pa-sm" style="width:500px">
+                    <div class="q-pt-sm" v-if="currentGrid">
+                        <div class="text-body2 q-pa-sm">Grids : {{ `(${currentGrid.rowCount} x ${currentGrid.colCount})` }}
+                        </div>
+                        <div class="text-body2 q-pa-sm">Region size :
+                            <span v-if="currentCube">
+                                {{ `(${currentCube.w} x ${currentCube.h})` }}
+                            </span>
+                        </div>
+                        <div class="text-body2 q-pa-sm">Region location :
+                            <span v-if="currentCube">
+                                {{ `(${currentCube.x} , ${currentCube.y})` }} -
+                                {{ `(${currentCube.x + currentCube.w} , ${currentCube.y + currentCube.h})` }}
+                            </span>
+                        </div>
+                        <div class="text-body2 q-pa-sm">Dimension :
+                            <span v-if="currentCube">
+                                {{ `(${(currentCube.w / currentGrid.colCount * 1920).toFixed(0)}` }} x
+                                {{ `${(currentCube.h / currentGrid.rowCount * 1080).toFixed(0)})` }}
+                            </span>
+                        </div>
+                        <div class="text-body2 q-pa-sm">Ratio :
+                            <span v-if="currentCube">
+                                {{ `(${(currentCube.w / currentGrid.colCount * 1920).toFixed(0) /
+                                    getMaxCommonDivisor((currentCube.w / currentGrid.colCount * 1920).toFixed(0), (currentCube.h
+                                        /
+                                        currentGrid.rowCount * 1080).toFixed(0))}` }} /
+                                {{ `${(currentCube.h / currentGrid.rowCount * 1080).toFixed(0) /
+                                    getMaxCommonDivisor((currentCube.w / currentGrid.colCount * 1920).toFixed(0), (currentCube.h
+                                        /
+                                        currentGrid.rowCount * 1080).toFixed(0))})` }}
+                            </span>
+                        </div>
+                    </div>
+                    <div v-if="currentGrid" class="q-pt-sm flex flex-center">
+                        <div style="width:100%">
+                            <grid-layout :layout="currentGrid.layout" :col-num="currentGrid.colCount"
+                                :maxRows="currentGrid.rowCount" :row-height="265 / currentGrid.rowCount"
+                                :is-draggable="false" :is-resizable="false" :vertical-compact="true" :margin="[0, 0]">
+                                <grid-item static v-for="(item, index) in currentGrid.layout" :x="item.x" :y="item.y"
+                                    :w="item.w" :h="item.h" :i="item.i" :key="item.i">
+                                    <div class="fit cursor-pointer" @click="chooseCube(item.i)">
+                                        <div class="Frounded-borders  flex flex-center grid-cube"
+                                            :class="{ 'bg-grey-3': currentCubeId !== item.i, 'bg-cyan-13': currentCubeId === item.i }"
+                                            style="width: calc(100% - 3px); height: calc(100% - 3px);">
+                                            {{ index + 1 }}
+                                        </div>
+                                    </div>
+                                </grid-item>
+                            </grid-layout>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col q-pa-sm">
-                <div>
-                    <div class="text-body1">Play List Name</div>
-                    <q-input filled dense square />
-                </div>
-                <div class="q-pt-sm">
-                    <div class="text-body1">Play List Name</div>
-                    <q-input type="textarea" filled dense square />
-                </div>
-                <div class="q-pt-sm">
-                    <div class="text-body1">Select layout</div>
-                    <div class="text-body2">Grids:</div>
-                    <div class="text-body2">Region size:</div>
-                    <div class="text-body2">Region location :</div>
-                    <div class="text-body2">Dimension :</div>
-                    <div class="text-body2">Ratio :</div>
-                </div>
-                <div v-if="currentGrid" class="q-pt-sm flex flex-center">
-                    <div style="width:100%">
-                        <grid-layout :layout="currentGrid.layout" :col-num="currentGrid.colCount"
-                            :maxRows="currentGrid.rowCount" :row-height="265 / currentGrid.rowCount" :is-draggable="false"
-                            :is-resizable="false" :vertical-compact="true" :margin="[0, 0]">
-                            <grid-item static v-for="(item, index) in currentGrid.layout" :x="item.x" :y="item.y"
-                                :w="item.w" :h="item.h" :i="item.i" :key="item.i">
-                                <div class="fit cursor-pointer" @click="chooseCube(item.i)">
-                                    <div class="Frounded-borders  flex flex-center grid-cube"
-                                        :class="{ 'bg-grey-3': currentCube !== item.i, 'bg-cyan-13': currentCube === item.i }"
-                                        style="width: calc(100% - 3px); height: calc(100% - 3px);">
-                                        {{ index + 1 }}
-                                    </div>
-                                </div>
-                            </grid-item>
-                        </grid-layout>
-                    </div>
-                </div>
-                <div v-if="currentGrid" class="q-pt-md q-gutter-md row reverse flex flex-center">
-                    <q-btn outline @click="toHardware" color="primary" label="Cancel" />
-                    <q-btn outline @click="toFlow" color="primary" label="Create" />
-                </div>
+            <div class="row flex" style="height:50px">
+                <q-btn @click="toNew" style="width:116px;margin:auto 20px" color="primary" label="Back" />
+                <q-space />
+                <q-btn @click="toHardware" style="width:116px;margin:auto 20px" color="primary" label="Next" />
             </div>
         </div>
-
     </q-page>
 </template>
 
@@ -77,6 +90,7 @@
 import { uid } from 'quasar'
 import GridViewStatic from 'src/components/GridViewStatic.vue'
 import { useLayoutStore } from 'src/stores/layout'
+import { getMaxCommonDivisor } from 'src/helper/math'
 
 export default {
     name: 'PickGrid',
@@ -164,10 +178,21 @@ export default {
                     rowCount: 10,
                     colCount: 10,
                     layout: [{ x: 0, y: 0, w: 10, h: 3, i: uid() }, { x: 0, y: 3, w: 6, h: 7, i: uid() }, { x: 6, y: 3, w: 2, h: 2, i: uid() }, { x: 8, y: 3, w: 2, h: 2, i: uid() }, { x: 6, y: 5, w: 4, h: 3, i: uid() }, { x: 6, y: 8, w: 4, h: 2, i: uid() }]
+                },
+                {
+                    rowCount: 3,
+                    colCount: 4,
+                    layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 3, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 4, h: 2, i: uid() }]
                 }
             ],
+            gridWidth: 160,
             currentGrid: null,
-            currentCube: null
+            currentCubeId: null
+        }
+    },
+    computed: {
+        currentCube() {
+            return this.currentGrid.layout.find(o => o.i === this.currentCubeId)
         }
     },
     methods: {
@@ -175,7 +200,10 @@ export default {
             this.currentGrid = grid
         },
         chooseCube(id) {
-            this.currentCube = id
+            this.currentCubeId = id
+        },
+        toNew() {
+            this.$router.push({ path: '/new' })
         },
         toFlow() {
             const layoutStore = useLayoutStore()
@@ -188,6 +216,9 @@ export default {
         },
         toCustomize() {
             this.$router.push({ path: '/customize' })
+        },
+        getMaxCommonDivisor(n1, n2) {
+            return getMaxCommonDivisor(n1, n2)
         }
     }
 }

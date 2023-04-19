@@ -1,14 +1,23 @@
 <template>
   <q-page class="flex flex-center overflow-hidden">
     <div class="column">
-      <div class="row q-gutter-md">
-        <q-input @update:model-value="changeRowCount" style="width:150px" outlined type="number" :min="1" :max="10"
-          v-model.number="grid.rowCount" label="row count" />
-        <q-input @update:model-value="changeColCount" style="width:150px" outlined type="number" :min="1" :max="20"
-          v-model.number="grid.colCount" label="column count" />
-        <q-btn outline @click="addGrid" color="primary" icon="add" label="Add Grid" />
+      <div class="row">
+        <div class="q-pa-sm" style="margin: auto;"> Row Count:</div>
+        <div style="margin: auto">
+          <q-input @update:model-value="changeRowCount" dense style="width:150px" outlined type="number" :min="1"
+            :max="10" v-model.number="grid.rowCount" />
+        </div>
+        <div class="q-pa-sm" style="margin: auto;"> Column Count:</div>
+        <div style="margin: auto">
+          <q-input @update:model-value="changeColCount" dense style="width:150px" outlined type="number" :min="1"
+            :max="20" v-model.number="grid.colCount" />
+        </div>
+        <div class="col"></div>
+        <div class="q-pa-sm" style="margin: auto">
+          <q-btn @click="addGrid" color="primary" icon="add" label="Add Grid" />
+        </div>
       </div>
-      <div class="row q-mt-lg q-mb-lg relative-position"
+      <div class="row q-mt-md q-mb-md relative-position"
         :style="{ width: `${width}px`, height: `${width * 1080 / 1920}px` }">
         <div class="absolute fit column">
           <div class="col row" v-for="i in grid.rowCount" :key="i">
@@ -30,9 +39,10 @@
           </grid-item>
         </grid-layout>
       </div>
-      <div class="row reverse q-gutter-md">
-        <q-btn outline @click="finishGrids" color="primary" label="Finish" />
-        <q-btn outline @click="goBack" color="primary" label="Back" />
+      <div class="row">
+        <q-btn @click="goBack" color="primary" label="Back" />
+        <q-space />
+        <q-btn @click="finishGrids" color="primary" label="Finish" />
       </div>
     </div>
   </q-page>
