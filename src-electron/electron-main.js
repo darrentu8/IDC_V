@@ -21,6 +21,7 @@ function createWindow() {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
+    show: false,
     icon: path.resolve(__dirname, 'icons/icon.png'), // tray icon
     width: 1366,
     height: 768,
@@ -33,7 +34,9 @@ function createWindow() {
       preload: path.resolve(__dirname, process.env.QUASAR_ELECTRON_PRELOAD)
     }
   })
-
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show()
+  })
   enable(mainWindow.webContents)
 
   mainWindow.loadURL(process.env.APP_URL)
@@ -63,7 +66,6 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-
 app.on('activate', () => {
   if (mainWindow === null) {
     createWindow()

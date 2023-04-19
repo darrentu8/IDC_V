@@ -6,6 +6,15 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'App'
+  name: 'App',
+  setup() {
+    function startWatchJson() {
+      window.myAPI?.watchJson()
+    }
+    return { startWatchJson }
+  },
+  mounted() {
+    this.startWatchJson()
+  }
 })
 </script>

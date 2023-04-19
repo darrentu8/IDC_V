@@ -1,9 +1,9 @@
 <template>
   <q-toolbar class="text-primary justify-center">
     <div class="q-pa-md">
-      <q-btn class="full-width" label="Export" icon="img:/icon/export.svg" color="grey-3" text-color="grey-9"
-        @click="exportFile()" />
-      <q-btn class="full-width q-mt-md" label="Preview" icon="img:/icon/preview.svg" color="grey-3" text-color="grey-9" />
+      <q-btn class="full-width" label="Preview" icon="img:/icon/preview.svg" color="grey-3" text-color="grey-9" />
+      <q-btn class="full-width q-mt-md" label="Save" icon="img:/icon/export.svg" color="grey-3" text-color="grey-9"
+        @click="exportXmlFile()" />
     </div>
   </q-toolbar>
   <!-- <q-scroll-area style="height: calc(100% - 86px);">
@@ -22,7 +22,49 @@ export default defineComponent({
   components: {
     // ConnectionSettingList
   },
-  mounted() {
+  setup() {
+    function exportXmlFile() {
+      const novoObj = {
+        NovoDS: {
+          '-Description': '',
+          '-Playlist_UUID': '',
+          '-Layout_Type': '0',
+          '-Version': '1.1',
+          '-Model_Type': 'ds200',
+          Pages: {
+            Page: {
+              '-Description': '',
+              '-BackgroundMusic': '',
+              '-SerialNumber': 'Page 1',
+              '-AudioSource': '',
+              '-BgMusicApplyToAll': 'false',
+              '-ID': 'Page 1',
+              '-FreeDesignerMode': 'false',
+              '-BackgroundImageSize': '160',
+              '-BackgroundImage': '',
+              '-Layout': 'Portrait 14',
+              '-Row': '6',
+              '-BackgroundMusicSize': '160',
+              '-BackgroundMusicUrl': '',
+              '-Column': '2',
+              '-Orientation': '1'
+            }
+          },
+          Timeline: {
+            '-Looping': 'true',
+            Item: {
+              '-Page': 'Page 1',
+              '-Duration': '1800',
+              '-self-closing': 'true'
+            }
+          }
+        }
+      }
+      window.myAPI?.exportXmlFile(novoObj, 'TestPlayList')
+    }
+    return {
+      exportXmlFile
+    }
   },
   methods: {
     exportFile() {

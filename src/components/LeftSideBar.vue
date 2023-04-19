@@ -4,7 +4,7 @@
       Playlist detail
     </q-btn>
     <q-space />
-    <q-btn class="theme col-6" unelevated color="grey-4" text-color="grey-9" size="md" stack @click="exportFile()">
+    <q-btn class="theme col-6" unelevated color="grey-4" text-color="grey-9" size="md" stack @click="backToHardware()">
       <!-- <q-icon name="img:/icon/export.svg" color="white" size="xs" /> -->
       Hardware
       <br>configuration
@@ -37,6 +37,9 @@ const widgetOptions = computed(() => widgetStore.widgetOption)
 
 const backToGrid = () => {
   router.push({ path: '/grid' })
+}
+const backToHardware = () => {
+  router.push({ path: '/hardware' })
 }
 onMounted(() => {
 })

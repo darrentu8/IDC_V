@@ -16,7 +16,7 @@
     <q-page-container>
       <router-view />
     </q-page-container>
-    <q-drawer v-model="rightDrawerOpen" side="right" show-if-above bordered class="" :width="300" :breakpoint="400">
+    <q-drawer v-model="rightDrawerOpen" side="right" show-if-above bordered class="" :width="200" :breakpoint="400">
       <RightSideBar />
     </q-drawer>
   </q-layout>
