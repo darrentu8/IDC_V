@@ -40,9 +40,9 @@
         </grid-layout>
       </div>
       <div class="row">
-        <q-btn @click="goBack" color="primary" label="Back" />
+        <q-btn @click="toGrid" color="primary" label="Back" />
         <q-space />
-        <q-btn @click="finishGrids" color="primary" label="Finish" />
+        <q-btn @click="toFlow" color="primary" label="Finish" />
       </div>
     </div>
   </q-page>
@@ -120,10 +120,10 @@ export default {
       const index = this.grid.layout.findIndex(o => o.i === i)
       this.grid.layout.splice(index, 1)
     },
-    goBack() {
+    toGrid() {
       this.$router.push({ path: '/grid' })
     },
-    finishGrids() {
+    toFlow() {
       const layoutStore = useLayoutStore()
       layoutStore.SetLayout(this.grid)
 
