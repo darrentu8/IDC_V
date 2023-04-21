@@ -19,19 +19,22 @@
                                         <div @click="changeCurrentPIN(5)"
                                             class="pin-rect flex flex-center relative-position"
                                             :class="{ 'is-pin-selected': currentPIN === 5 }">
-                                            <div class="pin-in-use absolute-top-right q-ma-sm"></div>
+                                            <div class="absolute-top-right q-ma-sm"
+                                                :class="{ 'pin-in-use': !!GPIO[5].input }"></div>
                                             6
                                         </div>
                                         <div @click="changeCurrentPIN(4)"
                                             class="pin-rect flex flex-center relative-position"
                                             :class="{ 'is-pin-selected': currentPIN === 4 }">
-                                            <div class="pin-in-use absolute-top-right q-ma-sm"></div>
+                                            <div class="absolute-top-right q-ma-sm"
+                                                :class="{ 'pin-in-use': !!GPIO[4].input }"></div>
                                             5
                                         </div>
                                         <div @click="changeCurrentPIN(3)"
                                             class="pin-rect flex flex-center relative-position"
                                             :class="{ 'is-pin-selected': currentPIN === 3 }">
-                                            <div class="pin-in-use absolute-top-right q-ma-sm"></div>
+                                            <div class="absolute-top-right q-ma-sm"
+                                                :class="{ 'pin-in-use': !!GPIO[3].input }"></div>
                                             4
                                         </div>
                                         <div class="pin-rect flex flex-center text-grey-5 cursor-not-allowed">
@@ -42,19 +45,22 @@
                                         <div @click="changeCurrentPIN(0)"
                                             class="pin-rect flex flex-center relative-position"
                                             :class="{ 'is-pin-selected': currentPIN === 0 }">
-                                            <div class="pin-in-use absolute-top-right q-ma-sm"></div>
+                                            <div class="absolute-top-right q-ma-sm"
+                                                :class="{ 'pin-in-use': !!GPIO[0].input }"></div>
                                             1
                                         </div>
                                         <div @click="changeCurrentPIN(1)"
                                             class="pin-rect flex flex-center relative-position"
                                             :class="{ 'is-pin-selected': currentPIN === 1 }">
-                                            <div class="pin-in-use absolute-top-right q-ma-sm"></div>
+                                            <div class="absolute-top-right q-ma-sm"
+                                                :class="{ 'pin-in-use': !!GPIO[1].input }"></div>
                                             2
                                         </div>
                                         <div @click="changeCurrentPIN(2)"
                                             class="pin-rect flex flex-center relative-position"
                                             :class="{ 'is-pin-selected': currentPIN === 2 }">
-                                            <div class="pin-in-use absolute-top-right q-ma-sm"></div>
+                                            <div class="absolute-top-right q-ma-sm"
+                                                :class="{ 'pin-in-use': !!GPIO[2].input }"></div>
                                             3
                                         </div>
                                         <div class="pin-rect flex flex-center text-grey-5 cursor-not-allowed">
@@ -70,8 +76,9 @@
                                             expand-icon-toggle expand-separator>
                                             <template v-slot:header>
                                                 <q-item-section>
-                                                    <div class="text-body1"> {{ `${index + 1} . ${pin.name ||
-                                                        'No Name'}(${pin.input})` }}
+                                                    <div class="text-body1">
+                                                        {{ `${index + 1} . ${pin.name || 'No Name'}` }}
+                                                        {{ `(${pin.input || `Not Set`})` }}
                                                     </div>
                                                 </q-item-section>
                                                 <q-item-section side>
@@ -96,76 +103,166 @@
                         </div>
                     </q-tab-panel>
                     <q-tab-panel :name="1">
-                        <div class="q-pa-sm q-mt-sm">
-                            <span class="q-pa-xs">USB-RS232 dongle</span>
-                            <div class="row q-mt-md q-pa-xs">
-                                <div class="col-5">
-                                    <span class="q-pa-xs">BaudRate</span>
-                                    <q-select outlined dense v-model="RS232.usb.baudRate" :options="[4800, 9600, 14400]" />
+                        <div class="row">
+                            <div class="col">
+                                <div class="text-body1 row">
+                                    <div>USB-RS232 dongle</div>
+                                    <q-space />
+                                    <q-toggle v-model="RS232.usb.enable" dense color="primary" />
                                 </div>
-                                <div class="col" />
-                                <div class="col-5">
-                                    <span class="q-pa-xs">Parity</span>
-                                    <q-select outlined dense v-model="RS232.usb.parity"
-                                        :options="['None', 'Odd', 'Even']" />
+                                <div class="row q-mt-md">
+                                    <div class="col">
+                                        <span class="q-pa-xs">BaudRate</span>
+                                        <q-select outlined dense v-model="RS232.usb.baudRate" :disable="!RS232.usb.enable"
+                                            :options="[4800, 9600, 14400]" />
+                                    </div>
+                                    <div style="width:20px" />
+                                    <div class="col">
+                                        <span class="q-pa-xs">Parity</span>
+                                        <q-select outlined dense v-model="RS232.usb.parity" :disable="!RS232.usb.enable"
+                                            :options="['None', 'Odd', 'Even']" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row q-mt-md q-pa-xs">
-                                <div class="col-5">
-                                    <span class="q-pa-xs">Data Bits</span>
-                                    <q-select outlined dense v-model="RS232.usb.dataBits" :options="[6]" />
+                                <div class="row q-mt-md">
+                                    <div class="col">
+                                        <span class="q-pa-xs">Data Bits</span>
+                                        <q-select outlined dense v-model="RS232.usb.dataBits" :disable="!RS232.usb.enable"
+                                            :options="[6]" />
+                                    </div>
+                                    <div style="width:20px" />
+                                    <div class="col">
+                                        <span class="q-pa-xs">Stop Bits</span>
+                                        <q-select outlined dense v-model="RS232.usb.stopBits" :disable="!RS232.usb.enable"
+                                            :options="[1]" />
+                                    </div>
                                 </div>
-                                <div class="col" />
-                                <div class="col-5">
-                                    <span class="q-pa-xs">Stop Bits</span>
-                                    <q-select outlined dense v-model="RS232.usb.stopBits" :options="[1]" />
-                                </div>
-                            </div>
-                            <div class="row q-mt-md q-pa-xs">
-                                <div class="col" />
-                                <div class="col-5">
-                                    <span class="q-pa-xs">Flow Control</span>
-                                    <q-select outlined dense v-model="RS232.usb.flowControl" :options="['None']" />
-                                </div>
-                            </div>
-                            <q-separator class="q-mt-md q-mb-md" />
-                            <span class="q-pa-xs">On-board RS232 port</span>
-                            <div class="row q-mt-md q-pa-xs">
-                                <div class="col-5">
-                                    <span class="q-pa-xs">BaudRate</span>
-                                    <q-select outlined dense v-model="RS232.onBoard.baudRate"
-                                        :options="[4800, 9600, 14400]" />
-                                </div>
-                                <div class="col" />
-                                <div class="col-5">
-                                    <span class="q-pa-xs">Parity</span>
-                                    <q-select outlined dense v-model="RS232.onBoard.parity"
-                                        :options="['None', 'Odd', 'Even']" />
+                                <div class="row q-mt-md">
+                                    <div class="col">
+                                        <span class="q-pa-xs">Flow Control</span>
+                                        <q-select outlined dense v-model="RS232.usb.flowControl"
+                                            :disable="!RS232.usb.enable" :options="['None']" />
+                                    </div>
+                                    <div style="width:20px" />
+                                    <div class="col" />
                                 </div>
                             </div>
-                            <div class="row q-mt-md q-pa-xs">
-                                <div class="col-5">
-                                    <span class="q-pa-xs">Data Bits</span>
-                                    <q-select outlined dense v-model="RS232.onBoard.dataBits" :options="[6]" />
+                            <q-separator vertical class="q-ma-lg" />
+                            <div class="col">
+                                <div class="text-body1 row">
+                                    <div>On-board RS232 port</div>
+                                    <q-space />
+                                    <q-toggle v-model="RS232.onBoard.enable" dense color="primary" />
                                 </div>
-                                <div class="col" />
-                                <div class="col-5">
-                                    <span class="q-pa-xs">Stop Bits</span>
-                                    <q-select outlined dense v-model="RS232.onBoard.stopBits" :options="[1]" />
+                                <div class="row q-mt-md">
+                                    <div class="col">
+                                        <span class="q-pa-xs">BaudRate</span>
+                                        <q-select outlined dense v-model="RS232.onBoard.baudRate"
+                                            :disable="!RS232.onBoard.enable" :options="[4800, 9600, 14400]" />
+                                    </div>
+                                    <div style="width:20px" />
+                                    <div class="col">
+                                        <span class="q-pa-xs">Parity</span>
+                                        <q-select outlined dense v-model="RS232.onBoard.parity"
+                                            :disable="!RS232.onBoard.enable" :options="['None', 'Odd', 'Even']" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row q-mt-md q-pa-xs">
-                                <div class="col" />
-                                <div class="col-5">
-                                    <span class="q-pa-xs">Flow Control</span>
-                                    <q-select outlined dense v-model="RS232.onBoard.flowControl" :options="['None']" />
+                                <div class="row q-mt-md">
+                                    <div class="col">
+                                        <span class="q-pa-xs">Data Bits</span>
+                                        <q-select outlined dense v-model="RS232.onBoard.dataBits"
+                                            :disable="!RS232.onBoard.enable" :options="[6]" />
+                                    </div>
+                                    <div style="width:20px" />
+                                    <div class="col">
+                                        <span class="q-pa-xs">Stop Bits</span>
+                                        <q-select outlined dense v-model="RS232.onBoard.stopBits"
+                                            :disable="!RS232.onBoard.enable" :options="[1]" />
+                                    </div>
+                                </div>
+                                <div class="row q-mt-md">
+                                    <div class="col">
+                                        <span class="q-pa-xs">Flow Control</span>
+                                        <q-select outlined dense v-model="RS232.onBoard.flowControl"
+                                            :disable="!RS232.onBoard.enable" :options="['None']" />
+                                    </div>
+                                    <div style="width:20px" />
+                                    <div class="col" />
                                 </div>
                             </div>
                         </div>
                     </q-tab-panel>
                     <q-tab-panel :name="2">
-                        <div class="q-pa-sm q-mt-sm">
-                            <span class="q-pa-xs">TODO</span>
+                        <div class="row">
+                            <div class="col">
+                                <div class="text-body1">RX ( Receive )</div>
+                                <div class="row q-mt-sm">
+                                    <div style="margin: auto 2px; width:100px">Port Number : </div>
+                                    <div class="col" style="margin: auto 10px">
+                                        <q-input dense outlined type="number" :min="1" :max="10"
+                                            v-model.number="TCP.RX.portNumber" />
+                                    </div>
+                                </div>
+                                <q-separator class="q-mt-md q-mb-md" color="black" />
+                                <div class="text-body1">TX ( Send )</div>
+                                <div class="row q-mt-sm">
+                                    <div style="margin: auto 2px; width:100px">Name : </div>
+                                    <div class="col" style="margin: auto 10px">
+                                        <q-input dense outlined v-model="TCP.TX.name" />
+                                    </div>
+                                </div>
+                                <div class="row q-mt-sm">
+                                    <div style="margin: auto 2px; width:100px">Port Number : </div>
+                                    <div class="col" style="margin: auto 10px">
+                                        <q-input dense outlined type="number" :min="1" :max="10"
+                                            v-model.number="TCP.TX.portNumber" />
+                                    </div>
+                                </div>
+                                <div class="row q-mt-sm">
+                                    <div style="margin: auto 2px; width:100px">IP Address : </div>
+                                    <div class="col" style="margin: auto 10px">
+                                        <q-input dense outlined v-model="TCP.TX.IPAddress" />
+                                    </div>
+                                </div>
+                                <div class="row q-mt-lg">
+                                    <div style="margin: auto">
+                                        <q-btn color="primary" @click="addTx" label="Add" />
+                                    </div>
+                                </div>
+                            </div>
+                            <q-separator vertical class="q-ma-lg" />
+                            <div class="col">
+                                <q-list bordered class="rounded-borders" v-if="TCP.TXList.length > 0"
+                                    style="max-height: 500px;overflow: auto;">
+                                    <q-expansion-item v-for="(tx, index) in TCP.TXList" :key="index" expand-separator>
+                                        <template v-slot:header>
+                                            <q-item-section>
+                                                <div class="text-body1">
+                                                    {{ tx.name }}
+                                                </div>
+                                            </q-item-section>
+                                        </template>
+                                        <q-card>
+                                            <q-card-section>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="text-body1">
+                                                            Port Number : {{ tx.portNumber }}
+                                                        </div>
+                                                        <div class="text-body1">
+                                                            IP Address : {{ tx.IPAddress }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col" />
+                                                    <div class="flex flex-center">
+                                                        <q-btn size="sm" round outline icon="remove" color="red"
+                                                            @click="removeTx(index)" />
+                                                    </div>
+                                                </div>
+                                            </q-card-section>
+                                        </q-card>
+                                    </q-expansion-item>
+                                </q-list>
+                            </div>
                         </div>
                     </q-tab-panel>
                 </q-tab-panels>
@@ -196,6 +293,7 @@ export default {
             currentPIN: 0,
             RS232: {
                 usb: {
+                    enable: true,
                     baudRate: 9600,
                     parity: 'None',
                     dataBits: 6,
@@ -203,12 +301,24 @@ export default {
                     flowControl: 'None'
                 },
                 onBoard: {
+                    enable: true,
                     baudRate: 9600,
                     parity: 'None',
                     dataBits: 6,
                     stopBits: 1,
                     flowControl: 'None'
                 }
+            },
+            TCP: {
+                RX: {
+                    portNumber: 1
+                },
+                TX: {
+                    name: '',
+                    IPAddress: '',
+                    portNumber: 1
+                },
+                TXList: []
             }
         }
     },
@@ -220,6 +330,18 @@ export default {
         },
         showGPIOItem(index) {
             this.currentPIN = index
+        },
+        addTx() {
+            const tx = {
+                name: this.TCP.TX.name,
+                IPAddress: this.TCP.TX.IPAddress,
+                portNumber: this.TCP.TX.portNumber
+            }
+
+            this.TCP.TXList.push(tx)
+        },
+        removeTx(index) {
+            this.TCP.TXList.splice(index, 1)
         },
         toGrid() {
             this.$router.push({ path: '/grid' })

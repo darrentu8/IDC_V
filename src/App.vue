@@ -9,7 +9,7 @@ export default defineComponent({
   name: 'App',
   setup() {
     function startWatchJson() {
-      window.myAPI?.watchJson()
+      // window.myAPI?.watchJson()
     }
     return { startWatchJson }
   },
