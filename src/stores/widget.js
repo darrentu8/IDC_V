@@ -28,87 +28,43 @@ export const useWidgetListStore = defineStore('widgetList', {
     ],
     widgetListData: [
       {
-        Index: 0,
-        X: 0,
-        Y: 0,
-        Z: 0,
-        Height: '',
-        Width: '',
-        is169: '',
-        SectionValid: 1,
-        isFixedRatio: '',
-        Script: '',
-        ContentType: '',
+        _Index: 0,
+        _X: 0,
+        _Y: 0,
+        _Z: 0,
+        _Height: '',
+        _Width: '',
+        _is169: '',
+        _SectionValid: 1,
+        _isFixedRatio: '',
+        _Script: '',
+        _ContentType: '',
         Content: {
-          scaleType: '',
-          showType: '',
-          Live_Update_Frequency: '',
-          MuteVideo: '',
-          Live_Update_type: '',
-          Live_Update_type_storage: '',
-          Live_Update_userName: '',
-          Live_Update_path: '',
-          Live_Update_ID: '',
-          Detect_Picture_Orientation: '',
-          FloatIn_Direction: '',
-          isVideoFillArea: '',
-          Live_Update_Access_Way: '',
-          Live_Update_password: '',
-          duration: '',
-          Live_Update_port: '',
-          Live_Update_Show_Status: '',
+          _scaleType: '',
+          _showType: '',
+          _Live_Update_Frequency: '',
+          _MuteVideo: '',
+          _Live_Update_type: '',
+          _Live_Update_type_storage: '',
+          _Live_Update_userName: '',
+          _Live_Update_path: '',
+          _Live_Update_ID: '',
+          _Detect_Picture_Orientation: 'false',
+          _FloatIn_Direction: '',
+          _isVideoFillArea: '',
+          _Live_Update_Access_Way: '',
+          _Live_Update_password: '',
+          _duration: '',
+          _Live_Update_port: '',
+          _Live_Update_Show_Status: '',
           AttachmentFiles: {
             File: null
           },
           MediaItem: null,
           State: [
             {
-              id: uid(),
-              title: '',
-              File: [],
-              Event: []
-            }
-          ]
-        }
-      },
-      {
-        Index: 1,
-        X: 0,
-        Y: 0,
-        Z: 0,
-        Height: '',
-        Width: '',
-        is169: '',
-        SectionValid: 1,
-        isFixedRatio: '',
-        Script: '',
-        ContentType: '',
-        Content: {
-          scaleType: '',
-          showType: '',
-          Live_Update_Frequency: '',
-          MuteVideo: '',
-          Live_Update_type: '',
-          Live_Update_type_storage: '',
-          Live_Update_userName: '',
-          Live_Update_path: '',
-          Live_Update_ID: '',
-          Detect_Picture_Orientation: '',
-          FloatIn_Direction: '',
-          isVideoFillArea: '',
-          Live_Update_Access_Way: '',
-          Live_Update_password: '',
-          duration: '',
-          Live_Update_port: '',
-          Live_Update_Show_Status: '',
-          AttachmentFiles: {
-            File: null
-          },
-          MediaItem: null,
-          State: [
-            {
-              id: uid(),
-              title: 'State',
+              _id: uid(),
+              _title: '',
               File: [],
               Event: []
             }
@@ -117,15 +73,15 @@ export const useWidgetListStore = defineStore('widgetList', {
       }
     ],
     StateData: {
-      id: '',
-      title: 'State',
+      _id: '',
+      _title: 'State',
       File: [],
       Event: []
     },
     EventData: {
-      type: '',
-      gpio_number: '',
-      next_state_id: '',
+      _type: '',
+      _gpio_number: '',
+      _next_state_id: '',
       Action: []
     },
     currentState: 0,
@@ -147,17 +103,17 @@ export const useWidgetListStore = defineStore('widgetList', {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
       const oData = this.widgetListData[currentSection].Content.State.map((e, i) => {
-        if (e.title === '') {
+        if (e._title === '') {
           return {
-            id: e.id,
-            stateIndex: i,
-            title: 'State' + ' ' + (i + 1)
+            _id: e.id,
+            _stateIndex: i,
+            _title: 'State' + ' ' + (i + 1)
           }
         } else {
           return {
-            id: e.id,
-            stateIndex: i,
-            title: e.title
+            _id: e.id,
+            _stateIndex: i,
+            _title: e.title
           }
         }
       })
@@ -181,25 +137,25 @@ export const useWidgetListStore = defineStore('widgetList', {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
       const arr = this.widgetListData[currentSection].Content.State
-      let getLastNumber = Math.max(...arr.map(p => p.id))
+      let getLastNumber = Math.max(...arr.map(p => p._id))
       if (getLastNumber === 0) {
         getLastNumber = 1
       }
       this.widgetListData[currentSection].Content.State.push({
-        id: uid(),
+        _id: uid(),
         File: [],
         Event: [],
-        title: ''
+        _title: ''
       })
     },
     AddStateEvent(Index) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
       this.widgetListData[currentSection].Content.State[Index].Event.push({
-        id: uid(),
-        type: '',
-        gpio_number: '',
-        next_state_id: '',
+        _id: uid(),
+        _type: '',
+        _gpio_number: '',
+        _next_state_id: '',
         Action: []
       })
     },
@@ -208,21 +164,21 @@ export const useWidgetListStore = defineStore('widgetList', {
       const currentSection = layoutStore.currentSection
       this.widgetListData[currentSection].Content.State[Index].Event[EventIndex] = {
         ...this.EventData,
-        id: currentStateData.id,
-        next_state_id: currentStateData.stateIndex,
-        title: currentStateData.title
+        _id: currentStateData.id,
+        _next_state_id: currentStateData.stateIndex,
+        _title: currentStateData.title
       }
     },
     DelState(ID) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      const Data = this.widgetListData[currentSection].Content.State.filter(e => e.id !== ID)
+      const Data = this.widgetListData[currentSection].Content.State.filter(e => e._id !== ID)
       this.widgetListData[currentSection].Content.State = Data
     },
     DelFlow(ID, Index, EventIndex) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      const Data = this.widgetListData[currentSection].Content.State.filter(e => e.id !== ID)
+      const Data = this.widgetListData[currentSection].Content.State.filter(e => e._id !== ID)
       this.widgetListData[currentSection].Content.State = Data
     },
     DelStateEvent(ID, Index, EventIndex) {

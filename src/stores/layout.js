@@ -6,79 +6,79 @@ const widgetStore = useWidgetListStore()
 export const useLayoutStore = defineStore('layout', {
   state: () => ({
     NovoDS: {
-      Description: '',
-      MagicIndex: '1',
-      Layout_Type: '0', // 0 -> Grid, 1 -> Flexible
-      Version: '1.1',
-      Playlist_UUID: '',
-      Model_Type: '',
-      Rs232: {
-        baudRate: '',
-        dataBits: '',
-        stopBits: '',
-        parity: '',
-        flowControl: '',
-        rs232_type: 'hex'
+      _Description: '',
+      _MagicIndex: '1',
+      _Layout_Type: '0', // 0 -> Grid, 1 -> Flexible
+      _Version: '1.1',
+      _Playlist_UUID: '',
+      _Model_Type: '',
+      _Rs232: {
+        _baudRate: '',
+        _dataBits: '',
+        _stopBits: '',
+        _parity: '',
+        _flowControl: '',
+        _rs232_type: 'hex'
       },
       Pages: {
         Page: {
-          Layout: '',
-          Column: '',
-          Row: '',
-          Orientation: '', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
-          FreeDesignerMode: 'false', // Grid -> false, Flexi -> true
-          ID: 'Page 1',
-          Description: '',
-          SerialNumber: '', // 流水號 Page 1, Page 2 …沒用到
-          AudioSource: '',
-          BackgroundImageSize: '',
-          BackgroundImage: '',
-          BgMusicApplyToAll: '',
-          BackgroundMusicUrl: '',
-          BackgroundMusicSize: '',
-          Script: '',
-          BackgroundMusic: '',
+          _Layout: '',
+          _Column: '',
+          _Row: '',
+          _Orientation: '', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
+          _FreeDesignerMode: 'false', // Grid -> false, Flexi -> true
+          _ID: 'Page 1',
+          _Description: '',
+          _SerialNumber: '', // 流水號 Page 1, Page 2 …沒用到
+          _AudioSource: '',
+          _BackgroundImageSize: '',
+          _BackgroundImage: '',
+          _BgMusicApplyToAll: '',
+          _BackgroundMusicUrl: '',
+          _BackgroundMusicSize: '',
+          _Script: '',
+          _BackgroundMusic: '',
           Section: []
         }
       },
       Timeline: {
-        Looping: 'true',
+        _Looping: 'true',
         Item: {
-          Page: 'Page 1',
-          Duration: '1800'
+          _Page: 'Page 1',
+          _Duration: '1800'
         }
       }
     },
     SectionData: {
-      Index: '',
-      X: '',
-      Y: '',
-      Z: '',
-      Height: '',
-      Width: '',
-      is169: '',
-      SectionValid: '1',
-      isFixedRatio: '',
-      Script: '',
-      ContentType: '',
+      _Index: '',
+      _X: '',
+      _Y: '',
+      _Z: '',
+      _Height: '',
+      _Width: '',
+      _is169: '',
+      _SectionValid: '1',
+      _isFixedRatio: '',
+      _Script: '',
+      _ContentType: '',
       Content: {
-        scaleType: '', // (View Type: Default), Stretch to fill region -> FIT_XY, Fit region -> FIT_CENTER, Scale to fill region -> CENTER_CROP
-        showType: '', // Default, Ken Burns Effect, Card Flip, Zoom In, Fade In, Fly In, Float In, Fly Out, Rotate
-        Live_Update_Frequency: '',
-        MuteVideo: '',
-        Live_Update_type: '',
-        Live_Update_type_storage: '',
-        Live_Update_userName: '',
-        Live_Update_path: '',
-        Live_Update_ID: '',
-        Detect_Picture_Orientation: '',
-        FloatIn_Direction: '',
-        isVideoFillArea: '',
-        Live_Update_Access_Way: '',
-        Live_Update_password: '',
-        duration: '',
-        Live_Update_port: '',
-        Live_Update_Show_Status: '',
+        _scaleType: '', // (View Type: Default), Stretch to fill region -> FIT_XY, Fit region -> FIT_CENTER, Scale to fill region -> CENTER_CROP
+        _showType: '', // Default, Ken Burns Effect, Card Flip, Zoom In, Fade In, Fly In, Float In, Fly Out, Rotate
+        _Live_Update_Frequency: '',
+        _MuteVideo: '',
+        _Live_Update_type: '',
+        _Live_Update_type_storage: '',
+        _Live_Update_userName: '',
+        _Live_Update_path: '',
+        _Live_Update_ID: '',
+        _Detect_Picture_Orientation: 'false',
+        _FloatIn_Direction: '',
+        _isVideoFillArea: '',
+        _Live_Update_Access_Way: '',
+        _Live_Update_password: '',
+        _duration: '',
+        _Live_Update_port: '',
+        _Live_Update_Show_Status: '',
         AttachmentFiles: [],
         MediaItem: [],
         State: []
@@ -86,8 +86,8 @@ export const useLayoutStore = defineStore('layout', {
     },
     StateData: [
       {
-        id: uid(),
-        title: '',
+        _id: uid(),
+        _title: '',
         File: [],
         Event: []
       }
@@ -121,41 +121,41 @@ export const useLayoutStore = defineStore('layout', {
       const Data = this.layout.layout
       // Section
       const Section = Data.map((e, i) => ({
-        Index: e.i,
-        X: e.x,
-        Y: e.y,
-        Z: 0,
-        Height: e.h,
-        Width: e.w,
-        is169: '',
-        SectionValid: 1,
-        isFixedRatio: '',
-        Script: '',
-        ContentType: '',
+        _Index: e.i,
+        _X: e.x,
+        _Y: e.y,
+        _Z: 0,
+        _Height: e.h,
+        _Width: e.w,
+        _is169: '',
+        _SectionValid: 1,
+        _isFixedRatio: '',
+        _Script: '',
+        _ContentType: '',
         Content: {
-          scaleType: '', // (View Type: Default), Stretch to fill region -> FIT_XY, Fit region -> FIT_CENTER, Scale to fill region -> CENTER_CROP
-          showType: '', // Default, Ken Burns Effect, Card Flip, Zoom In, Fade In, Fly In, Float In, Fly Out, Rotate
-          Live_Update_Frequency: '',
-          MuteVideo: '',
-          Live_Update_type: '',
-          Live_Update_type_storage: '',
-          Live_Update_userName: '',
-          Live_Update_path: '',
-          Live_Update_ID: '',
-          Detect_Picture_Orientation: '',
-          FloatIn_Direction: '',
-          isVideoFillArea: '',
-          Live_Update_Access_Way: '',
-          Live_Update_password: '',
-          duration: '',
-          Live_Update_port: '',
-          Live_Update_Show_Status: '',
+          _scaleType: '', // (View Type: Default), Stretch to fill region -> FIT_XY, Fit region -> FIT_CENTER, Scale to fill region -> CENTER_CROP
+          _showType: '', // Default, Ken Burns Effect, Card Flip, Zoom In, Fade In, Fly In, Float In, Fly Out, Rotate
+          _Live_Update_Frequency: '',
+          _MuteVideo: '',
+          _Live_Update_type: '',
+          _Live_Update_type_storage: '',
+          _Live_Update_userName: '',
+          _Live_Update_path: '',
+          _Live_Update_ID: '',
+          _Detect_Picture_Orientation: 'false',
+          _FloatIn_Direction: '',
+          _isVideoFillArea: '',
+          _Live_Update_Access_Way: '',
+          _Live_Update_password: '',
+          _duration: '',
+          _Live_Update_port: '',
+          _Live_Update_Show_Status: '',
           AttachmentFiles: [],
           MediaItem: [],
           State: [
             {
-              id: uid(),
-              title: '',
+              _id: uid(),
+              _title: '',
               File: [],
               Event: []
             }

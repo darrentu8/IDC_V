@@ -8,7 +8,7 @@
   display: none;
   z-index: 100;
 }
-.flowBox:hover > .del-card {
+.flowBox:hover .del-card {
   display: block;
 }
 .q-btn.theme {
