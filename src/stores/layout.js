@@ -20,6 +20,98 @@ export const useLayoutStore = defineStore('layout', {
         _flowControl: '',
         _rs232_type: 'hex'
       },
+      Hardware: {
+        GPIOSettings: {
+          GPIO: [
+            {
+              _gpio_number: 1,
+              _name: 'GPIO1',
+              _isEnabled: true,
+              _role: 'output'
+            },
+            {
+              _gpio_number: 2,
+              _name: 'GPIO2',
+              _isEnabled: true,
+              _role: 'output'
+            },
+            {
+              _gpio_number: 3,
+              _name: 'GPIO3',
+              _isEnabled: true,
+              _role: 'output'
+            },
+            {
+              _gpio_number: 4,
+              _name: 'GPIO4',
+              _isEnabled: true,
+              _role: 'output'
+            },
+            {
+              _gpio_number: 5,
+              _name: 'GPIO5',
+              _isEnabled: true,
+              _role: 'output'
+            },
+            {
+              _gpio_number: 6,
+              _name: 'GPIO6',
+              _isEnabled: true,
+              _role: 'output'
+            }
+          ]
+        },
+        Rs232Settings: {
+          Rs232: [
+            {
+              _id: 1,
+              _dataBits: 8,
+              _flowControl: 'None',
+              _stopBits: 1,
+              _baudRate: 9600,
+              _parity: 'None',
+              _rs232_type: 'string',
+              _interface: 'on_board',
+              _isEnabled: false
+            },
+            {
+              _id: 2,
+              _dataBits: 8,
+              _flowControl: 'None',
+              _stopBits: 1,
+              _baudRate: 9600,
+              _parity: 'None',
+              _rs232_type: 'string',
+              _interface: 'on_board',
+              _isEnabled: false
+            }
+          ]
+        },
+        TcpIpSettings: {
+          _local_port: 1234,
+          _isEnabled: true,
+          TcpIp: [
+            {
+              _id: 1,
+              _destination_ip: '192.168.1.1',
+              _destination_port: 1234,
+              _name: 'TCP Output1'
+            },
+            {
+              _id: 2,
+              _destination_ip: '192.168.1.1',
+              _destination_port: 2223,
+              _name: 'TCP Output2'
+            },
+            {
+              _id: 3,
+              _destination_ip: '192.168.1.1',
+              _destination_port: 4456,
+              _name: 'TCP Output3'
+            }
+          ]
+        }
+      },
       Pages: {
         Page: {
           _Layout: '',
@@ -98,7 +190,8 @@ export const useLayoutStore = defineStore('layout', {
       layout: [{ x: 0, y: 0, w: 1, h: 1, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }]
     },
     currentSection: 0
-  }),
+  }
+  ),
   getters: {
     GetCurrentSection() {
       return this.currentSection
