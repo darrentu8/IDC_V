@@ -25,7 +25,7 @@
       <div class="col flex flex-center q-mt-lg">
         <q-btn @click="toGrid" style="width:116px" color="primary" label="Next" />
       </div>
-      <div class="col" v-show="false">
+      <div class="col" v-show="true">
         <div class="column q-gutter-md">
           <div class="col">
             <q-btn @click="loadJSONTest" color="grey-3" text-color="black" label="Load JSON Test"
