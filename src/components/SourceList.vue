@@ -1,5 +1,5 @@
 <template>
-  <q-item-label v-if="interactives" header>Connection setting</q-item-label>
+  <q-item-label v-if="interactives" header>Interactive</q-item-label>
   <q-item-label v-for="(interactive, index) in interactives" :key="index" class="q-mx-md">
     <q-select filled dense v-model="interactive.model" :options="interactive.options" :label="interactive.label" />
   </q-item-label>
