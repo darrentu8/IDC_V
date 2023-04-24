@@ -112,28 +112,4 @@ const mapCurrentStateOptions = computed(() => {
   }
 })
 </script>
-<style lang="scss">
-.flowRow {
-  border-bottom: 1px dotted rgba(0, 0, 0, 0.12);
-
-  &:last-of-type {
-    border-top: 0 solid rgba(0, 0, 0, 0.12);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  }
-}
-
-.flowBoxWrap {
-  min-width: 220px;
-  border-bottom: 1px dotted #E5E5E5;
-  position: relative;
-}
-
-.flowBox {
-  min-width: 150px;
-  max-height: 128.69px;
-}
-
-.flowBoxAction {
-  height: 138px;
-}
-</style>
+<style lang="scss"></style>

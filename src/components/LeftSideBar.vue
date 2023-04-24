@@ -16,7 +16,7 @@
   <q-scroll-area style="height: calc(100% - 250px);">
     <q-list padding>
       <EditWidgetList v-for="(widget, Index) in widgetLists" :Index="Index" :key="widget.id"
-        :ContentType="widget.ContentType" :options="widgetOptions" />
+        :ContentType="widget._ContentType" :options="widgetOptions" />
     </q-list>
   </q-scroll-area>
 </template>
