@@ -1,25 +1,65 @@
-<?xml version='1.0'?>
-<NovoDS Version="1.1" Playlist_UUID="" Description="" Layout_Type="0" Model_Type="ds200">
-    <Pages>
-        <Page BgMusicApplyToAll="false" BackgroundMusic="" SerialNumber="Page 1" BackgroundImageSize="0" Orientation="1" Column="1" BackgroundMusicUrl="" Description="" Layout="Portrait 5" ID="Page 1" BackgroundMusicSize="0" BackgroundImage="" Row="3" AudioSource="" FreeDesignerMode="false">
-            <Section isFixedRatio="false" Y="0" Width="1" SectionValid="1" Index="0" Z="0" is169="false" Height="1" X="0" ContentType="Misc" ID="Twitter_1">
-                <Content widgetType="Twitter" Twitter_ShowItems="0" Twitter_Display_Widget="Listview" Twitter_Speed="Medium" fontSize="28" Twitter_DisplayType="Twitter_Account" font="Roboto-Light" Twitter_Account="" Live_Update_ID="Page 1-1" Twitter_Hashtag="" Twitter_UpdateFrequency="30" textColor="#ffffffff" backgroundColor="#00000000">
-                    <AttachmentFiles/>
-                </Content>
-            </Section>
-            <Section isFixedRatio="false" Y="1" Width="1" SectionValid="1" Index="1" Z="0" is169="false" Height="1" X="0" ContentType="Misc" ID="Weather_2">
-                <Content widgetType="Weather" theme_type="Classic" Weather_Country="" Weather_Units_of_Temperature="Celsius" Weather_backgroundImage="" Weather_theme="Dark" font="Roboto-Light" Weather_Forecast_Day="5" Live_Update_ID="Page 1-2" Weather_Type="Location" Weather_main_area_style="0" textColor="#ffffffff" backgroundColor="#00000000" Weather_UpdateFrequency="30" Weather_Lang="en" Weather_City="">
-                    <AttachmentFiles/>
-                </Content>
-            </Section>
-            <Section isFixedRatio="false" Y="2" Width="1" SectionValid="1" Index="2" Z="0" is169="false" Height="1" X="0" ContentType="Misc" ID="HDMI_3">
-                <Content widgetType="Camera" Camera_isFillArea="false" Live_Update_ID="Page 1-3">
-                    <AttachmentFiles/>
-                </Content>
-            </Section>
-        </Page>
-    </Pages>
-    <Timeline Looping="true">
-        <Item Duration="1800" Page="Page 1"/>
-    </Timeline>
+   <?xml version='1.0'?>
+<NovoDS Description="" Playlist_UUID="" Layout_Type="0" Model_Type="ds200" Interactive="true">
+  <Hardware>
+    <GPIOSettings>
+      <GPIO gpio_number="1" name="GPIO1" isEnabled="true" role="output"/>
+      <GPIO gpio_number="2" name="GPIO2" isEnabled="true" role="keyevent"/>
+      <GPIO gpio_number="3" name="GPIO3" isEnabled="false" role="keyevent"/>
+      <GPIO gpio_number="4" name="GPIO4" isEnabled="false" role="keyevent"/>
+      <GPIO gpio_number="5" name="GPIO5" isEnabled="false" role="keyevent"/>
+      <GPIO gpio_number="6" name="GPIO6" isEnabled="true" role="keyevent"/>
+    </GPIOSettings>
+    <Rs232Settings>
+      <Rs232 id="1" dataBits="8" flowControl="None" stopBits="1" baudRate="9600" parity="None" rs232_type="string" interface="on_board" isEnabled="false" />
+      <Rs232 id="2" dataBits="8" flowControl="None" stopBits="1" baudRate="9600" parity="None" rs232_type="hex" interface="usb" isEnabled="true" />
+    </Rs232Settings>
+    <TcpIpSettings local_port="1234" isEnabled="true">
+      <TcpIp id="1" destination_ip="192.168.1.1" destination_port="1234" name="TCP Output1"/>
+      <TcpIp id="2" destination_ip="192.168.1.1" destination_port="5678" name="TCP Output2"/>
+      <TcpIp id="3" destination_ip="192.168.1.2" destination_port="1234" name="TCP Output3"/>
+    </TcpIpSettings>
+  </Hardware>
+  <Pages>
+    <Page Description="" AudioSource="" BackgroundImageSize="256" Column="1" Row="1" FreeDesignerMode="false" Script="" BackgroundImage="" ID="Page 1" BackgroundMusicSize="256" BackgroundMusic="" BgMusicApplyToAll="false" Layout="Landscape 1" BackgroundMusicUrl="" SerialNumber="Page 1" Orientation="0">
+      <Section SectionValid="1" Script="" ID="Media_0" isFixedRatio="false" Index="0" Width="1" is169="false" X="0" Height="1" Y="0" Z="0" ContentType="GPIO_Media">
+        <Content Live_Update_type="0" Live_Update_Show_Status="true" Live_Update_path="" Live_Update_Access_Way="0" Live_Update_userName="" MuteVideo="true" duration="10" Live_Update_ID="Page 1-1" scaleType="FIT_CENTER" isVideoFillArea="false" Detect_Picture_Orientation="false" Live_Update_port="21" Live_Update_Frequency="15" Live_Update_password="" Live_Update_type_storage="0" FloatIn_Direction="0" showType="Default">
+          <MediaItem note="" duration="10" videoDuration="0" fileSize="6904201" src="a.png"/>
+          <MediaItem note="" duration="10" videoDuration="0" fileSize="131012" src="b.png"/>
+          <MediaItem note="" duration="0" videoDuration="0" fileSize="13046104" src="c.mp4"/>
+          <MediaItem note="" duration="0" videoDuration="0" fileSize="930185" src="d.mp4"/>
+          <State id="0" name="State1">
+            <File duration="5" src="a.png"/>
+            <File duration="5" src="b.png"/>
+            <Event next_state_id="1" type="gpio" gpio_number="2" key_action="down">
+              <Action type="gpio" gpio_number="1" role="output" output_value="0"/>
+              <Action type="rs232" rs232_id="1" role="output" output_value="ABC" />
+            </Event>
+            <Event next_state_id="1" type="rs232" rs232_id="1" input_value="open">
+              <Action type="gpio" gpio_number="1" role="output" output_value="1" />
+              <Action type="rs232" rs232_id="2" role="output" output_value="7B AA" />
+              <Action type="tcp/ip" tcpip_id="1" role="output" output_value="Wake up" />
+            </Event>
+            <Event next_state_id="0" type="tcp/ip" input_value="Sleep">
+              <Action type="tcp/ip" tcpip_id="2" role="output" output_value="Eat" />
+              <Action type="tcp/ip" tcpip_id="3" role="output" output_value="Drink" />
+            </Event>
+          </State>
+          <State id="1" name="State2">
+            <File src="c.mp4"/>
+            <File src="d.mp4"/>
+            <Event next_state_id="0" type="gpio" gpio_number="6" key_action="up">
+              <Action type="gpio" gpio_number="1" role="output" output_value="high"/>
+            </Event>
+            <Event next_state_id="0" type="playend">
+              <Action type="tcp/ip" tcpip_id="1" role="output" output_value="Wake up" />
+            </Event>
+            <Event next_state_id="0" type="timeout" duration="20"/>
+          </State>
+        </Content>
+      </Section>
+    </Page>
+  </Pages>
+  <Timeline Looping="true">
+    <Item Duration="1800" Page="Page 1"/>
+  </Timeline>
 </NovoDS>

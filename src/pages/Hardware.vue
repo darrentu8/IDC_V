@@ -233,7 +233,8 @@
                             <div class="col">
                                 <q-list bordered class="rounded-borders" v-if="TCP.TXList.length > 0"
                                     style="max-height: 500px;overflow: auto;">
-                                    <q-expansion-item v-for="(tx, index) in TCP.TXList" :key="index" expand-separator>
+                                    <q-expansion-item group="tcp-tx" v-for="(tx, index) in TCP.TXList" :key="index"
+                                        expand-separator>
                                         <template v-slot:header>
                                             <q-item-section>
                                                 <div class="text-body1">

@@ -10,12 +10,12 @@
       </div>
       <div class="col q-mt-sm">
         <div class="text-body1">Play List Description</div>
-        <q-input type="textarea" outlined dense square />
+        <q-input v-model="description" type="textarea" outlined dense square />
       </div>
       <div class="col row q-mt-md">
         <div class="col">
           <div class="text-body2 text-bold">Device Model</div>
-          <div class="text-body2 q-mt-sm">DS310</div>
+          <div class="text-body2 q-mt-sm">{{ deviceType }}</div>
         </div>
         <div class="col">
           <div class="text-body2 text-bold">Screen Orientation</div>
@@ -27,9 +27,6 @@
       </div>
       <div class="col" v-show="false">
         <div class="column q-gutter-md">
-          <div class="col">
-            <q-btn to="/grid" color="grey-3" text-color="black" label="New" style="width: 140px;border-radius: 10px;" />
-          </div>
           <div class="col">
             <q-btn @click="loadJSONTest" color="grey-3" text-color="black" label="Load JSON Test"
               style="width: 140px;border-radius: 10px;" />
@@ -50,13 +47,27 @@
 
 <script>
 
-let testFileData = null
+import { useNovoDSStore } from 'src/stores/NovoDS'
+const NovoDSStore = useNovoDSStore()
 
 export default {
   name: 'StartNew',
   data() {
     return {
 
+    }
+  },
+  computed: {
+    description: {
+      get() {
+        return NovoDSStore.NovoDS.$.Description
+      },
+      set(val) {
+        NovoDSStore.NovoDS.$.Description = val
+      }
+    },
+    deviceType() {
+      return NovoDSStore.NovoDS.$.Model_Type
     }
   },
   methods: {
@@ -66,17 +77,15 @@ export default {
     loadJSONTest() {
       const testFileString = window.myAPI.loadJSONTest()
       alert(testFileString)
-      testFileData = JSON.parse(testFileString)
     },
     loadXMLTest() {
       const textXMLString = window.myAPI.loadXMLTest()
       textXMLString.then(data => {
-        alert(JSON.stringify(data))
+        console.log(data, JSON.stringify(data))
       })
     },
     exportFile() {
-      const xmlFileString = window.myAPI.exportXmlFile(testFileData, 'TestPlayList')
-      alert(xmlFileString)
+      NovoDSStore.WriteToXml()
     }
   }
 }

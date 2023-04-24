@@ -34,6 +34,8 @@ import path from 'path'
 import fs from 'fs'
 import xml2js from 'xml2js'
 
+const novoDirName = 'NovoDS Studio'
+
 contextBridge.exposeInMainWorld('myAPI', {
   minimize() {
     BrowserWindow.getFocusedWindow().minimize()
@@ -52,33 +54,23 @@ contextBridge.exposeInMainWorld('myAPI', {
   close() {
     BrowserWindow.getFocusedWindow().close()
   },
-  loadJSONTest: () => {
-    const fileName = 'test.json'
+  watchJson: () => {
+    const fileName = 'interactive.json'
 
     const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER)
     const sourceFile = path.join(publicFolder, fileName)
 
-    const targetFolder = path.join(app.getPath('appData'), 'IDC')
-    if (!fs.existsSync(targetFolder)) {
-      fs.mkdirSync(targetFolder)
-    }
+    const NovoFolder = getNovoFolder()
 
-    const targetFile = path.join(targetFolder, fileName)
+    const targetFile = path.join(NovoFolder, fileName)
     if (!fs.existsSync(targetFile)) {
       fs.copyFileSync(sourceFile, targetFile)
     }
 
-    return fs.readFileSync(targetFile, 'utf8')
-  },
-  watchJson: () => {
-    const fileName = 'NovoDS Studio/interactive.json'
-
-    const targetFolder = path.join(app.getPath('appData'), fileName)
-
-    console.log('targetFolder', targetFolder)
-    fs.watch(targetFolder, (eventType, filename) => {
+    console.log('targetFolder', targetFile)
+    fs.watch(targetFile, (eventType, filename) => {
       if (filename && eventType === 'change') {
-        fs.readFile(targetFolder, 'utf8', (err, data) => {
+        fs.readFile(targetFile, 'utf8', (err, data) => {
           if (err) throw err
 
           const obj = JSON.parse(data)
@@ -100,18 +92,30 @@ contextBridge.exposeInMainWorld('myAPI', {
     this.watcher.close()
     console.log('Close watch Json')
   },
+  loadJSONTest: () => {
+    const fileName = 'interactive.json'
+
+    const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER)
+    const sourceFile = path.join(publicFolder, fileName)
+
+    const NovoFolder = getNovoFolder()
+
+    const targetFile = path.join(NovoFolder, fileName)
+    if (!fs.existsSync(targetFile)) {
+      fs.copyFileSync(sourceFile, targetFile)
+    }
+
+    return fs.readFileSync(targetFile, 'utf8')
+  },
   loadXMLTest: () => {
     const fileName = 'index.xml'
 
     const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER)
     const sourceFile = path.join(publicFolder, fileName)
 
-    const targetFolder = path.join(app.getPath('appData'), 'IDC')
-    if (!fs.existsSync(targetFolder)) {
-      fs.mkdirSync(targetFolder)
-    }
+    const NovoFolder = getNovoFolder()
 
-    const targetFile = path.join(targetFolder, fileName)
+    const targetFile = path.join(NovoFolder, fileName)
     if (!fs.existsSync(targetFile)) {
       fs.copyFileSync(sourceFile, targetFile)
     }
@@ -121,26 +125,37 @@ contextBridge.exposeInMainWorld('myAPI', {
 
     return parser.parseStringPromise(xml)
   },
-  exportXmlFile: (data, folderName) => {
-    const fileName = 'test.xml'
+  storeToXML(NovoDsData) {
+    const fileName = 'NovoDS.xml'
 
-    const playListFolder = path.join(app.getPath('appData'), 'IDC', 'Playlist')
-    if (!fs.existsSync(playListFolder)) {
-      fs.mkdirSync(playListFolder)
-    }
+    const PlayListFolder = getPlayListFolder()
 
-    const targetFolder = path.join(playListFolder, folderName)
-    if (!fs.existsSync(targetFolder)) {
-      fs.mkdirSync(targetFolder)
-    }
-
-    const targetFile = path.join(targetFolder, fileName)
+    const targetFile = path.join(PlayListFolder, fileName)
 
     const builder = new xml2js.Builder()
-    const xml = builder.buildObject(data)
+    const xml = builder.buildObject(NovoDsData)
 
     fs.writeFileSync(targetFile, xml)
 
     return xml
   }
 })
+
+const getNovoFolder = () => {
+  const folder = path.join(app.getPath('appData'), novoDirName)
+  if (!fs.existsSync(folder)) {
+    fs.mkdirSync(folder)
+  }
+
+  return folder
+}
+
+const getPlayListFolder = () => {
+  const NovoFolder = getNovoFolder()
+  const PlayListFolder = path.join(NovoFolder, 'Playlist')
+  if (!fs.existsSync(NovoFolder)) {
+    fs.mkdirSync(NovoFolder)
+  }
+
+  return PlayListFolder
+}
