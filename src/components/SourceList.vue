@@ -14,6 +14,7 @@
         <div class="col-9">
           <div class="full-width">
             <div>{{ file.name }}</div>
+            <small class="text-grey">{{ humanFileSize(file.size) }}</small>
             <!-- <q-file filled bottom-slots label="Pick File" counter v-model="files">
               <template v-slot:prepend>
                 <q-icon name="cloud_upload" @click.stop.prevent />
@@ -32,8 +33,12 @@
         </div>
       </div>
     </div>
-    <div v-else>
-      none file
+    <div v-else class="col-12 q-mx-lg">
+      <q-file filled label="None Select file" disable>
+        <template v-slot:prepend>
+          <q-icon name="cloud_upload" @click.stop.prevent />
+        </template>
+      </q-file>
     </div>
   </div>
 </template>
@@ -44,10 +49,15 @@ export default defineComponent({
   name: 'SourceList',
   data() {
     return {
+      fileList: [],
       files: []
     }
   },
   methods: {
+    humanFileSize(size) {
+      const i = (size === 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024)))
+      return ((size / Math.pow(1024, i)).toFixed(2) * 1) + ' ' + (['B', 'kB', 'MB', 'GB', 'TB'][i])
+    },
     selectFile() {
       this.$refs.fileRef.pickFiles()
     },
@@ -55,19 +65,15 @@ export default defineComponent({
       this.files.splice(i, 1)
     },
     async startUpload() {
-      const uploadedFiles = Array.from(this.fileRef.files)
+      const uploadedFiles = Array.from(this.files)
       // 將每個檔案加入到 files 陣列中
-      uploadedFiles.forEach((file) => {
-        console.log('file', file)
-        this.files.push(file)
-      })
       try {
         for (const file of uploadedFiles) {
-          console.log('file', file)
+          console.log('uploadedFiles', uploadedFiles)
           const filePath = file.url // 或許需要根據實際情況修改這裡
           await window.myAPI?.copyFile(filePath)
         }
-
+        console.log('this.files', this.files)
         alert('Files saved successfully!')
       } catch (err) {
         console.error(err)
