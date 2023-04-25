@@ -120,8 +120,7 @@ export const useNovoDSStore = defineStore('NovoDs', {
                             destination_port: 1234,
                             name: 'TCP Output3'
                         }
-                    }
-                    ]
+                    }]
                 }]
             }],
             Pages: [{
