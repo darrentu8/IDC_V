@@ -1,12 +1,12 @@
 <template>
-  <div class="row border-b">
-    <div class="col-3">
+  <div class="row">
+    <div v-if="widgetListData[currentSection]._ContentType" class="col-3">
       <SettingList />
     </div>
-    <div class="col-9">
-      <div class="row flex q-pb-md" v-for="(state, Index) in widgetListData[currentSection].Content.State"
+    <div :class="[widgetListData[currentSection]._ContentType ? 'col-9' : 'col-12']">
+      <div class="row flex q-pb-lg border-b" v-for="(state, Index) in widgetListData[currentSection].Content.State"
         :key="state._id">
-        <div class="col-4">
+        <div :class="[widgetListData[currentSection]._ContentType ? 'col-3' : 'col-3 q-pl-md']">
           <q-card flat square bordered horizontal class="q-mt-lg cursor-pointer flowBox">
             <q-img src="" style="">
               <div class="absolute-full flex flex-center bg-gery text-white">
@@ -42,7 +42,7 @@
             </div>
           </q-card> -->
         </div>
-        <div class="col-8">
+        <div class="col-9 q-px-md">
           <SourceList />
         </div>
       </div>

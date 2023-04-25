@@ -24,7 +24,7 @@
         <template v-slot:option="scope">
           <q-item v-bind="scope.itemProps">
             <q-item-section>
-              <q-item-label v-html="scope.opt.label"></q-item-label>
+              <q-item-label>{{ scope.opt.label }}</q-item-label>
             </q-item-section>
             <q-item-section avatar>
               <q-icon :name="scope.opt.icon"></q-icon>
@@ -65,7 +65,7 @@ const setIndex = (Index) => {
 const selectWidget = (Index, ContentType) => {
   // console.log('Index', Index)
   // console.log('ContentType', ContentType)
-  widgetListStore.SetCurrentState(Index)
+  setIndex(Index)
   widgetListStore.SetWidget(Index, ContentType)
   updateList(false)
 }

@@ -6,8 +6,8 @@
         <q-tab name="source" label="Source library" />
         <q-tab name="flow" label="Story Flow" />
 
-        <q-btn v-if="tab === 'source'" label="Add new state" @click="addState()" flat class="theme-tab-btn" color="green"
-          icon="add" />
+        <q-btn v-if="tab === 'source'" label="Add new state" @click="addState()" flat class="theme-tab-btn"
+          color="primary" icon="add" />
       </q-tabs>
       <q-separator />
 

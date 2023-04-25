@@ -42,7 +42,7 @@
                     </q-btn> -->
                     <q-btn :disable="EventData._next_state_id === ''" @click="setCurrentEvent(EventIndex, EventData._id)"
                       unelevated class="border-round-unselect" text-color="grey-7" color="grey-2" round icon="link">
-                      <q-badge color="grey" class="link-badge" floating>{{ EventData.Action.length && 0 }}</q-badge>
+                      <q-badge color="grey" class="link-badge" floating>{{ EventData.Action.length }}</q-badge>
                     </q-btn>
                   </div>
                   <q-card v-if="EventData._next_state_id !== undefined" flat square bordered horizontal

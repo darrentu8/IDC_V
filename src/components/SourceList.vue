@@ -1,6 +1,6 @@
 <template>
   <q-item-label header class="border-b">Source
-    <q-btn label="" v-on:click="selectFile()" flat class="theme-tab-btn" color="green" icon="add"
+    <q-btn label="" v-on:click="selectFile()" flat class="theme-tab-btn" color="primary" icon="add"
       style="height: 49.8px;margin-top: -16px;" />
     <q-file ref="fileRef" v-model="files" multiple style="display: none" v-bind:max-files="10" accept="image/*, video/*"
       @update:model-value="startUpload" />
@@ -29,7 +29,7 @@
           </div>
         </div>
         <div class="col-2">
-          <q-btn label="" @click="delFile(i)" round flat class="" color="green" icon="delete_outline" />
+          <q-btn label="" @click="delFile(i)" round flat class="" color="primary" icon="delete_outline" />
         </div>
       </div>
     </div>
