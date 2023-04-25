@@ -138,6 +138,23 @@ contextBridge.exposeInMainWorld('myAPI', {
     fs.writeFileSync(targetFile, xml)
 
     return xml
+  },
+  copyFile(filePath) {
+    console.log('filePath', filePath)
+    const fileName = path.basename(filePath)
+    const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER)
+    const newPath = path.join(publicFolder, fileName)
+
+    return new Promise((resolve, reject) => {
+      const readStream = fs.createReadStream(filePath)
+      const writeStream = fs.createWriteStream(newPath)
+
+      readStream.on('error', reject)
+      writeStream.on('finish', () => resolve(newPath))
+      writeStream.on('error', reject)
+
+      readStream.pipe(writeStream)
+    })
   }
 })
 

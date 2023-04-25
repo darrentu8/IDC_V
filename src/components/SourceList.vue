@@ -50,6 +50,7 @@ export default defineComponent({
   data() {
     return {
       fileList: [],
+
       files: []
     }
   },
@@ -65,7 +66,7 @@ export default defineComponent({
       this.files.splice(i, 1)
     },
     async startUpload() {
-      const uploadedFiles = Array.from(this.files)
+      const uploadedFiles = Array.from(this.$refs.fileRef.files)
       // 將每個檔案加入到 files 陣列中
       try {
         for (const file of uploadedFiles) {
