@@ -84,6 +84,15 @@ export const useWidgetListStore = defineStore('widgetList', {
       _next_state_id: '',
       Action: []
     },
+    ActionData: {
+      _type: '',
+      _gpio_number: '',
+      _next_state_id: '',
+      _rs232_id: '',
+      _tcpip_id: '',
+      _role: '',
+      _output_value: ''
+    },
     currentState: 0,
     currentWidget: {}
   }),
@@ -105,15 +114,15 @@ export const useWidgetListStore = defineStore('widgetList', {
       const oData = this.widgetListData[currentSection].Content.State.map((e, i) => {
         if (e._title === '') {
           return {
-            _id: e.id,
+            _id: e._id,
             _stateIndex: i,
             _title: 'State' + ' ' + (i + 1)
           }
         } else {
           return {
-            _id: e.id,
+            _id: e._id,
             _stateIndex: i,
-            _title: e.title
+            _title: e._title
           }
         }
       })
@@ -128,7 +137,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       }
     },
     SetWidget(Index, ContentType) {
-      this.widgetListData[Index].ContentType = ContentType
+      this.widgetListData[Index]._ContentType = ContentType
     },
     SetCurrentState(Index) {
       this.currentState = Index
@@ -159,14 +168,28 @@ export const useWidgetListStore = defineStore('widgetList', {
         Action: []
       })
     },
+    AddAction(EventIndex) {
+      const layoutStore = useLayoutStore()
+      const currentSection = layoutStore.currentSection
+      this.widgetListData[currentSection].Content.State[this.currentState].Event[EventIndex].Action.push({
+        _id: uid(),
+        _type: '',
+        _gpio_number: '',
+        _next_state_id: '',
+        _rs232_id: '',
+        _tcpip_id: '',
+        _role: '',
+        _output_value: ''
+      })
+    },
     SetFlowState(Index, EventIndex, currentStateData) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
       this.widgetListData[currentSection].Content.State[Index].Event[EventIndex] = {
         ...this.EventData,
-        _id: currentStateData.id,
-        _next_state_id: currentStateData.stateIndex,
-        _title: currentStateData.title
+        _id: currentStateData._id,
+        _next_state_id: currentStateData._stateIndex,
+        _title: currentStateData._title
       }
     },
     DelState(ID) {
@@ -184,8 +207,14 @@ export const useWidgetListStore = defineStore('widgetList', {
     DelStateEvent(ID, Index, EventIndex) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      const Data = this.widgetListData[currentSection].Content.State[Index].Event.filter((e, i) => i !== EventIndex)
+      const Data = this.widgetListData[currentSection].Content.State[Index].Event.filter(e => e._id !== ID)
       this.widgetListData[currentSection].Content.State[Index].Event = Data
+    },
+    DelAction(EventIndex, ID) {
+      const layoutStore = useLayoutStore()
+      const currentSection = layoutStore.currentSection
+      const Data = this.widgetListData[currentSection].Content.State[this.currentState].Event[EventIndex].Action.filter((e) => e._id !== ID)
+      this.widgetListData[currentSection].Content.State[this.currentState].Event[EventIndex].Action = Data
     }
   }
 })

@@ -1,12 +1,12 @@
 <template>
-  <div class="row">
+  <div class="row border-b">
     <div class="col-3">
       <SettingList />
     </div>
     <div class="col-9">
-      <div class="row flex q-pb-md border-b" v-for="(state, Index) in widgetListData[currentSection].Content.State"
+      <div class="row flex q-pb-md" v-for="(state, Index) in widgetListData[currentSection].Content.State"
         :key="state._id">
-        <div class="col-4 q-px-lg">
+        <div class="col-4">
           <q-card flat square bordered horizontal class="q-mt-lg cursor-pointer flowBox">
             <q-img src="" style="">
               <div class="absolute-full flex flex-center bg-gery text-white">
@@ -19,9 +19,6 @@
               <div class="text-subtitle2">State {{ Number(Index + 1) }}</div>
             </q-card-section>
             <!-- 刪除 -->
-            <div v-if="currentStateLength > 1" class="absolute-right del-card">
-              <q-btn size="sm" class="" color="negative" round dense icon="clear" @click="delState(state._id)" />
-            </div>
             <div v-if="currentStateLength > 1" class="absolute-right del-card">
               <q-btn size="sm" class="" color="negative" round dense icon="clear" @click="delState(state._id)" />
             </div>

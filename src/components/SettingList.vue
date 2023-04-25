@@ -5,17 +5,17 @@
       <q-input v-model="widgetListData[currentState].name" label="Standard" />
     </q-item-label> -->
     <q-item-label class="q-mx-md">
-      <q-select :disable="!widgetListData[currentState].ContentType" filled dense
+      <q-select :disable="!widgetListData[currentState]._ContentType" filled dense
         v-model="widgetListData[currentState].Content._showType" :options="WidgetOptions.showTypeChoice"
         option-value="value" option-label="text" emit-value label="Scale Type" />
     </q-item-label>
     <q-item-label class="q-mx-md">
-      <q-select :disable="!widgetListData[currentState].ContentType" filled dense
+      <q-select :disable="!widgetListData[currentState]._ContentType" filled dense
         v-model="widgetListData[currentState].Content._scaleType" :options="WidgetOptions.scaleTypeChoice"
         option-value="value" option-label="text" emit-value label="View Type" />
     </q-item-label>
     <q-item-label class="q-mx-md">
-      <q-checkbox :disable="!widgetListData[currentState].ContentType"
+      <q-checkbox :disable="!widgetListData[currentState]._ContentType"
         v-model="widgetListData[currentState].Content._Detect_Picture_Orientation" label="Detect_Picture_Orientation"
         color="" />
     </q-item-label>

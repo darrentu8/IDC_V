@@ -1,12 +1,12 @@
 <template>
   <q-page :class="['items-start', tab === 'source' ? 'col-12' : 'col-6 row']">
-    <div :class="[tab === 'source' ? 'col-12' : 'col-7']">
+    <div :class="[tab === 'source' ? 'col-12' : 'col-6']">
       <q-tabs v-model="tab" inline-label class="text-grey" active-color="primary" indicator-color="primary" align="left"
         narrow-indicator>
         <q-tab name="source" label="Source library" />
         <q-tab name="flow" label="Story Flow" />
 
-        <q-btn v-if="tab === 'source'" label="Add new source" @click="addState()" flat class="theme-tab-btn" color="green"
+        <q-btn v-if="tab === 'source'" label="Add new state" @click="addState()" flat class="theme-tab-btn" color="green"
           icon="add" />
       </q-tabs>
       <q-separator />
@@ -36,7 +36,7 @@
       </q-tab-panels>
 
     </div>
-    <div v-if="tab === 'flow'" class="col-5 q-pl-lg">
+    <div v-if="tab === 'flow'" class="col-6 q-pl-lg">
       <ConnectionSettingList />
     </div>
   </q-page>

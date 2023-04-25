@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 export const useConnectionListStore = defineStore('connectionList', {
   state: () => ({
-      interactives: [
+    interactives: [
       {
         label: 'Event/Action',
         options: ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'],
@@ -14,7 +14,7 @@ export const useConnectionListStore = defineStore('connectionList', {
         model: ''
       }
     ],
-      outputs: [
+    outputs: [
       {
         label: 'Via',
         options: ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'],
@@ -29,7 +29,7 @@ export const useConnectionListStore = defineStore('connectionList', {
   }),
   getters: {},
   actions: {
-    SetConnectionList (connectionList) {
+    SetConnectionList(connectionList) {
       this.connectionList = connectionList
     }
   }
