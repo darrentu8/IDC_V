@@ -139,28 +139,71 @@ contextBridge.exposeInMainWorld('myAPI', {
 
     return xml
   },
-  chooseSource() {
-    const sourcePath = dialog.showOpenDialogSync({
+  chooseSources() {
+    const sourcePaths = dialog.showOpenDialogSync({
       title: 'Choose Media',
       filters: [
         { name: 'Images', extensions: ['jpg', 'png', 'gif'] },
         { name: 'Movies', extensions: ['mkv', 'avi', 'mp4'] }
-      ]
+      ],
+      properties: ['openFile', 'multiSelections']
     })
 
-    if (sourcePath) {
+    if (sourcePaths) {
       const sourceFolder = getSourceFolder()
-      const fileName = path.basename(sourcePath[0])
-      const targetPath = path.join(sourceFolder, fileName)
-      fs.copyFileSync(sourcePath[0], targetPath)
-      return targetPath
+      const fileDataArray = []
+
+      sourcePaths.forEach((sourcePath) => {
+        const fileName = path.basename(sourcePath)
+        const targetPath = path.join(sourceFolder, fileName)
+
+        if (!isDuplicateFile(targetPath)) {
+          try {
+            fs.copyFileSync(sourcePath, targetPath)
+            fileDataArray.push({ fileName, targetPath })
+          } catch (err) {
+            console.error(err)
+          }
+        }
+      })
+
+      return fileDataArray
     }
+  },
+  async getFileData(fileDatas) {
+    const promises = fileDatas.map((fileData) => {
+      return fs.promises.stat(fileData.targetPath)
+        .then((stats) => {
+          const fileDataWithSize = {
+            _note: '',
+            _duration: 10,
+            _videoDuration: '0',
+            _fileSize: stats.size,
+            _src: fileData.fileName,
+            _targetPath: fileData.targetPath
+          }
+          console.log(fileDataWithSize)
+          return fileDataWithSize
+        })
+        .catch((err) => {
+          console.error(err)
+          return null
+        })
+    })
+
+    const resolvedPromises = await Promise.all(promises)
+    const validFileDatas = resolvedPromises.filter(fileData => fileData !== null)
+    return validFileDatas
   },
   deleteFile(sourceFile) {
     fs.unlinkSync(sourceFile)
   }
 })
 
+const isDuplicateFile = (targetPath) => {
+  const existingFiles = fs.readdirSync(getSourceFolder())
+  return existingFiles.includes(path.basename(targetPath))
+}
 const getNovoFolder = () => {
   const folder = path.join(app.getPath('appData'), novoDirName)
   if (!fs.existsSync(folder)) {
