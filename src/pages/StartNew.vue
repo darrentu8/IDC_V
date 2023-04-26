@@ -1,12 +1,12 @@
 <template>
   <q-page class="flex flex-center">
     <div class="column">
-      <div class="col flex flex-center">
+      <div class="flex flex-center">
         <q-stepper :model-value="1" alternative-labels color="primary" :bordered="false" flat
           style="background-color: transparent;width: 800px">
           <q-step :name="1" prefix="1" title="Define the name" />
-          <q-step :name="2" prefix="2" title="Select layout" caption="Optional" />
-          <q-step :name="3" prefix="3" title="Hardware configuration" caption="Optional" />
+          <q-step :name="2" prefix="2" title="Select layout" />
+          <q-step :name="3" prefix="3" title="Hardware configuration" />
         </q-stepper>
       </div>
       <div class="col flex flex-center">
@@ -60,16 +60,20 @@
         </q-card>
       </div>
     </div>
+    <!-- <SourceManager /> -->
   </q-page>
 </template>
 
 <script>
-
+// import SourceManager from 'src/components/SourceManager.vue'
 import { useNovoDSStore } from 'src/stores/NovoDS'
 const NovoDSStore = useNovoDSStore()
 
 export default {
   name: 'StartNew',
+  components: {
+    // SourceManager
+  },
   data() {
     return {
 

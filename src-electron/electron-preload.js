@@ -29,7 +29,7 @@
  */
 
 import { contextBridge } from 'electron'
-import { BrowserWindow, app } from '@electron/remote'
+import { BrowserWindow, app, dialog } from '@electron/remote'
 import path from 'path'
 import fs from 'fs'
 import xml2js from 'xml2js'
@@ -139,22 +139,25 @@ contextBridge.exposeInMainWorld('myAPI', {
 
     return xml
   },
-  copyFile(filePath) {
-    console.log('filePath', filePath)
-    const fileName = path.basename(filePath)
-    const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER)
-    const newPath = path.join(publicFolder, fileName)
-
-    return new Promise((resolve, reject) => {
-      const readStream = fs.createReadStream(filePath)
-      const writeStream = fs.createWriteStream(newPath)
-
-      readStream.on('error', reject)
-      writeStream.on('finish', () => resolve(newPath))
-      writeStream.on('error', reject)
-
-      readStream.pipe(writeStream)
+  chooseSource() {
+    const sourcePath = dialog.showOpenDialogSync({
+      title: 'Choose Media',
+      filters: [
+        { name: 'Images', extensions: ['jpg', 'png', 'gif'] },
+        { name: 'Movies', extensions: ['mkv', 'avi', 'mp4'] }
+      ]
     })
+
+    if (sourcePath) {
+      const sourceFolder = getSourceFolder()
+      const fileName = path.basename(sourcePath[0])
+      const targetPath = path.join(sourceFolder, fileName)
+      fs.copyFileSync(sourcePath[0], targetPath)
+      return targetPath
+    }
+  },
+  deleteFile(sourceFile) {
+    fs.unlinkSync(sourceFile)
   }
 })
 
@@ -170,9 +173,19 @@ const getNovoFolder = () => {
 const getPlayListFolder = () => {
   const NovoFolder = getNovoFolder()
   const PlayListFolder = path.join(NovoFolder, 'Playlist')
-  if (!fs.existsSync(NovoFolder)) {
-    fs.mkdirSync(NovoFolder)
+  if (!fs.existsSync(PlayListFolder)) {
+    fs.mkdirSync(PlayListFolder)
   }
 
   return PlayListFolder
+}
+
+const getSourceFolder = () => {
+  const NovoFolder = getNovoFolder()
+  const SourceFolder = path.join(NovoFolder, 'Source')
+  if (!fs.existsSync(SourceFolder)) {
+    fs.mkdirSync(SourceFolder)
+  }
+
+  return SourceFolder
 }

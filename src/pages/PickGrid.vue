@@ -1,12 +1,12 @@
 <template>
     <q-page class="flex flex-center" style="min-width: 1200px;">
         <div class="column">
-            <div class="col flex flex-center">
+            <div class="flex flex-center">
                 <q-stepper :model-value="2" :bordered="false" flat alternative-labels color="primary"
                     style="background-color: transparent;width: 800px;">
                     <q-step :name="1" prefix="1" title="Define the name" :done="true" />
-                    <q-step :name="2" prefix="2" title="Select layout" caption="Optional" />
-                    <q-step :name="3" prefix="3" title="Hardware configuration" caption="Optional" />
+                    <q-step :name="2" prefix="2" title="Select layout" />
+                    <q-step :name="3" prefix="3" title="Hardware configuration" />
                 </q-stepper>
             </div>
             <div class="col">
