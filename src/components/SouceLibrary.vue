@@ -43,7 +43,7 @@
           </q-card> -->
         </div>
         <div class="col-9 q-px-md">
-          <SourceManager />
+          <SourceManager :File="state.File" :currentStateIndex='Index' />
         </div>
       </div>
     </div>

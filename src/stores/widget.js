@@ -162,9 +162,11 @@ export const useWidgetListStore = defineStore('widgetList', {
       }
       this.widgetListData[currentSection].Content.State.push({
         _id: uid(),
+        File: [],
         Event: [],
         _title: ''
       })
+      console.log('this.widgetListData[currentSection].Content', this.widgetListData[currentSection].Content)
     },
     AddStateEvent(Index) {
       const layoutStore = useLayoutStore()
@@ -191,38 +193,28 @@ export const useWidgetListStore = defineStore('widgetList', {
         _output_value: ''
       })
     },
-    AddSourceList(fileDatas) {
+    AddSourceList(currentStateIndex, fileDatas) {
       const layoutStore = useLayoutStore()
-      const widgetStore = useWidgetListStore()
       const currentSection = layoutStore.currentSection
-      const currentState = widgetStore.currentState
       console.log('fileDatas', fileDatas)
-      fileDatas.forEach((e, i) => {
-        this.widgetListData[currentSection].Content.unshift({
-          MediaItem: {
-            _note: '',
-            _duration: 10,
-            _videoDuration: '0',
-            _fileSize: e._fileSize,
-            _src: e._src,
-            _targetPath: e._targetPath
-          }
-        })
-        this.widgetListData[currentSection].Content.State[currentState].unshift({
-          File: {
-            _src: e._src,
-            _duration: '0'
-          }
-        })
-      })
-      // const contentFirstProp = this.widgetListData[currentSection].Content
-      // const stateFirstProp = this.widgetListData[currentSection].Content.State[currentState]
-      // fileDatas.forEach((obj, i) => {
-      //   const newObj = {
-      //     MediaItem: obj,
-      //     ...contentFirstProp
-      //   }
-      // })
+      const newContentArray = fileDatas.map((e) => ({
+        _note: '',
+        _duration: '10',
+        _videoDuration: '0',
+        _fileSize: e._fileSize,
+        _src: e._src,
+        _targetPath: e._targetPath
+      }))
+      const newFileArray = fileDatas.map((e) => ({
+        _src: e._src,
+        _duration: '0',
+        _videoDuration: '0',
+        _fileSize: e._fileSize,
+        _targetPath: e._targetPath
+      }))
+      this.widgetListData[currentSection].Content.MediaItem = newContentArray
+      this.widgetListData[currentSection].Content.State[currentStateIndex].File = newFileArray
+      console.log('this.widgetListData[currentSection].Content', this.widgetListData[currentSection].Content)
     },
     DelSourceList(fileName) {
       const layoutStore = useLayoutStore()
