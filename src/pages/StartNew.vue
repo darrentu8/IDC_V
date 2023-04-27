@@ -10,7 +10,7 @@
         </q-stepper>
       </div>
       <div class="col flex flex-center">
-        <q-card class="bg-white text-black brand-round q-pa-lg" style="width:550px;margin-top: -50px;">
+        <q-card class="bg-white text-black brand-round q-pa-lg" style="width:550px;margin-top: -50px;height:550px">
           <q-card-section>
             <div class="column">
               <div class="col">
@@ -34,11 +34,6 @@
                   <div class="text-body2 q-mt-sm">Landscape</div>
                 </div>
               </div>
-              <div class="col flex flex-center q-mt-lg">
-                <q-space />
-                <q-btn class="brand-round" @click="toGrid" style="width:116px" color="primary" label="Next"
-                  icon="arrow_forward" />
-              </div>
               <div class="col" v-show="false">
                 <div class="row">
                   <div class="col">
@@ -57,6 +52,11 @@
               </div>
             </div>
           </q-card-section>
+          <q-card-actions>
+            <q-space />
+            <q-btn class="brand-round" @click="toGrid" style="width:116px" color="primary" label="Next"
+              icon="arrow_forward" />
+          </q-card-actions>
         </q-card>
       </div>
     </div>

@@ -7,12 +7,19 @@
         <grid-item static v-for="(item, index) in viewLayout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i"
           :key="item.i">
           <div class="fit">
-            <div class="bg-grey-3 rounded-borders  flex flex-center"
-              style="width: calc(100% - 3px); height: calc(100% - 3px);">
-              {{ index + 1 }}
+            <div class="bg-grey-3 flex flex-center" :class="{ 'is-selected': selected }"
+              style="width: calc(100% - 3px); height: calc(100% - 3px);border-radius: 2px;">
+              <div v-if="!isCustom"> {{ index + 1 }}</div>
             </div>
           </div>
         </grid-item>
+        <div v-if="isCustom" class="row flex flex-center full-width absolute"
+          style="background-color: #FFFFFFB2;top: 33px;">
+          <div>
+            <q-icon name="edit" color="primary" size="sm" />
+            <span> Customize </span>
+          </div>
+        </div>
       </grid-layout>
     </div>
   </div>
@@ -21,7 +28,7 @@
 <script>
 export default {
   name: 'GridViewComponent',
-  props: ['viewRowCount', 'viewColCount', 'viewLayout', 'viewWidth'],
+  props: ['viewRowCount', 'viewColCount', 'viewLayout', 'viewWidth', 'selected', 'isCustom'],
   data() {
     return {
 
@@ -35,7 +42,10 @@ export default {
 <style lang="scss" scoped>
 .static-grid-view-wrapper:hover {
   cursor: pointer;
-  outline: 1px solid #2B2B2B;
-  border-radius: 10px;
+}
+
+.is-selected {
+  background-color: $primary !important;
+  color: white;
 }
 </style>

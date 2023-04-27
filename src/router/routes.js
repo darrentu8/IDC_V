@@ -21,12 +21,6 @@ const routes = [
       { path: '', component: () => import('src/pages/PickGrid.vue') }
     ]
   }, {
-    path: '/customize',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { path: '', component: () => import('src/pages/CustomizeGrid.vue') }
-    ]
-  }, {
     path: '/hardware',
     component: () => import('layouts/MainLayout.vue'),
     children: [
