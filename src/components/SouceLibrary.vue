@@ -1,9 +1,9 @@
 <template>
   <div class="row">
-    <div v-if="widgetListData[currentSection]._ContentType" class="col-3">
+    <div v-if="widgetListData[currentSection]._ContentType" class="col-4">
       <SettingList />
     </div>
-    <div :class="[widgetListData[currentSection]._ContentType ? 'col-9' : 'col-12']">
+    <div :class="[widgetListData[currentSection]._ContentType ? 'col-8' : 'col-12']">
       <div class="row flex q-pb-lg border-b" v-for="(state, Index) in widgetListData[currentSection].Content.State"
         :key="state._id">
         <div :class="[widgetListData[currentSection]._ContentType ? 'col-3' : 'col-3 q-pl-md']">
@@ -43,7 +43,7 @@
           </q-card> -->
         </div>
         <div class="col-9 q-px-md">
-          <SourceList />
+          <SourceManager />
         </div>
       </div>
     </div>
@@ -53,7 +53,7 @@
 
 <script>
 import SettingList from './SettingList.vue'
-import SourceList from './SourceList.vue'
+import SourceManager from './SourceManager.vue'
 import { defineComponent, ref, computed } from 'vue'
 import { useLayoutStore } from 'src/stores/layout'
 import { useWidgetListStore } from 'src/stores/widget'
@@ -77,7 +77,7 @@ export default defineComponent({
   name: 'ContentSetting',
   components: {
     SettingList,
-    SourceList
+    SourceManager
   },
   setup() {
     return {

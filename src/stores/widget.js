@@ -142,6 +142,16 @@ export const useWidgetListStore = defineStore('widgetList', {
     SetCurrentState(Index) {
       this.currentState = Index
     },
+    SetFlowState(Index, EventIndex, currentStateData) {
+      const layoutStore = useLayoutStore()
+      const currentSection = layoutStore.currentSection
+      this.widgetListData[currentSection].Content.State[Index].Event[EventIndex] = {
+        ...this.EventData,
+        _id: currentStateData._id,
+        _next_state_id: currentStateData._stateIndex,
+        _title: currentStateData._title
+      }
+    },
     AddState() {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
@@ -152,7 +162,6 @@ export const useWidgetListStore = defineStore('widgetList', {
       }
       this.widgetListData[currentSection].Content.State.push({
         _id: uid(),
-        File: [],
         Event: [],
         _title: ''
       })
@@ -182,15 +191,45 @@ export const useWidgetListStore = defineStore('widgetList', {
         _output_value: ''
       })
     },
-    SetFlowState(Index, EventIndex, currentStateData) {
+    AddSourceList(fileDatas) {
+      const layoutStore = useLayoutStore()
+      const widgetStore = useWidgetListStore()
+      const currentSection = layoutStore.currentSection
+      const currentState = widgetStore.currentState
+      console.log('fileDatas', fileDatas)
+      fileDatas.forEach((e, i) => {
+        this.widgetListData[currentSection].Content.unshift({
+          MediaItem: {
+            _note: '',
+            _duration: 10,
+            _videoDuration: '0',
+            _fileSize: e._fileSize,
+            _src: e._src,
+            _targetPath: e._targetPath
+          }
+        })
+        this.widgetListData[currentSection].Content.State[currentState].unshift({
+          File: {
+            _src: e._src,
+            _duration: '0'
+          }
+        })
+      })
+      // const contentFirstProp = this.widgetListData[currentSection].Content
+      // const stateFirstProp = this.widgetListData[currentSection].Content.State[currentState]
+      // fileDatas.forEach((obj, i) => {
+      //   const newObj = {
+      //     MediaItem: obj,
+      //     ...contentFirstProp
+      //   }
+      // })
+    },
+    DelSourceList(fileName) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      this.widgetListData[currentSection].Content.State[Index].Event[EventIndex] = {
-        ...this.EventData,
-        _id: currentStateData._id,
-        _next_state_id: currentStateData._stateIndex,
-        _title: currentStateData._title
-      }
+      console.log('fileName', fileName)
+      const Data = this.widgetListData[currentSection].Content.MediaItem.filter(e => e._src !== fileName)
+      this.widgetListData[currentSection].Content.MediaItem = Data
     },
     DelState(ID) {
       const layoutStore = useLayoutStore()
