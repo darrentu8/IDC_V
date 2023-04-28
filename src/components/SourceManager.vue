@@ -11,13 +11,27 @@
           <q-list bordered separator class="cursor-pointer q-mb-md rounded-borders">
             <q-item v-ripple>
               <q-item-section>
-                <div class="flex items-center">
-                  <q-icon size="sm" round flat class="q-mr-md" color="grey-5" name="drag_indicator" />
-                  {{ index + 1 }}. {{ element._src }}
+                <div class="row items-center">
+                  <div class="col-2 flex items-center">
+                    <q-icon size="sm" round flat class="q-pr-xs" color="grey-5" name="drag_indicator" />
+                    {{ index + 1 }}.
+                  </div>
+                  <div class="col-10">
+                    <div class="flex ellipsis">
+                      {{ element._src }}
+                    </div>
+                    <div class="q-mt-xs" style="max-width: 150px;">
+                      <q-input class="" dense outlined
+                        @blur="element._duration = checkAndReplaceValue($event.target.value)"
+                        v-if="element._type == 'image' || element._type == 'pdf'" v-model="element._duration"
+                        type="number" maxlength="4" min="3" prefix="" suffix="sec" />
+                    </div>
+                  </div>
                 </div>
               </q-item-section>
               <q-item-section side>
-                <q-btn label="" @click="deleteFile(element._targetPath, element._src)" round flat class="" color="pink
+                <q-btn label="" @click="deleteFile(currentStateIndex, element._src, element._targetPath)" round flat
+                  class="" color="pink
 " icon="delete_outline" />
               </q-item-section>
             </q-item>
@@ -80,13 +94,24 @@ const add = async (currentStateIndex) => {
   const fileDatas = await window.myAPI.getFileData(fileData)
   widgetStore.AddSourceList(currentStateIndex, fileDatas)
 }
-const deleteFile = (sourceFile, fileName) => {
-  window.myAPI.deleteFile(sourceFile)
-  widgetStore.DelSourceList(fileName)
+const deleteFile = (currentStateIndex, fileName, sourceFile) => {
+  widgetStore.DelSourceList(currentStateIndex, fileName, sourceFile)
 }
 const log = (evt) => {
   console.log(evt)
   console.log('widgetListData', widgetListData)
+}
+function checkAndReplaceValue(value) {
+  const regex = /^\d+$/ // 條件：只允許數字
+
+  if (!regex.test(value)) {
+    // 如果不符合條件，返回 3
+    return '3'
+  } else if (Number(value) < 3) { // 新增條件：不能小於 3
+    return '3'
+  }
+
+  return value
 }
 </script>
 <style lang="scss">

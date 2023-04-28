@@ -197,31 +197,66 @@ export const useWidgetListStore = defineStore('widgetList', {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
       console.log('fileDatas', fileDatas)
-      const newContentArray = fileDatas.map((e) => ({
+      // Filter out files that already exist in the MediaItem array
+      const newContentArray = fileDatas.filter((e) => {
+        const existingFile = this.widgetListData[currentSection].Content.MediaItem.find((item) => item._src === e._src)
+        return !existingFile
+      }).map((e) => ({
         _note: '',
-        _duration: '10',
+        _type: e._type,
+        _duration: e._duration,
         _videoDuration: '0',
         _fileSize: e._fileSize,
         _src: e._src,
         _targetPath: e._targetPath
       }))
-      const newFileArray = fileDatas.map((e) => ({
+
+      // Filter out files that already exist in the File array
+      const newFileArray = fileDatas.filter((e) => {
+        const existingFile = this.widgetListData[currentSection].Content.State[currentStateIndex].File.find((item) => item._src === e._src)
+        return !existingFile
+      }).map((e) => ({
         _src: e._src,
-        _duration: '0',
+        _type: e._type,
+        _duration: e._duration,
         _videoDuration: '0',
         _fileSize: e._fileSize,
         _targetPath: e._targetPath
       }))
-      this.widgetListData[currentSection].Content.MediaItem = newContentArray
-      this.widgetListData[currentSection].Content.State[currentStateIndex].File = newFileArray
+
+      // Concatenate the new content and file arrays with the existing ones
+      this.widgetListData[currentSection].Content.MediaItem = this.widgetListData[currentSection].Content.MediaItem.concat(newContentArray)
+      this.widgetListData[currentSection].Content.State[currentStateIndex].File = this.widgetListData[currentSection].Content.State[currentStateIndex].File.concat(newFileArray)
+
       console.log('this.widgetListData[currentSection].Content', this.widgetListData[currentSection].Content)
     },
-    DelSourceList(fileName) {
+    DelSourceList(currentStateIndex, fileName, sourceFile) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
       console.log('fileName', fileName)
-      const Data = this.widgetListData[currentSection].Content.MediaItem.filter(e => e._src !== fileName)
-      this.widgetListData[currentSection].Content.MediaItem = Data
+
+      let existingFileInState = false
+
+      for (let i = 0; i < this.widgetListData[currentSection].Content.State.length; i++) {
+        const existingFile = this.widgetListData[currentSection].Content.State[i].File.find((item) => item._src === fileName)
+        if (existingFile) {
+          existingFileInState = true
+          break
+        }
+      }
+
+      if (!existingFileInState) {
+        // Remove file from MediaItem array
+        const filteredMediaItemArray = this.widgetListData[currentSection].Content.MediaItem.filter(e => e._src !== fileName)
+        this.widgetListData[currentSection].Content.MediaItem = filteredMediaItemArray
+        // Remove file from folder
+        window.myAPI.deleteFile(sourceFile)
+        existingFileInState = false
+      } else {
+        // Remove file from State File array
+        const filteredStateFileArray = this.widgetListData[currentSection].Content.State[currentStateIndex].File.filter(e => e._src !== fileName)
+        this.widgetListData[currentSection].Content.State[currentStateIndex].File = filteredStateFileArray
+      }
     },
     DelState(ID) {
       const layoutStore = useLayoutStore()

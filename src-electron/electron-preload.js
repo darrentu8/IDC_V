@@ -143,8 +143,7 @@ contextBridge.exposeInMainWorld('myAPI', {
     const sourcePaths = dialog.showOpenDialogSync({
       title: 'Choose Media',
       filters: [
-        { name: 'Images', extensions: ['jpg', 'png', 'gif'] },
-        { name: 'Movies', extensions: ['mkv', 'avi', 'mp4'] }
+        { name: 'Images', extensions: ['jpg', 'png', 'gif', 'mkv', 'avi', 'mp4'] }
       ],
       properties: ['openFile', 'multiSelections']
     })
@@ -164,6 +163,8 @@ contextBridge.exposeInMainWorld('myAPI', {
           } catch (err) {
             console.error(err)
           }
+        } else {
+          fileDataArray.push({ fileName, targetPath })
         }
       })
 
@@ -176,12 +177,40 @@ contextBridge.exposeInMainWorld('myAPI', {
         .then((stats) => {
           const fileDataWithSize = {
             _note: '',
-            _duration: 10,
+            _type: '',
+            _duration: '10',
             _videoDuration: '0',
             _fileSize: stats.size,
             _src: fileData.fileName,
             _targetPath: fileData.targetPath
           }
+          // Get file type based on extension
+          if (stats.isFile()) {
+            const extname = path.extname(fileData.targetPath)
+            switch (extname.toLowerCase()) {
+              case '.pdf':
+                fileDataWithSize._type = 'pdf'
+                fileDataWithSize._duration = '10'
+                break
+              case '.jpg':
+              case '.jpeg':
+              case '.png':
+                fileDataWithSize._type = 'image'
+                fileDataWithSize._duration = '10'
+                break
+              case '.mp4':
+              case '.avi':
+              case '.mkv':
+                fileDataWithSize._type = 'video'
+                fileDataWithSize._duration = '0'
+                break
+              default:
+                fileDataWithSize._type = 'unknown'
+            }
+          } else {
+            fileDataWithSize._type = 'unknown'
+          }
+          console.log(stats)
           console.log(fileDataWithSize)
           return fileDataWithSize
         })
