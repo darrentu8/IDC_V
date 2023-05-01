@@ -10,6 +10,7 @@ export const useLayoutStore = defineStore('layout', {
       _MagicIndex: '1',
       _Layout_Type: '0', // 0 -> Grid, 1 -> Flexible
       _Version: '1.1',
+      _Playlist_Name: '',
       _Playlist_UUID: '',
       _Model_Type: '',
       _Rs232: {

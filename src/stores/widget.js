@@ -234,6 +234,12 @@ export const useWidgetListStore = defineStore('widgetList', {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
       console.log('fileName', fileName)
+      console.log('sourceFile', sourceFile)
+      console.log('currentStateIndex', currentStateIndex)
+
+      // Remove file from State File array
+      const filteredStateFileArray = this.widgetListData[currentSection].Content.State[currentStateIndex].File.filter(e => e._src !== fileName)
+      this.widgetListData[currentSection].Content.State[currentStateIndex].File = filteredStateFileArray
 
       let existingFileInState = false
 
@@ -252,11 +258,13 @@ export const useWidgetListStore = defineStore('widgetList', {
         // Remove file from folder
         window.myAPI.deleteFile(sourceFile)
         existingFileInState = false
-      } else {
-        // Remove file from State File array
-        const filteredStateFileArray = this.widgetListData[currentSection].Content.State[currentStateIndex].File.filter(e => e._src !== fileName)
-        this.widgetListData[currentSection].Content.State[currentStateIndex].File = filteredStateFileArray
       }
+    },
+    CheckDelStateObj(ID) {
+      const layoutStore = useLayoutStore()
+      const currentSection = layoutStore.currentSection
+      const Data = this.widgetListData[currentSection].Content.State.filter(e => e._id !== ID)
+      this.widgetListData[currentSection].Content.State = Data
     },
     DelState(ID) {
       const layoutStore = useLayoutStore()

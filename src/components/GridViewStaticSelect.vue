@@ -6,7 +6,7 @@
       <grid-item class="gridItem" static v-for="(item, Index) in viewLayout" :x="item.x" :y="item.y" :w="item.w"
         :h="item.h" :i="item.i" :key="item.i">
         <div @click="selectGrid(Index)" class="fit flex flex-center rounded-borders"
-          :class="[currentSection == Index ? ['bg-light-blue-2', 'active'] : 'bg-grey-3']">
+          :class="[currentSection == Index ? ['bg-grey-5', 'active'] : 'bg-grey-3']">
           {{ Index + 1 }}
         </div>
       </grid-item>
@@ -29,13 +29,13 @@ const selectGrid = (i) => {
 <style lang="scss" scoped>
 .gridItem:hover {
   cursor: pointer;
-  outline: 2px solid rgb(69, 195, 229);
+  outline: 2px solid $primary;
   border-radius: 4px;
 }
 
 .gridItem .active {
   cursor: pointer;
-  outline: 2px solid rgb(69, 195, 229);
+  outline: 2px solid $primary;
   border-radius: 4px;
 }
 </style>

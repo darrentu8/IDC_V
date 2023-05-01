@@ -225,6 +225,7 @@ contextBridge.exposeInMainWorld('myAPI', {
     return validFileDatas
   },
   deleteFile(sourceFile) {
+    console.log('sourceFile', sourceFile)
     fs.unlinkSync(sourceFile)
   }
 })

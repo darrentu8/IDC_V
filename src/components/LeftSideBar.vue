@@ -1,14 +1,20 @@
 <template>
-  <q-toolbar class="q-px-md q-my-md flex justify-center">
-    <q-btn class="theme col-6 text-no-wrap" unelevated color="grey-4" text-color="grey-9" size="md" @click="backToGrid()">
-      Playlist detail
-    </q-btn>
-    <q-space />
-    <q-btn class="theme col-6" unelevated color="grey-4" text-color="grey-9" size="md" stack @click="backToHardware()">
-      <!-- <q-icon name="img:/icon/export.svg" color="white" size="xs" /> -->
-      Hardware
-      <br>configuration
-    </q-btn>
+  <q-toolbar class="q-px-md q-mb-md flex justify-center">
+    <q-item-label class="full-width">
+      <q-input bottom-slots v-on:focus="focus = true" v-on:blur="focus = false" v-model="PlaylistName"
+        label="Playlist Name" :dense="dense">
+        <template v-slot:append>
+          <q-icon v-if="focus || !PlaylistName" name="img:/icon/pencil.svg" />
+          <!-- <q-icon v-if="NovoDS._Playlist_Name !== PlaylistName" name="close" @click="PlaylistName = ''"
+            class="cursor-pointer" /> -->
+          <!-- <q-icon v-if="NovoDS._Playlist_Name !== PlaylistName" name="check" color="green" @click="saveName()"
+            class="cursor-pointer" /> -->
+        </template>
+        <template v-if="NovoDS._Playlist_Name !== PlaylistName" v-slot:after>
+          <q-btn round dense flat color="grey-5" icon="save" />
+        </template>
+      </q-input>
+    </q-item-label>
   </q-toolbar>
   <GridViewStaticSelect :view-layout="layouts.layout" :view-row-count="layouts.rowCount"
     :view-col-count="layouts.colCount" :view-width="280" />
@@ -21,26 +27,23 @@
   </q-scroll-area>
 </template>
 <script setup>
-import { computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted } from 'vue'
+// import { useRouter } from 'vue-router'
 import GridViewStaticSelect from 'src/components/GridViewStaticSelect.vue'
 import { useLayoutStore } from 'src/stores/layout'
 import { useWidgetListStore } from 'src/stores/widget'
 import EditWidgetList from './EditWidgetList.vue'
 
-const router = useRouter()
+// const router = useRouter()
 const LayoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
+const NovoDS = computed(() => LayoutStore.NovoDS)
 const layouts = computed(() => LayoutStore.layout)
 const widgetLists = computed(() => widgetStore.GetWidgetListData)
 const widgetOptions = computed(() => widgetStore.widgetOption)
 
-const backToGrid = () => {
-  router.push({ path: '/grid' })
-}
-const backToHardware = () => {
-  router.push({ path: '/hardware' })
-}
+const focus = ref(false)
+const PlaylistName = ref('')
 onMounted(() => {
 })
 </script>
