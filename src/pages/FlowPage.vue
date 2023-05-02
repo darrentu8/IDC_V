@@ -1,10 +1,10 @@
 <template>
   <q-page :class="['items-start', tab === 'source' ? 'col-12 row' : 'col-6 row']">
-    <div v-if="tab === 'source' && widgetListData[currentSection]._ContentType" class="col-3"
-      style="border-right: 1px solid rgba(0, 0, 0, 0.12);background-color: #F8F8F8;">
+    <div class="fixed" v-if="tab === 'source'"
+      style="border-right: 1px solid rgba(0, 0, 0, 0.12);background-color: #F8F8F8;width:300px;height: 100vh;">
       <SettingList />
     </div>
-    <div :class="[tab === 'source' ? 'col-9 q-pa-md' : 'col-6 q-pa-md']">
+    <div :class="[tab === 'source' ? 'offSetL q-pa-md' : 'offSetR q-pa-md']">
       <q-tabs v-model="tab" inline-label class="text-grey" active-color="primary" indicator-color="primary" align="left"
         narrow-indicator>
         <q-tab name="source" icon="img:/icon/view-grid-add.svg" label="Source library"
@@ -30,7 +30,7 @@
           </Suspense>
         </q-tab-panel>
 
-        <q-tab-panel name="flow" class="q-pa-none">
+        <q-tab-panel name="flow" class="">
           <Suspense v-if="isLoading">
             <StoreFlow />
             <template #fallback>
@@ -43,7 +43,7 @@
       </q-tab-panels>
 
     </div>
-    <div v-if="tab === 'flow'" class="col-6 q-pl-lg">
+    <div v-if="tab === 'flow'" class="fixed" style="background-color: #F8F8F8;width:500px;height: 100vh;right:0;">
       <ConnectionSettingList />
     </div>
   </q-page>

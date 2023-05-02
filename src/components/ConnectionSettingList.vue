@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div class="q-pa-md" style="height: 100vh;">
     <q-item-label class="border-b text-dark text-bold" header>Connection setting (State {{ currentState + 1 }})
       <!-- <q-btn label="New event" v-on:click="selectFile()" flat class="theme-tab-btn" color="primary" icon="add"
         style="height: 49.8px;margin-top: -16px;" /> -->

@@ -1,15 +1,14 @@
 <template>
-  <q-item-label header class="border-b text-dark text-bold">Source
-    <q-btn label="" @click="add(currentStateIndex)" flat class="theme-tab-btn" color="primary" icon="add"
-      style="height: 49.8px;margin-top: -16px;margin-right: 15px;" />
+  <q-item-label class="border-d q-pb-sm q-pl-sm text-dark text-bold relative-position">Source
+    <q-btn label="" @click="add(currentStateIndex)" flat class="theme-tab-btn add" color="primary" icon="add" />
   </q-item-label>
-  <div class="q-mt-md">
+  <div class="q-mt-md dragBox">
     <div v-if="fileList">
       <draggable @change="log" v-bind="dragOptions" :list="fileList" item-key="fileList.fileName" @start="drag = true"
         @end="drag = false">
         <template #item="{ element, index }">
-          <q-list bordered separator class="cursor-pointer q-mb-md rounded-borders">
-            <q-item v-ripple>
+          <q-list separator class="bg-white cursor-pointer q-mb-md rounded-borders">
+            <q-item>
               <q-item-section>
                 <div class="row items-center">
                   <div class="col-2 flex items-center">
@@ -32,7 +31,7 @@
               <q-item-section side>
                 <q-btn label="" @click="deleteFile(currentStateIndex, element._src, element._targetPath)" round flat
                   class="" color="pink
-" icon="delete_outline" />
+" icon="img:/icon/delete.svg" />
               </q-item-section>
             </q-item>
           </q-list>

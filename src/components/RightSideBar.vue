@@ -1,5 +1,5 @@
 <template>
-  <q-scroll-area style="height: calc(100% - 86px);">
+  <q-scroll-area style="height: 100vh;">
     <q-item-label header>
       Connection settings
     </q-item-label>

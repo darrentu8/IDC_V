@@ -1,24 +1,22 @@
 <template>
   <div class="col-6">
     <div v-for="(stateData, Index) in widgetListData[currentSection].Content.State" :key="stateData._id"
-      class="flowBoxWrap border-b">
+      class="flowBoxWrap border-w">
       <div class="row justify-center items-top q-pt-md">
         <!-- Flow Labels -->
         <div class="flex text-center" style="min-height: 139px;">
-          <q-chip v-if="Index == 0" class="q-mx-lg" style="margin-top:50px;">Default</q-chip>
-          <q-chip v-else class="q-mx-lg" style="margin-top:50px;">Flow {{ Index }}</q-chip>
-          <q-card flat square bordered horizontal class="flowBox" @click="setCurrentState(Index)">
-            <q-img src="" style="">
-              <div class="absolute-full flex flex-center bg-gery text-white">
-              </div>
-              <div v-if="currentState === Index" class="absolute-full text-subtitle2 flex flex-center">
-                <q-icon size="16px" name="edit" />
-              </div>
-            </q-img>
-            <q-card-section v-if="stateData._title !== ''" horizontal class="q-pa-xs">
+          <q-chip v-if="Index == 0" class="q-mr-md" text-color="white" color="grey-5"
+            style="margin-top:35px;margin-left: -20px;">Default</q-chip>
+          <q-chip v-else class="q-mr-md" text-color="white" color="grey-5"
+            style="margin-top:35px;margin-left: -20px;">Flow {{ Index
+            }}</q-chip>
+          <q-card bordered class="flowBox">
+            <q-icon size="lg" name="img:/icon/mark.svg" class="q-mt-xs flag">
+            </q-icon>
+            <q-card-section v-if="stateData._title !== ''" class="q-pa-xs">
               <div class="text-subtitle2">{{ stateData._title }}</div>
             </q-card-section>
-            <q-card-section v-else horizontal class="q-pa-xs">
+            <q-card-section v-else class="q-pa-xs">
               <div class="text-subtitle2">State {{ Number(Index + 1) }}</div>
             </q-card-section>
           </q-card>
@@ -32,25 +30,18 @@
                 <div v-for="(EventData, EventIndex) in stateData.Event" :key="EventData._id"
                   class="flex items-center q-mb-md">
                   <div class="q-mr-md q-ml-lg">
-                    <!-- <q-btn v-if="currentEvent === EventData._id" @click="setCurrentEvent(EventIndex, EventData._id)"
-                      unelevated class="border-round-select" text-color="grey-7" color="grey-4" round icon="link">
-                      <q-badge color="grey" class="link-badge" floating>{{ EventData.Action.length && 0 }}</q-badge>
-                    </q-btn>
-                    <q-btn v-else @click="setCurrentEvent(EventIndex, EventData._id)" unelevated
-                      class="border-round-unselect" text-color="grey-7" color="grey-2" round icon="link">
-                      <q-badge color="grey" class="link-badge" floating>{{ EventData.Action.length && 0 }}</q-badge>
-                    </q-btn> -->
                     <q-btn :disable="EventData._next_state_id === ''" @click="setCurrentEvent(EventIndex, EventData._id)"
-                      unelevated class="border-round-unselect" text-color="grey-7" color="grey-2" round icon="link">
+                      unelevated class="border-round-unselect" text-color="white" color="grey-6" round
+                      icon="img:/icon/link.svg">
                       <q-badge color="grey" class="link-badge" floating>{{ EventData.Action.length }}</q-badge>
                     </q-btn>
                   </div>
-                  <q-card v-if="EventData._next_state_id !== undefined" flat square bordered horizontal
-                    class="flowBox q-ml-md select">
-                    <q-btn v-if="EventData._next_state_id !== ''" flat size="16px" class="full-width full-height"
-                      color="grey-5">{{
-                        mapCurrentStateOptions(EventData._next_state_id) }}</q-btn>
-                    <q-btn v-else flat size="16px" class="full-width full-height" color="grey-5" icon="add" />
+                  <q-card v-if="EventData._next_state_id !== undefined" bordered class="flowBox q-ml-md select">
+                    <q-icon size="lg" name="img:/icon/mark.svg" class="q-mt-xs flag">
+                    </q-icon>
+                    <q-btn v-if="EventData._next_state_id !== ''" flat color="primary" class="text-capitalize">{{
+                      mapCurrentStateOptions(EventData._next_state_id) }}</q-btn>
+                    <q-btn v-else flat class="full-width" color="grey-6" icon="add" />
                     <q-popup-edit v-model="EventData._next_state_id" v-slot="scope">
                       <q-select v-model="scope.value" :options="currentStateOptions" option-value="_stateIndex"
                         option-label="_title" dense autofocus
@@ -62,7 +53,7 @@
                         @click="delStateEvent(EventData._id, Index, EventIndex)" />
                     </div>
                   </q-card>
-                  <q-card v-else flat square bordered horizontal class="flowBox q-ml-md select">
+                  <q-card v-else bordered class="flowBox q-ml-md select">
                     <q-btn flat size="16px" class="full-width full-height" color="grey-5" icon="add" />
                     <q-popup-edit v-model="EventData._next_state_id" v-slot="scope">
                       <q-select v-model="scope.value" :options="currentStateOptions" option-value="_stateIndex"
@@ -82,12 +73,12 @@
         </div>
       </div>
       <!-- 刪除 state -->
-      <!-- <div class="absolute-right q-ma-xs">
-        <q-btn class="" color="grey" round flat dense icon="clear" @click="delFlow(Index, EventIndex)" />
-      </div> -->
+      <div v-if="currentStateLength > 1" class="absolute-right q-ma-xs">
+        <q-btn class="" color="grey" round flat dense icon="clear" @click="delState(stateData._id)" />
+      </div>
       <!-- Add Flow Btn -->
       <div flat square class="text-center q-mb-md">
-        <q-btn @click="addStateEvent(Index)" unelevated round dense color="grey-2" text-color="positive" icon="add" />
+        <q-btn @click="addStateEvent(Index)" unelevated round dense color="grey-2" text-color="grey-6" icon="add" />
       </div>
     </div>
   </div>
@@ -107,14 +98,14 @@ const layoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
 const eventStore = useEventListStore()
 const currentSection = computed(() => layoutStore.GetCurrentSection)
-const currentState = computed(() => widgetStore.GetCurrentState)
-// const currentStateLength = computed(() => widgetStore.GetCurrentStateLength)
+// const currentState = computed(() => widgetStore.GetCurrentState)
+const currentStateLength = computed(() => widgetStore.GetCurrentStateLength)
 const currentStateOptions = computed(() => widgetStore.GetCurrentStateOptions)
 // const currentEvent = computed(() => eventStore.GetCurrentEvent)
 const widgetListData = computed(() => widgetStore.GetWidgetListData)
-const setCurrentState = (Index) => {
-  widgetStore.SetCurrentState(Index)
-}
+// const setCurrentState = (Index) => {
+//   widgetStore.SetCurrentState(Index)
+// }
 const setFlowState = (Index, EventIndex = 0, currentStateData) => {
   widgetStore.SetFlowState(Index, EventIndex, currentStateData)
   popEdit.value = false
@@ -126,9 +117,9 @@ const setCurrentEvent = (Index, id) => {
 const addStateEvent = (Index) => {
   widgetStore.AddStateEvent(Index)
 }
-// const delFlow = (ID, Index, EventIndex) => {
-//   widgetStore.DelFlow(ID, Index, EventIndex)
-// }
+const delState = (ID) => {
+  widgetStore.DelState(ID)
+}
 const delStateEvent = (ID, Index, EventIndex) => {
   widgetStore.DelStateEvent(ID, Index, EventIndex)
 }
