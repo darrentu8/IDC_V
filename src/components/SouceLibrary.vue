@@ -1,17 +1,12 @@
 <template>
   <div class="row">
-    <div v-if="widgetListData[currentSection]._ContentType" class="col-4">
-      <SettingList />
-    </div>
-    <div :class="[widgetListData[currentSection]._ContentType ? 'col-8' : 'col-12']">
-      <div class="row flex q-pb-lg border-b" v-for="(state, Index) in widgetListData[currentSection].Content.State"
+    <div class="col-12">
+      <div class="row flex q-pb-lg border-w" v-for="(state, Index) in widgetListData[currentSection].Content.State"
         :key="state._id">
         <div :class="[widgetListData[currentSection]._ContentType ? 'col-3' : 'col-3 q-pl-md']">
-          <q-card flat square bordered horizontal class="q-mt-lg cursor-pointer flowBox">
-            <q-img src="" style="">
-              <div class="absolute-full flex flex-center bg-gery text-white">
-              </div>
-            </q-img>
+          <q-card bordered horizontal class="q-mt-lg q-mx-auto cursor-pointer flowBox">
+            <q-icon size="lg" name="img:/icon/mark.svg" class="q-mt-xs">
+            </q-icon>
             <q-card-section v-if="state._title !== ''" horizontal class="q-pa-xs">
               <div class="text-subtitle2">{{ state._title }}</div>
             </q-card-section>
@@ -52,7 +47,6 @@
 </template>
 
 <script>
-import SettingList from './SettingList.vue'
 import SourceManager from './SourceManager.vue'
 import { defineComponent, ref, computed } from 'vue'
 import { useLayoutStore } from 'src/stores/layout'
@@ -76,7 +70,6 @@ const delState = (id) => {
 export default defineComponent({
   name: 'ContentSetting',
   components: {
-    SettingList,
     SourceManager
   },
   setup() {

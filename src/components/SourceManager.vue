@@ -1,5 +1,5 @@
 <template>
-  <q-item-label header class="border-b">Source
+  <q-item-label header class="border-b text-dark text-bold">Source
     <q-btn label="" @click="add(currentStateIndex)" flat class="theme-tab-btn" color="primary" icon="add"
       style="height: 49.8px;margin-top: -16px;margin-right: 15px;" />
   </q-item-label>

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <q-item-label header>Media settings</q-item-label>
+  <div class="q-pa-md" style="height: 100vh;">
+    <q-item-label header class="border-b q-mb-lg text-dark text-bold">Media settings</q-item-label>
     <!-- <q-item-label class="q-mx-md">
       <q-input v-model="widgetListData[currentSection].name" label="Standard" />
     </q-item-label> -->

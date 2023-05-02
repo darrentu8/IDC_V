@@ -1,10 +1,10 @@
 <template>
-  <q-toolbar class="q-px-md q-mb-md flex justify-center">
-    <q-item-label class="full-width">
+  <q-toolbar class="q-px-md flex justify-center">
+    <q-item-label class="full-width q-mt-md">
       <q-input bottom-slots v-on:focus="focus = true" v-on:blur="focus = false" v-model="PlaylistName"
-        label="Playlist Name" :dense="dense">
+        label="Playlist Name">
         <template v-slot:append>
-          <q-icon v-if="focus || !PlaylistName" name="img:/icon/pencil.svg" />
+          <q-icon v-if="focus || !PlaylistName" size="xs" name="img:/icon/pencil.svg" />
           <!-- <q-icon v-if="NovoDS._Playlist_Name !== PlaylistName" name="close" @click="PlaylistName = ''"
             class="cursor-pointer" /> -->
           <!-- <q-icon v-if="NovoDS._Playlist_Name !== PlaylistName" name="check" color="green" @click="saveName()"
@@ -18,7 +18,8 @@
   </q-toolbar>
   <GridViewStaticSelect :view-layout="layouts.layout" :view-row-count="layouts.rowCount"
     :view-col-count="layouts.colCount" :view-width="280" />
-  <q-item-label header class="q-pb-xs">Selected widget</q-item-label>
+  <q-separator class="q-ma-md" />
+  <q-item-label header class="q-pb-xs text-dark text-bold">Widget</q-item-label>
   <q-scroll-area style="height: calc(100% - 250px);">
     <q-list padding>
       <EditWidgetList v-for="(widget, Index) in widgetLists" :Index="Index" :key="widget.id"

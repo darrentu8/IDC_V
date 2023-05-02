@@ -1,18 +1,25 @@
 <template>
-  <q-page :class="['items-start', tab === 'source' ? 'col-12' : 'col-6 row']">
-    <div :class="[tab === 'source' ? 'col-12' : 'col-6']">
+  <q-page :class="['items-start', tab === 'source' ? 'col-12 row' : 'col-6 row']">
+    <div v-if="tab === 'source' && widgetListData[currentSection]._ContentType" class="col-3"
+      style="border-right: 1px solid rgba(0, 0, 0, 0.12);background-color: #F8F8F8;">
+      <SettingList />
+    </div>
+    <div :class="[tab === 'source' ? 'col-9 q-pa-md' : 'col-6 q-pa-md']">
       <q-tabs v-model="tab" inline-label class="text-grey" active-color="primary" indicator-color="primary" align="left"
         narrow-indicator>
-        <q-tab name="source" label="Source library" />
-        <q-tab name="flow" label="Story Flow" />
+        <q-tab name="source" icon="img:/icon/view-grid-add.svg" label="Source library"
+          style="text-transform: capitalize;" />
+        <q-tab name="flow" icon="img:/icon/flow.svg" label="Story Flow" style="text-transform: capitalize;" />
 
         <q-btn v-if="tab === 'source'" label="Add new state" @click="addState()" flat class="theme-tab-btn"
-          color="primary" icon="add" />
+          color="primary">
+          <q-icon name="add" class="q-ml-xs"></q-icon>
+        </q-btn>
       </q-tabs>
-      <q-separator />
 
-      <q-tab-panels v-model="tab" animated @update:model-value="loadComponent" keep-alive>
-        <q-tab-panel name="source" class="q-pa-none">
+      <q-tab-panels v-model="tab" style="background-color: #F1F1F1;" animated @update:model-value="loadComponent"
+        keep-alive>
+        <q-tab-panel name="source" class="">
           <Suspense v-if="isLoading">
             <SouceLibrary />
             <template #fallback>
@@ -43,12 +50,18 @@
 </template>
 
 <script>
+import { ref, computed, defineComponent, watch } from 'vue'
+import SettingList from 'src/components/SettingList.vue'
 import ConnectionSettingList from 'src/components/ConnectionSettingList.vue'
 import SouceLibrary from 'src/components/SouceLibrary.vue'
 import StoreFlow from 'src/components/StoreFlow.vue'
-import { ref, defineComponent, watch } from 'vue'
 import { useWidgetListStore } from 'src/stores/widget'
+import { useLayoutStore } from 'src/stores/layout'
+
+const layoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
+const widgetListData = computed(() => widgetStore.GetWidgetListData)
+const currentSection = computed(() => layoutStore.GetCurrentSection)
 const addState = () => {
   widgetStore.AddState()
 }
@@ -60,6 +73,7 @@ const addState = () => {
 export default defineComponent({
   name: 'FlowPage',
   components: {
+    SettingList,
     ConnectionSettingList,
     SouceLibrary,
     StoreFlow
@@ -77,6 +91,8 @@ export default defineComponent({
     })
     return {
       isLoading,
+      widgetListData,
+      currentSection,
       loadComponent,
       addState,
       tab
