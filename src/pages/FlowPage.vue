@@ -62,6 +62,7 @@ const layoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
 const widgetListData = computed(() => widgetStore.GetWidgetListData)
 const currentSection = computed(() => layoutStore.GetCurrentSection)
+const currentState = computed(() => widgetStore.GetCurrentState)
 const addState = () => {
   widgetStore.AddState()
 }
@@ -92,6 +93,7 @@ export default defineComponent({
     return {
       isLoading,
       widgetListData,
+      currentState,
       currentSection,
       loadComponent,
       addState,

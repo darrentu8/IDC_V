@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div v-if="widgetListData[currentSection]._ContentType" class="q-pa-md">
     <q-item-label header class="border-b q-mb-lg text-dark text-bold">Media settings</q-item-label>
     <!-- <q-item-label class="q-mx-md">
       <q-input v-model="widgetListData[currentSection].name" label="Standard" />

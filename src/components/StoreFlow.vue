@@ -30,21 +30,22 @@
                 <div v-for="(EventData, EventIndex) in stateData.Event" :key="EventData._id"
                   class="flex items-center q-mb-md">
                   <div class="q-mr-md q-ml-lg">
-                    <q-btn :disable="EventData._next_state_id === ''" @click="setCurrentEvent(EventIndex, EventData._id)"
-                      unelevated class="border-round-unselect" text-color="white" color="grey-6" round
-                      icon="img:/icon/link.svg">
-                      <q-badge color="grey" class="link-badge" floating>{{ EventData.Action.length }}</q-badge>
+                    <q-btn :disable="EventData._next_state_id === ''" @click="setCurrentEvent(Index, EventData._id)"
+                      unelevated class="border-round-select" text-color="white"
+                      :color="[currentEvent === EventData._id ? 'primary' : 'grey-6']" round icon="img:/icon/link.svg">
+                      <q-badge color="primary" class="link-badge" floating>{{ EventData.Action.length && 0 }}</q-badge>
                     </q-btn>
                   </div>
                   <q-card v-if="EventData._next_state_id !== undefined" bordered class="flowBox q-ml-md select">
-                    <q-icon size="lg" name="img:/icon/mark.svg" class="q-mt-xs flag">
+                    <q-icon v-if="EventData._next_state_id !== ''" size="lg" name="img:/icon/mark.svg"
+                      class="q-mt-xs flag">
                     </q-icon>
                     <q-btn v-if="EventData._next_state_id !== ''" flat color="primary" class="text-capitalize">{{
                       mapCurrentStateOptions(EventData._next_state_id) }}</q-btn>
                     <q-btn v-else flat class="full-width" color="grey-6" icon="add" />
                     <q-popup-edit v-model="EventData._next_state_id" v-slot="scope">
-                      <q-select v-model="scope.value" :options="currentStateOptions" option-value="_stateIndex"
-                        option-label="_title" dense autofocus
+                      <q-select v-model="scope.value" :options="filterCurrentStateOptions(stateData)"
+                        option-value="_stateIndex" option-label="_title" dense autofocus
                         @update:model-value="setFlowState(Index, EventIndex, scope.value)" />
                     </q-popup-edit>
                     <!-- 刪除 -->
@@ -77,7 +78,7 @@
         <q-btn class="" color="grey" round flat dense icon="clear" @click="delState(stateData._id)" />
       </div>
       <!-- Add Flow Btn -->
-      <div flat square class="text-center q-mb-md">
+      <div v-if="stateData.Event.length < currentStateLength" flat square class="text-center q-mb-md">
         <q-btn @click="addStateEvent(Index)" unelevated round dense color="grey-2" text-color="grey-6" icon="add" />
       </div>
     </div>
@@ -101,7 +102,7 @@ const currentSection = computed(() => layoutStore.GetCurrentSection)
 // const currentState = computed(() => widgetStore.GetCurrentState)
 const currentStateLength = computed(() => widgetStore.GetCurrentStateLength)
 const currentStateOptions = computed(() => widgetStore.GetCurrentStateOptions)
-// const currentEvent = computed(() => eventStore.GetCurrentEvent)
+const currentEvent = computed(() => eventStore.GetCurrentEvent)
 const widgetListData = computed(() => widgetStore.GetWidgetListData)
 // const setCurrentState = (Index) => {
 //   widgetStore.SetCurrentState(Index)
@@ -110,9 +111,12 @@ const setFlowState = (Index, EventIndex = 0, currentStateData) => {
   widgetStore.SetFlowState(Index, EventIndex, currentStateData)
   popEdit.value = false
 }
-const setCurrentEvent = (Index, id) => {
-  eventStore.SetCurrentEvent(id)
-  eventStore.SetCurrentEventIndex(Index)
+const setCurrentEvent = (stateIndex, eventId) => {
+  console.log('stateIndex', stateIndex)
+  console.log('eventId', eventId)
+  widgetStore.SetCurrentState(stateIndex)
+  widgetStore.SetCurrentEventData(stateIndex, eventId)
+  eventStore.SetCurrentEvent(eventId)
 }
 const addStateEvent = (Index) => {
   widgetStore.AddStateEvent(Index)
@@ -127,6 +131,14 @@ const mapCurrentStateOptions = computed(() => {
   return function (stateIndex) {
     const Data = currentStateOptions.value.filter(e => e._stateIndex === stateIndex)
     return Data[0]._title
+  }
+})
+const filterCurrentStateOptions = computed(() => {
+  return function (stateData) {
+    const differentIdElements = currentStateOptions.value.filter(
+      option => !stateData.Event.some(event => event._stateId === option._id)
+    )
+    return differentIdElements
   }
 })
 </script>

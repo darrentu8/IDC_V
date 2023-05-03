@@ -45,6 +45,7 @@ export const useEventListStore = defineStore('eventList', {
   },
   actions: {
     SetCurrentEvent(id) {
+      console.log('id', id)
       this.currentEvent = id
     },
     SetCurrentEventIndex(Index) {

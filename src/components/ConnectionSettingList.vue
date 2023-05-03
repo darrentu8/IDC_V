@@ -4,10 +4,8 @@
       <!-- <q-btn label="New event" v-on:click="selectFile()" flat class="theme-tab-btn" color="primary" icon="add"
         style="height: 49.8px;margin-top: -16px;" /> -->
     </q-item-label>
-    <div v-if="widgetListData[currentSection].Content.State[currentState].Event.length">
-      <div class="row border-b q-pb-md"
-        v-for="(EventData, EventIndex) in widgetListData[currentSection].Content.State[currentState].Event"
-        :key="EventData._id">
+    <div v-if="eventActionData.length">
+      <div class="row border-b q-pb-md" v-for="(EventData, EventIndex) in eventActionData" :key="EventData._id">
         <div class="row col-12 items-top q-pt-md">
           <div class="col-1 q-pt-sm">
             {{ EventIndex + 1 }}
@@ -31,7 +29,8 @@
                   icon="delete_outline" />
               </div>
             </div>
-            <q-btn label="" size="md" @click="addAction(EventIndex)" round flat class="" color="primary" icon="add" />
+            <q-btn label="" size="md" @click="addAction(EventData._id, EventIndex)" round flat class="" color="primary"
+              icon="add" />
           </div>
           <div v-else class="col-7 flex justify-center">
             <q-btn :disable="EventData._next_state_id === ''" label="" size="md" @click="addAction(EventIndex)" round flat
@@ -52,13 +51,14 @@
 import { computed } from 'vue'
 import { useWidgetListStore } from 'src/stores/widget'
 import { useEventListStore } from 'src/stores/event'
-import { useLayoutStore } from 'src/stores/layout'
-const layoutStore = useLayoutStore()
+// import { useLayoutStore } from 'src/stores/layout'
+// const layoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
 const eventStore = useEventListStore()
-const currentSection = computed(() => layoutStore.GetCurrentSection)
+// const currentSection = computed(() => layoutStore.GetCurrentSection)
 const currentState = computed(() => widgetStore.GetCurrentState)
-const widgetListData = computed(() => widgetStore.GetWidgetListData)
+// const widgetListData = computed(() => widgetStore.GetWidgetListData)
+const eventActionData = computed(() => widgetStore.GetEventActionData)
 
 // const currentEvent = computed(() => eventStore.GetCurrentEvent)
 // const currentEventIndex = computed(() => eventStore.currentEventIndex)
@@ -71,8 +71,8 @@ const actionOptions = computed(() => eventStore.GetActionOptions)
 // const delEvent = (currentEvent, Index) => {
 //   widgetStore.DelEvent(currentEvent, Index)
 // }
-const addAction = (EventIndex) => {
-  widgetStore.AddAction(EventIndex)
+const addAction = (EventId, EventIndex) => {
+  widgetStore.AddAction(EventId, EventIndex)
 }
 const delAction = (EventIndex, id) => {
   widgetStore.DelAction(EventIndex, id)

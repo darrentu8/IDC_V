@@ -94,11 +94,15 @@ export const useWidgetListStore = defineStore('widgetList', {
       _output_value: ''
     },
     currentState: 0,
-    currentWidget: {}
+    currentWidget: {},
+    eventActionData: []
   }),
   getters: {
     GetWidgetListData() {
       return this.widgetListData
+    },
+    GetEventActionData() {
+      return this.eventActionData
     },
     GetCurrentState() {
       return this.currentState
@@ -147,10 +151,16 @@ export const useWidgetListStore = defineStore('widgetList', {
       const currentSection = layoutStore.currentSection
       this.widgetListData[currentSection].Content.State[Index].Event[EventIndex] = {
         ...this.EventData,
-        _id: currentStateData._id,
-        _next_state_id: currentStateData._stateIndex,
-        _title: currentStateData._title
+        _id: this.widgetListData[currentSection].Content.State[Index].Event[EventIndex]._id,
+        _stateId: currentStateData._id,
+        _next_state_id: currentStateData._stateIndex
       }
+    },
+    SetCurrentEventData(stateIndex, eventId) {
+      const layoutStore = useLayoutStore()
+      const currentSection = layoutStore.currentSection
+      const Data = this.widgetListData[currentSection].Content.State[stateIndex].Event.filter(e => e._id === eventId)
+      this.eventActionData = Data
     },
     AddState() {
       const layoutStore = useLayoutStore()
@@ -179,7 +189,9 @@ export const useWidgetListStore = defineStore('widgetList', {
         Action: []
       })
     },
-    AddAction(EventIndex) {
+    AddAction(EventId, EventIndex) {
+      console.log('EventId', EventId)
+      console.log('EventIndex', EventIndex)
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
       this.widgetListData[currentSection].Content.State[this.currentState].Event[EventIndex].Action.push({
