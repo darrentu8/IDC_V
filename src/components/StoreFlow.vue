@@ -27,15 +27,22 @@
             <div>
               <!-- 有Event -->
               <div>
-                <div v-for="(EventData, EventIndex) in stateData.Event" :key="EventData._id"
+                <div v-for="(EventData, EventIndex) in filterStateEvents(stateData)" :key="EventData._id"
                   class="flex items-center q-mb-md">
                   <div class="q-mr-md q-ml-lg">
-                    <q-btn :disable="EventData._next_state_id === ''" @click="setCurrentEvent(Index, EventData._id)"
-                      unelevated class="border-round-select" text-color="white"
-                      :color="[currentEvent === EventData._id ? 'primary' : 'grey-6']" round icon="img:/icon/link.svg">
-                      <q-badge color="primary" class="link-badge" floating>{{ EventData.Action.length && 0 }}</q-badge>
+                    <!-- link -->
+                    <q-btn v-if="currentEvent === EventData._id" :disable="EventData._next_state_id === ''"
+                      @click="setCurrentEvent(Index, EventData._id)" unelevated class="border-round-select"
+                      text-color="white" color="primary" round icon="img:/icon/link.svg">
+                      <q-badge color="primary" class="link-badge" floating>{{ EventData.length && 0 }}</q-badge>
+                    </q-btn>
+                    <q-btn v-else :disable="EventData._next_state_id === ''"
+                      @click="setCurrentEvent(Index, EventData._id)" unelevated class="border-round-select"
+                      text-color="white" color="grey-6" round icon="img:/icon/link.svg">
+                      <q-badge color="primary" class="link-badge" floating>{{ EventData.length && 0 }}</q-badge>
                     </q-btn>
                   </div>
+                  <!-- state -->
                   <q-card v-if="EventData._next_state_id !== undefined" bordered class="flowBox q-ml-md select">
                     <q-icon v-if="EventData._next_state_id !== ''" size="lg" name="img:/icon/mark.svg"
                       class="q-mt-xs flag">
@@ -46,7 +53,7 @@
                     <q-popup-edit v-model="EventData._next_state_id" v-slot="scope">
                       <q-select v-model="scope.value" :options="filterCurrentStateOptions(stateData)"
                         option-value="_stateIndex" option-label="_title" dense autofocus
-                        @update:model-value="setFlowState(Index, EventIndex, scope.value)" />
+                        @update:model-value="setFlowState(Index, EventData._id, scope.value)" />
                     </q-popup-edit>
                     <!-- 刪除 -->
                     <div class="absolute-right del-card">
@@ -139,6 +146,22 @@ const filterCurrentStateOptions = computed(() => {
       option => !stateData.Event.some(event => event._stateId === option._id)
     )
     return differentIdElements
+  }
+})
+const filterStateEvents = computed(() => {
+  return function (stateData) {
+    const eventData = stateData.Event
+    const nextIdCounts = {}
+    for (let i = 0; i < eventData.length; i++) {
+      const nextId = eventData[i]._next_state_id
+      if (!nextIdCounts[nextId]) {
+        nextIdCounts[nextId] = [eventData[i]]
+      } else {
+        nextIdCounts[nextId].push(eventData[i])
+      }
+    }
+    console.log(nextIdCounts)
+    return nextIdCounts
   }
 })
 </script>

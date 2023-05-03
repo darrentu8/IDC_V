@@ -1,8 +1,11 @@
 <template>
   <div class="q-pa-md" style="height: 100vh;">
-    <q-item-label class="border-b text-dark text-bold" header>Connection setting (State {{ currentState + 1 }})
-      <!-- <q-btn label="New event" v-on:click="selectFile()" flat class="theme-tab-btn" color="primary" icon="add"
-        style="height: 49.8px;margin-top: -16px;" /> -->
+    <q-item-label class="border-b text-dark text-bold relative-position" header>Connection setting (State {{ currentState
+      + 1 }})
+      <q-btn v-if="eventActionData.length" label="Add New Event" @click="addStateEventSame(eventActionData, currentState)"
+        flat class="theme-tab-btn" color="primary">
+        <q-icon name="add" class="q-ml-xs"></q-icon>
+      </q-btn>
     </q-item-label>
     <div v-if="eventActionData.length">
       <div class="row border-b q-pb-md" v-for="(EventData, EventIndex) in eventActionData" :key="EventData._id">
@@ -71,6 +74,10 @@ const actionOptions = computed(() => eventStore.GetActionOptions)
 // const delEvent = (currentEvent, Index) => {
 //   widgetStore.DelEvent(currentEvent, Index)
 // }
+
+const addStateEventSame = (eventActionData, currentState) => {
+  widgetStore.AddStateEventSame(eventActionData, currentState)
+}
 const addAction = (EventId, EventIndex) => {
   widgetStore.AddAction(EventId, EventIndex)
 }

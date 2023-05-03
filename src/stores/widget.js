@@ -146,14 +146,19 @@ export const useWidgetListStore = defineStore('widgetList', {
     SetCurrentState(Index) {
       this.currentState = Index
     },
-    SetFlowState(Index, EventIndex, currentStateData) {
+    SetFlowState(Index, EventId, currentStateData) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      this.widgetListData[currentSection].Content.State[Index].Event[EventIndex] = {
-        ...this.EventData,
-        _id: this.widgetListData[currentSection].Content.State[Index].Event[EventIndex]._id,
-        _stateId: currentStateData._id,
-        _next_state_id: currentStateData._stateIndex
+      const eventIndex = this.widgetListData[currentSection].Content.State[Index].Event.findIndex((event) => {
+        return event._id === EventId
+      })
+      if (eventIndex !== -1) {
+        this.widgetListData[currentSection].Content.State[Index].Event[eventIndex] = {
+          ...this.EventData,
+          _id: this.widgetListData[currentSection].Content.State[Index].Event[eventIndex]._id,
+          _stateId: currentStateData._id,
+          _next_state_id: currentStateData._stateIndex
+        }
       }
     },
     SetCurrentEventData(stateIndex, eventId) {
@@ -186,6 +191,17 @@ export const useWidgetListStore = defineStore('widgetList', {
         _type: '',
         _gpio_number: '',
         _next_state_id: '',
+        Action: []
+      })
+    },
+    AddStateEventSame(eventActionData, currentState) {
+      const layoutStore = useLayoutStore()
+      const currentSection = layoutStore.currentSection
+      this.widgetListData[currentSection].Content.State[currentState].Event.push({
+        _id: uid(),
+        _type: '',
+        _gpio_number: '',
+        _next_state_id: eventActionData._next_state_id,
         Action: []
       })
     },
