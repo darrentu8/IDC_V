@@ -199,7 +199,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       const id = this.eventActionData[0]._next_state_id
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      this.eventActionData.push({
+      this.widgetListData[currentSection].Content.State[currentState].Event.push({
         _id: uid(),
         _type: '',
         _gpio_number: '',

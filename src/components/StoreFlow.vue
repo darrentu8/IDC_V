@@ -26,8 +26,8 @@
           <div class="flex items-center">
             <div>
               <!-- 有Event -->
-              <div v-if="filterStateEvents">
-                <div v-for="(EventData, EventIndex) in filterStateEvents(stateData)" :key="EventData._id"
+              <div v-if="stateData">
+                <div v-for="(EventData, EventIndex) in transformStateData(stateData.Event)" :key="EventData._id"
                   class="flex items-center q-mb-md">
                   <div class="q-mr-md q-ml-lg">
                     <!-- link -->
@@ -155,35 +155,50 @@ const filterCurrentStateOptions = computed(() => {
     return differentIdElements
   }
 })
-
-const filterStateEvents = computed(() => {
-  return function (stateData) {
-    const eventData = stateData.Event
-    const seenStates = {}
-    const resultEventData = []
-
-    for (let i = 0; i < eventData.length; i++) {
-      const event = eventData[i]
-      if (!event._next_state_id && event._next_state_id !== 0) {
-        // 将 _next_state_id 为空的 Event 直接加入结果中
-        event.sameNextStateIdCount = 1
-        resultEventData.push(event)
-      } else {
-        if (seenStates[event._next_state_id] !== undefined) {
-          // 如果已经出现过相同 _next_state_id 的 Event，仅更新数量
-          eventData[seenStates[event._next_state_id]].sameNextStateIdCount += 1
-        } else {
-          // 否则将当前 Event 加入结果中，并记录下标和数量
-          seenStates[event._next_state_id] = i
-          event.sameNextStateIdCount = 1
-          resultEventData.push(event)
-        }
-      }
+function transformStateData(stateData) {
+  const result = stateData.reduce((acc, obj) => {
+    if (!acc.some(item => item._next_state_id === obj._next_state_id)) {
+      const sameNextStateIdCount = stateData.filter(item => item._next_state_id === obj._next_state_id).length
+      acc.push({ ...obj, sameNextStateIdCount })
     }
+    return acc
+  }, [])
 
-    console.log('filteredEventData', resultEventData)
-    return resultEventData
-  }
-})
+  console.log('result', result)
+  return result
+}
+
+// const filterStateEvents = computed(() => {
+//   return function (stateData) {
+//     const eventData = stateData.Event
+//     // const seenStates = {}
+//     // const resultEventData = []
+
+//     // for (let i = 0; i < eventData.length; i++) {
+//     //   const event = eventData[i]
+//     //   if (!event._next_state_id && event._next_state_id !== 0) {
+//     //     console.log('event._next_state_id', event._next_state_id)
+//     //     // 将 _next_state_id 为空的 Event 直接加入结果中
+//     //     event.sameNextStateIdCount = 1
+//     //     resultEventData.push(event)
+//     //   } else {
+//     //     if (seenStates[event._next_state_id] !== undefined) {
+//     //       console.log('seenStates', seenStates)
+//     //       // 如果已经出现过相同 _next_state_id 的 Event，仅更新数量
+//     //       eventData[seenStates[event._next_state_id]].sameNextStateIdCount += 1
+//     //     } else {
+//     //       console.log('seenStates[event._next_state_id]', seenStates[event._next_state_id])
+//     //       // 否则将当前 Event 加入结果中，并记录下标和数量
+//     //       seenStates[event._next_state_id] = i
+//     //       event.sameNextStateIdCount = 1
+//     //       resultEventData.push(event)
+//     //     }
+//     //   }
+//     // }
+
+//     // console.log('filteredEventData', resultEventData)
+//     return eventData
+//   }
+// })
 </script>
 <style lang="scss"></style>
