@@ -95,9 +95,13 @@ export const useWidgetListStore = defineStore('widgetList', {
     },
     currentState: 0,
     currentWidget: {},
-    eventActionData: []
+    eventActionData: [],
+    renderList: true
   }),
   getters: {
+    GetRenderList() {
+      return this.renderList
+    },
     GetWidgetListData() {
       return this.widgetListData
     },
@@ -145,6 +149,10 @@ export const useWidgetListStore = defineStore('widgetList', {
     },
     SetCurrentState(Index) {
       this.currentState = Index
+    },
+    SetRenderList(val) {
+      console.log('val', val)
+      this.renderList = val
     },
     SetFlowState(Index, EventId, currentStateData) {
       console.log('Index', Index)
@@ -199,14 +207,17 @@ export const useWidgetListStore = defineStore('widgetList', {
       })
     },
     AddStateEventSame(currentState) {
+      const id = this.eventActionData[0]._next_state_id
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      this.widgetListData[currentSection].Content.State[currentState].Event.push({
+      this.eventActionData.push({
         _id: uid(),
         _type: '',
         _gpio_number: '',
+        _next_state_id: id,
         Action: []
       })
+      this.widgetListData[currentSection].Content.State[currentState].Event = this.eventActionData
     },
     AddAction(EventId, EventIndex) {
       console.log('EventId', EventId)

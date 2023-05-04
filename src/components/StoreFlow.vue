@@ -26,8 +26,11 @@
           <div class="flex items-center">
             <div>
               <!-- 有Event -->
-              <div>
-                <StoreFlowChild :stateData="stateData.Event" :Index="Index" />
+              <div v-if="renderList">
+                <StoreFlowChild :eventData="stateData.Event" :Index="Index" />
+              </div>
+              <div v-else>
+                <q-spinner-hourglass color="primary" size="2em"></q-spinner-hourglass>
               </div>
             </div>
           </div>
@@ -74,7 +77,7 @@ const addStateEvent = (Index) => {
 const delState = (ID) => {
   widgetStore.DelState(ID)
 }
-
+const renderList = computed(() => widgetStore.GetRenderList)
 // const filterStateEvents = computed(() => {
 //   return function (stateData) {
 //     const eventData = stateData.Event

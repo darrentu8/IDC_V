@@ -51,7 +51,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, nextTick } from 'vue'
 import { useWidgetListStore } from 'src/stores/widget'
 import { useEventListStore } from 'src/stores/event'
 // import { useLayoutStore } from 'src/stores/layout'
@@ -75,8 +75,11 @@ const actionOptions = computed(() => eventStore.GetActionOptions)
 //   widgetStore.DelEvent(currentEvent, Index)
 // }
 
-const addStateEventSame = (eventActionData, currentState) => {
+const addStateEventSame = async (eventActionData, currentState) => {
+  widgetStore.SetRenderList(false)
   widgetStore.AddStateEventSame(eventActionData, currentState)
+  await nextTick()
+  widgetStore.SetRenderList(true)
 }
 const addAction = (EventId, EventIndex) => {
   widgetStore.AddAction(EventId, EventIndex)

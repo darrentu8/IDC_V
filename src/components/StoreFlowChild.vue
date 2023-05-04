@@ -1,76 +1,67 @@
 <template>
-  <div v-for="(EventData, EventIndex) in filterStateEvents" :key="EventData._id" class="flex items-center q-mb-md">
-    <div class="q-mr-md q-ml-lg">
-      <!-- link -->
-      <q-btn v-if="currentEvent === EventData._id" :disable="EventData._next_state_id === ''"
-        @click="setCurrentEvent(Index, EventData._id)" unelevated class="border-round-select" text-color="white"
-        color="primary" round icon="img:/icon/link.svg">
-        <q-badge color="primary" class="link-badge" floating>{{ EventData.sameNextStateIdCount ?
-          EventData.sameNextStateIdCount : 0
-        }}</q-badge>
-      </q-btn>
-      <q-btn v-else :disable="EventData._next_state_id === ''" @click="setCurrentEvent(Index, EventData._id)" unelevated
-        class="border-round-select" text-color="white" color="grey-6" round icon="img:/icon/link.svg">
-        <q-badge color="primary" class="link-badge" floating>{{ EventData.sameNextStateIdCount ?
-          EventData.sameNextStateIdCount : 0
-        }}</q-badge>
-      </q-btn>
+  <div>
+    <div v-for="(EventData, EventIndex) in filterStateEvents" :key="EventData._id" class="flex items-center q-mb-md">
+      <div class="q-mr-md q-ml-lg">
+        <!-- link -->
+        <q-btn v-if="currentEvent === EventData._id" :disable="EventData._next_state_id === ''"
+          @click="setCurrentEvent(Index, EventData._id)" unelevated class="border-round-select" text-color="white"
+          color="primary" round icon="img:/icon/link.svg">
+          <q-badge color="primary" class="link-badge" floating>{{ EventData.sameNextStateIdCount ?
+            EventData.sameNextStateIdCount : 0
+          }}</q-badge>
+        </q-btn>
+        <q-btn v-else :disable="EventData._next_state_id === ''" @click="setCurrentEvent(Index, EventData._id)" unelevated
+          class="border-round-select" text-color="white" color="grey-6" round icon="img:/icon/link.svg">
+          <q-badge color="primary" class="link-badge" floating>{{ EventData.sameNextStateIdCount ?
+            EventData.sameNextStateIdCount : 0
+          }}</q-badge>
+        </q-btn>
+      </div>
+      <!-- state -->
+      <q-card v-if="EventData._next_state_id !== undefined" bordered class="flowBox q-ml-md select">
+        <q-icon v-if="EventData._next_state_id !== ''" size="lg" name="img:/icon/mark.svg" class="q-mt-xs flag">
+        </q-icon>
+        <q-btn v-if="EventData._next_state_id !== ''" flat color="primary" class="text-capitalize">{{
+          mapCurrentStateOptions(EventData._next_state_id) }}</q-btn>
+        <q-btn v-else flat class="full-width" color="grey-6" icon="add" />
+        <q-popup-edit v-model="EventData._next_state_id" v-slot="scope">
+          <q-select v-model="scope.value" :options="filterCurrentStateOptions(filterStateEvents)"
+            option-value="_stateIndex" option-label="_title" dense autofocus
+            @update:model-value="setFlowState(Index, EventData._id, scope.value)" />
+        </q-popup-edit>
+        <!-- 刪除 -->
+        <div class="absolute-right del-card">
+          <q-btn size="sm" class="" color="negative" round dense icon="clear"
+            @click="delStateEvent(EventData._id, Index, EventIndex)" />
+        </div>
+      </q-card>
+      <q-card v-else bordered class="flowBox q-ml-md select">
+        <q-btn flat size="16px" class="full-width full-height" color="grey-5" icon="add" />
+        <q-popup-edit v-model="EventData._next_state_id" v-slot="scope">
+          <q-select v-model="scope.value" :options="currentStateOptions" option-value="_stateIndex" option-label="_title"
+            dense autofocus @update:model-value="setFlowState(Index, EventData._id, scope.value)" />
+        </q-popup-edit>
+        <!-- 刪除 -->
+        <div class="absolute-right del-card">
+          <q-btn size="sm" class="" color="negative" round dense icon="clear"
+            @click="delStateEvent(EventData._id, Index, EventIndex)" />
+        </div>
+      </q-card>
     </div>
-    <!-- state -->
-    <q-card v-if="EventData._next_state_id !== undefined" bordered class="flowBox q-ml-md select">
-      <q-icon v-if="EventData._next_state_id !== ''" size="lg" name="img:/icon/mark.svg" class="q-mt-xs flag">
-      </q-icon>
-      <q-btn v-if="EventData._next_state_id !== ''" flat color="primary" class="text-capitalize">{{
-        mapCurrentStateOptions(EventData._next_state_id) }}</q-btn>
-      <q-btn v-else flat class="full-width" color="grey-6" icon="add" />
-      <q-popup-edit v-model="EventData._next_state_id" v-slot="scope">
-        <q-select v-model="scope.value" :options="filterCurrentStateOptions(filterStateEvents)" option-value="_stateIndex"
-          option-label="_title" dense autofocus @update:model-value="setFlowState(Index, EventData._id, scope.value)" />
-      </q-popup-edit>
-      <!-- 刪除 -->
-      <div class="absolute-right del-card">
-        <q-btn size="sm" class="" color="negative" round dense icon="clear"
-          @click="delStateEvent(EventData._id, Index, EventIndex)" />
-      </div>
-    </q-card>
-    <q-card v-else bordered class="flowBox q-ml-md select">
-      <q-btn flat size="16px" class="full-width full-height" color="grey-5" icon="add" />
-      <q-popup-edit v-model="EventData._next_state_id" v-slot="scope">
-        <q-select v-model="scope.value" :options="currentStateOptions" option-value="_stateIndex" option-label="_title"
-          dense autofocus @update:model-value="setFlowState(Index, EventData._id, scope.value)" />
-      </q-popup-edit>
-      <!-- 刪除 -->
-      <div class="absolute-right del-card">
-        <q-btn size="sm" class="" color="negative" round dense icon="clear"
-          @click="delStateEvent(EventData._id, Index, EventIndex)" />
-      </div>
-    </q-card>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, watch } from 'vue'
-// import { useLayoutStore } from 'src/stores/layout'
 import { useWidgetListStore } from 'src/stores/widget'
 import { useEventListStore } from 'src/stores/event'
-const props = defineProps(['stateData', 'Index'])
+const props = defineProps(['eventData', 'Index'])
 const filterStateEvents = ref(null)
 const popEdit = ref(true)
-// const sectionData = ref([
-//   { x: 0, y: 0, w: 1, h: 2, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }, { x: 1, y: 1, w: 1, h: 1, i: '3' }
-// ])
-// const layoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
 const eventStore = useEventListStore()
-// const currentSection = computed(() => layoutStore.GetCurrentSection)
-// const currentState = computed(() => widgetStore.GetCurrentState)
-// const currentStateLength = computed(() => widgetStore.GetCurrentStateLength)
 const currentStateOptions = computed(() => widgetStore.GetCurrentStateOptions)
 const currentEvent = computed(() => eventStore.GetCurrentEvent)
-// const widgetListData = computed(() => widgetStore.GetWidgetListData)
-// const setCurrentState = (Index) => {
-//   widgetStore.SetCurrentState(Index)
-// }
 const setFlowState = (Index, EventIndex = 0, currentStateData) => {
   widgetStore.SetFlowState(Index, EventIndex, currentStateData)
   popEdit.value = false
@@ -99,17 +90,10 @@ const filterCurrentStateOptions = computed(() => {
     return differentIdElements
   }
 })
-// const filterStateEvents = (stateData) = computed({
-//   get: () => stateData,
-//   set: (val) => {
-//     count.value = val - 1
-//   }
-// })
 
 watch(
-  () => props.stateData,
+  () => props.eventData,
   newVal => {
-    console.log('stateData', newVal)
     const eventData = newVal
 
     const seenStates = {}
