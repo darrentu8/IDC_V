@@ -75,7 +75,7 @@ const actionOptions = computed(() => eventStore.GetActionOptions)
 //   widgetStore.DelEvent(currentEvent, Index)
 // }
 
-const addStateEventSame = (eventActionData, currentState) => {
+const addStateEventSame = async (eventActionData, currentState) => {
   widgetStore.AddStateEventSame(eventActionData, currentState)
 }
 const addAction = (EventId, EventIndex) => {

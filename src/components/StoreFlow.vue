@@ -26,7 +26,7 @@
           <div class="flex items-center">
             <div>
               <!-- 有Event -->
-              <div>
+              <div v-if="filterStateEvents">
                 <div v-for="(EventData, EventIndex) in filterStateEvents(stateData)" :key="EventData._id"
                   class="flex items-center q-mb-md">
                   <div class="q-mr-md q-ml-lg">
@@ -79,6 +79,9 @@
                     </div>
                   </q-card>
                 </div>
+              </div>
+              <div v-else class="q-mr-md q-ml-lg q-mt-lg">
+                <q-spinner color="grey-5" size="2em" :thickness="4" />
               </div>
             </div>
           </div>
@@ -152,6 +155,7 @@ const filterCurrentStateOptions = computed(() => {
     return differentIdElements
   }
 })
+
 const filterStateEvents = computed(() => {
   return function (stateData) {
     const eventData = stateData.Event

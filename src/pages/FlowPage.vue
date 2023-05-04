@@ -35,7 +35,7 @@
             <StoreFlow />
             <template #fallback>
               <div class="my-3 d-flex align-items-center">
-                <q-spinner-hourglass color="primary" size="2em"></q-spinner-hourglass>
+                <q-spinner color="grey-2" size="3em" :thickness="2" />
               </div>
             </template>
           </Suspense>
