@@ -166,6 +166,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       const currentSection = layoutStore.currentSection
       const Data = this.widgetListData[currentSection].Content.State[stateIndex].Event.filter(e => e._id === eventId)
       this.eventActionData = Data
+      console.log('eventActionData', Data)
     },
     AddState() {
       const layoutStore = useLayoutStore()
@@ -194,16 +195,18 @@ export const useWidgetListStore = defineStore('widgetList', {
         Action: []
       })
     },
-    AddStateEventSame(eventActionData, currentState) {
+    AddStateEventSame(currentState) {
+      const id = this.eventActionData[0]._next_state_id
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      this.widgetListData[currentSection].Content.State[currentState].Event.push({
+      this.eventActionData.push({
         _id: uid(),
         _type: '',
         _gpio_number: '',
-        _next_state_id: eventActionData._next_state_id,
+        _next_state_id: id,
         Action: []
       })
+      this.widgetListData[currentSection].Content.State[currentState].Event = this.eventActionData
     },
     AddAction(EventId, EventIndex) {
       console.log('EventId', EventId)

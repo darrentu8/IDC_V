@@ -34,12 +34,16 @@
                     <q-btn v-if="currentEvent === EventData._id" :disable="EventData._next_state_id === ''"
                       @click="setCurrentEvent(Index, EventData._id)" unelevated class="border-round-select"
                       text-color="white" color="primary" round icon="img:/icon/link.svg">
-                      <q-badge color="primary" class="link-badge" floating>{{ EventData.length && 0 }}</q-badge>
+                      <q-badge color="primary" class="link-badge" floating>{{ EventData.sameNextStateIdCount ?
+                        EventData.sameNextStateIdCount : 0
+                      }}</q-badge>
                     </q-btn>
                     <q-btn v-else :disable="EventData._next_state_id === ''"
                       @click="setCurrentEvent(Index, EventData._id)" unelevated class="border-round-select"
                       text-color="white" color="grey-6" round icon="img:/icon/link.svg">
-                      <q-badge color="primary" class="link-badge" floating>{{ EventData.length && 0 }}</q-badge>
+                      <q-badge color="primary" class="link-badge" floating>{{ EventData.sameNextStateIdCount ?
+                        EventData.sameNextStateIdCount : 0
+                      }}</q-badge>
                     </q-btn>
                   </div>
                   <!-- state -->
@@ -151,17 +155,30 @@ const filterCurrentStateOptions = computed(() => {
 const filterStateEvents = computed(() => {
   return function (stateData) {
     const eventData = stateData.Event
-    const nextIdCounts = {}
+    const seenStates = {}
+    const resultEventData = []
+
     for (let i = 0; i < eventData.length; i++) {
-      const nextId = eventData[i]._next_state_id
-      if (!nextIdCounts[nextId]) {
-        nextIdCounts[nextId] = [eventData[i]]
+      const event = eventData[i]
+      if (!event._next_state_id && event._next_state_id !== 0) {
+        // 将 _next_state_id 为空的 Event 直接加入结果中
+        event.sameNextStateIdCount = 1
+        resultEventData.push(event)
       } else {
-        nextIdCounts[nextId].push(eventData[i])
+        if (seenStates[event._next_state_id] !== undefined) {
+          // 如果已经出现过相同 _next_state_id 的 Event，仅更新数量
+          eventData[seenStates[event._next_state_id]].sameNextStateIdCount += 1
+        } else {
+          // 否则将当前 Event 加入结果中，并记录下标和数量
+          seenStates[event._next_state_id] = i
+          event.sameNextStateIdCount = 1
+          resultEventData.push(event)
+        }
       }
     }
-    console.log(nextIdCounts)
-    return nextIdCounts
+
+    console.log('filteredEventData', resultEventData)
+    return resultEventData
   }
 })
 </script>
