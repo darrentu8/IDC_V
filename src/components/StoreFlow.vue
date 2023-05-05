@@ -19,6 +19,10 @@
             <q-card-section v-else class="q-pa-xs">
               <div class="text-subtitle2">State {{ Number(Index + 1) }}</div>
             </q-card-section>
+            <!-- 刪除 -->
+            <div v-if="currentStateLength > 1" class="absolute-right del-card">
+              <q-btn size="sm" class="" color="negative" round dense icon="clear" @click="delState(stateData._id)" />
+            </div>
           </q-card>
         </div>
         <!-- Flow Events -->
@@ -53,8 +57,8 @@
                     </q-icon>
                     <q-btn v-if="EventData._next_state_id !== ''" flat color="primary" class="text-capitalize">{{
                       mapCurrentStateOptions(EventData._next_state_id) }}</q-btn>
-                    <q-btn v-else flat class="full-width" color="grey-6" icon="add" />
-                    <q-popup-edit v-model="EventData._next_state_id" v-slot="scope">
+                    <q-btn v-else flat class="full-width full-heigth theme-border" color=" grey-6" icon="add" />
+                    <q-popup-edit v-model="EventData._next_state_id" v-slot="scope" class="theme-border">
                       <q-select v-model="scope.value" :options="filterCurrentStateOptions(stateData)"
                         option-value="_stateIndex" option-label="_title" dense autofocus
                         @update:model-value="setFlowState(Index, EventData._id, scope.value)" />
@@ -66,8 +70,8 @@
                     </div>
                   </q-card>
                   <q-card v-else bordered class="flowBox q-ml-md select">
-                    <q-btn flat size="16px" class="full-width full-height" color="grey-5" icon="add" />
-                    <q-popup-edit v-model="EventData._next_state_id" v-slot="scope">
+                    <q-btn flat size="16px" class="full-width full-heigth theme-border" color="grey-5" icon="add" />
+                    <q-popup-edit v-model="EventData._next_state_id" v-slot="scope" class="theme-border">
                       <q-select v-model="scope.value" :options="currentStateOptions" option-value="_stateIndex"
                         option-label="_title" dense autofocus
                         @update:model-value="setFlowState(Index, EventIndex, scope.value)" />
@@ -93,9 +97,9 @@
         </div>
       </div>
       <!-- 刪除 state -->
-      <div v-if="currentStateLength > 1" class="absolute-right q-ma-xs">
+      <!-- <div v-if="currentStateLength > 1" class="absolute-right q-ma-xs">
         <q-btn class="" color="grey" round flat dense icon="clear" @click="delState(stateData._id)" />
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -175,38 +179,5 @@ function transformStateData(stateData) {
   console.log('result', result)
   return result
 }
-
-// const filterStateEvents = computed(() => {
-//   return function (stateData) {
-//     const eventData = stateData.Event
-//     // const seenStates = {}
-//     // const resultEventData = []
-
-//     // for (let i = 0; i < eventData.length; i++) {
-//     //   const event = eventData[i]
-//     //   if (!event._next_state_id && event._next_state_id !== 0) {
-//     //     console.log('event._next_state_id', event._next_state_id)
-//     //     // 将 _next_state_id 为空的 Event 直接加入结果中
-//     //     event.sameNextStateIdCount = 1
-//     //     resultEventData.push(event)
-//     //   } else {
-//     //     if (seenStates[event._next_state_id] !== undefined) {
-//     //       console.log('seenStates', seenStates)
-//     //       // 如果已经出现过相同 _next_state_id 的 Event，仅更新数量
-//     //       eventData[seenStates[event._next_state_id]].sameNextStateIdCount += 1
-//     //     } else {
-//     //       console.log('seenStates[event._next_state_id]', seenStates[event._next_state_id])
-//     //       // 否则将当前 Event 加入结果中，并记录下标和数量
-//     //       seenStates[event._next_state_id] = i
-//     //       event.sameNextStateIdCount = 1
-//     //       resultEventData.push(event)
-//     //     }
-//     //   }
-//     // }
-
-//     // console.log('filteredEventData', resultEventData)
-//     return eventData
-//   }
-// })
 </script>
 <style lang="scss"></style>

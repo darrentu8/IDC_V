@@ -7,6 +7,12 @@
     filter: invert(70%) sepia(137%) saturate(2512%) hue-rotate(349deg) brightness(165%) contrast(70%);
   }
 }
+.full-heigth {
+  height: 100%;
+}
+.theme-border {
+  border-radius: 20px;
+}
 .offSetL {
   margin-left: 300px;
   width: calc(100% - 300px);
