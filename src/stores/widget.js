@@ -144,6 +144,13 @@ export const useWidgetListStore = defineStore('widgetList', {
   },
   actions: {
     // Section
+    ResetWidgetListData() {
+      const eventStore = useEventListStore()
+      this.stateEventData = []
+      this.currentStateId = ''
+      eventStore.SetCurrentEvent('')
+    },
+    // Section
     SetWidgetListData(data) {
       if (data) {
         this.widgetListData = data
@@ -285,9 +292,6 @@ export const useWidgetListStore = defineStore('widgetList', {
     },
     DelSourceList(currentStateIndex, fileName, sourceFile) {
       const layoutStore = useLayoutStore()
-      const eventStore = useEventListStore()
-
-      eventStore.SetCurrentEvent('')
       const currentSection = layoutStore.currentSection
       console.log('fileName', fileName)
       console.log('sourceFile', sourceFile)
@@ -325,8 +329,17 @@ export const useWidgetListStore = defineStore('widgetList', {
     DelState(ID) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      const Data = this.widgetListData[currentSection].Content.State.filter(e => e._id !== ID)
-      this.widgetListData[currentSection].Content.State = Data
+      // 刪除 ID 對應的物件
+      this.widgetListData[currentSection].Content.State = this.widgetListData[currentSection].Content.State.filter((state) => state._id !== ID)
+
+      // 過濾掉 Event 的 _stateId 與 ID 相同的物件
+      this.widgetListData[currentSection].Content.State.forEach((state) => {
+        if (state.Event && state.Event.length > 0) {
+          const events = state.Event.filter((event) => event._stateId !== ID)
+          state.Event = events
+        }
+      })
+      this.ResetWidgetListData()
     },
     DelFlow(ID, Index, EventIndex) {
       const layoutStore = useLayoutStore()
@@ -336,15 +349,10 @@ export const useWidgetListStore = defineStore('widgetList', {
     },
     DelAllStateEvent(ID, Index, EventIndex) {
       const layoutStore = useLayoutStore()
-      const eventStore = useEventListStore()
-
-      eventStore.SetCurrentEvent('')
       const currentSection = layoutStore.currentSection
       const Data = this.widgetListData[currentSection].Content.State[Index].Event.filter(e => e._stateId !== ID)
       this.widgetListData[currentSection].Content.State[Index].Event = Data
-      this.stateEventData = []
-      this.currentStateId = ''
-      eventStore.SetCurrentEvent('')
+      this.ResetWidgetListData()
     },
     DelStateEvent(ID, Index, EventIndex) {
       const layoutStore = useLayoutStore()

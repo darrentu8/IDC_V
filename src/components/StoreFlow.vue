@@ -145,7 +145,12 @@ const delAllStateEvent = (ID, Index, EventIndex) => {
 const mapCurrentStateOptions = computed(() => {
   return function (stateIndex) {
     const Data = currentStateOptions.value.filter(e => e._stateIndex === stateIndex)
-    return Data[0]._title
+    console.log('Data', Data)
+    if (Data) {
+      return Data[0]._title
+    } else {
+      return ''
+    }
   }
 })
 const filterCurrentStateOptions = computed(() => {
