@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { useLayoutStore } from './layout'
+import { useEventListStore } from './event'
 import { uid } from 'quasar'
 
 export const useWidgetListStore = defineStore('widgetList', {
@@ -94,18 +95,26 @@ export const useWidgetListStore = defineStore('widgetList', {
       _output_value: ''
     },
     currentState: 0,
+    currentStateId: '',
     currentWidget: {},
-    eventActionData: []
+    stateEventData: [],
+    loading: false
   }),
   getters: {
+    GetLoading() {
+      return this.loading
+    },
     GetWidgetListData() {
       return this.widgetListData
     },
-    GetEventActionData() {
-      return this.eventActionData
+    GetStateEventData() {
+      return this.stateEventData
     },
     GetCurrentState() {
       return this.currentState
+    },
+    GetCurrentStateId() {
+      return this.currentStateId
     },
     GetCurrentStateLength() {
       const layoutStore = useLayoutStore()
@@ -140,11 +149,18 @@ export const useWidgetListStore = defineStore('widgetList', {
         this.widgetListData = data
       }
     },
+    SetLoading(val) {
+      this.loading = val
+      console.log('this.loading', this.loading)
+    },
     SetWidget(Index, ContentType) {
       this.widgetListData[Index]._ContentType = ContentType
     },
     SetCurrentState(Index) {
       this.currentState = Index
+    },
+    SetCurrentStateId(ID) {
+      this.currentStateId = ID
     },
     SetFlowState(Index, EventId, currentStateData) {
       const layoutStore = useLayoutStore()
@@ -161,12 +177,13 @@ export const useWidgetListStore = defineStore('widgetList', {
         }
       }
     },
-    SetCurrentEventData(stateIndex, eventId) {
+    SetCurrentEventData(stateIndex, stateId, eventId) {
+      console.log('stateId', stateId)
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      const Data = this.widgetListData[currentSection].Content.State[stateIndex].Event.filter(e => e._id === eventId)
-      this.eventActionData = Data
-      console.log('eventActionData', Data)
+      const Data = this.widgetListData[currentSection].Content.State[stateIndex].Event.filter(e => e._stateId === stateId)
+      this.stateEventData = Data
+      console.log('stateEventData', Data)
     },
     AddState() {
       const layoutStore = useLayoutStore()
@@ -196,16 +213,22 @@ export const useWidgetListStore = defineStore('widgetList', {
       })
     },
     AddStateEventSame(currentState) {
-      const id = this.eventActionData[0]._next_state_id
+      const id = this.stateEventData[0]._next_state_id
+      const stateId = this.stateEventData[0]._stateId
+      console.log('id', id)
+      console.log('stateId', stateId)
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      this.widgetListData[currentSection].Content.State[currentState].Event.push({
+      const pushData = {
         _id: uid(),
         _type: '',
         _gpio_number: '',
+        _stateId: stateId,
         _next_state_id: id,
         Action: []
-      })
+      }
+      this.stateEventData.push(pushData)
+      this.widgetListData[currentSection].Content.State[currentState].Event.push(pushData)
     },
     AddAction(EventId, EventIndex) {
       console.log('EventId', EventId)
@@ -262,6 +285,9 @@ export const useWidgetListStore = defineStore('widgetList', {
     },
     DelSourceList(currentStateIndex, fileName, sourceFile) {
       const layoutStore = useLayoutStore()
+      const eventStore = useEventListStore()
+
+      eventStore.SetCurrentEvent('')
       const currentSection = layoutStore.currentSection
       console.log('fileName', fileName)
       console.log('sourceFile', sourceFile)
@@ -307,6 +333,18 @@ export const useWidgetListStore = defineStore('widgetList', {
       const currentSection = layoutStore.currentSection
       const Data = this.widgetListData[currentSection].Content.State.filter(e => e._id !== ID)
       this.widgetListData[currentSection].Content.State = Data
+    },
+    DelAllStateEvent(ID, Index, EventIndex) {
+      const layoutStore = useLayoutStore()
+      const eventStore = useEventListStore()
+
+      eventStore.SetCurrentEvent('')
+      const currentSection = layoutStore.currentSection
+      const Data = this.widgetListData[currentSection].Content.State[Index].Event.filter(e => e._stateId !== ID)
+      this.widgetListData[currentSection].Content.State[Index].Event = Data
+      this.stateEventData = []
+      this.currentStateId = ''
+      eventStore.SetCurrentEvent('')
     },
     DelStateEvent(ID, Index, EventIndex) {
       const layoutStore = useLayoutStore()

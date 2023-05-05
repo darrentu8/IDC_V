@@ -32,15 +32,15 @@
                   <div class="q-mr-md q-ml-lg">
                     <!-- link -->
                     <q-btn v-if="currentEvent === EventData._id" :disable="EventData._next_state_id === ''"
-                      @click="setCurrentEvent(Index, EventData._id)" unelevated class="border-round-select"
-                      text-color="white" color="primary" round icon="img:/icon/link.svg">
+                      @click="setCurrentEvent(Index, EventData._stateId, EventData._id)" unelevated
+                      class="border-round-select" text-color="white" color="primary" round icon="img:/icon/link.svg">
                       <q-badge color="primary" class="link-badge" floating>{{ EventData.sameNextStateIdCount ?
                         EventData.sameNextStateIdCount : 0
                       }}</q-badge>
                     </q-btn>
                     <q-btn v-else :disable="EventData._next_state_id === ''"
-                      @click="setCurrentEvent(Index, EventData._id)" unelevated class="border-round-select"
-                      text-color="white" color="grey-6" round icon="img:/icon/link.svg">
+                      @click="setCurrentEvent(Index, EventData._stateId, EventData._id)" unelevated
+                      class="border-round-select" text-color="white" color="grey-6" round icon="img:/icon/link.svg">
                       <q-badge color="primary" class="link-badge" floating>{{ EventData.sameNextStateIdCount ?
                         EventData.sameNextStateIdCount : 0
                       }}</q-badge>
@@ -62,7 +62,7 @@
                     <!-- 刪除 -->
                     <div class="absolute-right del-card">
                       <q-btn size="sm" class="" color="negative" round dense icon="clear"
-                        @click="delStateEvent(EventData._id, Index, EventIndex)" />
+                        @click="delAllStateEvent(EventData._stateId, Index, EventIndex)" />
                     </div>
                   </q-card>
                   <q-card v-else bordered class="flowBox q-ml-md select">
@@ -75,9 +75,14 @@
                     <!-- 刪除 -->
                     <div class="absolute-right del-card">
                       <q-btn size="sm" class="" color="negative" round dense icon="clear"
-                        @click="delStateEvent(EventData._id, Index, EventIndex)" />
+                        @click="delAllStateEvent(EventData._stateId, Index, EventIndex)" />
                     </div>
                   </q-card>
+                </div>
+                <!-- Add Flow Btn -->
+                <div flat square class="q-mb-md text-center" style="margin-top:30px;width:200px;">
+                  <q-btn @click="addStateEvent(Index)" unelevated round dense color="grey-2" text-color="grey-6"
+                    icon="add" />
                 </div>
               </div>
               <div v-else class="q-mr-md q-ml-lg q-mt-lg">
@@ -90,10 +95,6 @@
       <!-- 刪除 state -->
       <div v-if="currentStateLength > 1" class="absolute-right q-ma-xs">
         <q-btn class="" color="grey" round flat dense icon="clear" @click="delState(stateData._id)" />
-      </div>
-      <!-- Add Flow Btn -->
-      <div v-if="stateData.Event.length < currentStateLength" flat square class="text-center q-mb-md">
-        <q-btn @click="addStateEvent(Index)" unelevated round dense color="grey-2" text-color="grey-6" icon="add" />
       </div>
     </div>
   </div>
@@ -125,11 +126,11 @@ const setFlowState = (Index, EventIndex = 0, currentStateData) => {
   widgetStore.SetFlowState(Index, EventIndex, currentStateData)
   popEdit.value = false
 }
-const setCurrentEvent = (stateIndex, eventId) => {
-  console.log('stateIndex', stateIndex)
-  console.log('eventId', eventId)
+const setCurrentEvent = (stateIndex, EventDataStateId, eventId) => {
+  console.log('EventDataStateId', EventDataStateId)
   widgetStore.SetCurrentState(stateIndex)
-  widgetStore.SetCurrentEventData(stateIndex, eventId)
+  widgetStore.SetCurrentStateId(EventDataStateId)
+  widgetStore.SetCurrentEventData(stateIndex, EventDataStateId, eventId)
   eventStore.SetCurrentEvent(eventId)
 }
 const addStateEvent = (Index) => {
@@ -138,8 +139,8 @@ const addStateEvent = (Index) => {
 const delState = (ID) => {
   widgetStore.DelState(ID)
 }
-const delStateEvent = (ID, Index, EventIndex) => {
-  widgetStore.DelStateEvent(ID, Index, EventIndex)
+const delAllStateEvent = (ID, Index, EventIndex) => {
+  widgetStore.DelAllStateEvent(ID, Index, EventIndex)
 }
 const mapCurrentStateOptions = computed(() => {
   return function (stateIndex) {
