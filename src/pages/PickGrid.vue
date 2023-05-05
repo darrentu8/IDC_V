@@ -112,19 +112,28 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row flex" style="height:50px">
-                                    <q-btn class="brand-round" @click="toNew" style="width:116px;margin:auto 20px"
-                                        color="grey" label="Back" outline="" icon="arrow_back" />
-                                    <q-space />
-                                    <q-btn class="brand-round" @click="toHardware" style="width:116px;margin:auto 20px"
-                                        color="primary" label="Next" icon="arrow_forward" />
-                                </div>
                             </div>
                         </q-tab-panel>
                         <q-tab-panel name="customGrid" class="q-pa-none">
-                            <CustomizeGrid @back="toPickGrid" @save="saveCustom" />
+                            <CustomizeGrid ref="customGrid" />
                         </q-tab-panel>
                     </q-tab-panels>
+
+                    <q-card-actions v-show="panel === 'pickGrid'" class="q-pb-lg absolute-bottom">
+                        <q-btn class="brand-round" @click="toNew" style="width:116px;margin:auto 20px" color="grey"
+                            label="Back" outline="" icon="arrow_back" />
+                        <q-space />
+                        <q-btn class="brand-round" @click="toHardware" style="width:116px;margin:auto 20px" color="primary"
+                            label="Next" icon="arrow_forward" />
+                    </q-card-actions>
+
+                    <q-card-actions v-show="panel === 'customGrid'" class="q-pb-lg absolute-bottom">
+                        <q-btn class="brand-round" @click="toPickGrid" style="width:116px;margin:auto 20px" color="grey"
+                            label="Back" outline="" icon="arrow_back" />
+                        <q-space />
+                        <q-btn class="brand-round" @click="saveCustom" style="width:116px;margin:auto 20px" color="primary"
+                            label="Save" icon="check" />
+                    </q-card-actions>
                 </q-card>
             </div>
         </div>
@@ -270,7 +279,9 @@ export default {
         toCustomize() {
             this.panel = 'customGrid'
         },
-        saveCustom(customGrid) {
+        saveCustom() {
+            const customGrid = this.$refs.customGrid.grid
+
             this.toPickGrid()
             this.customGrid = customGrid
             this.currentGrid = customGrid

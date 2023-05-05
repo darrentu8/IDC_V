@@ -52,7 +52,7 @@
               </div>
             </div>
           </q-card-section>
-          <q-card-actions>
+          <q-card-actions class="q-pb-lg absolute-bottom">
             <q-space />
             <q-btn class="brand-round" @click="toGrid" style="width:116px" color="primary" label="Next"
               icon="arrow_forward" />

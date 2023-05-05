@@ -1,5 +1,8 @@
 <template>
   <div class="column">
+    <div class="row" style="height:30px">
+      <div class="text-body1 text-bold" style="margin:auto 20px">Select layout | Customize</div>
+    </div>
     <div class="row">
       <div style="width:300px">
         <div class="row q-pa-sm">
@@ -45,13 +48,6 @@
           </grid-layout>
         </div>
       </div>
-    </div>
-    <div class="row flex" style="height:50px">
-      <q-btn class="brand-round" @click="back" style="width:116px;margin:auto 20px" color="grey" label="Back" outline=""
-        icon="arrow_back" />
-      <q-space />
-      <q-btn class="brand-round" @click="save" style="width:116px;margin:auto 20px" color="primary" label="Save"
-        icon="check" />
     </div>
   </div>
 </template>
@@ -126,12 +122,6 @@ export default {
     removeGrid(i) {
       const index = this.grid.layout.findIndex(o => o.i === i)
       this.grid.layout.splice(index, 1)
-    },
-    back() {
-      this.$emit('back')
-    },
-    save() {
-      this.$emit('save', this.grid)
     }
   }
 }
