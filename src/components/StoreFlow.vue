@@ -84,7 +84,8 @@
                   </q-card>
                 </div>
                 <!-- Add Flow Btn -->
-                <div flat square class="q-mb-md text-center" style="margin-top:30px;width:200px;">
+                <div v-if="stateData.Event.length < currentStateLength" flat square class="q-mb-md text-center"
+                  style="margin-top:30px;width:200px;">
                   <q-btn @click="addStateEvent(Index)" unelevated round dense color="grey-2" text-color="grey-6"
                     icon="add" />
                 </div>

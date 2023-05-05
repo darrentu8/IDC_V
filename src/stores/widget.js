@@ -145,6 +145,7 @@ export const useWidgetListStore = defineStore('widgetList', {
   actions: {
     // Section
     ResetWidgetListData() {
+      console.log('ResetWidgetListData')
       const eventStore = useEventListStore()
       this.stateEventData = []
       this.currentStateId = ''
@@ -237,21 +238,25 @@ export const useWidgetListStore = defineStore('widgetList', {
       this.stateEventData.push(pushData)
       this.widgetListData[currentSection].Content.State[currentState].Event.push(pushData)
     },
-    AddAction(EventId, EventIndex) {
+    AddAction(EventId) {
       console.log('EventId', EventId)
-      console.log('EventIndex', EventIndex)
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      this.widgetListData[currentSection].Content.State[this.currentState].Event[EventIndex].Action.push({
-        _id: uid(),
-        _type: '',
-        _gpio_number: '',
-        _next_state_id: '',
-        _rs232_id: '',
-        _tcpip_id: '',
-        _role: '',
-        _output_value: ''
-      })
+      const eventIndex = this.widgetListData[currentSection].Content.State[this.currentState].Event.findIndex(event => event._id === EventId)
+      if (eventIndex !== -1) { // If the event with specified id was found
+        this.widgetListData[currentSection].Content.State[this.currentState].Event[eventIndex].Action.push({
+          _id: uid(),
+          _type: '',
+          _gpio_number: '',
+          _next_state_id: '',
+          _rs232_id: '',
+          _tcpip_id: '',
+          _role: '',
+          _output_value: ''
+        })
+      } else {
+        console.error(`Could not find an event with id ${EventId}`)
+      }
     },
     AddSourceList(currentStateIndex, fileDatas) {
       const layoutStore = useLayoutStore()
@@ -360,11 +365,34 @@ export const useWidgetListStore = defineStore('widgetList', {
       const Data = this.widgetListData[currentSection].Content.State[Index].Event.filter(e => e._id !== ID)
       this.widgetListData[currentSection].Content.State[Index].Event = Data
     },
-    DelAction(EventIndex, ID) {
+    DelEvent(EventId) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      const Data = this.widgetListData[currentSection].Content.State[this.currentState].Event[EventIndex].Action.filter((e) => e._id !== ID)
-      this.widgetListData[currentSection].Content.State[this.currentState].Event[EventIndex].Action = Data
+      const eventIndex = this.widgetListData[currentSection].Content.State[this.currentState].Event.findIndex(event => event._id === EventId)
+      if (eventIndex !== -1) { // If the event with specified id was found
+        this.widgetListData[currentSection].Content.State[this.currentState].Event.splice(eventIndex, 1)
+        this.stateEventData = this.stateEventData.filter(event => event.EventId !== EventId)
+        if (!this.stateEventData.length) {
+          this.ResetWidgetListData()
+        }
+      } else {
+        console.error(`Could not find an event with id ${EventId}`)
+      }
+    },
+    DelAction(EventId, ActionId) {
+      const layoutStore = useLayoutStore()
+      const currentSection = layoutStore.currentSection
+      const eventIndex = this.widgetListData[currentSection].Content.State[this.currentState].Event.findIndex(event => event._id === EventId)
+      if (eventIndex !== -1) { // If the event with specified id was found
+        const actionIndex = this.widgetListData[currentSection].Content.State[this.currentState].Event[eventIndex].Action.findIndex(action => action._id === ActionId)
+        if (actionIndex !== -1) { // If the action with specified id was found
+          this.widgetListData[currentSection].Content.State[this.currentState].Event[eventIndex].Action.splice(actionIndex, 1) // Remove the action from the array
+        } else {
+          console.error(`Could not find an action with id ${ActionId} in event with id ${EventId}`)
+        }
+      } else {
+        console.error(`Could not find an event with id ${EventId}`)
+      }
     }
   }
 })
