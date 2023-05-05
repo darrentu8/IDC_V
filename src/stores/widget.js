@@ -206,7 +206,6 @@ export const useWidgetListStore = defineStore('widgetList', {
         _next_state_id: id,
         Action: []
       })
-      this.widgetListData[currentSection].Content.State[currentState].Event = this.eventActionData
     },
     AddAction(EventId, EventIndex) {
       console.log('EventId', EventId)

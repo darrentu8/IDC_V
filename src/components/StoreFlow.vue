@@ -157,7 +157,9 @@ const filterCurrentStateOptions = computed(() => {
 })
 function transformStateData(stateData) {
   const result = stateData.reduce((acc, obj) => {
-    if (!acc.some(item => item._next_state_id === obj._next_state_id)) {
+    if (obj._next_state_id === '') {
+      acc.push({ ...obj, sameNextStateIdCount: 1 })
+    } else if (!acc.some(item => item._next_state_id === obj._next_state_id)) {
       const sameNextStateIdCount = stateData.filter(item => item._next_state_id === obj._next_state_id).length
       acc.push({ ...obj, sameNextStateIdCount })
     }
