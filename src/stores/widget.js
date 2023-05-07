@@ -148,6 +148,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       console.log('ResetWidgetListData')
       const eventStore = useEventListStore()
       this.stateEventData = []
+      console.log('this.stateEventData', this.stateEventData)
       this.currentStateId = ''
       eventStore.SetCurrentEvent('')
     },

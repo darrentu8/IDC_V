@@ -73,11 +73,11 @@ export const useEventListStore = defineStore('eventList', {
         options: ['gpio', 'RS232', 'TCP/IP', 'playend', 'timeout'],
         subOptions: [
           {
-            text: 'on_borad',
+            text: 'On Borad',
             value: '1'
           },
           {
-            text: 'usb',
+            text: 'USB',
             value: '2'
           }
         ],
@@ -171,11 +171,11 @@ export const useEventListStore = defineStore('eventList', {
         options: ['gpio', 'RS232', 'TCP/IP', 'playend', 'timeout'],
         subOptions: [
           {
-            text: 'on_borad',
+            text: 'On Borad',
             value: '1'
           },
           {
-            text: 'usb',
+            text: 'USB',
             value: '2'
           }
         ],

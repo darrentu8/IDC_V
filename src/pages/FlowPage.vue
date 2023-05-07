@@ -48,56 +48,26 @@
   </q-page>
 </template>
 
-<script>
-import { ref, computed, defineComponent, watch } from 'vue'
+<script setup>
+import { ref, watch } from 'vue'
 import SettingList from 'src/components/SettingList.vue'
 import ConnectionSettingList from 'src/components/ConnectionSettingList.vue'
 import SouceLibrary from 'src/components/SouceLibrary.vue'
 import StoreFlow from 'src/components/StoreFlow.vue'
 import { useWidgetListStore } from 'src/stores/widget'
-import { useLayoutStore } from 'src/stores/layout'
-
-const layoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
-const widgetListData = computed(() => widgetStore.GetWidgetListData)
-const currentSection = computed(() => layoutStore.GetCurrentSection)
-const currentState = computed(() => widgetStore.GetCurrentState)
 const addState = () => {
   widgetStore.AddState()
 }
-// import { useWidgetListStore } from 'src/stores/widget'
-// import { ref, nextTick, computed, toRef } from 'vue'
-// const layoutStore = useLayoutStore()
-// const widgetListStore = useWidgetListStore()
-// const currentGridIndex = computed(() => layoutStore.currentGridIndex)
-export default defineComponent({
-  name: 'FlowPage',
-  components: {
-    SettingList,
-    ConnectionSettingList,
-    SouceLibrary,
-    StoreFlow
-  },
-  setup() {
-    const tab = ref('source')
-    const isLoading = ref('false')
-    function loadComponent(val) {
-      console.log('loadComponent;:', val)
-      if (val) { isLoading.value = true }
-    }
-    watch(tab, (val) => {
-      console.log('watch:', val)
-      loadComponent(val)
-    })
-    return {
-      isLoading,
-      widgetListData,
-      currentState,
-      currentSection,
-      loadComponent,
-      addState,
-      tab
-    }
-  }
+
+const tab = ref('source')
+const isLoading = ref('false')
+function loadComponent(val) {
+  console.log('loadComponent;:', val)
+  if (val) { isLoading.value = true }
+}
+watch(tab, (val) => {
+  console.log('watch:', val)
+  loadComponent(val)
 })
 </script>
