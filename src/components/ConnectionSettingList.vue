@@ -74,34 +74,25 @@
       <q-spinner color="grey-2" size="3em" :thickness="2" />
     </div>
   </div>
+  <DelDialog />
 </template>
 
 <script setup>
 import { computed, nextTick } from 'vue'
 import { useWidgetListStore } from 'src/stores/widget'
 import { useEventListStore } from 'src/stores/event'
-// import { useLayoutStore } from 'src/stores/layout'
-// const layoutStore = useLayoutStore()
+import DelDialog from './dialog/DelDialog.vue'
+import useQuasar from 'quasar/src/composables/use-quasar.js'
+const $q = useQuasar()
 const widgetStore = useWidgetListStore()
 const eventStore = useEventListStore()
-// const currentSection = computed(() => layoutStore.GetCurrentSection)
 const loading = computed(() => widgetStore.GetLoading)
 const currentState = computed(() => widgetStore.GetCurrentState)
 const currentStateId = computed(() => widgetStore.GetCurrentStateId)
-// const widgetListData = computed(() => widgetStore.GetWidgetListData)
 const stateEventData = computed(() => widgetStore.GetStateEventData)
 
-// const currentEvent = computed(() => eventStore.GetCurrentEvent)
-// const currentEventIndex = computed(() => eventStore.currentEventIndex)
 const eventOptions = computed(() => eventStore.GetEventOptions)
 const actionOptions = computed(() => eventStore.GetActionOptions)
-
-// const addEvent = (currentEvent, Index) => {
-//   widgetStore.AddEvent(currentEvent, Index)
-// }
-// const delEvent = (currentEvent, Index) => {
-//   widgetStore.DelEvent(currentEvent, Index)
-// }
 
 const addStateEventSame = async (currentState) => {
   widgetStore.SetLoading(true)
@@ -113,10 +104,37 @@ const addAction = (EventId) => {
   widgetStore.AddAction(EventId)
 }
 const delAction = (EventId, ActionId) => {
-  widgetStore.DelAction(EventId, ActionId)
+  $q.dialog({
+    component: DelDialog,
+    componentProps: {
+      title: 'Are you sure you want to delete this action?',
+      okBtn: 'Delete',
+      cancelBtn: 'cancel'
+    }
+  }).onOk(() => {
+    widgetStore.DelAction(EventId, ActionId)
+  }).onCancel(() => {
+    console.log('Cancel')
+  }).onDismiss(() => {
+    console.log('Called on OK or Cancel')
+  })
 }
 const delEvent = (EventId) => {
-  widgetStore.DelEvent(EventId)
+  $q.dialog({
+    component: DelDialog,
+    componentProps: {
+      title: 'Are you sure you want to delete this event?',
+      message: 'This means whole actions will be removed from this playlist.',
+      okBtn: 'Delete',
+      cancelBtn: 'cancel'
+    }
+  }).onOk(() => {
+    widgetStore.DelEvent(EventId)
+  }).onCancel(() => {
+    console.log('Cancel')
+  }).onDismiss(() => {
+    console.log('Called on OK or Cancel')
+  })
 }
 function transformEventData(eventData, currentStateId) {
   console.log('eventData', eventData)

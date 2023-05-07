@@ -66,7 +66,7 @@
                     <!-- 刪除 -->
                     <div class="absolute-right del-card">
                       <q-btn size="sm" class="" color="negative" round dense icon="clear"
-                        @click="delAllStateEvent(EventData._stateId, Index, EventIndex)" />
+                        @click.stop="delAllStateEvent(EventData._stateId, Index, EventIndex)" />
                     </div>
                   </q-card>
                   <q-card v-else bordered class="flowBox q-ml-md select">
@@ -77,9 +77,9 @@
                         @update:model-value="setFlowState(Index, EventIndex, scope.value)" />
                     </q-popup-edit>
                     <!-- 刪除 -->
-                    <div class="absolute-right del-card">
+                    <div class="absolute-right del-card" style="pointer-events: none;">
                       <q-btn size="sm" class="" color="negative" round dense icon="clear"
-                        @click="delAllStateEvent(EventData._stateId, Index, EventIndex)" />
+                        @click.stop="delAllStateEvent(EventData._stateId, Index, EventIndex)" />
                     </div>
                   </q-card>
                 </div>
@@ -103,6 +103,7 @@
       </div> -->
     </div>
   </div>
+  <DelDialog />
 </template>
 
 <script setup>
@@ -110,6 +111,9 @@ import { ref, computed } from 'vue'
 import { useLayoutStore } from 'src/stores/layout'
 import { useWidgetListStore } from 'src/stores/widget'
 import { useEventListStore } from 'src/stores/event'
+import DelDialog from './dialog/DelDialog.vue'
+import useQuasar from 'quasar/src/composables/use-quasar.js'
+const $q = useQuasar()
 
 const popEdit = ref(true)
 // const sectionData = ref([
@@ -142,10 +146,38 @@ const addStateEvent = (Index) => {
   widgetStore.AddStateEvent(Index)
 }
 const delState = (ID) => {
-  widgetStore.DelState(ID)
+  $q.dialog({
+    component: DelDialog,
+    componentProps: {
+      title: 'Are you sure you want to delete this flow?',
+      message: 'This means whole events, actions and states, Including orignal source, will be removed from this playlist.  ',
+      okBtn: 'Delete',
+      cancelBtn: 'cancel'
+    }
+  }).onOk(() => {
+    widgetStore.DelState(ID)
+  }).onCancel(() => {
+    console.log('Cancel')
+  }).onDismiss(() => {
+    console.log('Called on OK or Cancel')
+  })
 }
 const delAllStateEvent = (ID, Index, EventIndex) => {
-  widgetStore.DelAllStateEvent(ID, Index, EventIndex)
+  $q.dialog({
+    component: DelDialog,
+    componentProps: {
+      title: 'Are you sure you want to delete this Event?',
+      message: 'This means whole events and actions, will be removed from this playlist.',
+      okBtn: 'Delete',
+      cancelBtn: 'cancel'
+    }
+  }).onOk(() => {
+    widgetStore.DelAllStateEvent(ID, Index, EventIndex)
+  }).onCancel(() => {
+    console.log('Cancel')
+  }).onDismiss(() => {
+    console.log('Called on OK or Cancel')
+  })
 }
 const mapCurrentStateOptions = computed(() => {
   return function (stateIndex) {

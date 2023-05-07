@@ -24,50 +24,38 @@
         </div>
       </div>
     </div>
-
   </div>
+  <DelDialog />
 </template>
 
-<script>
+<script setup>
 import SourceManager from './SourceManager.vue'
-import { defineComponent, ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useLayoutStore } from 'src/stores/layout'
 import { useWidgetListStore } from 'src/stores/widget'
-// import { ref, nextTick, computed, toRef } from 'vue'
+import DelDialog from './dialog/DelDialog.vue'
+import useQuasar from 'quasar/src/composables/use-quasar.js'
+const $q = useQuasar()
 const layoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
 const widgetListData = computed(() => widgetStore.GetWidgetListData)
-const currentState = computed(() => widgetStore.GetCurrentState)
 const currentStateLength = computed(() => widgetStore.GetCurrentStateLength)
 const currentSection = computed(() => layoutStore.GetCurrentSection)
-const addState = () => {
-  widgetStore.AddState()
-}
-const setCurrentState = (Index) => {
-  widgetStore.SetCurrentState(Index)
-}
 const delState = (id) => {
-  widgetStore.DelState(id)
-}
-export default defineComponent({
-  name: 'ContentSetting',
-  components: {
-    SourceManager
-  },
-  setup() {
-    return {
-      addState,
-      setCurrentState,
-      delState,
-      currentState,
-      currentStateLength,
-      widgetListData,
-      currentSection,
-      expandedContent: ref(true),
-      showEdit: ref(false)
-
+  $q.dialog({
+    component: DelDialog,
+    componentProps: {
+      title: 'Are you sure you want to delete this state?',
+      message: 'This means whole events, actions and states, Including orignal source, will be removed from this playlist.',
+      okBtn: 'Delete',
+      cancelBtn: 'cancel'
     }
-  }
-
-})
+  }).onOk(() => {
+    widgetStore.DelState(id)
+  }).onCancel(() => {
+    console.log('Cancel')
+  }).onDismiss(() => {
+    console.log('Called on OK or Cancel')
+  })
+}
 </script>
