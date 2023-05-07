@@ -130,3 +130,21 @@
 .dragBox {
   min-height: 100px;
 }
+
+//Connection setting
+.q-field.theme {
+  .q-field__after {
+    display: none;
+  }
+  .q-field__inner {
+    padding-right: 56px;
+  }
+}
+.q-field.theme:hover {
+  .q-field__inner {
+    padding-right: 0;
+  }
+  .q-field__after {
+    display: block;
+  }
+}

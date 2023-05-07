@@ -4,63 +4,57 @@
       <q-item-label class="border-b text-dark text-bold relative-position" header>Connection setting (State {{
         currentState
         + 1 }})
-        <q-btn v-if="stateEventData.length" label="Add New Event" @click="addStateEventSame(currentState)" flat
+        <q-btn v-if="stateEventData.length" icon="add" label="Add New Event" @click="addStateEventSame(currentState)" flat
           class="theme-tab-btn" color="primary">
-          <q-icon name="add" class="q-ml-xs"></q-icon>
         </q-btn>
       </q-item-label>
       <div v-if="stateEventData.length">
-        <div class="row col-12 q-pb-md"
-          v-for="(EventData, EventIndex) in transformEventData(stateEventData, currentStateId)" :key="EventData._id">
-          <div v-if="EventData._stateId === currentStateId" class="row border-b col-12 q-pb-md">
-            <div class="row col-12 items-top q-pt-md">
-              <div class="col-6 q-pt-sm">
+        <div class="row col-12" v-for="(EventData, EventIndex) in transformEventData(stateEventData, currentStateId)"
+          :key="EventData._id">
+          <div v-if="EventData._stateId === currentStateId" class="row border-b col-12 q-pl-sm q-pb-md">
+            <div class="row col-12 items-top">
+              <div class="col-6">
                 <div class="col-12">
-                  <q-item-label class="relative-position" header>{{ EventIndex + 1 }} Event
+                  <q-item-label class="q-pl-none q-pb-sm" header>{{ EventIndex + 1 }}. Event
                   </q-item-label>
                 </div>
                 <div class="col-12">
-                  <div class="row">
-                    <div class="col-9">
-                      <q-item-label class="">
-                        <q-select :disable="EventData._next_state_id === ''" filled dense v-model="EventData._gpio_number"
-                          :options="eventOptions" label="Event" />
-                      </q-item-label>
-                    </div>
-                    <div class="col-3 text-center">
-                      <q-btn label="" size="md" @click="delEvent(EventData._id)" round flat class="" color="red"
-                        icon="delete_outline" />
-                    </div>
-                  </div>
+                  <q-select class="theme" bg-color="white" rounded :disable="EventData._next_state_id === ''" outlined
+                    dense v-model="EventData._gpio_number" :options="eventOptions">
+                    <template v-slot:after>
+                      <q-btn class="q-mr-sm" label="" size="md" @click="delEvent(EventData._id)" round flat color="red"
+                        icon="img:/icon/delete.svg" />
+                    </template>
+                  </q-select>
                 </div>
               </div>
-              <div class="col-6 q-pt-sm">
-                <div class="col-12">
-                  <q-item-label class="relative-position" header>Action
-                    <q-btn label="" @click="addAction(EventData._id)" flat class="theme-tab-btn" color="grey-6">
-                      <q-icon name="add" class="q-ml-xs"></q-icon>
-                    </q-btn>
-                  </q-item-label>
-                </div>
-                <div v-if="EventData.Action.length" class="col-12 items-center">
-                  <div v-for="(actionData) in EventData.Action" :key="actionData._id" class="row q-mb-md">
-                    <div class="col-8">
-                      <q-item-label class="q-pl-md">
-                        <q-select :disable="EventData._next_state_id === ''" filled dense v-model="actionData._type"
-                          :options="actionOptions" label="Action 1" />
+              <div class="col-6">
+                <div class="col-12 items-center">
+                  <div class="col-12">
+                    <q-item-label class="relative-position q-pl-none q-pb-sm" header>Action 1
+                      <q-btn label="" @click="addAction(EventData._id)" flat class="theme-tab-btn" color="grey-6">
+                        <q-icon name="add" class="q-ml-xs"></q-icon>
+                      </q-btn>
+                    </q-item-label>
+                  </div>
+                  <div v-for="(actionData, actionIndex) in EventData.Action" :key="actionData._id" class="row q-mb-md">
+                    <div v-if="actionIndex !== 0" class="col-12">
+                      <q-item-label class="relative-position q-pt-none q-pl-none q-pb-sm" header>Action {{ actionIndex + 1
+                      }}
                       </q-item-label>
                     </div>
-                    <div class="col-4 flex justify-center items-center">
-                      <q-btn label="" size="md" @click="delAction(EventData._id, actionData._id)" round flat class=""
-                        color="red" icon="delete_outline" />
+                    <div class="col-12">
+                      <q-select class="theme" :disable="EventData._next_state_id === ''" bg-color="white" rounded outlined
+                        dense v-model="actionData._type" :options="actionOptions">
+                        <template v-slot:after>
+                          <q-btn class="q-mr-sm" label="" size="md" @click="delAction(EventData._id, actionData._id)"
+                            round flat color="red" icon="img:/icon/delete.svg" />
+                        </template>
+                      </q-select>
                     </div>
                   </div>
                   <!-- <q-btn label="" size="md" @click="addAction(EventData._id)" round flat class="" color="primary"
                     icon="add" /> -->
-                </div>
-                <div v-else class="col-12 flex justify-center">
-                  <!-- <q-btn :disable="EventData._next_state_id === ''" label="" size="md" @click="addAction(EventData._id)"
-                    round flat class="" color="primary" icon="add" /> -->
                 </div>
 
               </div>

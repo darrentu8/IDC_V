@@ -12,8 +12,7 @@
         <q-tab name="flow" icon="img:/icon/flow.svg" label="Story Flow" style="text-transform: capitalize;" />
 
         <q-btn v-if="tab === 'source'" label="Add new state" @click="addState()" flat class="theme-tab-btn"
-          color="primary">
-          <q-icon name="add" class="q-ml-xs"></q-icon>
+          color="primary" icon="add">
         </q-btn>
       </q-tabs>
 
