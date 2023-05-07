@@ -6,11 +6,12 @@
       <q-item-label>{{ Index + 1 }}</q-item-label>
     </q-item-section>
     <q-item-section>
-      <q-select dense outlined v-model="ContentType" :options="options"
-        @update:model-value="selectWidget(Index, ContentType)" label="Select a widget" emit-value>
+      <q-select dense outlined v-model="ContentType" :options="options" class="brand-round-m rounded-borders"
+        bg-color="white" @update:model-value="selectWidget(Index, ContentType)" option-disable="disable"
+        label="Select a widget" emit-value>
         <template v-slot:append>
           <q-icon v-if="ContentType == 'TEXT'" name="img:/icon/text.png" />
-          <q-icon v-if="ContentType == 'MEDIA'" name="img:/icon/media.png" />
+          <q-icon v-if="ContentType == 'MEDIA'" name="img:/icon/photograph.svg" />
           <q-icon v-if="ContentType == 'TWITTER'" name="img:/icon/twitter.png" />
           <q-icon v-if="ContentType == 'WEBPAGE'" name="img:/icon/webpage.png" />
         </template>

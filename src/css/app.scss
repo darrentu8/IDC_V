@@ -2,6 +2,27 @@
 .theme-text-color {
   color: $text-color;
 }
+.brand-round-l{
+  border-radius: 20px !important;
+  .q-field__control {
+    border-radius: 20px !important
+  }
+}
+.brand-round-m {
+  border-radius: 15px !important;
+  .q-field__control {
+    border-radius: 15px !important;
+  }
+}
+.brand-round-s {
+  border-radius: 10px !important;
+  .q-field__control {
+    border-radius: 10px !important;
+  }
+}
+.q-checkbox__bg {
+  border-radius: 10px;
+}
 .theme-btn {
   border-radius: 10px;
   padding: 2px 22px !important;
@@ -30,7 +51,7 @@
 }
 .q-list.rounded-borders {
   box-shadow: 0px 5px 10px 0px #BBBBBB80;
-  border-radius: 30px;
+  border-radius: 20px;
 }
 .border-b {
   border-bottom: 1px solid #E5E5E5;
@@ -126,9 +147,6 @@
   border: 2px solid white;
   margin-top: 80%;
   margin-right: -10px;
-}
-.brand-round{
-  border-radius: 20px;
 }
 .dialog-round{
   border-radius: 30px !important;

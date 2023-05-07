@@ -10,7 +10,7 @@
         </q-stepper>
       </div>
       <div class="col flex flex-center">
-        <q-card class="bg-white text-black brand-round q-pa-lg" style="width:550px;margin-top: -50px;height:550px">
+        <q-card class="bg-white text-black brand-round-l q-pa-lg" style="width:550px;margin-top: -50px;height:550px">
           <q-card-section>
             <div class="column">
               <div class="col">
@@ -54,7 +54,7 @@
           </q-card-section>
           <q-card-actions class="q-pb-lg absolute-bottom">
             <q-space />
-            <q-btn class="brand-round" @click="toGrid" style="width:116px" color="primary" label="Next"
+            <q-btn class="brand-round-l text-capitalize" @click="toGrid" style="width:116px" color="primary" label="Next"
               icon="arrow_forward" />
           </q-card-actions>
         </q-card>

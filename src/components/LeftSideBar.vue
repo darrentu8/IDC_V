@@ -11,7 +11,7 @@
             class="cursor-pointer" /> -->
         </template>
         <template v-if="NovoDS._Playlist_Name !== PlaylistName" v-slot:after>
-          <q-btn round dense flat color="grey-5" icon="save" />
+          <q-btn round dense flat color="grey-5" icon="check_circle" />
         </template>
       </q-input>
     </q-item-label>

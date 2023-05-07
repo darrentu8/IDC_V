@@ -8,19 +8,19 @@
         <div class="row q-pa-sm">
           <div class="q-pa-sm" style="width:120px"> Row Count:</div>
           <div class="col">
-            <q-input @update:model-value="changeRowCount" dense outlined type="number" :min="1" :max="10"
-              v-model.number="grid.rowCount" />
+            <q-input class="brand-round-m" @update:model-value="changeRowCount" dense outlined type="number" :min="1"
+              :max="10" v-model.number="grid.rowCount" />
           </div>
         </div>
         <div class="row q-pa-sm">
           <div class="q-pa-sm" style="width:120px"> Column Count:</div>
           <div class="col">
-            <q-input @update:model-value="changeColCount" dense outlined type="number" :min="1" :max="20"
-              v-model.number="grid.colCount" />
+            <q-input class="brand-round-m" @update:model-value="changeColCount" dense outlined type="number" :min="1"
+              :max="20" v-model.number="grid.colCount" />
           </div>
         </div>
         <div class="row q-pa-sm">
-          <q-btn class="brand-round" @click="addGrid" color="primary" icon="add" label="Add Grid" />
+          <q-btn class="brand-round-l text-capitalize" @click="addGrid" color="primary" icon="add" label="Add Grid" />
         </div>
       </div>
       <q-separator vertical class="q-ma-md" />

@@ -20,7 +20,7 @@
                       {{ element._src }}
                     </div>
                     <div class="q-mt-xs" style="max-width: 150px;">
-                      <q-input class="" dense outlined
+                      <q-input class="brand-round-m" dense outlined
                         @blur="element._duration = checkAndReplaceValue($event.target.value)"
                         v-if="element._type == 'image' || element._type == 'pdf'" v-model="element._duration"
                         type="number" maxlength="4" min="3" prefix="" suffix="sec" />

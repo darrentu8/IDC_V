@@ -7,25 +7,29 @@ export const useWidgetListStore = defineStore('widgetList', {
   state: () => ({
     widgetOption: [
       {
-        label: 'TEXT',
-        value: 'TEXT',
-        icon: 'img:/icon/text.png'
-      },
-      {
         label: 'MEDIA',
         value: 'MEDIA',
-        icon: 'img:/icon/media.png'
-      },
-      {
-        label: 'TWITTER',
-        value: 'TWITTER',
-        icon: 'img:/icon/twitter.png'
-      },
-      {
-        label: 'WEBPAGE',
-        value: 'WEBPAGE',
-        icon: 'img:/icon/webpage.png'
+        icon: 'img:/icon/photograph.svg',
+        disable: false
       }
+      // {
+      //   label: 'TEXT',
+      //   value: 'TEXT',
+      //   icon: 'img:/icon/text.png',
+      // disable: false
+      // },
+      // {
+      //   label: 'TWITTER',
+      //   value: 'TWITTER',
+      //   icon: 'img:/icon/twitter.png',
+      // disable: false
+      // },
+      // {
+      //   label: 'WEBPAGE',
+      //   value: 'WEBPAGE',
+      //   icon: 'img:/icon/webpage.png',
+      // disable: false
+      // }
     ],
     widgetListData: [
       {
@@ -52,7 +56,7 @@ export const useWidgetListStore = defineStore('widgetList', {
           _Live_Update_ID: '',
           _Detect_Picture_Orientation: 'false',
           _FloatIn_Direction: '',
-          _isVideoFillArea: '',
+          _isVideoFillArea: 'false',
           _Live_Update_Access_Way: '',
           _Live_Update_password: '',
           _duration: '',
