@@ -158,3 +158,8 @@
     display: block;
   }
 }
+.q-field.theme.sub:hover {
+  .q-field__inner {
+    padding-right: 56px;
+  }
+}

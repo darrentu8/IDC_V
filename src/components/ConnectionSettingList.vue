@@ -19,13 +19,40 @@
                   </q-item-label>
                 </div>
                 <div class="col-12">
-                  <q-select class="theme" bg-color="white" rounded :disable="EventData._next_state_id === ''" outlined
-                    dense v-model="EventData._gpio_number" :options="eventOptions">
+                  <!-- Event 選單 -->
+                  <q-select class="theme" bg-color="white" rounded label="Select Type"
+                    :disable="EventData._next_state_id === ''" outlined dense v-model="EventData._type" emit-value
+                    map-options :options="eventTypeOptions['type']" option-value="value" option-label="text">
                     <template v-slot:after>
                       <q-btn class="q-mr-sm" label="" size="md" @click="delEvent(EventData._id)" round flat color="red"
                         icon="img:/icon/delete.svg" />
                     </template>
                   </q-select>
+                  <!-- Event 子選單 -->
+                  <q-select v-if="EventData._type == 'gpio'" label="Select Hardware" class="theme sub q-mt-sm"
+                    bg-color="white" rounded :disable="EventData._next_state_id === ''" emit-value map-options outlined
+                    dense v-model="EventData._gpio_number" :options="eventTypeOptions[EventData._type].hardwareOptions"
+                    option-value="value" option-label="text">
+                  </q-select>
+                  <q-select v-if="EventData._type == 'gpio'" label="Select Key" class="theme sub q-mt-sm" bg-color="white"
+                    rounded :disable="EventData._next_state_id === ''" emit-value map-options outlined dense
+                    v-model="EventData._key_action" :options="eventTypeOptions[EventData._type].subOptions"
+                    option-value="value" option-label="text">
+                  </q-select>
+                  <q-select v-if="EventData._type == 'rs232'" label="Select Type" class="theme sub q-mt-sm"
+                    bg-color="white" rounded :disable="EventData._next_state_id === ''" emit-value map-options outlined
+                    dense v-model="EventData._rs232_id" :options="eventTypeOptions[EventData._type].subOptions"
+                    option-value="value" option-label="text">
+                  </q-select>
+                  <q-input v-if="EventData._type == 'rs232'" label="Type command" class="theme sub q-mt-sm"
+                    bg-color="white" rounded dense outlined v-model="EventData._input_value" type="text" prefix=""
+                    suffix="" />
+                  <q-input v-if="EventData._type == 'tcp/ip'" label="Type command" class="theme sub q-mt-sm"
+                    bg-color="white" rounded dense outlined v-model="EventData._input_value" type="text" prefix=""
+                    suffix="" />
+                  <q-input v-if="EventData._type == 'timeout'" label="Duration" class="theme sub q-mt-sm" bg-color="white"
+                    rounded dense outlined v-model="EventData._duration" type="number" maxlength="4" min="0" prefix=""
+                    suffix="sec" />
                 </div>
               </div>
               <div class="col-6">
@@ -44,13 +71,19 @@
                       </q-item-label>
                     </div>
                     <div class="col-12">
+                      <!-- Action 選單 -->
                       <q-select class="theme" :disable="EventData._next_state_id === ''" bg-color="white" rounded outlined
-                        dense v-model="actionData._type" :options="actionOptions">
+                        dense v-model="actionData._type" emit-value map-options :options="actionTypeOptions['type']"
+                        option-value="value" option-label="text">
                         <template v-slot:after>
                           <q-btn class="q-mr-sm" label="" size="md" @click="delAction(EventData._id, actionData._id)"
                             round flat color="red" icon="img:/icon/delete.svg" />
                         </template>
                       </q-select>
+
+                      <!-- Action 子選單 -->
+                      <q-input v-if="actionData._type" label="Type command" class="theme sub q-mt-sm" bg-color="white"
+                        rounded dense outlined v-model="actionData._input_value" type="text" prefix="" suffix="" />
                     </div>
                   </div>
                   <!-- <q-btn label="" size="md" @click="addAction(EventData._id)" round flat class="" color="primary"
@@ -91,8 +124,8 @@ const currentState = computed(() => widgetStore.GetCurrentState)
 const currentStateId = computed(() => widgetStore.GetCurrentStateId)
 const stateEventData = computed(() => widgetStore.GetStateEventData)
 
-const eventOptions = computed(() => eventStore.GetEventOptions)
-const actionOptions = computed(() => eventStore.GetActionOptions)
+const eventTypeOptions = computed(() => eventStore.GetEventTypeOptions)
+const actionTypeOptions = computed(() => eventStore.GetActionTypeOptions)
 
 const addStateEventSame = async (currentState) => {
   widgetStore.SetLoading(true)

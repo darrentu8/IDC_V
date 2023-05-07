@@ -4,30 +4,190 @@ export const useEventListStore = defineStore('eventList', {
   state: () => ({
     currentEvent: '',
     currentEventIndex: '',
-    eventOptions: [
-      {
-        label: 'Via',
-        options: ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'],
+    eventTypeOptions: {
+      type: [
+        {
+          text: 'GPIO',
+          value: 'gpio'
+        },
+        {
+          text: 'RS232',
+          value: 'rs232'
+        },
+        {
+          text: 'TCP/IP',
+          value: 'tcp/ip'
+        },
+        {
+          text: 'Playback end',
+          value: 'playend'
+        },
+        {
+          text: 'Time out',
+          value: 'timeout'
+        }
+      ],
+      gpio: {
+        label: 'Type',
+        options: ['gpio', 'RS232', 'TCP/IP', 'playend', 'timeout'],
+        hardwareOptions: [
+          {
+            text: '1',
+            value: '1'
+          },
+          {
+            text: '2',
+            value: '2'
+          },
+          {
+            text: '3',
+            value: '3'
+          },
+          {
+            text: '4',
+            value: '4'
+          },
+          {
+            text: '5',
+            value: '5'
+          },
+          {
+            text: '6',
+            value: '6'
+          }
+        ],
+        subOptions: [
+          {
+            text: 'Up',
+            value: 'up'
+          },
+          {
+            text: 'Down',
+            value: 'down'
+          }
+        ],
         model: ''
       },
-      {
-        label: 'Action',
-        options: ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'],
-        model: ''
-      }
-    ],
-    actionOptions: [
-      {
-        label: 'Via',
-        options: ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'],
+      rs232: {
+        label: 'Type',
+        options: ['gpio', 'RS232', 'TCP/IP', 'playend', 'timeout'],
+        subOptions: [
+          {
+            text: 'on_borad',
+            value: '1'
+          },
+          {
+            text: 'usb',
+            value: '2'
+          }
+        ],
         model: ''
       },
-      {
-        label: 'Action',
-        options: ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'],
+      'tcp/ip': {
+        label: 'Type',
+        options: ['gpio', 'RS232', 'TCP/IP', 'playend', 'timeout'],
+        subOptions: ['gpio', 'RS232', 'TCP/IP', 'playend', 'timeout'],
+        model: ''
+      },
+      playend: {
+        label: 'Type',
+        options: ['gpio', 'RS232', 'TCP/IP', 'playend', 'timeout'],
+        subOptions: ['gpio', 'RS232', 'TCP/IP', 'playend', 'timeout'],
+        model: ''
+      },
+      timeout: {
+        label: 'Type',
+        options: ['gpio', 'RS232', 'TCP/IP', 'playend', 'timeout'],
+        subOptions: ['gpio', 'RS232', 'TCP/IP', 'playend', 'timeout'],
         model: ''
       }
-    ]
+    },
+    actionTypeOptions: {
+      type: [
+        {
+          text: 'GPIO',
+          value: 'gpio'
+        },
+        {
+          text: 'RS232',
+          value: 'rs232'
+        },
+        {
+          text: 'TCP/IP',
+          value: 'tcp/ip'
+        },
+        {
+          text: 'Playback end',
+          value: 'playend'
+        },
+        {
+          text: 'Time out',
+          value: 'timeout'
+        }
+      ],
+      gpio: {
+        label: 'Type',
+        options: ['gpio', 'RS232', 'TCP/IP', 'playend', 'timeout'],
+        hardwareOptions: [
+          {
+            text: '1',
+            value: '1'
+          },
+          {
+            text: '2',
+            value: '2'
+          },
+          {
+            text: '3',
+            value: '3'
+          },
+          {
+            text: '4',
+            value: '4'
+          },
+          {
+            text: '5',
+            value: '5'
+          },
+          {
+            text: '6',
+            value: '6'
+          }
+        ],
+        subOptions: [
+          {
+            text: 'Up',
+            value: 'up'
+          },
+          {
+            text: 'Down',
+            value: 'down'
+          }
+        ],
+        model: ''
+      },
+      rs232: {
+        label: 'Type',
+        options: ['gpio', 'RS232', 'TCP/IP', 'playend', 'timeout'],
+        subOptions: [
+          {
+            text: 'on_borad',
+            value: '1'
+          },
+          {
+            text: 'usb',
+            value: '2'
+          }
+        ],
+        model: ''
+      },
+      'tcp/ip': {
+        label: 'Type',
+        options: ['gpio', 'RS232', 'TCP/IP', 'playend', 'timeout'],
+        subOptions: ['gpio', 'RS232', 'TCP/IP', 'playend', 'timeout'],
+        model: ''
+      }
+    }
   }),
   getters: {
     GetCurrentEvent() {
@@ -36,11 +196,11 @@ export const useEventListStore = defineStore('eventList', {
     GetCurrentEventIndex() {
       return this.currentEventIndex
     },
-    GetEventOptions() {
-      return this.eventOptions
+    GetEventTypeOptions() {
+      return this.eventTypeOptions
     },
-    GetActionOptions() {
-      return this.actionOptions
+    GetActionTypeOptions() {
+      return this.actionTypeOptions
     }
   },
   actions: {
