@@ -1,7 +1,7 @@
 <template>
   <div v-if="!loading" class="q-pa-md" style="height: 100vh;">
     <q-scroll-area style="height: calc(100% - 80px);">
-      <q-item-label class="border-b text-dark text-bold relative-position" header>Connection setting
+      <q-item-label class="border-b text-dark text-bold relative-position" header>State Transitions
         <q-btn v-if="stateEventData.length" icon="add" label="Add New Event" @click="addStateEventSame(currentState)" flat
           class="theme-tab-btn" color="primary">
         </q-btn>

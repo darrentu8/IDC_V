@@ -4,9 +4,9 @@
       <div class="flex flex-center">
         <q-stepper :model-value="1" alternative-labels color="primary" :bordered="false" flat
           style="background-color: transparent;width: 800px">
-          <q-step :name="1" prefix="1" title="Define the name" />
+          <q-step :name="1" prefix="1" title="Enter playlist name" />
           <q-step :name="2" prefix="2" title="Select layout" />
-          <q-step :name="3" prefix="3" title="Hardware configuration" />
+          <q-step :name="3" prefix="3" title="Configure hardware" />
         </q-stepper>
       </div>
       <div class="col flex flex-center">
@@ -18,13 +18,13 @@
               </div>
               <div class="col q-mt-sm">
                 <div class="text-body1">Play List Name</div>
-                <q-input v-model="_Playlist_Name" placeholder="Choose playlist name" class="brand-round-s input-border"
+                <q-input v-model="_Playlist_Name" placeholder="Enter playlist name" class="brand-round-s input-border"
                   bg-color="grey-2" dense outlined>
                 </q-input>
               </div>
               <div class="col q-mt-sm">
                 <div class="text-body1">Play List Description</div>
-                <q-input v-model="_Description" type="textarea" placeholder="Enter your playlist description"
+                <q-input v-model="_Description" type="textarea" placeholder="Enter playlist description"
                   class="brand-round-s input-border" bg-color="grey-2" dense outlined>
                 </q-input>
               </div>

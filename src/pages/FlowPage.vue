@@ -7,7 +7,7 @@
     <div :class="[tab === 'source' ? 'offSetL q-pa-md' : 'offSetR q-pa-md']">
       <q-tabs v-model="tab" inline-label class="text-grey" active-color="primary" indicator-color="primary" align="left"
         narrow-indicator>
-        <q-tab name="source" icon="img:/icon/view-grid-add.svg" label="Source library"
+        <q-tab name="source" icon="img:/icon/view-grid-add.svg" label="State Definition"
           style="text-transform: capitalize;" />
         <q-tab name="flow" icon="img:/icon/flow.svg" label="Story Flow" style="text-transform: capitalize;" />
 

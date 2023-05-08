@@ -1,5 +1,5 @@
 <template>
-  <q-item-label class="border-d q-pb-sm q-pl-sm text-dark text-bold relative-position">Source
+  <q-item-label class="border-d q-pb-sm q-pl-sm text-dark text-bold relative-position">Content
     <q-btn label="" @click="add(currentStateIndex)" flat class="theme-tab-btn add" color="primary" icon="add" />
   </q-item-label>
   <div class="q-mt-md dragBox">
