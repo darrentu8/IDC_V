@@ -23,7 +23,7 @@
                 </q-input>
               </div>
               <div class="col q-mt-sm">
-                <div class="text-body1">Play List Description</div>
+                <div class="text-body1">Playlist Description (Optional)</div>
                 <q-input v-model="_Description" type="textarea" placeholder="Enter playlist description"
                   class="brand-round-s input-border" bg-color="grey-2" dense outlined>
                 </q-input>
@@ -58,8 +58,8 @@
           </q-card-section>
           <q-card-actions class="q-pb-lg q-mr-lg absolute-bottom">
             <q-space />
-            <q-btn class="brand-round-l text-capitalize" @click="toGrid" style="width:116px" color="primary" label="Next"
-              icon="arrow_forward" />
+            <q-btn :disable="!_Playlist_Name" class="brand-round-l text-capitalize" @click="toGrid" style="width:116px"
+              color="primary" label="Next" icon="arrow_forward" />
           </q-card-actions>
         </q-card>
       </div>

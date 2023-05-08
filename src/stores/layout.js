@@ -131,7 +131,7 @@ export const useLayoutStore = defineStore('layout', {
           _SerialNumber: '', // 流水號 Page 1, Page 2 …沒用到
           _AudioSource: '',
           _BackgroundImageSize: '',
-          _BackgroundImage: '',
+          _BackgroundImage: '_BackgroundImage',
           _BgMusicApplyToAll: '',
           _BackgroundMusicUrl: '',
           _BackgroundMusicSize: '',
