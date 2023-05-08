@@ -53,6 +53,14 @@
   box-shadow: 0px 5px 10px 0px #BBBBBB80;
   border-radius: 20px;
 }
+.input-border {
+  &.q-field--outlined .q-field__control:before {
+    border: 1px solid #E5E5E5 !important;
+  }
+  &.q-field--outlined .q-field__control:before {
+    border: 1px solid #E5E5E5 !important;
+  }
+}
 .border-b {
   border-bottom: 1px solid #E5E5E5;
 }

@@ -62,12 +62,14 @@ const { ContentType } = toRef(props)
 const setIndex = (Index) => {
   // console.log('Index', Index)
   layoutStore.SetCurrentSection(Index)
+  widgetListStore.ResetWidgetListData()
 }
 const selectWidget = (Index, ContentType) => {
   // console.log('Index', Index)
   // console.log('ContentType', ContentType)
   setIndex(Index)
   widgetListStore.SetWidget(Index, ContentType)
+  widgetListStore.ResetWidgetListData()
   updateList(false)
 }
 const renderComponent = ref(true)

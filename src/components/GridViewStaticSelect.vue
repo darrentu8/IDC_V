@@ -18,13 +18,16 @@
 <script setup>
 import { computed, toRefs } from 'vue'
 import { useLayoutStore } from 'src/stores/layout'
-const LayoutStore = useLayoutStore()
+import { useWidgetListStore } from 'src/stores/widget'
+const layoutStore = useLayoutStore()
+const widgetListStore = useWidgetListStore()
 const props = defineProps(['viewRowCount', 'viewColCount', 'viewLayout', 'viewWidth'])
 const { viewRowCount, viewColCount, viewLayout, viewWidth } = toRefs(props)
 
-const currentSection = computed(() => LayoutStore.currentSection)
+const currentSection = computed(() => layoutStore.currentSection)
 const selectGrid = (i) => {
-  LayoutStore.SetCurrentSection(i)
+  layoutStore.SetCurrentSection(i)
+  widgetListStore.ResetWidgetListData()
 }
 </script>
 <style lang="scss" scoped>

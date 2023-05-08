@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { useWidgetListStore } from './widget'
-import { uid } from 'quasar'
+import { uid, extend } from 'quasar'
 const widgetStore = useWidgetListStore()
 
 export const useLayoutStore = defineStore('layout', {
@@ -262,6 +262,10 @@ export const useLayoutStore = defineStore('layout', {
     SetCurrentSection(i) {
       console.log('currentSection', i)
       this.currentSection = i
+    },
+    WriteToXml() {
+      const NovoDSData = extend(true, {}, this.NovoDS)
+      window.myAPI.storeToXML({ NovoDS: NovoDSData })
     }
   }
 })

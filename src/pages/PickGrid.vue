@@ -117,8 +117,8 @@
             <q-btn class="brand-round-l text-capitalize" @click="toNew" style="width:116px;margin:auto 20px" color="grey"
               label="Back" outline="" icon="arrow_back" />
             <q-space />
-            <q-btn class="brand-round-l text-capitalize" @click="toHardware" style="width:116px;margin:auto 20px"
-              color="primary" label="Next" icon="arrow_forward" />
+            <q-btn :disable="lock" class="brand-round-l text-capitalize" @click="toHardware"
+              style="width:116px;margin:auto 20px" color="primary" label="Next" icon="arrow_forward" />
           </q-card-actions>
 
           <q-card-actions v-show="panel === 'customGrid'" class="q-pb-lg absolute-bottom">
@@ -235,7 +235,8 @@ export default {
       ],
       gridWidth: 160,
       currentGrid: null,
-      currentCubeId: null
+      currentCubeId: null,
+      lock: true
     }
   },
   computed: {
@@ -248,6 +249,7 @@ export default {
       this.currentGrid = grid
       this.currentCubeId = grid.layout[0].i
       this.isChooseCustom = false
+      this.lock = false
     },
     chooseCube(id) {
       this.currentCubeId = id

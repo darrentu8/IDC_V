@@ -18,11 +18,15 @@
               </div>
               <div class="col q-mt-sm">
                 <div class="text-body1">Play List Name</div>
-                <q-input v-model="description" standout="bg-primary text-white" rounded dense />
+                <q-input v-model="_Playlist_Name" placeholder="Choose playlist name" class="brand-round-s input-border"
+                  bg-color="grey-2" dense outlined>
+                </q-input>
               </div>
               <div class="col q-mt-sm">
                 <div class="text-body1">Play List Description</div>
-                <q-input v-model="description" type="textarea" standout="bg-primary text-white" rounded dense />
+                <q-input v-model="_Description" type="textarea" placeholder="Enter your playlist description"
+                  class="brand-round-s input-border" bg-color="grey-2" dense outlined>
+                </q-input>
               </div>
               <div class="col row q-mt-md">
                 <div class="col">
@@ -52,7 +56,7 @@
               </div>
             </div>
           </q-card-section>
-          <q-card-actions class="q-pb-lg absolute-bottom">
+          <q-card-actions class="q-pb-lg q-mr-lg absolute-bottom">
             <q-space />
             <q-btn class="brand-round-l text-capitalize" @click="toGrid" style="width:116px" color="primary" label="Next"
               icon="arrow_forward" />
@@ -65,14 +69,12 @@
 </template>
 
 <script>
-// import SourceManager from 'src/components/SourceManager.vue'
-import { useNovoDSStore } from 'src/stores/NovoDS'
-const NovoDSStore = useNovoDSStore()
+import { useLayoutStore } from 'src/stores/layout'
+const layoutStore = useLayoutStore()
 
 export default {
   name: 'StartNew',
   components: {
-    // SourceManager
   },
   data() {
     return {
@@ -80,16 +82,24 @@ export default {
     }
   },
   computed: {
-    description: {
+    _Playlist_Name: {
       get() {
-        return NovoDSStore.NovoDS.$.Description
+        return layoutStore.NovoDS._Playlist_Name
       },
       set(val) {
-        NovoDSStore.NovoDS.$.Description = val
+        layoutStore.NovoDS._Playlist_Name = val
+      }
+    },
+    _Description: {
+      get() {
+        return layoutStore.NovoDS._Description
+      },
+      set(val) {
+        layoutStore.NovoDS._Description = val
       }
     },
     deviceType() {
-      return NovoDSStore.NovoDS.$.Model_Type
+      return layoutStore.NovoDS._Model_Type
     }
   },
   methods: {
@@ -107,7 +117,7 @@ export default {
       })
     },
     exportFile() {
-      NovoDSStore.WriteToXml()
+      layoutStore.WriteToXml()
     }
   }
 }

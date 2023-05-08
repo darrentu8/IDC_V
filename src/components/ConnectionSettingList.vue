@@ -1,9 +1,7 @@
 <template>
   <div v-if="!loading" class="q-pa-md" style="height: 100vh;">
     <q-scroll-area style="height: calc(100% - 80px);">
-      <q-item-label class="border-b text-dark text-bold relative-position" header>Connection setting (State {{
-        currentState
-        + 1 }})
+      <q-item-label class="border-b text-dark text-bold relative-position" header>Connection setting
         <q-btn v-if="stateEventData.length" icon="add" label="Add New Event" @click="addStateEventSame(currentState)" flat
           class="theme-tab-btn" color="primary">
         </q-btn>
@@ -99,7 +97,7 @@
       </div>
       <div v-else class="justify-center flex items-center" style="height: 200px;">
         <div class="text-grey">
-          Please add state{{ currentState + 1 }} event first
+          Event has not been selected, or state has not been set.
         </div>
       </div>
     </q-scroll-area>
