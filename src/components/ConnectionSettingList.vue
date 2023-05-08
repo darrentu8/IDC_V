@@ -18,7 +18,7 @@
                 </div>
                 <div class="col-12">
                   <!-- Event 選單 -->
-                  <q-select class="theme brand-round-m" bg-color="white" rounded label="Select Type"
+                  <q-select class="theme brand-round-m  q-mb-md" bg-color="white" rounded label="Select Type"
                     :disable="EventData._next_state_id === ''" outlined dense v-model="EventData._type" emit-value
                     map-options :options="eventTypeOptions['type']" option-value="value" option-label="text">
                     <template v-slot:after>

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-
+import { useLayoutStore } from './layout'
 export const useEventListStore = defineStore('eventList', {
   state: () => ({
     currentEvent: '',
@@ -200,7 +200,9 @@ export const useEventListStore = defineStore('eventList', {
       return this.eventTypeOptions
     },
     GetActionTypeOptions() {
-      return this.actionTypeOptions
+      const layoutStore = useLayoutStore()
+      const Hardware = layoutStore.NovoDS.Hardware
+      return Hardware
     }
   },
   actions: {

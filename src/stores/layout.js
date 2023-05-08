@@ -28,37 +28,43 @@ export const useLayoutStore = defineStore('layout', {
               _gpio_number: 1,
               _name: 'GPIO1',
               _isEnabled: true,
-              _role: 'output'
+              _role: 'output',
+              _output_value: '0'
             },
             {
               _gpio_number: 2,
               _name: 'GPIO2',
               _isEnabled: true,
-              _role: 'output'
+              _role: 'output',
+              _output_value: '0'
             },
             {
               _gpio_number: 3,
               _name: 'GPIO3',
               _isEnabled: true,
-              _role: 'output'
+              _role: 'output',
+              _output_value: '0'
             },
             {
               _gpio_number: 4,
               _name: 'GPIO4',
               _isEnabled: true,
-              _role: 'output'
+              _role: 'output',
+              _output_value: '0'
             },
             {
               _gpio_number: 5,
               _name: 'GPIO5',
               _isEnabled: true,
-              _role: 'output'
+              _role: 'output',
+              _output_value: '0'
             },
             {
               _gpio_number: 6,
               _name: 'GPIO6',
               _isEnabled: true,
-              _role: 'output'
+              _role: 'output',
+              _output_value: '0'
             }
           ]
         },
@@ -190,6 +196,36 @@ export const useLayoutStore = defineStore('layout', {
       colCount: 2,
       layout: [{ x: 0, y: 0, w: 1, h: 1, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }]
     },
+    gpioRoleOption: [
+      {
+        title: 'Output',
+        value: 'output',
+        children: [
+          {
+            text: '0',
+            value: '0'
+          },
+          {
+            text: '1',
+            value: '1'
+          }
+        ]
+      },
+      {
+        title: 'Key event',
+        value: 'keyevent',
+        children: [
+          {
+            text: 'Up',
+            value: 'up'
+          },
+          {
+            text: 'Down',
+            value: 'down'
+          }
+        ]
+      }
+    ],
     currentSection: 0
   }
   ),
