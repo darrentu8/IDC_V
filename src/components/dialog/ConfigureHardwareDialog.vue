@@ -13,7 +13,7 @@
           <q-tab :name="2" label="TCP/IP" />
         </q-tabs>
       </div>
-      <div class="col">
+      <div class="col flex flex-center">
         <q-tab-panels class="brand-round-l shadow-1" style="background-color: #F9F9F9;" v-model="panel">
           <q-tab-panel :name="0" class="q-pa-none">
             <div class="">
@@ -63,7 +63,7 @@
                 </div>
                 <q-separator class="q-ma-none" inset vertical
                   style="background: linear-gradient(90deg, #EFEFEF 0%, rgba(255, 255, 255, 0) 80%);width: 25px;height: 100%;left: 358px;top: 0px;" />
-                <div class="col q-pa-xs row flex flex-center">
+                <div class="col q-pa-lg row">
                   <q-expansion-item class="brand-round-m bg-white q-mr-md q-mb-md"
                     style="width:350px;height: fit-content;" @before-show="showGPIOItem(index)" group="gpio"
                     :ref="`GPIOItem${index}`" v-for="(pin, index) in GPIO" :key="index" expand-icon-toggle>
@@ -298,7 +298,7 @@
       </div>
       <q-card-actions class="q-pb-lg absolute-bottom">
         <q-space />
-        <q-btn v-close-popup color="primary" label="Save" class="brand-round-l text-capitalize"
+        <q-btn v-close-popup color="primary" label="Apply" class="brand-round-l text-capitalize"
           style="width:116px;margin:auto 20px" icon="check" />
       </q-card-actions>
     </q-card>
@@ -347,7 +347,7 @@ export default {
     changeCurrentPIN(index) {
       this.currentPIN = index
       const refName = `GPIOItem${index}`
-      this.$refs[refName].show()
+      this.$refs[refName][0].show()
     },
     showGPIOItem(index) {
       this.currentPIN = index

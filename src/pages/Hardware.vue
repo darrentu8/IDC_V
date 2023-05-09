@@ -29,7 +29,7 @@
           <div class="col">
             <q-tab-panels style="background-color: #F9F9F9;" v-model="panel">
               <q-tab-panel :name="0">
-                <div class="q-pa-sm">
+                <div class="">
                   <div class="row" style="height: 320px;">
                     <div class="column q-ma-md flex flex-center">
                       <div class="row">
@@ -315,7 +315,7 @@
             <q-btn class="brand-round-l text-capitalize" @click="toGrid" style="width:116px;margin:auto 20px" color="grey"
               label="Back" outline="" icon="arrow_back" />
             <q-space />
-            <q-btn @click="toFlow" color="primary" label="Submit" class="brand-round-l text-capitalize"
+            <q-btn @click="toFlow" color="primary" label="Apply" class="brand-round-l text-capitalize"
               style="width:116px;margin:auto 20px" icon="check" />
           </q-card-actions>
         </q-card>
@@ -360,7 +360,7 @@ export default {
     changeCurrentPIN(index) {
       this.currentPIN = index
       const refName = `GPIOItem${index}`
-      this.$refs[refName].show()
+      this.$refs[refName][0].show()
     },
     showGPIOItem(index) {
       this.currentPIN = index
