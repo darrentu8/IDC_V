@@ -8,7 +8,7 @@
         <q-btn dense flat icon="close" @click="closeApp" />
       </q-bar>
       <q-toolbar class="q-px-lg q-py-md" style="background-color: #fff;">
-        <img :src="logo" style="height:30px" />
+        <img class="cursor-pointer" :src="logo" style="height:30px" @click="$router.push({ path: '/new' })" />
         <q-space />
         <q-btn class="" unelevated rounded color="" text-color="grey-9" size="md" @click="showPageSettings()">
           <q-icon class="q-mr-xs" name="img:/icon/settings.svg" color="" size="xs" />

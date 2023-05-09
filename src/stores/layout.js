@@ -7,20 +7,11 @@ export const useLayoutStore = defineStore('layout', {
   state: () => ({
     NovoDS: {
       _Description: '',
-      _MagicIndex: '1',
       _Layout_Type: '0', // 0 -> Grid, 1 -> Flexible
-      _Version: '1.1',
       _Playlist_Name: '',
       _Playlist_UUID: '',
-      _Model_Type: '',
-      _Rs232: {
-        _baudRate: '',
-        _dataBits: '',
-        _stopBits: '',
-        _parity: '',
-        _flowControl: '',
-        _rs232_type: 'hex'
-      },
+      _Model_Type: 'DS310',
+      _Interactive: true,
       Hardware: {
         GPIOSettings: {
           GPIO: [
@@ -137,7 +128,7 @@ export const useLayoutStore = defineStore('layout', {
           _BackgroundMusicSize: '',
           _Script: '',
           _BackgroundMusic: '',
-          Section: []
+          Section: null
         }
       },
       Timeline: {
@@ -148,49 +139,6 @@ export const useLayoutStore = defineStore('layout', {
         }
       }
     },
-    SectionData: {
-      _Index: '',
-      _X: '',
-      _Y: '',
-      _Z: '',
-      _Height: '',
-      _Width: '',
-      _is169: '',
-      _SectionValid: '1',
-      _isFixedRatio: '',
-      _Script: '',
-      _ContentType: '',
-      Content: {
-        _scaleType: '', // (View Type: Default), Stretch to fill region -> FIT_XY, Fit region -> FIT_CENTER, Scale to fill region -> CENTER_CROP
-        _showType: '', // Default, Ken Burns Effect, Card Flip, Zoom In, Fade In, Fly In, Float In, Fly Out, Rotate
-        _Live_Update_Frequency: '',
-        _MuteVideo: '',
-        _Live_Update_type: '',
-        _Live_Update_type_storage: '',
-        _Live_Update_userName: '',
-        _Live_Update_path: '',
-        _Live_Update_ID: '',
-        _Detect_Picture_Orientation: 'false',
-        _FloatIn_Direction: '',
-        _isVideoFillArea: '',
-        _Live_Update_Access_Way: '',
-        _Live_Update_password: '',
-        _duration: '',
-        _Live_Update_port: '',
-        _Live_Update_Show_Status: '',
-        AttachmentFiles: [],
-        MediaItem: [],
-        State: []
-      }
-    },
-    StateData: [
-      {
-        _id: uid(),
-        _title: '',
-        File: [],
-        Event: []
-      }
-    ],
     layout: {
       rowCount: 1,
       colCount: 2,

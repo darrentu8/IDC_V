@@ -12,11 +12,11 @@
       <q-item-label header class="q-pa-none q-mb-sm">View Type</q-item-label>
       <q-select :disable="!widgetListData[currentSection]._ContentType" bg-color="white" emit-value map-options outlined
         rounded dense v-model="widgetListData[currentSection].Content._showType" :options="WidgetOptions.showTypeChoice"
-        option-value="value" option-label="text" label="Scale Type" class="q-mb-md" />
+        option-value="value" option-label="value" label="Scale Type" class="q-mb-md" />
       <q-item-label header class="q-pa-none q-mb-sm">Scale type</q-item-label>
       <q-select :disable="!widgetListData[currentSection]._ContentType" bg-color="white" emit-value map-options outlined
         rounded dense v-model="widgetListData[currentSection].Content._scaleType" :options="WidgetOptions.scaleTypeChoice"
-        option-value="value" option-label="text" label="View Type" class="q-mb-md" />
+        option-value="value" option-label="value" label="View Type" class="q-mb-md" />
       <q-checkbox :disable="!widgetListData[currentSection]._ContentType"
         v-model="widgetListData[currentSection].Content._Detect_Picture_Orientation" label="Detect picture orientatioin"
         color="" />

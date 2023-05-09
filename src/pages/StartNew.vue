@@ -98,8 +98,13 @@ export default {
         layoutStore.NovoDS._Description = val
       }
     },
-    deviceType() {
-      return layoutStore.NovoDS._Model_Type
+    deviceType: {
+      get() {
+        return layoutStore.NovoDS._Model_Type
+      },
+      set(val) {
+        layoutStore.NovoDS._Model_Type = val
+      }
     }
   },
   methods: {

@@ -8,7 +8,7 @@ export const useWidgetListStore = defineStore('widgetList', {
     widgetOption: [
       {
         label: 'MEDIA',
-        value: 'MEDIA',
+        value: 'GPIO_Media',
         icon: 'img:/icon/photograph.svg',
         disable: false
       }
