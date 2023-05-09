@@ -18,37 +18,18 @@
                 </div>
                 <div class="col-12">
                   <!-- Event 選單 -->
-                  <q-select class="theme brand-round-m  q-mb-md" bg-color="white" rounded label="Select Type"
-                    :disable="EventData._next_state_id === ''" outlined dense v-model="EventData._type" emit-value
-                    map-options :options="eventTypeOptions['type']" option-value="value" option-label="text">
+                  <q-select class="theme brand-round-m" options-selected-class="text-black" bg-color="white" rounded
+                    label="Select Type" :disable="EventData._next_state_id === ''" outlined dense options-dense
+                    v-model="EventData._type" :options="eventTypeOptions" option-value="_t_uuidype" option-label="_name">
                     <template v-slot:after>
                       <q-btn class="q-mr-sm" label="" size="md" @click="delEvent(EventData._id)" round flat color="red"
                         icon="img:/icon/delete.svg" />
                     </template>
                   </q-select>
                   <!-- Event 子選單 -->
-                  <q-select v-if="EventData._type == 'gpio'" label="Select Hardware"
-                    class="theme brand-round-m sub q-mt-sm" bg-color="white" rounded
-                    :disable="EventData._next_state_id === ''" emit-value map-options outlined dense
-                    v-model="EventData._gpio_number" :options="eventTypeOptions[EventData._type].hardwareOptions"
-                    option-value="value" option-label="text">
-                  </q-select>
-                  <q-select v-if="EventData._type == 'gpio'" label="Select Key" class="theme brand-round-m sub q-mt-sm"
-                    bg-color="white" rounded :disable="EventData._next_state_id === ''" emit-value map-options outlined
-                    dense v-model="EventData._key_action" :options="eventTypeOptions[EventData._type].subOptions"
-                    option-value="value" option-label="text">
-                  </q-select>
-                  <q-select v-if="EventData._type == 'rs232'" label="Select Type" class="theme brand-round-m sub q-mt-sm"
-                    bg-color="white" rounded :disable="EventData._next_state_id === ''" emit-value map-options outlined
-                    dense v-model="EventData._rs232_id" :options="eventTypeOptions[EventData._type].subOptions"
-                    option-value="value" option-label="text">
-                  </q-select>
-                  <q-input v-if="EventData._type == 'rs232'" label="Type command" class="theme brand-round-m sub q-mt-sm"
-                    bg-color="white" rounded dense outlined v-model="EventData._input_value" type="text" prefix=""
-                    suffix="" />
-                  <q-input v-if="EventData._type == 'tcp/ip'" label="Type command" class="theme brand-round-m sub q-mt-sm"
-                    bg-color="white" rounded dense outlined v-model="EventData._input_value" type="text" prefix=""
-                    suffix="" />
+                  <q-input v-if="EventData._type._type == 'rs232' || EventData._type._type == 'tcp/ip'"
+                    label="Type command" class="theme brand-round-m sub q-mt-sm" bg-color="white" rounded dense outlined
+                    v-model="EventData._input_value" type="text" prefix="" suffix="" />
                   <q-input v-if="EventData._type == 'timeout'" label="Duration" class="theme brand-round-m sub q-mt-sm"
                     bg-color="white" rounded dense outlined v-model="EventData._duration" type="number" maxlength="4"
                     min="0" prefix="" suffix="sec" />
@@ -71,9 +52,10 @@
                     </div>
                     <div class="col-12">
                       <!-- Action 選單 -->
-                      <q-select class="theme brand-round-m" :disable="EventData._next_state_id === ''" label="Select Type"
-                        bg-color="white" rounded outlined dense v-model="actionData._type" emit-value map-options
-                        :options="actionTypeOptions['type']" option-value="value" option-label="text">
+                      <q-select class="theme brand-round-m" options-selected-class="text-black"
+                        :disable="EventData._next_state_id === ''" label="Select Type" bg-color="white" rounded outlined
+                        dense options-dense v-model="actionData._type" :options="actionTypeOptions" option-value="_uuid"
+                        option-label="_name">
                         <template v-slot:after>
                           <q-btn class="q-mr-sm" label="" size="md" @click="delAction(EventData._id, actionData._id)"
                             round flat color="red" icon="img:/icon/delete.svg" />
@@ -81,9 +63,9 @@
                       </q-select>
 
                       <!-- Action 子選單 -->
-                      <q-input v-if="actionData._type" label="Type command" class="theme brand-round-m sub q-mt-sm"
-                        bg-color="white" rounded dense outlined v-model="actionData._input_value" type="text" prefix=""
-                        suffix="" />
+                      <q-input v-if="actionData._type._type === 'rs232' || actionData._type === 'tcp/ip'"
+                        label="Type command" class="theme brand-round-m sub q-mt-sm" bg-color="white" rounded dense
+                        outlined v-model="actionData._input_value" type="text" prefix="" suffix="" />
                     </div>
                   </div>
                   <!-- <q-btn label="" size="md" @click="addAction(EventData._id)" round flat class="" color="primary"

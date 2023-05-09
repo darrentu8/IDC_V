@@ -10,10 +10,14 @@
           <!-- <q-icon v-if="NovoDS._Playlist_Name !== PlaylistName" name="check" color="green" @click="saveName()"
             class="cursor-pointer" /> -->
         </template>
-        <template v-if="NovoDS._Playlist_Name !== PlaylistName" v-slot:after>
-          <q-btn round dense flat color="grey-5" icon="check_circle" />
+        <template v-if="NovoDS._Playlist_Name !== PlaylistName && PlaylistName" v-slot:after>
+          <q-btn round dense flat color="primary" icon="check_circle" />
         </template>
       </q-input>
+      <div v-if="NovoDS._Description">
+        <!-- <p class="text-grey-7 q-mb-sm">Description</p> -->
+        <p class="text-grey-7">{{ NovoDS._Description }}</p>
+      </div>
     </q-item-label>
   </q-toolbar>
   <GridViewStaticSelect :view-layout="layouts.layout" :view-row-count="layouts.rowCount"
@@ -44,7 +48,14 @@ const widgetLists = computed(() => widgetStore.GetWidgetListData)
 const widgetOptions = computed(() => widgetStore.widgetOption)
 
 const focus = ref(false)
-const PlaylistName = ref('')
+const PlaylistName = computed({
+  get() {
+    return NovoDS.value._Playlist_Name
+  },
+  set(newValue) {
+    NovoDS.value._Playlist_Name = newValue
+  }
+})
 onMounted(() => {
 })
 </script>

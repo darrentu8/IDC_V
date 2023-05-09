@@ -79,7 +79,7 @@ export const useLayoutStore = defineStore('layout', {
               _parity: 'None',
               _rs232_type: 'string',
               _interface: 'on_board',
-              _isEnabled: false
+              _isEnabled: true
             },
             {
               _id: 2,
@@ -88,15 +88,15 @@ export const useLayoutStore = defineStore('layout', {
               _stopBits: 1,
               _baudRate: 9600,
               _parity: 'None',
-              _rs232_type: 'string',
-              _interface: 'on_board',
+              _rs232_type: 'hex',
+              _interface: 'usb',
               _isEnabled: false
             }
           ]
         },
         TcpIpSettings: {
           _local_port: 1234,
-          _isEnabled: true,
+          _isEnabled: false,
           TcpIp: [
             {
               _id: 1,

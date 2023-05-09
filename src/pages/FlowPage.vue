@@ -43,7 +43,14 @@
 
     </div>
     <div v-if="tab === 'flow'" class="fixed" style="background-color: #F8F8F8;width:500px;height: 100vh;right:0;">
-      <ConnectionSettingList />
+      <Suspense v-if="isLoading">
+        <ConnectionSettingList />
+        <template #fallback>
+          <div class="my-3 d-flex align-items-center">
+            <q-spinner-hourglass color="primary" size="2em"></q-spinner-hourglass>
+          </div>
+        </template>
+      </Suspense>
     </div>
   </q-page>
 </template>

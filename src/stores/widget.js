@@ -183,7 +183,9 @@ export const useWidgetListStore = defineStore('widgetList', {
       })
       if (eventIndex !== -1) {
         this.widgetListData[currentSection].Content.State[Index].Event[eventIndex] = {
-          ...this.EventData,
+          Action: [],
+          _type: '',
+          _gpio_number: '',
           _id: this.widgetListData[currentSection].Content.State[Index].Event[eventIndex]._id,
           _stateId: currentStateData._id,
           _next_state_id: currentStateData._stateIndex
@@ -376,7 +378,6 @@ export const useWidgetListStore = defineStore('widgetList', {
       const eventIndex = this.widgetListData[currentSection].Content.State[this.currentState].Event.findIndex(event => event._id === EventId)
       if (eventIndex !== -1) { // If the event with specified id was found
         this.widgetListData[currentSection].Content.State[this.currentState].Event.splice(eventIndex, 1)
-        this.stateEventData = this.stateEventData.filter(event => event.EventId !== EventId)
         if (!this.stateEventData.length) {
           this.ResetWidgetListData()
         }
