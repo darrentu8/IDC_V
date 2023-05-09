@@ -306,8 +306,8 @@
 </template>
 
 <script>
-import { useLayoutStore } from 'src/stores/layout'
-const layoutStore = useLayoutStore()
+import { useWidgetListStore } from 'src/stores/widget'
+const widgetStore = useWidgetListStore()
 
 export default {
   name: 'ConfigureHardwareDialog',
@@ -325,16 +325,16 @@ export default {
   },
   computed: {
     GPIO() {
-      return layoutStore.NovoDS.Hardware.GPIOSettings.GPIO
+      return widgetStore.NovoDS.Hardware.GPIOSettings.GPIO
     },
     RS232() {
-      return layoutStore.NovoDS.Hardware.Rs232Settings.Rs232
+      return widgetStore.NovoDS.Hardware.Rs232Settings.Rs232
     },
     TCPIP() {
-      return layoutStore.NovoDS.Hardware.TcpIpSettings
+      return widgetStore.NovoDS.Hardware.TcpIpSettings
     },
     gpioRoleOption() {
-      return layoutStore.gpioRoleOption
+      return widgetStore.gpioRoleOption
     }
   },
   methods: {

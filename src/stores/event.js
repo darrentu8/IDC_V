@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { useLayoutStore } from './layout'
+import { useWidgetListStore } from 'src/stores/widget'
 import { uid } from 'quasar'
 export const useEventListStore = defineStore('eventList', {
   state: () => ({
@@ -208,8 +208,8 @@ export const useEventListStore = defineStore('eventList', {
       return this.currentEventIndex
     },
     GetEventTypeOptions() {
-      const layoutStore = useLayoutStore()
-      const mapGPIO = layoutStore?.NovoDS?.Hardware?.GPIOSettings?.GPIO?.map((gpio, index) => {
+      const widgetStore = useWidgetListStore()
+      const mapGPIO = widgetStore?.NovoDS?.Hardware?.GPIOSettings?.GPIO?.map((gpio, index) => {
         if (!gpio || !gpio._isEnabled || gpio._role === 'keyevent') return null
         return {
           ...gpio,
@@ -221,7 +221,7 @@ export const useEventListStore = defineStore('eventList', {
         }
       }).filter(item => item !== null)
 
-      const mapRs232 = layoutStore?.NovoDS?.Hardware?.Rs232Settings?.Rs232?.map((rs232, index) => {
+      const mapRs232 = widgetStore?.NovoDS?.Hardware?.Rs232Settings?.Rs232?.map((rs232, index) => {
         if (!rs232 || !rs232._isEnabled) return null
         return {
           ...rs232,
@@ -232,7 +232,7 @@ export const useEventListStore = defineStore('eventList', {
         }
       }).filter(item => item !== null)
 
-      const mapTcpIp = layoutStore?.NovoDS?.Hardware?.TcpIpSettings?.isEnabled ? layoutStore?.NovoDS?.Hardware?.TcpIpSettings?.TcpIp?.map((tcpip, index) => {
+      const mapTcpIp = widgetStore?.NovoDS?.Hardware?.TcpIpSettings?.isEnabled ? widgetStore?.NovoDS?.Hardware?.TcpIpSettings?.TcpIp?.map((tcpip, index) => {
         if (!tcpip) return null
         return {
           ...tcpip,
@@ -253,8 +253,8 @@ export const useEventListStore = defineStore('eventList', {
       return combinedOptions
     },
     GetActionTypeOptions() {
-      const layoutStore = useLayoutStore()
-      const mapGPIO = layoutStore?.NovoDS?.Hardware?.GPIOSettings?.GPIO?.map((gpio, index) => {
+      const widgetStore = useWidgetListStore()
+      const mapGPIO = widgetStore?.NovoDS?.Hardware?.GPIOSettings?.GPIO?.map((gpio, index) => {
         if (!gpio || !gpio._isEnabled || gpio._role === 'output') return null
         return {
           ...gpio,
@@ -266,7 +266,7 @@ export const useEventListStore = defineStore('eventList', {
         }
       }).filter(item => item !== null)
 
-      const mapRs232 = layoutStore?.NovoDS?.Hardware?.Rs232Settings?.Rs232?.map((rs232, index) => {
+      const mapRs232 = widgetStore?.NovoDS?.Hardware?.Rs232Settings?.Rs232?.map((rs232, index) => {
         if (!rs232 || !rs232._isEnabled) return null
         return {
           ...rs232,
@@ -277,7 +277,7 @@ export const useEventListStore = defineStore('eventList', {
         }
       }).filter(item => item !== null)
 
-      const mapTcpIp = layoutStore?.NovoDS?.Hardware?.TcpIpSettings?.TcpIp?.map((tcpip, index) => {
+      const mapTcpIp = widgetStore?.NovoDS?.Hardware?.TcpIpSettings?.TcpIp?.map((tcpip, index) => {
         if (!tcpip) return null
         return {
           ...tcpip,

@@ -1,179 +1,148 @@
 import { defineStore } from 'pinia'
 import { useWidgetListStore } from './widget'
-import { uid, extend } from 'quasar'
-const widgetStore = useWidgetListStore()
+import { uid } from 'quasar'
 
 export const useLayoutStore = defineStore('layout', {
   state: () => ({
-    NovoDS: {
-      _Description: '',
-      _Layout_Type: '0', // 0 -> Grid, 1 -> Flexible
-      _Playlist_Name: '',
-      _Playlist_UUID: '',
-      _Model_Type: 'DS310',
-      _Interactive: true,
-      Hardware: {
-        GPIOSettings: {
-          GPIO: [
-            {
-              _gpio_number: 1,
-              _name: 'GPIO1',
-              _isEnabled: true,
-              _role: 'output',
-              _output_value: '0'
-            },
-            {
-              _gpio_number: 2,
-              _name: 'GPIO2',
-              _isEnabled: true,
-              _role: 'output',
-              _output_value: '0'
-            },
-            {
-              _gpio_number: 3,
-              _name: 'GPIO3',
-              _isEnabled: true,
-              _role: 'output',
-              _output_value: '0'
-            },
-            {
-              _gpio_number: 4,
-              _name: 'GPIO4',
-              _isEnabled: true,
-              _role: 'output',
-              _output_value: '0'
-            },
-            {
-              _gpio_number: 5,
-              _name: 'GPIO5',
-              _isEnabled: true,
-              _role: 'output',
-              _output_value: '0'
-            },
-            {
-              _gpio_number: 6,
-              _name: 'GPIO6',
-              _isEnabled: true,
-              _role: 'output',
-              _output_value: '0'
-            }
-          ]
-        },
-        Rs232Settings: {
-          Rs232: [
-            {
-              _id: 1,
-              _dataBits: 8,
-              _flowControl: 'None',
-              _stopBits: 1,
-              _baudRate: 9600,
-              _parity: 'None',
-              _rs232_type: 'string',
-              _interface: 'on_board',
-              _isEnabled: true
-            },
-            {
-              _id: 2,
-              _dataBits: 8,
-              _flowControl: 'None',
-              _stopBits: 1,
-              _baudRate: 9600,
-              _parity: 'None',
-              _rs232_type: 'hex',
-              _interface: 'usb',
-              _isEnabled: false
-            }
-          ]
-        },
-        TcpIpSettings: {
-          _local_port: 1234,
-          _isEnabled: false,
-          TcpIp: [
-            {
-              _id: 1,
-              _destination_ip: '192.168.1.1',
-              _destination_port: 1234,
-              _name: 'TCP Output1'
-            },
-            {
-              _id: 2,
-              _destination_ip: '192.168.1.1',
-              _destination_port: 2223,
-              _name: 'TCP Output2'
-            },
-            {
-              _id: 3,
-              _destination_ip: '192.168.1.1',
-              _destination_port: 4456,
-              _name: 'TCP Output3'
-            }
-          ]
-        }
-      },
-      Pages: {
-        Page: {
-          _Layout: '',
-          _Column: '',
-          _Row: '',
-          _Orientation: '', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
-          _FreeDesignerMode: 'false', // Grid -> false, Flexi -> true
-          _ID: 'Page 1',
-          _Description: '',
-          _SerialNumber: '', // 流水號 Page 1, Page 2 …沒用到
-          _AudioSource: '',
-          _BackgroundImageSize: '',
-          _BackgroundImage: '_BackgroundImage',
-          _BgMusicApplyToAll: '',
-          _BackgroundMusicUrl: '',
-          _BackgroundMusicSize: '',
-          _Script: '',
-          _BackgroundMusic: '',
-          Section: null
-        }
-      },
-      Timeline: {
-        _Looping: 'true',
-        Item: {
-          _Page: 'Page 1',
-          _Duration: '1800'
-        }
-      }
-    },
+    // NovoDS: {
+    //   _Description: '',
+    //   _Layout_Type: '0', // 0 -> Grid, 1 -> Flexible
+    //   _Playlist_Name: '',
+    //   _Playlist_UUID: '',
+    //   _Model_Type: 'DS310',
+    //   _Interactive: true,
+    //   Hardware: {
+    //     GPIOSettings: {
+    //       GPIO: [
+    //         {
+    //           _gpio_number: 1,
+    //           _name: 'GPIO1',
+    //           _isEnabled: true,
+    //           _role: 'output',
+    //           _output_value: '0'
+    //         },
+    //         {
+    //           _gpio_number: 2,
+    //           _name: 'GPIO2',
+    //           _isEnabled: true,
+    //           _role: 'output',
+    //           _output_value: '0'
+    //         },
+    //         {
+    //           _gpio_number: 3,
+    //           _name: 'GPIO3',
+    //           _isEnabled: true,
+    //           _role: 'output',
+    //           _output_value: '0'
+    //         },
+    //         {
+    //           _gpio_number: 4,
+    //           _name: 'GPIO4',
+    //           _isEnabled: true,
+    //           _role: 'output',
+    //           _output_value: '0'
+    //         },
+    //         {
+    //           _gpio_number: 5,
+    //           _name: 'GPIO5',
+    //           _isEnabled: true,
+    //           _role: 'output',
+    //           _output_value: '0'
+    //         },
+    //         {
+    //           _gpio_number: 6,
+    //           _name: 'GPIO6',
+    //           _isEnabled: true,
+    //           _role: 'output',
+    //           _output_value: '0'
+    //         }
+    //       ]
+    //     },
+    //     Rs232Settings: {
+    //       Rs232: [
+    //         {
+    //           _id: 1,
+    //           _dataBits: 8,
+    //           _flowControl: 'None',
+    //           _stopBits: 1,
+    //           _baudRate: 9600,
+    //           _parity: 'None',
+    //           _rs232_type: 'string',
+    //           _interface: 'on_board',
+    //           _isEnabled: true
+    //         },
+    //         {
+    //           _id: 2,
+    //           _dataBits: 8,
+    //           _flowControl: 'None',
+    //           _stopBits: 1,
+    //           _baudRate: 9600,
+    //           _parity: 'None',
+    //           _rs232_type: 'hex',
+    //           _interface: 'usb',
+    //           _isEnabled: false
+    //         }
+    //       ]
+    //     },
+    //     TcpIpSettings: {
+    //       _local_port: 1234,
+    //       _isEnabled: false,
+    //       TcpIp: [
+    //         {
+    //           _id: 1,
+    //           _destination_ip: '192.168.1.1',
+    //           _destination_port: 1234,
+    //           _name: 'TCP Output1'
+    //         },
+    //         {
+    //           _id: 2,
+    //           _destination_ip: '192.168.1.1',
+    //           _destination_port: 2223,
+    //           _name: 'TCP Output2'
+    //         },
+    //         {
+    //           _id: 3,
+    //           _destination_ip: '192.168.1.1',
+    //           _destination_port: 4456,
+    //           _name: 'TCP Output3'
+    //         }
+    //       ]
+    //     }
+    //   },
+    //   Pages: {
+    //     Page: {
+    //       _Layout: '',
+    //       _Column: '',
+    //       _Row: '',
+    //       _Orientation: '', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
+    //       _FreeDesignerMode: 'false', // Grid -> false, Flexi -> true
+    //       _ID: 'Page 1',
+    //       _Description: '',
+    //       _SerialNumber: '', // 流水號 Page 1, Page 2 …沒用到
+    //       _AudioSource: '',
+    //       _BackgroundImageSize: '',
+    //       _BackgroundImage: '_BackgroundImage',
+    //       _BgMusicApplyToAll: '',
+    //       _BackgroundMusicUrl: '',
+    //       _BackgroundMusicSize: '',
+    //       _Script: '',
+    //       _BackgroundMusic: '',
+    //       Section: null
+    //     }
+    //   },
+    //   Timeline: {
+    //     _Looping: 'true',
+    //     Item: {
+    //       _Page: 'Page 1',
+    //       _Duration: '1800'
+    //     }
+    //   }
+    // },
     layout: {
       rowCount: 1,
       colCount: 2,
       layout: [{ x: 0, y: 0, w: 1, h: 1, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }]
     },
-    gpioRoleOption: [
-      {
-        title: 'Output',
-        value: 'output',
-        children: [
-          {
-            text: '0',
-            value: '0'
-          },
-          {
-            text: '1',
-            value: '1'
-          }
-        ]
-      },
-      {
-        title: 'Key event',
-        value: 'keyevent',
-        children: [
-          {
-            text: 'Up',
-            value: 'up'
-          },
-          {
-            text: 'Down',
-            value: 'down'
-          }
-        ]
-      }
-    ],
     currentSection: 0
   }
   ),
@@ -196,6 +165,7 @@ export const useLayoutStore = defineStore('layout', {
       this.SetWidgetList()
     },
     SetWidgetList() {
+      const widgetStore = useWidgetListStore()
       const Data = this.layout.layout
       // Section
       const Section = Data.map((e, i) => ({
@@ -246,10 +216,6 @@ export const useLayoutStore = defineStore('layout', {
     SetCurrentSection(i) {
       console.log('currentSection', i)
       this.currentSection = i
-    },
-    WriteToXml() {
-      const NovoDSData = extend(true, {}, this.NovoDS)
-      window.myAPI.storeToXML({ NovoDS: NovoDSData })
     }
   }
 })

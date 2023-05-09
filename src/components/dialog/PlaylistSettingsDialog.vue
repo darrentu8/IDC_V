@@ -64,8 +64,8 @@
 </template>
 
 <script>
-import { useLayoutStore } from 'src/stores/layout'
-const layoutStore = useLayoutStore()
+import { useWidgetListStore } from 'src/stores/widget'
+const widgetStore = useWidgetListStore()
 
 export default {
   name: 'PlaylistSettingsDialog',
@@ -80,34 +80,34 @@ export default {
   computed: {
     BackgroundImage: {
       get() {
-        return layoutStore.NovoDS.Pages.Page._BackgroundImage
+        return widgetStore.NovoDS.Pages.Page._BackgroundImage
       },
       set(newValue) {
-        layoutStore.NovoDS.Pages.Page._BackgroundImage = newValue
+        widgetStore.NovoDS.Pages.Page._BackgroundImage = newValue
       }
     },
     BackgroundMusic: {
       get() {
-        return layoutStore.NovoDS.Pages.Page._BackgroundMusic
+        return widgetStore.NovoDS.Pages.Page._BackgroundMusic
       },
       set(newValue) {
-        layoutStore.NovoDS.Pages.Page._BackgroundMusic = newValue
+        widgetStore.NovoDS.Pages.Page._BackgroundMusic = newValue
       }
     },
     BackgroundMusicUrl: {
       get() {
-        return layoutStore.NovoDS.Pages.Page._BackgroundMusicUrl
+        return widgetStore.NovoDS.Pages.Page._BackgroundMusicUrl
       },
       set(newValue) {
-        layoutStore.NovoDS.Pages.Page._BackgroundMusicUrl = newValue
+        widgetStore.NovoDS.Pages.Page._BackgroundMusicUrl = newValue
       }
     },
     AudioSource: {
       get() {
-        return layoutStore.NovoDS.Pages.Page._AudioSource
+        return widgetStore.NovoDS.Pages.Page._AudioSource
       },
       set(newValue) {
-        layoutStore.NovoDS.Pages.Page._AudioSource = newValue
+        widgetStore.NovoDS.Pages.Page._AudioSource = newValue
       }
     }
   },
@@ -119,7 +119,7 @@ export default {
       this.$refs.dialog.hide()
     },
     SetBGC(index) {
-
+      console.log('SetBGC')
     }
   }
 }

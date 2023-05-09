@@ -69,8 +69,8 @@
 </template>
 
 <script>
-import { useLayoutStore } from 'src/stores/layout'
-const layoutStore = useLayoutStore()
+import { useWidgetListStore } from 'src/stores/widget'
+const widgetStore = useWidgetListStore()
 
 export default {
   name: 'StartNew',
@@ -84,26 +84,26 @@ export default {
   computed: {
     _Playlist_Name: {
       get() {
-        return layoutStore.NovoDS._Playlist_Name
+        return widgetStore.NovoDS._Playlist_Name
       },
       set(val) {
-        layoutStore.NovoDS._Playlist_Name = val
+        widgetStore.NovoDS._Playlist_Name = val
       }
     },
     _Description: {
       get() {
-        return layoutStore.NovoDS._Description
+        return widgetStore.NovoDS._Description
       },
       set(val) {
-        layoutStore.NovoDS._Description = val
+        widgetStore.NovoDS._Description = val
       }
     },
     deviceType: {
       get() {
-        return layoutStore.NovoDS._Model_Type
+        return widgetStore.NovoDS._Model_Type
       },
       set(val) {
-        layoutStore.NovoDS._Model_Type = val
+        widgetStore.NovoDS._Model_Type = val
       }
     }
   },
@@ -122,7 +122,7 @@ export default {
       })
     },
     exportFile() {
-      layoutStore.WriteToXml()
+      widgetStore.WriteToXml()
     }
   }
 }

@@ -46,8 +46,8 @@ import EditWidgetList from './EditWidgetList.vue'
 // const router = useRouter()
 const LayoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
-const NovoDS = computed(() => LayoutStore.NovoDS)
 const layouts = computed(() => LayoutStore.layout)
+const NovoDS = computed(() => widgetStore.NovoDS)
 const widgetLists = computed(() => widgetStore.GetWidgetListData)
 const widgetOptions = computed(() => widgetStore.widgetOption)
 
