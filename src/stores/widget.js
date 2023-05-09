@@ -378,6 +378,8 @@ export const useWidgetListStore = defineStore('widgetList', {
       const eventIndex = this.widgetListData[currentSection].Content.State[this.currentState].Event.findIndex(event => event._id === EventId)
       if (eventIndex !== -1) { // If the event with specified id was found
         this.widgetListData[currentSection].Content.State[this.currentState].Event.splice(eventIndex, 1)
+        const Data = this.stateEventData.filter(event => event._id !== EventId)
+        this.stateEventData = Data
         if (!this.stateEventData.length) {
           this.ResetWidgetListData()
         }
