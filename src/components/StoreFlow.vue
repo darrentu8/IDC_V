@@ -55,9 +55,9 @@
                     <q-icon v-if="EventData._next_state_id !== ''" size="lg" name="img:/icon/mark.svg"
                       class="q-mt-xs flag">
                     </q-icon>
-                    <q-btn v-if="EventData._next_state_id !== ''" flat color="primary"
-                      class="text-capitalize ellipsis-2-lines maxW">{{
-                        mapCurrentStateOptions(EventData._next_state_id) }}</q-btn>
+                    <div v-if="EventData._next_state_id !== ''"
+                      class="cursor-pointer text-subtitle2 ellipsis-2-lines maxW">{{
+                        mapCurrentStateOptions(EventData._next_state_id) }}</div>
                     <q-btn v-else flat class="full-width full-heigth theme-border" color=" grey-6" icon="add" />
                     <q-popup-edit v-model="EventData._next_state_id" v-slot="scope" class="theme-border">
                       <q-select v-model="scope.value" :options="filterCurrentStateOptions(stateData)"
