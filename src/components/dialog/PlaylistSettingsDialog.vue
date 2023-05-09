@@ -12,14 +12,17 @@
           <div class="col-12">
             <q-radio v-model="BackgroundImageType" val="BackgroundImage" label="Background Image" class="q-mb-sx"
               color="" />
-            <q-btn flat class="q-mr-xs" style="float: right;" icon="img:/icon/folder-add.svg" color="primary" round />
-            <q-input :disable="BackgroundImageType !== 'BackgroundImage'" clearable placeholder="File name"
-              class="brand-round-m q-mx-lg q-mb-md" v-model="BackgroundImage" dense outlined />
+            <q-btn :disable="BackgroundImageType !== 'BackgroundImage'" flat class="q-mr-xs" style="float: right;"
+              icon="img:/icon/folder-add.svg" color="primary" round @click="$refs.BackgroundUpload.pickFiles()" />
+            <q-file ref="BackgroundUpload" :disable="BackgroundImageType !== 'BackgroundImage'" clearable
+              label="Upload background file" class="brand-round-m q-mx-lg q-mb-md" v-model="BackgroundImageData" dense
+              outlined />
           </div>
           <div class="col-12">
             <q-radio v-model="BackgroundImageType" val="BackgroundColor" label="Background Color" class="q-mb-sx"
               color="" />
-            <q-btn flat class="q-mr-xs" style="float: right;" icon="img:/icon/edit-o.svg" color="primary" round />
+            <q-btn :disable="BackgroundImageType !== 'BackgroundColor'" flat class="q-mr-xs" style="float: right;"
+              icon="img:/icon/edit-o.svg" color="primary" round />
             <div class="col-12 q-mx-lg q-mt-sm">
               <q-icon v-for="index in 10" :key="index" :disable="BackgroundImageType !== 'BackgroundColor'"
                 v-model="BackgroundImage" class="theme-bg-select cursor-pointer" label=""
@@ -40,13 +43,14 @@
           </div>
           <div class="col-12">
             <q-radio v-model="BackgroundMusicType" val="BackgroundMusic" label="Background music" class="" color="" />
-            <q-input :disable="BackgroundMusicType !== 'BackgroundMusic'" clearable placeholder="File name"
-              class="brand-round-m q-mx-lg q-mb-md" v-model="_BackgroundMusic" dense outlined />
+            <q-file :disable="BackgroundMusicType !== 'BackgroundMusic'" label="Upload audio file" clearable
+              placeholder="File name" class="brand-round-m q-mx-lg q-mb-md" v-model="BackgroundMusicData" dense
+              outlined />
           </div>
           <div class="col-12">
             <q-radio v-model="BackgroundMusicType" val="Widget" label="Widget" class="" color="" />
-            <q-select class="brand-round-m q-mx-lg q-mb-md" bg-color="white" outlined dense v-model="_AudioSource"
-              :disable="BackgroundMusicType !== 'Widget'" :options="['Mute']" />
+            <q-select class="brand-round-m q-mx-lg q-mb-md" label="Select audio source" bg-color="white" outlined dense
+              v-model="AudioSource" :disable="BackgroundMusicType !== 'Widget'" :options="['Mute']" />
           </div>
         </div>
       </q-card-section>
@@ -68,7 +72,9 @@ export default {
   data() {
     return {
       BackgroundImageType: '',
-      BackgroundMusicType: ''
+      BackgroundMusicType: '',
+      BackgroundImageData: null,
+      BackgroundMusicData: null
     }
   },
   computed: {
