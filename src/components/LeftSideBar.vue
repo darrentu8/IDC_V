@@ -1,8 +1,8 @@
 <template>
   <q-toolbar class="q-px-md flex justify-center">
     <q-item-label class="full-width q-mt-md">
-      <q-input bottom-slots v-on:focus="focus = true" v-on:blur="focus = false" v-model="PlaylistName"
-        label="Playlist Name">
+      <q-input borderless bottom-slots v-on:focus="focus = true" v-on:blur="focus = false" v-model="PlaylistName"
+        label="Playlist Name" class="q-pb-none">
         <template v-slot:append>
           <q-icon v-if="focus || !PlaylistName" size="xs" name="img:/icon/pencil.svg" />
           <!-- <q-icon v-if="NovoDS._Playlist_Name !== PlaylistName" name="close" @click="PlaylistName = ''"
@@ -14,9 +14,9 @@
           <q-btn round dense flat color="primary" icon="check_circle" />
         </template>
       </q-input>
-      <div v-if="NovoDS._Description">
-        <!-- <p class="text-grey-7 q-mb-sm">Description</p> -->
-        <p class="text-grey-7">{{ NovoDS._Description }}</p>
+      <div>
+        <q-input label="Playlist Description" type="textarea" rows="2" class="border-d" borderless
+          v-model="NovoDS._Description" />
       </div>
     </q-item-label>
   </q-toolbar>

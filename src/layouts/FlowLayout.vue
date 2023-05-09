@@ -20,7 +20,7 @@
         </q-btn>
         <q-separator vertical class="q-mx-md" />
         <q-btn class="" unelevated color="primary" rounded size="md" @click="backToGrid()">
-          <q-icon class="q-mr-xs" name="img:/icon/fast-forward.svg" color="white" size="xs" />
+          <q-icon class="q-mr-xs" name="img:/icon/see.svg" color="white" size="xs" />
           Preview
         </q-btn>
         <q-btn class="q-ml-md" unelevated color="primary" rounded size="md" @click="exportXmlFile()">

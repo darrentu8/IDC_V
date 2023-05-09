@@ -9,9 +9,15 @@
             </q-icon>
             <q-card-section v-if="state._title !== ''" class="q-pa-xs">
               <div class="text-subtitle2">{{ state._title }}</div>
+              <q-popup-edit v-model="state._title" v-slot="scope" class="theme-border">
+                <q-input type="textarea" v-model="scope.value" autofocus @keyup.enter="scope.set" />
+              </q-popup-edit>
             </q-card-section>
             <q-card-section v-else class="q-pa-xs">
               <div class="text-subtitle2">State {{ Number(Index + 1) }}</div>
+              <q-popup-edit v-model="state._title" v-slot="scope" class="theme-border">
+                <q-input type="textarea" v-model="scope.value" autofocus @keyup.enter="scope.set" />
+              </q-popup-edit>
             </q-card-section>
             <!-- 刪除 -->
             <div v-if="currentStateLength > 1" class="absolute-right del-card">
