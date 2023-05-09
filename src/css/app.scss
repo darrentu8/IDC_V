@@ -2,6 +2,10 @@
 .theme-text-color {
   color: $text-color;
 }
+.maxW {
+  max-width: 90px;
+  word-wrap: break-word;
+}
 .brand-round-l{
   border-radius: 20px !important;
   .q-field__control {

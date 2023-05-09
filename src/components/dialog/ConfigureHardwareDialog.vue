@@ -1,6 +1,6 @@
 <template>
   <q-dialog ref="dialog" persistent>
-    <q-card class="bg-white text-black brand-round-l q-pa-lg" style="min-width: 1200px;height:80vh;">
+    <q-card class="bg-white text-black brand-round-l q-pa-lg" style="min-width: 1200px;height:60vh;min-height:550px;">
       <q-bar class="row bg-white text-bold" style="font-size:24px;height:30px">
         Hardware Configurator
         <q-space />

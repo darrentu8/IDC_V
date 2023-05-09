@@ -15,8 +15,12 @@
         </template>
       </q-input>
       <div>
-        <q-input label="Playlist Description" type="textarea" rows="2" class="border-d" borderless
-          v-model="NovoDS._Description" />
+        <q-input v-on:focus="dfocus = true" v-on:blur="dfocus = false" label="Playlist Description" type="textarea"
+          rows="2" class="border-d" borderless v-model="NovoDS._Description">
+          <template v-slot:append>
+            <q-icon v-if="dfocus || !NovoDS._Description" size="xs" name="img:/icon/pencil.svg" />
+          </template>
+        </q-input>
       </div>
     </q-item-label>
   </q-toolbar>
@@ -48,6 +52,7 @@ const widgetLists = computed(() => widgetStore.GetWidgetListData)
 const widgetOptions = computed(() => widgetStore.widgetOption)
 
 const focus = ref(false)
+const dfocus = ref(false)
 const PlaylistName = computed({
   get() {
     return NovoDS.value._Playlist_Name

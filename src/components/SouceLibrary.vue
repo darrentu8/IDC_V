@@ -8,15 +8,15 @@
             <q-icon size="lg" name="img:/icon/mark.svg" class="q-mt-xs flag">
             </q-icon>
             <q-card-section v-if="state._title !== ''" class="q-pa-xs">
-              <div class="text-subtitle2">{{ state._title }}</div>
-              <q-popup-edit v-model="state._title" v-slot="scope" class="theme-border">
-                <q-input type="textarea" v-model="scope.value" autofocus @keyup.enter="scope.set" />
+              <div class="text-subtitle2 ellipsis-2-lines maxW">{{ state._title }}</div>
+              <q-popup-edit v-model="state._title" v-slot="scope" class="theme-border q-pt-none" buttons>
+                <q-input class="" rows="2" type="textarea" v-model="scope.value" autofocus @keyup.enter="scope.set" />
               </q-popup-edit>
             </q-card-section>
             <q-card-section v-else class="q-pa-xs">
-              <div class="text-subtitle2">State {{ Number(Index + 1) }}</div>
-              <q-popup-edit v-model="state._title" v-slot="scope" class="theme-border">
-                <q-input type="textarea" v-model="scope.value" autofocus @keyup.enter="scope.set" />
+              <div class="text-subtitle2 ellipsis-2-lines maxW">State {{ Number(Index + 1) }}</div>
+              <q-popup-edit v-model="state._title" v-slot="scope" class="theme-border q-pt-none" buttons>
+                <q-input class="" rows="2" type="textarea" v-model="scope.value" autofocus @keyup.enter="scope.set" />
               </q-popup-edit>
             </q-card-section>
             <!-- 刪除 -->
