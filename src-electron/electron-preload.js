@@ -127,17 +127,17 @@ contextBridge.exposeInMainWorld('myAPI', {
   },
   storeToXML(NovoDsData) {
     const fileName = 'NovoDS.xml'
-
+    const xmlData = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + NovoDsData
     const PlayListFolder = getPlayListFolder()
 
     const targetFile = path.join(PlayListFolder, fileName)
 
-    const builder = new xml2js.Builder()
-    const xml = builder.buildObject(NovoDsData)
+    // const builder = new xml2js.Builder({ headless: true, attrkey: '_attr' })
+    // const xml = builder.buildObject(NovoDsData)
 
-    fs.writeFileSync(targetFile, xml)
+    fs.writeFileSync(targetFile, xmlData)
 
-    return xml
+    return xmlData
   },
   chooseSources() {
     const sourcePaths = dialog.showOpenDialogSync({

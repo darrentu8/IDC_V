@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { useLayoutStore } from './layout'
 import { useEventListStore } from './event'
-import { uid, extend } from 'quasar'
+import { uid } from 'quasar'
 
 export const useWidgetListStore = defineStore('widgetList', {
   state: () => ({
@@ -564,10 +564,6 @@ export const useWidgetListStore = defineStore('widgetList', {
       } else {
         console.error(`Could not find an event with id ${EventId}`)
       }
-    },
-    WriteToXml() {
-      const NovoDSData = extend(true, {}, this.NovoDS)
-      window.myAPI.storeToXML({ NovoDS: NovoDSData })
     }
   }
 })

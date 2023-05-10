@@ -23,7 +23,7 @@
           <q-icon class="q-mr-xs" name="img:/icon/see.svg" color="white" size="xs" />
           Preview
         </q-btn>
-        <q-btn class="q-ml-md" unelevated color="primary" rounded size="md" @click="exportXmlFile()">
+        <q-btn class="q-ml-md" unelevated color="primary" rounded size="md" @click="exportFile()">
           <q-icon class="q-mr-xs" name="img:/icon/save.svg" color="white" size="xs" />
           Save
         </q-btn>
@@ -48,8 +48,10 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useWidgetListStore } from 'src/stores/widget'
+const widgetStore = useWidgetListStore()
 // import { useRouter } from 'vue-router'
-// import X2js from 'x2js'
+import X2js from 'x2js'
 import PlaylistSettingsDialog from 'src/components/dialog/PlaylistSettingsDialog.vue'
 import ConfigureHardwareDialog from 'src/components/dialog/ConfigureHardwareDialog.vue'
 import LeftSideBar from 'src/components/LeftSideBar.vue'
@@ -103,51 +105,10 @@ function showHardware() {
   })
 }
 
-// function exportFile() {
-//   const x2js = new X2js({ attributePrefix: '-' })
-//   const novoObj = {
-//     NovoDS: {
-//       '-Description': '',
-//       '-Playlist_UUID': '',
-//       '-Layout_Type': '0',
-//       '-Version': '1.1',
-//       '-Model_Type': 'ds200',
-//       Pages: {
-//         Page: {
-//           '-Description': '',
-//           '-BackgroundMusic': '',
-//           '-SerialNumber': 'Page 1',
-//           '-AudioSource': '',
-//           '-BgMusicApplyToAll': 'false',
-//           '-ID': 'Page 1',
-//           '-FreeDesignerMode': 'false',
-//           '-BackgroundImageSize': '160',
-//           '-BackgroundImage': '',
-//           '-Layout': 'Portrait 14',
-//           '-Row': '6',
-//           '-BackgroundMusicSize': '160',
-//           '-BackgroundMusicUrl': '',
-//           '-Column': '2',
-//           '-Orientation': '1'
-//         }
-//       },
-//       Timeline: {
-//         '-Looping': 'true',
-//         Item: {
-//           '-Page': 'Page 1',
-//           '-Duration': '1800',
-//           '-self-closing': 'true'
-//         }
-//       }
-//     }
-//   }
-//   const xmlData = x2js.js2xml(novoObj)
-//   console.log(xmlData)
-//   const blob = new Blob([xmlData], { type: 'application/xml,' })
-//   const link = document.createElement('a')
-//   link.href = URL.createObjectURL(blob)
-//   link.download = 'index'
-//   link.click()
-//   URL.revokeObjectURL(link.href)
-// }
+function exportFile() {
+  const x2js = new X2js({ attributePrefix: '_' })
+  const novoObj = { NovoDS: widgetStore.NovoDS }
+  const xmlData = x2js.js2xml(novoObj)
+  window.myAPI.storeToXML(xmlData)
+}
 </script>
