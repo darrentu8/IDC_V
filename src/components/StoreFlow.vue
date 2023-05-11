@@ -1,6 +1,6 @@
 <template>
   <div class="col-6">
-    <div v-for="(stateData, Index) in widgetListData[currentSection].Content.State" :key="stateData._id"
+    <div v-for="(stateData, Index) in calcDiff(widgetListData[currentSection].Content.State)" :key="stateData._id"
       class="flowBoxWrap border-w">
       <div class="row justify-center items-top q-pt-md">
         <!-- Flow Labels -->
@@ -85,15 +85,13 @@
                     </div>
                   </q-card>
                 </div>
-                <!-- Add Flow Btn -->
-                <div v-if="stateData.Event.length < currentStateLength" flat square class="q-mb-md text-center"
-                  style="margin-top:30px;width:200px;">
-                  <q-btn @click="addStateEvent(Index)" unelevated round dense color="grey-2" text-color="grey-6"
-                    icon="add" />
-                </div>
               </div>
-              <div v-else class="q-mr-md q-ml-lg q-mt-lg">
-                <q-spinner color="grey-5" size="2em" :thickness="4" />
+              <!-- Add Flow Btn -->
+              <div
+                v-if="stateData._emptyNextStateCount < 1 && stateData._uniqueNextStateIdsCount + 1 <= stateData._totalStateDataLength"
+                flat square class="q-mb-md text-center" style="margin-top:30px;width:200px;">
+                <q-btn @click="addStateEvent(Index)" unelevated round dense color="grey-2" text-color="grey-6"
+                  icon="add" />
               </div>
             </div>
           </div>
@@ -200,13 +198,44 @@ const filterCurrentStateOptions = computed(() => {
     return differentIdElements
   }
 })
+function calcDiff(stateData) {
+  const totalLength = stateData.length
+
+  stateData = stateData.map(item => {
+    const nextStateIds = new Set()
+    let emptyNextStateCount = 0
+    let eventCount = 0
+
+    if (Array.isArray(item.Event)) {
+      item.Event.forEach(event => {
+        if (event._next_state_id !== '') {
+          nextStateIds.add(event._next_state_id)
+        } else {
+          emptyNextStateCount++
+        }
+        eventCount++
+      })
+    }
+
+    return {
+      ...item,
+      _totalStateDataLength: totalLength,
+      _uniqueNextStateIdsCount: nextStateIds.size,
+      _emptyNextStateCount: emptyNextStateCount,
+      _eventCount: eventCount
+    }
+  })
+
+  console.log('stateData', stateData)
+  return stateData
+}
 function transformStateData(stateData) {
   const result = stateData.reduce((acc, obj) => {
     if (obj._next_state_id === '') {
-      acc.push({ ...obj, sameNextStateIdCount: 1 })
+      acc.push({ ...obj, _sameNextStateIdCount: 1 })
     } else if (!acc.some(item => item._next_state_id === obj._next_state_id)) {
-      const sameNextStateIdCount = stateData.filter(item => item._next_state_id === obj._next_state_id).length
-      acc.push({ ...obj, sameNextStateIdCount })
+      const _sameNextStateIdCount = stateData.filter(item => item._next_state_id === obj._next_state_id).length
+      acc.push({ ...obj, _sameNextStateIdCount })
     }
     return acc
   }, [])
