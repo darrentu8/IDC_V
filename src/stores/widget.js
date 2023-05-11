@@ -432,67 +432,70 @@ export const useWidgetListStore = defineStore('widgetList', {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
       console.log('fileDatas', fileDatas)
-      // Filter out files that already exist in the MediaItem array
-      const newContentArray = fileDatas.filter((e) => {
-        const existingFile = this.NovoDS.Pages.Page.Section[currentSection].Content.MediaItem.find((item) => item._src === e._src)
-        return !existingFile
-      }).map((e) => ({
-        _note: '',
-        _type: e._type,
-        _duration: e._duration,
-        _videoDuration: '0',
-        _fileSize: e._fileSize,
-        _src: e._src,
-        _targetPath: e._targetPath
-      }))
 
-      // Filter out files that already exist in the File array
-      const newFileArray = fileDatas.filter((e) => {
-        const existingFile = this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentStateIndex].File.find((item) => item._src === e._src)
-        return !existingFile
-      }).map((e) => ({
-        _src: e._src,
-        _type: e._type,
-        _duration: e._duration,
-        _videoDuration: '0',
-        _fileSize: e._fileSize,
-        _targetPath: e._targetPath
-      }))
+      // Check if MediaItem and File arrays are already populated
+      const mediaItemsExist = this.NovoDS.Pages.Page.Section[currentSection].Content.MediaItem && this.NovoDS.Pages.Page.Section[currentSection].Content.MediaItem.length > 0
+      const filesExist = this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentStateIndex].File && this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentStateIndex].File.length > 0
+
+      // If the arrays exist, get their src values for comparison
+      const mediaItemSrcs = mediaItemsExist ? this.NovoDS.Pages.Page.Section[currentSection].Content.MediaItem.map(item => item._src) : []
+      const fileSrcs = filesExist ? this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentStateIndex].File.map(item => item._src) : []
+
+      // Filter out files that already exist in the MediaItem array or File array
+      const newContentArray = fileDatas.filter((e) => !mediaItemSrcs.includes(e._src))
+        .map((e) => ({
+          _note: '',
+          _type: e._type,
+          _duration: e._duration,
+          _videoDuration: '0',
+          _fileSize: e._fileSize,
+          _src: e._src,
+          _targetPath: e._targetPath
+        }))
+
+      const newFileArray = fileDatas.filter((e) => !fileSrcs.includes(e._src))
+        .map((e) => ({
+          _src: e._src,
+          _type: e._type,
+          _duration: e._duration,
+          _videoDuration: '0',
+          _fileSize: e._fileSize,
+          _targetPath: e._targetPath
+        }))
 
       // Concatenate the new content and file arrays with the existing ones
-      this.NovoDS.Pages.Page.Section[currentSection].Content.MediaItem = this.NovoDS.Pages.Page.Section[currentSection].Content.MediaItem.concat(newContentArray)
-      this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentStateIndex].File = this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentStateIndex].File.concat(newFileArray)
+      if (mediaItemsExist) {
+        this.NovoDS.Pages.Page.Section[currentSection].Content.MediaItem.push(...newContentArray)
+      } else {
+        this.NovoDS.Pages.Page.Section[currentSection].Content.MediaItem = [...newContentArray]
+      }
+
+      if (filesExist) {
+        this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentStateIndex].File.push(...newFileArray)
+      } else {
+        this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentStateIndex].File = [...newFileArray]
+      }
 
       console.log('this.NovoDS.Pages.Page.Section[currentSection].Content', this.NovoDS.Pages.Page.Section[currentSection].Content)
     },
     DelSourceList(currentStateIndex, fileName, sourceFile) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      console.log('fileName', fileName)
-      console.log('sourceFile', sourceFile)
-      console.log('currentStateIndex', currentStateIndex)
 
       // Remove file from State File array
-      const filteredStateFileArray = this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentStateIndex].File.filter(e => e._src !== fileName)
-      this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentStateIndex].File = filteredStateFileArray
+      this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentStateIndex].File =
+        this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentStateIndex].File.filter(e => e._src !== fileName)
 
-      let existingFileInState = false
-
-      for (let i = 0; i < this.NovoDS.Pages.Page.Section[currentSection].Content.State.length; i++) {
-        const existingFile = this.NovoDS.Pages.Page.Section[currentSection].Content.State[i].File.find((item) => item._src === fileName)
-        if (existingFile) {
-          existingFileInState = true
-          break
-        }
-      }
+      const existingFileInState = this.NovoDS.Pages.Page.Section.some(section =>
+        section.Content?.State?.some(state =>
+          state.File?.some(file => file._src === fileName)))
 
       if (!existingFileInState) {
         // Remove file from MediaItem array
-        const filteredMediaItemArray = this.NovoDS.Pages.Page.Section[currentSection].Content.MediaItem.filter(e => e._src !== fileName)
-        this.NovoDS.Pages.Page.Section[currentSection].Content.MediaItem = filteredMediaItemArray
+        this.NovoDS.Pages.Page.Section[currentSection].Content.MediaItem =
+          this.NovoDS.Pages.Page.Section[currentSection].Content.MediaItem.filter(e => e._src !== fileName)
         // Remove file from folder
         window.myAPI.deleteFile(sourceFile)
-        existingFileInState = false
       }
     },
     CheckDelStateObj(ID) {

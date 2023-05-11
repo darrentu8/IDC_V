@@ -3,8 +3,8 @@
     <q-btn label="" @click="add(currentStateIndex)" flat class="theme-tab-btn add" color="primary" icon="add" />
   </q-item-label>
   <div class="q-mt-md dragBox">
-    <div v-if="fileList">
-      <draggable @change="log" v-bind="dragOptions" :list="fileList" item-key="fileList.fileName" @start="drag = true"
+    <div v-if="File">
+      <draggable @change="log" v-bind="dragOptions" :list="File" item-key="File.fileName" @start="drag = true"
         @end="drag = false">
         <template #item="{ element, index }">
           <q-list separator class="bg-white cursor-pointer q-mb-md rounded-borders">
@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-import { ref, watch, toRefs, computed } from 'vue'
+import { ref, toRefs, computed } from 'vue'
 import draggable from 'vuedraggable'
 // import { useLayoutStore } from 'src/stores/layout'
 import { useWidgetListStore } from 'src/stores/widget'
@@ -75,13 +75,7 @@ const dragOptions = computed(() => {
     ghostClass: 'ghost'
   }
 })
-watch(props, () => {
-  if (File.value) {
-    fileList.value = File.value
-  }
-})
 const { File } = toRefs(props)
-const fileList = ref([])
 const drag = ref(false)
 // const humanFileSize = (size) => {
 //   const i = (size === 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024)))
