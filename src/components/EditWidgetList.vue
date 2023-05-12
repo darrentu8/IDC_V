@@ -6,9 +6,10 @@
       <q-item-label>{{ Index + 1 }}</q-item-label>
     </q-item-section>
     <q-item-section>
-      <q-select dense outlined v-model="ContentType" :options="options" class="brand-round-m rounded-borders"
+      <q-select dense outlined :value="ContentType" :options="options" class="brand-round-m rounded-borders"
         bg-color="white" @update:model-value="selectWidget(Index, ContentType)" option-disable="disable"
-        label="Select a widget" emit-value>
+        label="Select a widget" option-value="value" option-label="label" emit-value
+        @update:ContentType="(val) => $emit('update:ContentType', val)">
         <template v-slot:append>
           <img v-if="ContentType == 'TEXT'" src="~assets/icon/text.png" />
           <img v-if="ContentType == 'GPIO_Media'" src="~assets/icon/photograph.svg" />
@@ -37,46 +38,58 @@
   </q-item>
 </template>
 
-<script setup>
+<script>
 import { useLayoutStore } from 'src/stores/layout'
 import { useWidgetListStore } from 'src/stores/widget'
-import { ref, nextTick, computed, toRef } from 'vue'
+import { nextTick } from 'vue'
 const layoutStore = useLayoutStore()
 const widgetListStore = useWidgetListStore()
-const currentSection = computed(() => layoutStore.currentSection)
-const props = defineProps({
-  Index: {
-    type: Number,
-    required: true
+export default {
+  name: 'EditWidgetList',
+  props: {
+    Index: {
+      type: Number,
+      required: true
+    },
+    ContentType: {
+      type: String,
+      required: true
+    },
+    options: {
+      type: Array,
+      required: true
+    }
   },
-  ContentType: {
-    type: String,
-    required: true
+  data() {
+    return {
+      renderComponent: true
+    }
   },
-  options: {
-    type: Array,
-    required: true
+  computed: {
+    currentSection() {
+      return layoutStore.currentSection
+    }
+  },
+  methods: {
+    async updateList(val) {
+      this.renderComponent = val
+      await nextTick()
+      this.renderComponent = true
+    },
+    setIndex(Index) {
+      // console.log('Index', Index)
+      layoutStore.SetCurrentSection(Index)
+      widgetListStore.ResetWidgetListData()
+    },
+    selectWidget(Index, ContentType) {
+      // console.log('Index', Index)
+      // console.log('ContentType', ContentType)
+      this.setIndex(Index)
+      widgetListStore.SetWidget(Index, ContentType)
+      widgetListStore.ResetWidgetListData()
+      this.updateList(false)
+    }
   }
-})
-const { ContentType } = toRef(props)
-const setIndex = (Index) => {
-  // console.log('Index', Index)
-  layoutStore.SetCurrentSection(Index)
-  widgetListStore.ResetWidgetListData()
-}
-const selectWidget = (Index, ContentType) => {
-  // console.log('Index', Index)
-  // console.log('ContentType', ContentType)
-  setIndex(Index)
-  widgetListStore.SetWidget(Index, ContentType)
-  widgetListStore.ResetWidgetListData()
-  updateList(false)
-}
-const renderComponent = ref(true)
-const updateList = async (val) => {
-  renderComponent.value = val
-  await nextTick()
-  renderComponent.value = true
 }
 </script>
 <style lang="scss">

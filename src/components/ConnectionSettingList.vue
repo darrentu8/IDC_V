@@ -20,7 +20,7 @@
                   <!-- Event 選單 -->
                   <q-select class="theme brand-round-m" options-selected-class="text-black" bg-color="white" rounded
                     label="Select Type" :disable="EventData._next_state_id === ''" outlined dense options-dense
-                    v-model="EventData._type" :options="eventTypeOptions" option-value="_t_uuidype" option-label="_name">
+                    v-model="EventData._type" :options="eventTypeOptions" option-value="_uuid" option-label="_name">
                     <template v-slot:after>
                       <img class="q-mr-sm q-mt-sm cursor-pointer" label="" size="md" @click="delEvent(EventData._id)"
                         round flat color="red" src="~assets/icon/delete.svg" />
