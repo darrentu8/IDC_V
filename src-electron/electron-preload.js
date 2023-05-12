@@ -30,6 +30,7 @@
 
 import { contextBridge } from 'electron'
 import { BrowserWindow, app, dialog } from '@electron/remote'
+import opn from 'opn'
 import path from 'path'
 import fs from 'fs'
 import xml2js from 'xml2js'
@@ -147,7 +148,11 @@ contextBridge.exposeInMainWorld('myAPI', {
 
     fs.writeFileSync(targetFile, xmlData)
 
-    return xmlData
+    return { nowPlayListFolder, xmlData }
+  },
+  openSaveFolder(nowPlayListFolder) {
+    console.log('nowPlayListFolder', nowPlayListFolder)
+    opn(nowPlayListFolder)
   },
   chooseSources(nowPlayListFolder) {
     const sourcePaths = dialog.showOpenDialogSync({

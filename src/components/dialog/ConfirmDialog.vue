@@ -11,9 +11,9 @@
       </q-card-section>
 
       <q-card-actions align="center">
-        <q-btn unelevated @click="onOKClick" class="theme-btn text-capitalize q-mr-lg" :label="okBtn" color="negative"
+        <q-btn @click="onCancelClick" class="theme-btn text-capitalize q-mr-lg" outline :label="cancelBtn" color="grey-7"
           v-close-popup />
-        <q-btn @click="onCancelClick" class="theme-btn text-capitalize" outline :label="cancelBtn" color="grey-7"
+        <q-btn unelevated @click="onOKClick" class="theme-btn text-capitalize" :label="okBtn" color="primary"
           v-close-popup />
       </q-card-actions>
     </q-card>
@@ -24,7 +24,7 @@
 import { useDialogPluginComponent } from 'quasar'
 
 export default ({
-  name: 'DelDialog',
+  name: 'ConfirmDialog',
   data() {
     return {
     }
@@ -73,6 +73,7 @@ export default ({
       this.hide()
     },
     onCancelClick() {
+      this.$emit('cancel')
       this.hide()
     }
   }

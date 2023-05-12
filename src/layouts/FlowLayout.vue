@@ -5,7 +5,7 @@
         <q-space />
         <q-btn dense flat icon="minimize" @click="minimize" />
         <q-btn dense flat icon="crop_square" @click="toggleMaximize" />
-        <q-btn dense flat icon="close" @click="closeApp" />
+        <q-btn dense flat icon="close" @click="saveAlert" />
       </q-bar>
       <q-toolbar class="q-px-lg q-py-md" style="background-color: #fff;">
         <img class="cursor-pointer" :src="logo" style="height:30px" @click="$router.push({ path: '/new' })" />
@@ -19,7 +19,7 @@
           Hardware Configurator
         </q-btn>
         <q-separator vertical class="q-mx-md" />
-        <q-btn class="" unelevated color="primary" rounded size="md" @click="backToGrid()">
+        <q-btn class="" unelevated color="primary" rounded size="md" @click="preview()">
           <img class="q-mr-xs" src="~assets/icon/see.svg" color="white" size="xs" />
           Preview
         </q-btn>
@@ -41,6 +41,7 @@
       style="background-color: #f8f8f8;">
       <RightSideBar />
     </q-drawer>
+    <ConfirmDialog />
     <PlaylistSettingsDialog />
     <ConfigureHardwareDialog />
   </q-layout>
@@ -52,6 +53,7 @@ import { useWidgetListStore } from 'src/stores/widget'
 const widgetStore = useWidgetListStore()
 // import { useRouter } from 'vue-router'
 import X2js from 'x2js'
+import ConfirmDialog from 'src/components/dialog/ConfirmDialog.vue'
 import PlaylistSettingsDialog from 'src/components/dialog/PlaylistSettingsDialog.vue'
 import ConfigureHardwareDialog from 'src/components/dialog/ConfigureHardwareDialog.vue'
 import LeftSideBar from 'src/components/LeftSideBar.vue'
@@ -79,9 +81,9 @@ function toggleMaximize() {
   window.myAPI?.toggleMaximize()
 }
 
-function closeApp() {
-  window.myAPI?.close()
-}
+// function closeApp() {
+//   window.myAPI?.close()
+// }
 
 function showPageSettings() {
   $q.dialog({
@@ -104,11 +106,67 @@ function showHardware() {
     console.log('Called on OK or Cancel')
   })
 }
-
+function saveAlert() {
+  $q.dialog({
+    component: ConfirmDialog,
+    componentProps: {
+      title: 'Do you want to save before leaving?',
+      message: '',
+      okBtn: 'Save',
+      cancelBtn: 'No, just leave'
+    }
+  }).onOk(() => {
+    const result = leaveSaveFile()
+    if (result) {
+      console.log('result', result)
+      window.myAPI?.close()
+    }
+  }).onCancel(() => {
+    window.myAPI?.close()
+  })
+}
+function preview() {
+  $q.dialog({
+    component: ConfirmDialog,
+    componentProps: {
+      title: 'Preview' + ' ' + widgetStore.nowPlayListName + ' ' + 'now !',
+      okBtn: 'Open',
+      cancelBtn: 'close'
+    }
+  })
+}
+function leaveSaveFile() {
+  const x2js = new X2js({ attributePrefix: '_' })
+  const novoObj = { NovoDS: widgetStore.NovoDS }
+  const xmlData = x2js.js2xml(novoObj)
+  const result = window.myAPI.storeToXML(widgetStore.nowPlayListFolder, xmlData)
+  if (result) {
+    $q.dialog({
+      title: 'Saved successfully!',
+      message: 'The playlist has been successfully saved, do you want to view the folder?'
+    }).onDismiss(() => {
+      window.myAPI?.close()
+    })
+  }
+}
 function exportFile() {
   const x2js = new X2js({ attributePrefix: '_' })
   const novoObj = { NovoDS: widgetStore.NovoDS }
   const xmlData = x2js.js2xml(novoObj)
-  window.myAPI.storeToXML(widgetStore.nowPlayListFolder, xmlData)
+  const result = window.myAPI.storeToXML(widgetStore.nowPlayListFolder, xmlData)
+  if (result) {
+    $q.dialog({
+      component: ConfirmDialog,
+      componentProps: {
+        title: 'Saved successfully!',
+        message: 'The playlist has been successfully saved, do you want to view the folder?',
+        okBtn: 'Open',
+        cancelBtn: 'cancel'
+      }
+    }).onOk(() => {
+      console.log('xmlData', xmlData)
+      window.myAPI.openSaveFolder(widgetStore.nowPlayListFolder)
+    })
+  }
 }
 </script>

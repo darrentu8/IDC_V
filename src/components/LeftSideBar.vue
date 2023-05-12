@@ -62,9 +62,9 @@ const PlaylistName = computed({
   }
 })
 const updateContentType = function (e) {
-  widgetStore.SetWidget(e.Index, e.ContentType)
+  console.log('e', e)
+  widgetStore.SetWidget(e.Index, e.val)
   widgetStore.ResetWidgetListData()
-  this.updateList(false)
 }
 onMounted(() => {
 })

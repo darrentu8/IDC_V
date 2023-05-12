@@ -338,6 +338,8 @@ export const useWidgetListStore = defineStore('widgetList', {
       console.log('this.loading', this.loading)
     },
     SetWidget(Index, ContentType) {
+      console.log('Index', Index)
+      console.log('ContentType', ContentType)
       this.NovoDS.Pages.Page.Section[Index]._ContentType = ContentType
     },
     SetCurrentState(Index) {
