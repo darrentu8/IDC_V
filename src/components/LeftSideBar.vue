@@ -31,7 +31,7 @@
   <q-scroll-area style="height: calc(100% - 250px);">
     <q-list padding>
       <EditWidgetList v-for="(widget, Index) in widgetLists" :Index="Index" :key="widget.id"
-        :ContentType="widget._ContentType" :options="widgetOptions" />
+        :ContentType="widget._ContentType" :options="widgetOptions" @updateContentType="updateContentType" />
     </q-list>
   </q-scroll-area>
 </template>
@@ -44,9 +44,9 @@ import { useWidgetListStore } from 'src/stores/widget'
 import EditWidgetList from './EditWidgetList.vue'
 
 // const router = useRouter()
-const LayoutStore = useLayoutStore()
+const layoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
-const layouts = computed(() => LayoutStore.layout)
+const layouts = computed(() => layoutStore.layout)
 const NovoDS = computed(() => widgetStore.NovoDS)
 const widgetLists = computed(() => widgetStore.GetWidgetListData)
 const widgetOptions = computed(() => widgetStore.widgetOption)
@@ -61,6 +61,11 @@ const PlaylistName = computed({
     NovoDS.value._Playlist_Name = newValue
   }
 })
+const updateContentType = function (e) {
+  widgetStore.SetWidget(e.Index, e.ContentType)
+  widgetStore.ResetWidgetListData()
+  this.updateList(false)
+}
 onMounted(() => {
 })
 </script>

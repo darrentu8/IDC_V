@@ -6,10 +6,9 @@
       <q-item-label>{{ Index + 1 }}</q-item-label>
     </q-item-section>
     <q-item-section>
-      <q-select dense outlined :value="ContentType" :options="options" class="brand-round-m rounded-borders"
-        bg-color="white" @update:model-value="selectWidget(Index, ContentType)" option-disable="disable"
-        label="Select a widget" option-value="value" option-label="label" emit-value
-        @update:ContentType="(val) => $emit('update:ContentType', val)">
+      <q-select dense outlined :model-value="ContentType" :options="options" class="brand-round-m rounded-borders"
+        bg-color="white" option-disable="disable" label="Select a widget" option-value="value" option-label="label"
+        emit-value @update:model-value="(val) => $emit('updateContentType', val)">
         <template v-slot:append>
           <img v-if="ContentType == 'TEXT'" src="~assets/icon/text.png" />
           <img v-if="ContentType == 'GPIO_Media'" src="~assets/icon/photograph.svg" />
@@ -43,7 +42,7 @@ import { useLayoutStore } from 'src/stores/layout'
 import { useWidgetListStore } from 'src/stores/widget'
 import { nextTick } from 'vue'
 const layoutStore = useLayoutStore()
-const widgetListStore = useWidgetListStore()
+const widgetStore = useWidgetListStore()
 export default {
   name: 'EditWidgetList',
   props: {
@@ -77,17 +76,9 @@ export default {
       this.renderComponent = true
     },
     setIndex(Index) {
-      // console.log('Index', Index)
+      console.log('Index', Index)
       layoutStore.SetCurrentSection(Index)
-      widgetListStore.ResetWidgetListData()
-    },
-    selectWidget(Index, ContentType) {
-      // console.log('Index', Index)
-      // console.log('ContentType', ContentType)
-      this.setIndex(Index)
-      widgetListStore.SetWidget(Index, ContentType)
-      widgetListStore.ResetWidgetListData()
-      this.updateList(false)
+      widgetStore.ResetWidgetListData()
     }
   }
 }
