@@ -299,7 +299,9 @@
                               </div>
                               <div class="col" />
                               <div class="flex flex-center">
-                                <q-btn flat size="md" round icon="img:/icon/delete.svg" @click="removeTx(index)" />
+                                <q-btn flat size="md" round @click="removeTx(index)">
+                                  <img src="~assets/icon/delete.svg" />
+                                </q-btn>
                               </div>
                             </div>
                           </q-card-section>

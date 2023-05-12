@@ -7,10 +7,12 @@
     <div :class="[tab === 'source' ? 'offSetL q-pa-md' : 'offSetR q-pa-md']">
       <q-tabs v-model="tab" inline-label class="text-grey" active-color="primary" indicator-color="primary" align="left"
         narrow-indicator>
-        <q-tab name="source" icon="img:/icon/view-grid-add.svg" label="State Definition"
-          style="text-transform: capitalize;" />
-        <q-tab name="flow" icon="img:/icon/flow.svg" label="Story Flow" style="text-transform: capitalize;" />
-
+        <q-tab name="source" label="State Definition" style="text-transform: capitalize;">
+          <img class="q-ml-xs" src="~assets/icon/view-grid-add.svg" />
+        </q-tab>
+        <q-tab name="flow" label="Story Flow" style="text-transform: capitalize;">
+          <img class="q-ml-xs" src="~assets/icon/flow.svg" />
+        </q-tab>
         <q-btn v-if="tab === 'source'" label="Add new state" @click="addState()" flat class="theme-tab-btn"
           color="primary" icon="add">
         </q-btn>

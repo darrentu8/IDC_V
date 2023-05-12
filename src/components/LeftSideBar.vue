@@ -4,10 +4,10 @@
       <q-input borderless bottom-slots v-on:focus="focus = true" v-on:blur="focus = false" v-model="PlaylistName"
         label="Playlist Name" class="q-pb-none">
         <template v-slot:append>
-          <q-icon v-if="focus || !PlaylistName" size="xs" name="img:/icon/pencil.svg" />
-          <!-- <q-icon v-if="NovoDS._Playlist_Name !== PlaylistName" name="close" @click="PlaylistName = ''"
+          <img v-if="focus || !PlaylistName" src="~assets/icon/pencil.svg" />
+          <!-- <img v-if="NovoDS._Playlist_Name !== PlaylistName" name="close" @click="PlaylistName = ''"
             class="cursor-pointer" /> -->
-          <!-- <q-icon v-if="NovoDS._Playlist_Name !== PlaylistName" name="check" color="green" @click="saveName()"
+          <!-- <img v-if="NovoDS._Playlist_Name !== PlaylistName" name="check" color="green" @click="saveName()"
             class="cursor-pointer" /> -->
         </template>
         <template v-if="NovoDS._Playlist_Name !== PlaylistName && PlaylistName" v-slot:after>
@@ -18,7 +18,7 @@
         <q-input v-on:focus="dfocus = true" v-on:blur="dfocus = false" label="Playlist Description" type="textarea"
           rows="2" class="border-d" borderless v-model="NovoDS._Description">
           <template v-slot:append>
-            <q-icon v-if="dfocus || !NovoDS._Description" size="xs" name="img:/icon/pencil.svg" />
+            <img v-if="dfocus || !NovoDS._Description" src="~assets/icon/pencil.svg" />
           </template>
         </q-input>
       </div>

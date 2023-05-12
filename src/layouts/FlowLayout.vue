@@ -11,20 +11,20 @@
         <img class="cursor-pointer" :src="logo" style="height:30px" @click="$router.push({ path: '/new' })" />
         <q-space />
         <q-btn class="" unelevated rounded color="" text-color="grey-9" size="md" @click="showPageSettings()">
-          <q-icon class="q-mr-xs" name="img:/icon/settings.svg" color="" size="xs" />
+          <img class="q-mr-xs" src="~assets/icon/settings.svg" color="" size="xs" />
           Page Settings
         </q-btn>
         <q-btn class="" unelevated rounded color="" text-color="grey-9" size="md" @click="showHardware()">
-          <q-icon class="q-mr-xs" name="img:/icon/adjustments.svg" color="white" size="xs" />
+          <img class="q-mr-xs" src="~assets/icon/adjustments.svg" color="white" size="xs" />
           Hardware Configurator
         </q-btn>
         <q-separator vertical class="q-mx-md" />
         <q-btn class="" unelevated color="primary" rounded size="md" @click="backToGrid()">
-          <q-icon class="q-mr-xs" name="img:/icon/see.svg" color="white" size="xs" />
+          <img class="q-mr-xs" src="~assets/icon/see.svg" color="white" size="xs" />
           Preview
         </q-btn>
         <q-btn class="q-ml-md" unelevated color="primary" rounded size="md" @click="exportFile()">
-          <q-icon class="q-mr-xs" name="img:/icon/save.svg" color="white" size="xs" />
+          <img class="q-mr-xs" src="~assets/icon/save.svg" color="white" size="xs" />
           Save
         </q-btn>
       </q-toolbar>
@@ -109,6 +109,6 @@ function exportFile() {
   const x2js = new X2js({ attributePrefix: '_' })
   const novoObj = { NovoDS: widgetStore.NovoDS }
   const xmlData = x2js.js2xml(novoObj)
-  window.myAPI.storeToXML(xmlData)
+  window.myAPI.storeToXML(widgetStore.nowPlayListFolder, xmlData)
 }
 </script>

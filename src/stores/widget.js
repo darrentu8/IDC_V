@@ -5,6 +5,8 @@ import { uid } from 'quasar'
 
 export const useWidgetListStore = defineStore('widgetList', {
   state: () => ({
+    nowPlayListName: '',
+    nowPlayListFolder: '',
     NovoDS: {
       _Description: '',
       _Layout_Type: '0', // 0 -> Grid, 1 -> Flexible
@@ -188,25 +190,25 @@ export const useWidgetListStore = defineStore('widgetList', {
       {
         label: 'MEDIA',
         value: 'GPIO_Media',
-        icon: 'img:/icon/photograph.svg',
+        icon: '~assets/icon/photograph.svg',
         disable: false
       }
       // {
       //   label: 'TEXT',
       //   value: 'TEXT',
-      //   icon: 'img:/icon/text.png',
+      //   icon: '~assets/icon/text.png',
       // disable: false
       // },
       // {
       //   label: 'TWITTER',
       //   value: 'TWITTER',
-      //   icon: 'img:/icon/twitter.png',
+      //   icon: '~assets/icon/twitter.png',
       // disable: false
       // },
       // {
       //   label: 'WEBPAGE',
       //   value: 'WEBPAGE',
-      //   icon: 'img:/icon/webpage.png',
+      //   icon: '~assets/icon/webpage.png',
       // disable: false
       // }
     ],
@@ -310,6 +312,12 @@ export const useWidgetListStore = defineStore('widgetList', {
     }
   },
   actions: {
+    SetFilePath() {
+      const NowPlayListFolder = window.myAPI.setPlayListFolder()
+      console.log('NowPlayListFolder', NowPlayListFolder)
+      this.nowPlayListName = NowPlayListFolder.newPlayListName
+      this.nowPlayListFolder = NowPlayListFolder.PlayListFolder
+    },
     // Section
     ResetWidgetListData() {
       console.log('ResetWidgetListData')

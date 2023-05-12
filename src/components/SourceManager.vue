@@ -30,8 +30,8 @@
               </q-item-section>
               <q-item-section side>
                 <q-btn label="" @click="deleteFile(currentStateIndex, element._src, element._targetPath)" round flat
-                  class="" color="pink
-" icon="img:/icon/delete.svg" />
+                  class="" color="pink">
+                  <img src="~assets/icon/delete.svg"></q-btn>
               </q-item-section>
             </q-item>
           </q-list>
@@ -56,6 +56,7 @@ const widgetStore = useWidgetListStore()
 // const currentSection = computed(() => layoutStore.GetCurrentSection)
 // const currentState = computed(() => widgetStore.GetCurrentState)
 const widgetListData = widgetStore.widgetListData
+const nowPlayListFolder = widgetStore.nowPlayListFolder
 const props = defineProps({
   File: {
     type: Array,
@@ -83,7 +84,7 @@ const drag = ref(false)
 // }
 const add = async (currentStateIndex) => {
   console.log('currentStateIndex', currentStateIndex)
-  const fileData = await window.myAPI.chooseSources()
+  const fileData = await window.myAPI.chooseSources(nowPlayListFolder)
   const fileDatas = await window.myAPI.getFileData(fileData)
   widgetStore.AddSourceList(currentStateIndex, fileDatas)
 }

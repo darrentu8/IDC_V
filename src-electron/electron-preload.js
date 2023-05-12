@@ -50,7 +50,17 @@ contextBridge.exposeInMainWorld('myAPI', {
       win.maximize()
     }
   },
-
+  setPlayListFolder() {
+    const NovoFolder = getNovoFolder()
+    const strftime = require('strftime')
+    const timestamp = strftime('%Y%m%d%H%M%S', new Date())
+    const newPlayListName = `PlayList_${timestamp}`
+    const PlayListFolder = path.join(NovoFolder, newPlayListName)
+    if (!fs.existsSync(PlayListFolder)) {
+      fs.mkdirSync(PlayListFolder)
+    }
+    return { PlayListFolder, newPlayListName }
+  },
   close() {
     BrowserWindow.getFocusedWindow().close()
   },
@@ -125,12 +135,12 @@ contextBridge.exposeInMainWorld('myAPI', {
 
     return parser.parseStringPromise(xml)
   },
-  storeToXML(NovoDsData) {
+  storeToXML(nowPlayListFolder, NovoDsData) {
     const fileName = 'index.xml'
     const xmlData = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + NovoDsData
-    const PlayListFolder = getPlayListFolder()
+    // const PlayListFolder = getPlayListFolder()
 
-    const targetFile = path.join(PlayListFolder, fileName)
+    const targetFile = path.join(nowPlayListFolder, fileName)
 
     // const builder = new xml2js.Builder({ headless: true, attrkey: '_attr' })
     // const xml = builder.buildObject(NovoDsData)
@@ -139,7 +149,7 @@ contextBridge.exposeInMainWorld('myAPI', {
 
     return xmlData
   },
-  chooseSources() {
+  chooseSources(nowPlayListFolder) {
     const sourcePaths = dialog.showOpenDialogSync({
       title: 'Choose Media',
       filters: [
@@ -149,12 +159,12 @@ contextBridge.exposeInMainWorld('myAPI', {
     })
 
     if (sourcePaths) {
-      const sourceFolder = getSourceFolder()
+      // const sourceFolder = getSourceFolder()
       const fileDataArray = []
 
       sourcePaths.forEach((sourcePath) => {
         const fileName = path.basename(sourcePath)
-        const targetPath = path.join(sourceFolder, fileName)
+        const targetPath = path.join(nowPlayListFolder, fileName)
 
         if (!isDuplicateFile(targetPath)) {
           try {
@@ -242,19 +252,18 @@ const getNovoFolder = () => {
 
   return folder
 }
+// const getPlayListFolder = () => {
+//   const NovoFolder = getNovoFolder()
+//   const strftime = require('strftime')
+//   const timestamp = strftime('%Y%m%d%H%M%S', new Date())
+//   const newPlayListName = `PlayList_${timestamp}`
+//   const PlayListFolder = path.join(NovoFolder, newPlayListName)
+//   if (!fs.existsSync(PlayListFolder)) {
+//     fs.mkdirSync(PlayListFolder)
+//   }
 
-const getPlayListFolder = () => {
-  const NovoFolder = getNovoFolder()
-  const strftime = require('strftime')
-  const timestamp = strftime('%Y%m%d%H%M%S', new Date())
-  const newPlayListName = `PlayList_${timestamp}`
-  const PlayListFolder = path.join(NovoFolder, newPlayListName)
-  if (!fs.existsSync(PlayListFolder)) {
-    fs.mkdirSync(PlayListFolder)
-  }
-
-  return PlayListFolder
-}
+//   return PlayListFolder
+// }
 
 const getSourceFolder = () => {
   const NovoFolder = getNovoFolder()

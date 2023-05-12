@@ -107,7 +107,13 @@ export default {
       }
     }
   },
+  mounted() {
+    this.getFilePath()
+  },
   methods: {
+    getFilePath() {
+      widgetStore.SetFilePath()
+    },
     toGrid() {
       this.$router.push({ path: '/grid' })
     },

@@ -10,10 +10,10 @@
         bg-color="white" @update:model-value="selectWidget(Index, ContentType)" option-disable="disable"
         label="Select a widget" emit-value>
         <template v-slot:append>
-          <q-icon v-if="ContentType == 'TEXT'" name="img:/icon/text.png" />
-          <q-icon v-if="ContentType == 'MEDIA'" name="img:/icon/photograph.svg" />
-          <q-icon v-if="ContentType == 'TWITTER'" name="img:/icon/twitter.png" />
-          <q-icon v-if="ContentType == 'WEBPAGE'" name="img:/icon/webpage.png" />
+          <img v-if="ContentType == 'TEXT'" src="~assets/icon/text.png" />
+          <img v-if="ContentType == 'GPIO_Media'" src="~assets/icon/photograph.svg" />
+          <img v-if="ContentType == 'TWITTER'" src="~assets/icon/twitter.png" />
+          <img v-if="ContentType == 'WEBPAGE'" src="~assets/icon/webpage.png" />
         </template>
         <template v-slot:no-option>
           <q-item>
@@ -28,7 +28,7 @@
               <q-item-label>{{ scope.opt.label }}</q-item-label>
             </q-item-section>
             <q-item-section avatar>
-              <q-icon :name="scope.opt.icon"></q-icon>
+              <img src="~assets/icon/photograph.svg" />
             </q-item-section>
           </q-item>
         </template>

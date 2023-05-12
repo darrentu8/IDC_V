@@ -13,7 +13,9 @@
             <q-radio v-model="BackgroundImageType" val="BackgroundImage" label="Background Image" class="q-mb-sx"
               color="" />
             <q-btn :disable="BackgroundImageType !== 'BackgroundImage'" flat class="q-mr-xs" style="float: right;"
-              icon="img:/icon/folder-add.svg" color="primary" round @click="$refs.BackgroundUpload.pickFiles()" />
+              color="primary" round @click="$refs.BackgroundUpload.pickFiles()">
+              <img src="~assets/icon/folder-add.svg" />
+            </q-btn>
             <q-file ref="BackgroundUpload" :disable="BackgroundImageType !== 'BackgroundImage'" clearable
               label="Upload background file" class="brand-round-m q-mx-lg q-mb-md" v-model="BackgroundImageData" dense
               outlined />
@@ -22,12 +24,23 @@
             <q-radio v-model="BackgroundImageType" val="BackgroundColor" label="Background Color" class="q-mb-sx"
               color="" />
             <q-btn :disable="BackgroundImageType !== 'BackgroundColor'" flat class="q-mr-xs" style="float: right;"
-              icon="img:/icon/edit-o.svg" color="primary" round />
+              color="primary" round>
+              <img src="~assets/icon/edit-o.svg" />
+            </q-btn>
             <div class="col-12 q-mx-lg q-mt-sm">
-              <q-icon v-for="index in 10" :key="index" :disable="BackgroundImageType !== 'BackgroundColor'"
-                v-model="BackgroundImage" class="theme-bg-select cursor-pointer" label=""
-                :name="'img:/icon/bg/bg-' + `${(index < 10 ? '0' + (index) : (index))}` + '.svg'" color="primary"
-                @click="SetBGC(index)" />
+              <div :disable="BackgroundImageType !== 'BackgroundColor'" class="flex theme-bg-select cursor-pointer"
+                @click="SetBGC(index)">
+                <img class="" src="~assets/icon/bg/bg-01.svg" />
+                <img class="" src="~assets/icon/bg/bg-02.svg" />
+                <img class="" src="~assets/icon/bg/bg-03.svg" />
+                <img class="" src="~assets/icon/bg/bg-04.svg" />
+                <img class="" src="~assets/icon/bg/bg-05.svg" />
+                <img class="" src="~assets/icon/bg/bg-06.svg" />
+                <img class="" src="~assets/icon/bg/bg-07.svg" />
+                <img class="" src="~assets/icon/bg/bg-08.svg" />
+                <img class="" src="~assets/icon/bg/bg-09.svg" />
+                <img class="" src="~assets/icon/bg/bg-10.svg" />
+              </div>
             </div>
           </div>
         </div>

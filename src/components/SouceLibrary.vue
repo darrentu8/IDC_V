@@ -5,8 +5,7 @@
         v-for="(state, Index) in widgetListData[currentSection].Content.State" :key="state._id">
         <div :class="[widgetListData[currentSection]._ContentType ? 'col-3' : 'col-3']">
           <q-card bordered class="q-mt-lg q-mx-auto cursor-pointer flowBox">
-            <q-icon size="lg" name="img:/icon/mark.svg" class="q-mt-xs flag">
-            </q-icon>
+            <img size="lg" src="~assets/icon/mark.svg" class="q-mt-xs flag" />
             <q-card-section v-if="state._title !== ''" class="q-pa-xs">
               <div class="text-subtitle2 ellipsis-2-lines maxW">{{ state._title }}</div>
               <q-popup-edit v-model="state._title" v-slot="scope" class="theme-border q-pt-none" buttons>

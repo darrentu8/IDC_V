@@ -11,8 +11,7 @@
             style="margin-top:35px;margin-left: -20px;">Flow {{ Index
             }}</q-chip>
           <q-card bordered class="flowBox">
-            <q-icon size="lg" name="img:/icon/mark.svg" class="q-mt-xs flag">
-            </q-icon>
+            <img src="~assets/icon/mark.svg" class="q-mt-xs flag" />
             <q-card-section v-if="stateData._title !== ''" class="q-pa-xs">
               <div class="text-subtitle2 ellipsis-2-lines maxW">{{ stateData._title }}</div>
             </q-card-section>
@@ -31,30 +30,30 @@
             <div>
               <!-- 有Event -->
               <div v-if="stateData">
-                <div v-for="(EventData, EventIndex) in transformStateData(stateData.Event)" :key="EventData._id"
+                <div v-for="(EventData, EventIndex) in transformEventData(stateData.Event)" :key="EventData._id"
                   class="flex items-center q-mb-md">
                   <div class="q-mr-md q-ml-lg">
                     <!-- link -->
                     <q-btn v-if="currentEvent === EventData._id" :disable="EventData._next_state_id === ''"
                       @click="setCurrentEvent(Index, EventData._stateId, EventData._id)" unelevated
-                      class="border-round-select" text-color="white" color="primary" round icon="img:/icon/link.svg">
-                      <q-badge color="primary" class="link-badge" floating>{{ EventData.sameNextStateIdCount ?
-                        EventData.sameNextStateIdCount : 0
+                      class="border-round-select" text-color="white" color="primary" round><img
+                        src="~assets/icon/link.svg" />
+                      <q-badge color="primary" class="link-badge" floating>{{ EventData._sameNextStateIdCount ?
+                        EventData._sameNextStateIdCount : 0
                       }}</q-badge>
                     </q-btn>
                     <q-btn v-else :disable="EventData._next_state_id === ''"
                       @click="setCurrentEvent(Index, EventData._stateId, EventData._id)" unelevated
-                      class="border-round-select" text-color="white" color="grey-6" round icon="img:/icon/link.svg">
-                      <q-badge color="primary" class="link-badge" floating>{{ EventData.sameNextStateIdCount ?
-                        EventData.sameNextStateIdCount : 0
+                      class="border-round-select" text-color="white" color="grey-6" round><img
+                        src="~assets/icon/link.svg" />
+                      <q-badge color="primary" class="link-badge" floating>{{ EventData._sameNextStateIdCount ?
+                        EventData._sameNextStateIdCount : 0
                       }}</q-badge>
                     </q-btn>
                   </div>
                   <!-- state -->
                   <q-card v-if="EventData._next_state_id !== undefined" bordered class="flowBox q-ml-md select">
-                    <q-icon v-if="EventData._next_state_id !== ''" size="lg" name="img:/icon/mark.svg"
-                      class="q-mt-xs flag">
-                    </q-icon>
+                    <img v-if="EventData._next_state_id !== ''" src="~assets/icon/mark.svg" class="q-mt-xs flag" />
                     <div v-if="EventData._next_state_id !== ''"
                       class="cursor-pointer text-subtitle2 ellipsis-2-lines maxW">{{
                         mapCurrentStateOptions(EventData._next_state_id) }}</div>
@@ -229,12 +228,13 @@ function calcDiff(stateData) {
   console.log('stateData', stateData)
   return stateData
 }
-function transformStateData(stateData) {
-  const result = stateData.reduce((acc, obj) => {
+function transformEventData(EventData) {
+  console.log('transformEventData', EventData)
+  const result = EventData.reduce((acc, obj) => {
     if (obj._next_state_id === '') {
       acc.push({ ...obj, _sameNextStateIdCount: 1 })
     } else if (!acc.some(item => item._next_state_id === obj._next_state_id)) {
-      const _sameNextStateIdCount = stateData.filter(item => item._next_state_id === obj._next_state_id).length
+      const _sameNextStateIdCount = EventData.filter(item => item._next_state_id === obj._next_state_id).length
       acc.push({ ...obj, _sameNextStateIdCount })
     }
     return acc

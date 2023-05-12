@@ -45,7 +45,7 @@
 .theme-border {
   border-radius: 20px;
 }
-.theme-bg-select {
+.theme-bg-select img {
   width: 24px;
   height: 24px;
   margin-right: 17px;
@@ -135,7 +135,8 @@
   box-shadow: 0px 5px 10px 0px #BBBBBB80;
   width: 100px;
   height: 100px;
-  & .q-icon.flag {
+  & .flag {
+    width: 40px;
     margin-left: 5px;
   }
   &.select {
