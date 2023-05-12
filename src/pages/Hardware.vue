@@ -318,7 +318,7 @@
             <q-btn class="brand-round-l text-capitalize" @click="toGrid" style="width:116px;margin:auto 20px" color="grey"
               label="Back" outline="" icon="arrow_back" />
             <q-space />
-            <q-btn @click="toFlow" color="primary" label="Apply" class="brand-round-l text-capitalize"
+            <q-btn :loading="loading" @click="toFlow" color="primary" label="Apply" class="brand-round-l text-capitalize"
               style="width:116px;margin:auto 20px" icon="check" />
           </q-card-actions>
         </q-card>
@@ -335,6 +335,7 @@ export default {
   name: 'HardwareConfiguration',
   data() {
     return {
+      loading: false,
       panel: 0,
       currentPIN: 0,
       tx: {
@@ -386,8 +387,13 @@ export default {
     toGrid() {
       this.$router.push({ path: '/grid' })
     },
-    toFlow() {
-      this.$router.push({ path: '/flow' })
+    async toFlow() {
+      this.loading = true
+      const result = await this.$router.push({ path: '/flow' })
+      console.log('result', result)
+      if (result === undefined) {
+        this.loading = false
+      }
     },
     hasChild(scope) {
       return scope.opt.children.some(c => c.value === this.model)
