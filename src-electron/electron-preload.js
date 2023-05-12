@@ -126,7 +126,7 @@ contextBridge.exposeInMainWorld('myAPI', {
     return parser.parseStringPromise(xml)
   },
   storeToXML(NovoDsData) {
-    const fileName = 'NovoDS.xml'
+    const fileName = 'index.xml'
     const xmlData = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + NovoDsData
     const PlayListFolder = getPlayListFolder()
 
@@ -245,7 +245,10 @@ const getNovoFolder = () => {
 
 const getPlayListFolder = () => {
   const NovoFolder = getNovoFolder()
-  const PlayListFolder = path.join(NovoFolder, 'Playlist')
+  const strftime = require('strftime')
+  const timestamp = strftime('%Y%m%d%H%M%S', new Date())
+  const newPlayListName = `PlayList_${timestamp}`
+  const PlayListFolder = path.join(NovoFolder, newPlayListName)
   if (!fs.existsSync(PlayListFolder)) {
     fs.mkdirSync(PlayListFolder)
   }

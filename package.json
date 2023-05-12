@@ -17,6 +17,7 @@
     "axios": "^1.2.1",
     "pinia": "^2.0.11",
     "quasar": "^2.6.0",
+    "strftime": "^0.10.1",
     "vue": "^3.0.0",
     "vue-grid-layout": "3.0.0-beta1",
     "vue-i18n": "^9.0.0",
