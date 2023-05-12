@@ -299,6 +299,8 @@
       </div>
       <q-card-actions class="q-pb-lg absolute-bottom">
         <q-space />
+        <q-btn @click="onCancelClick" class="theme-btn text-capitalize q-mr-lg" outline :label="cancelBtn" color="grey-7"
+          v-close-popup />
         <q-btn v-close-popup color="primary" label="Apply" class="brand-round-l text-capitalize"
           style="width:116px;margin:auto 20px" icon="check" />
       </q-card-actions>
@@ -376,6 +378,10 @@ export default {
     },
     hasChild(scope) {
       return scope.opt.children.some(c => c.value === this.model)
+    },
+    onCancelClick() {
+      this.$emit('cancel')
+      this.hide()
     },
     SetPin(index, role, childValue) {
       this.GPIO[index]._role = role

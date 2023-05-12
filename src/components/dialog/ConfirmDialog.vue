@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import { useDialogPluginComponent } from 'quasar'
 
 export default ({
   name: 'ConfirmDialog',
@@ -29,9 +28,6 @@ export default ({
     return {
     }
   },
-  emits: [
-    ...useDialogPluginComponent.emits
-  ],
   props: {
     title: {
       type: String,

@@ -10,7 +10,8 @@
         </q-stepper>
       </div>
       <div class="col flex flex-center">
-        <q-card class="bg-white text-black brand-round-l q-pa-lg" style="width:550px;margin-top: -50px;height:550px">
+        <q-card class="bg-white text-black brand-round-l q-pa-lg q-mb-lg"
+          style="width:550px;margin-top: -50px;height:550px">
           <q-card-section>
             <div class="column">
               <div class="col">

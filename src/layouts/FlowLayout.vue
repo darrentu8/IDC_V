@@ -112,7 +112,7 @@ function saveAlert() {
     componentProps: {
       title: 'Do you want to save before leaving?',
       message: '',
-      okBtn: 'Save',
+      okBtn: 'Yes, save',
       cancelBtn: 'No, just leave'
     }
   }).onOk(() => {
@@ -122,7 +122,10 @@ function saveAlert() {
       window.myAPI?.close()
     }
   }).onCancel(() => {
+    console.log('Cancel')
     window.myAPI?.close()
+  }).onDismiss(() => {
+    console.log('Called on OK or Cancel')
   })
 }
 function preview() {

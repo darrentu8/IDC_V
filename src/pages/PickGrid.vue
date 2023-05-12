@@ -10,7 +10,8 @@
         </q-stepper>
       </div>
       <div class="col">
-        <q-card class="bg-white text-black brand-round-l q-pa-lg" style="width:1100px;margin-top: -50px;height: 550px;">
+        <q-card class="bg-white text-black brand-round-l q-pa-lg q-mb-lg"
+          style="width:1100px;margin-top: -50px;height: 550px;">
           <q-tab-panels v-model="panel" keep-alive animated>
             <q-tab-panel name="pickGrid" class="q-pa-none">
               <div class="column">
