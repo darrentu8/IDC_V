@@ -191,6 +191,7 @@ const mapCurrentStateOptions = computed(() => {
 })
 const filterCurrentStateOptions = computed(() => {
   return function (stateData) {
+    console.log('stateData', stateData)
     const differentIdElements = currentStateOptions.value.filter(
       option => !stateData.Event.some(event => event._stateId === option._id)
     )

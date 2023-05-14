@@ -39,7 +39,7 @@
                   <div class="text-body2 q-mt-sm">Landscape</div>
                 </div>
               </div>
-              <div class="col" v-show="false">
+              <div class="col" v-show="true">
                 <div class="row">
                   <div class="col">
                     <q-btn @click="loadJSONTest" color="grey-3" text-color="black" label="Load JSON Test"
@@ -71,7 +71,9 @@
 
 <script>
 import { useWidgetListStore } from 'src/stores/widget'
+import useQuasar from 'quasar/src/composables/use-quasar.js'
 const widgetStore = useWidgetListStore()
+const $q = useQuasar()
 
 export default {
   name: 'StartNew',
@@ -124,9 +126,21 @@ export default {
     },
     loadXMLTest() {
       const textXMLString = window.myAPI.loadXMLTest()
-      textXMLString.then(data => {
-        console.log(data, JSON.stringify(data))
-      })
+      console.log('textXMLString', textXMLString)
+      const setData = widgetStore.SetNovoDS(textXMLString)
+      if (setData) {
+        this.$router.push({ path: '/flow' })
+      } else {
+        $q.dialog({
+          title: 'Ｆile format error',
+          okBtn: 'ok'
+        }).onOk(() => {
+        }).onCancel(() => {
+          console.log('Cancel')
+        }).onDismiss(() => {
+          console.log('Called on OK or Cancel')
+        })
+      }
     },
     exportFile() {
       widgetStore.WriteToXml()

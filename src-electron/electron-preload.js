@@ -33,7 +33,8 @@ import { BrowserWindow, app, dialog } from '@electron/remote'
 import opn from 'opn'
 import path from 'path'
 import fs from 'fs'
-import xml2js from 'xml2js'
+import X2js from 'x2js'
+// import xml2js from 'xml2js'
 
 const novoDirName = 'NovoDS Studio'
 
@@ -120,7 +121,6 @@ contextBridge.exposeInMainWorld('myAPI', {
   },
   loadXMLTest: () => {
     const fileName = 'index.xml'
-
     const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER)
     const sourceFile = path.join(publicFolder, fileName)
 
@@ -131,10 +131,14 @@ contextBridge.exposeInMainWorld('myAPI', {
       fs.copyFileSync(sourceFile, targetFile)
     }
 
-    const xml = fs.readFileSync(targetFile)
-    const parser = new xml2js.Parser()
+    const x2js = new X2js({
+      attributePrefix: '_'
+    })
 
-    return parser.parseStringPromise(xml)
+    const xml = fs.readFileSync(targetFile, 'utf-8')
+    const parser = x2js.xml2js(xml)
+
+    return parser
   },
   storeToXML(nowPlayListFolder, NovoDsData) {
     const fileName = 'index.xml'

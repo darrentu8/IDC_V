@@ -139,9 +139,9 @@ export const useLayoutStore = defineStore('layout', {
     //   }
     // },
     layout: {
-      rowCount: 1,
-      colCount: 2,
-      layout: [{ x: 0, y: 0, w: 1, h: 1, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }]
+      rowCount: '',
+      colCount: '',
+      layout: []
     },
     currentSection: 0
   }
@@ -153,6 +153,7 @@ export const useLayoutStore = defineStore('layout', {
   },
   actions: {
     SetLayout(layout) {
+      const widgetStore = useWidgetListStore()
       const defaultData = layout.layout.map((e, Index) => ({
         x: e.x,
         y: e.y,
@@ -163,6 +164,7 @@ export const useLayoutStore = defineStore('layout', {
       this.layout = layout
       this.layout.layout = defaultData
       this.SetWidgetList()
+      widgetStore.SetRowCol(layout)
     },
     SetWidgetList() {
       const widgetStore = useWidgetListStore()
@@ -211,10 +213,10 @@ export const useLayoutStore = defineStore('layout', {
         }
       }))
       console.log('Section', Section)
+      widgetStore.SetRowCol(this.layout)
       widgetStore.SetWidgetListData(Section)
     },
     SetCurrentSection(i) {
-      console.log('currentSection', i)
       this.currentSection = i
     }
   }

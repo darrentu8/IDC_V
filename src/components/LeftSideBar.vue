@@ -24,8 +24,8 @@
       </div>
     </q-item-label>
   </q-toolbar>
-  <GridViewStaticSelect :view-layout="layouts.layout" :view-row-count="layouts.rowCount"
-    :view-col-count="layouts.colCount" :view-width="280" />
+  <GridViewStaticSelect :view-layout="_layout" :view-row-count="_rowCount" :view-col-count="_colCount"
+    :view-width="280" />
   <q-separator class="q-ma-md" />
   <q-item-label header class="q-pb-xs text-dark text-bold">Widget</q-item-label>
   <q-scroll-area style="height: calc(100% - 250px);">
@@ -59,6 +59,40 @@ const PlaylistName = computed({
   },
   set(newValue) {
     NovoDS.value._Playlist_Name = newValue
+  }
+})
+const _rowCount = computed({
+  get() {
+    return NovoDS.value.Pages.Page._rowCount
+  },
+  set(newValue) {
+    NovoDS.value.Pages.Page._rowCount = newValue
+  }
+})
+const _colCount = computed({
+  get() {
+    return NovoDS.value.Pages.Page._colCount
+  },
+  set(newValue) {
+    NovoDS.value.Pages.Page._colCount = newValue
+  }
+})
+const _layout = computed({
+  get() {
+    if (!layouts.value.layout.length) {
+      const sections = NovoDS.value.Pages.Page.Section
+      const sectionPropsArr = sections.map(section => {
+        const { _Index: i, _X: x, _Y: y, _Z: z, _Height: h, _Width: w } = section
+        return { i, x, y, z, h, w }
+      })
+      console.log(sectionPropsArr)
+      return sectionPropsArr
+    } else {
+      return layouts.value.layout
+    }
+  },
+  set(newValue) {
+    layouts.value = newValue
   }
 })
 const updateContentType = function (e) {
