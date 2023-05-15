@@ -24,8 +24,7 @@
       </div>
     </q-item-label>
   </q-toolbar>
-  <GridViewStaticSelect :view-layout="_layout" :view-row-count="_rowCount" :view-col-count="_colCount"
-    :view-width="280" />
+  <GridViewStaticSelect :view-layout="_layout" :view-row-count="_Row" :view-col-count="_Column" :view-width="280" />
   <q-separator class="q-ma-md" />
   <q-item-label header class="q-pb-xs text-dark text-bold">Widget</q-item-label>
   <q-scroll-area style="height: calc(100% - 250px);">
@@ -61,20 +60,20 @@ const PlaylistName = computed({
     NovoDS.value._Playlist_Name = newValue
   }
 })
-const _rowCount = computed({
+const _Row = computed({
   get() {
-    return NovoDS.value.Pages.Page._rowCount
+    return NovoDS.value.Pages.Page._Row
   },
   set(newValue) {
-    NovoDS.value.Pages.Page._rowCount = newValue
+    NovoDS.value.Pages.Page._Row = newValue
   }
 })
-const _colCount = computed({
+const _Column = computed({
   get() {
-    return NovoDS.value.Pages.Page._colCount
+    return NovoDS.value.Pages.Page._Column
   },
   set(newValue) {
-    NovoDS.value.Pages.Page._colCount = newValue
+    NovoDS.value.Pages.Page._Column = newValue
   }
 })
 const _layout = computed({

@@ -120,18 +120,14 @@ export const useWidgetListStore = defineStore('widgetList', {
           _Orientation: '', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
           _FreeDesignerMode: 'false', // Grid -> false, Flexi -> true
           _ID: 'Page 1',
-          _Description: '',
           _SerialNumber: '', // 流水號 Page 1, Page 2 …沒用到
           _AudioSource: '',
-          _BackgroundImageSize: '',
-          _BackgroundImage: '_BackgroundImage',
+          _BackgroundImageSize: '0',
+          _BackgroundImage: '',
           _BgMusicApplyToAll: '',
           _BackgroundMusicUrl: '',
           _BackgroundMusicSize: '',
-          _Script: '',
           _BackgroundMusic: '',
-          _rowCount: '',
-          _colCount: '',
           Section: [
             {
               _Index: 0,
@@ -140,10 +136,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _Z: 0,
               _Height: '',
               _Width: '',
-              _is169: '',
-              _SectionValid: 1,
               _isFixedRatio: '',
-              _Script: '',
               _ContentType: '',
               Content: {
                 _scaleType: '',
@@ -170,7 +163,7 @@ export const useWidgetListStore = defineStore('widgetList', {
                 State: [
                   {
                     _id: uid(),
-                    _title: '',
+                    _name: '',
                     File: [],
                     Event: []
                   }
@@ -246,7 +239,7 @@ export const useWidgetListStore = defineStore('widgetList', {
     ],
     StateData: {
       _id: '',
-      _title: 'State',
+      _name: 'State',
       File: [],
       Event: []
     },
@@ -299,17 +292,17 @@ export const useWidgetListStore = defineStore('widgetList', {
       console.log('this.NovoDS.Pages.Page.Section[currentSection].Content.State', this.NovoDS.Pages.Page.Section[currentSection].Content.State)
       if (currentSection !== null) {
         const oData = this.NovoDS.Pages.Page.Section[currentSection].Content.State.map((e, i) => {
-          if (e._title === '') {
+          if (e._name === '') {
             return {
               _id: e._id,
               _stateIndex: i,
-              _title: 'State' + ' ' + (i + 1)
+              _name: 'State' + ' ' + (i + 1)
             }
           } else {
             return {
               _id: e._id,
               _stateIndex: i,
-              _title: e._title
+              _name: e._name
             }
           }
         })
@@ -398,8 +391,8 @@ export const useWidgetListStore = defineStore('widgetList', {
       eventStore.SetCurrentEvent('')
     },
     SetRowCol(data) {
-      this.NovoDS.Pages.Page._rowCount = data.rowCount
-      this.NovoDS.Pages.Page._colCount = data.colCount
+      this.NovoDS.Pages.Page._Row = data.rowCount
+      this.NovoDS.Pages.Page._Column = data.colCount
     },
     // Section
     SetWidgetListData(data) {
@@ -459,7 +452,7 @@ export const useWidgetListStore = defineStore('widgetList', {
         _id: uid(),
         File: [],
         Event: [],
-        _title: ''
+        _name: ''
       })
       console.log('this.NovoDS.Pages.Page.Section[currentSection].Content', this.NovoDS.Pages.Page.Section[currentSection].Content)
     },
@@ -470,7 +463,6 @@ export const useWidgetListStore = defineStore('widgetList', {
         _id: uid(),
         _type: '',
         _gpio_number: '',
-        _stateId: this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index]._id,
         _next_state_id: '',
         Action: []
       })

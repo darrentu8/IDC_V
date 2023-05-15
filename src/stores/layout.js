@@ -205,7 +205,7 @@ export const useLayoutStore = defineStore('layout', {
           State: [
             {
               _id: uid(),
-              _title: '',
+              _name: '',
               File: [],
               Event: []
             }

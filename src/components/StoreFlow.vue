@@ -12,8 +12,8 @@
             }}</q-chip>
           <q-card bordered class="flowBox">
             <img src="~assets/icon/mark.svg" class="q-mt-xs flag" />
-            <q-card-section v-if="stateData._title !== ''" class="q-pa-xs">
-              <div class="text-subtitle2 ellipsis-2-lines maxW">{{ stateData._title }}</div>
+            <q-card-section v-if="stateData._name !== ''" class="q-pa-xs">
+              <div class="text-subtitle2 ellipsis-2-lines maxW">{{ stateData._name }}</div>
             </q-card-section>
             <q-card-section v-else class="q-pa-xs">
               <div class="text-subtitle2 ellipsis-2-lines maxW">State {{ Number(Index + 1) }}</div>
@@ -60,7 +60,7 @@
                     <q-btn v-else flat class="full-width full-heigth theme-border" color=" grey-6" icon="add" />
                     <q-popup-edit v-model="EventData._next_state_id" v-slot="scope" class="theme-border">
                       <q-select v-model="scope.value" :options="filterCurrentStateOptions(stateData)"
-                        option-value="_stateIndex" option-label="_title" dense autofocus
+                        option-value="_stateIndex" option-label="_name" dense autofocus
                         @update:model-value="setFlowState(Index, EventData._id, scope.value)" />
                     </q-popup-edit>
                     <!-- 刪除 -->
@@ -74,7 +74,7 @@
                       color="grey-5" icon="add" />
                     <q-popup-edit v-model="EventData._next_state_id" v-slot="scope" class="theme-border">
                       <q-select v-model="scope.value" :options="currentStateOptions" option-value="_stateIndex"
-                        option-label="_title" dense autofocus
+                        option-label="_name" dense autofocus
                         @update:model-value="setFlowState(Index, EventIndex, scope.value)" />
                     </q-popup-edit>
                     <!-- 刪除 -->
@@ -183,7 +183,7 @@ const mapCurrentStateOptions = computed(() => {
     const Data = currentStateOptions.value.filter(e => e._stateIndex === stateIndex)
     console.log('Data', Data)
     if (Data) {
-      return Data[0]._title
+      return Data[0]._name
     } else {
       return ''
     }
