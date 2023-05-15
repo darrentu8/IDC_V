@@ -27,8 +27,8 @@
                     </template>
                   </q-select>
                   <!-- Event 子選單 -->
-                  <q-input v-if="EventData._type._type == 'rs232' || EventData._type._type == 'tcp/ip'"
-                    label="Type command" class="theme brand-round-m sub q-mt-sm" bg-color="white" rounded dense outlined
+                  <q-input v-if="EventData._type == 'rs232' || EventData._type == 'tcp/ip'" label="Type command"
+                    class="theme brand-round-m sub q-mt-sm" bg-color="white" rounded dense outlined
                     v-model="EventData._input_value" type="text" prefix="" suffix="" />
                   <q-input v-if="EventData._type == 'timeout'" label="Duration" class="theme brand-round-m sub q-mt-sm"
                     bg-color="white" rounded dense outlined v-model="EventData._duration" type="number" maxlength="4"
@@ -64,9 +64,9 @@
                       </q-select>
 
                       <!-- Action 子選單 -->
-                      <q-input v-if="actionData._type._type === 'rs232' || actionData._type === 'tcp/ip'"
-                        label="Type command" class="theme brand-round-m sub q-mt-sm" bg-color="white" rounded dense
-                        outlined v-model="actionData._input_value" type="text" prefix="" suffix="" />
+                      <q-input v-if="actionData._type === 'rs232' || actionData._type === 'tcp/ip'" label="Type command"
+                        class="theme brand-round-m sub q-mt-sm" bg-color="white" rounded dense outlined
+                        v-model="actionData._input_value" type="text" prefix="" suffix="" />
                     </div>
                   </div>
                   <!-- <q-btn label="" size="md" @click="addAction(EventData._id)" round flat class="" color="primary"

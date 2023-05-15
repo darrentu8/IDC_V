@@ -70,10 +70,10 @@
 </template>
 
 <script>
-import { useWidgetListStore } from 'src/stores/widget'
 import useQuasar from 'quasar/src/composables/use-quasar.js'
+import { useWidgetListStore } from 'src/stores/widget'
+import { useRouter } from 'vue-router'
 const widgetStore = useWidgetListStore()
-const $q = useQuasar()
 
 export default {
   name: 'StartNew',
@@ -83,6 +83,29 @@ export default {
     return {
 
     }
+  },
+  setup() {
+    const router = useRouter()
+    function loadXMLTest() {
+      const $q = useQuasar()
+      const textXMLString = window.myAPI.loadXMLTest()
+      console.log('textXMLString', textXMLString)
+      const setData = widgetStore.SetNovoDS(textXMLString)
+      if (setData) {
+        router.push({ path: '/flow' })
+      } else {
+        $q.dialog({
+          title: 'Ｆile format error',
+          okBtn: 'ok'
+        }).onOk(() => {
+        }).onCancel(() => {
+          console.log('Cancel')
+        }).onDismiss(() => {
+          console.log('Called on OK or Cancel')
+        })
+      }
+    }
+    return { loadXMLTest }
   },
   computed: {
     _Playlist_Name: {
@@ -123,24 +146,6 @@ export default {
     loadJSONTest() {
       const testFileString = window.myAPI.loadJSONTest()
       alert(testFileString)
-    },
-    loadXMLTest() {
-      const textXMLString = window.myAPI.loadXMLTest()
-      console.log('textXMLString', textXMLString)
-      const setData = widgetStore.SetNovoDS(textXMLString)
-      if (setData) {
-        this.$router.push({ path: '/flow' })
-      } else {
-        $q.dialog({
-          title: 'Ｆile format error',
-          okBtn: 'ok'
-        }).onOk(() => {
-        }).onCancel(() => {
-          console.log('Cancel')
-        }).onDismiss(() => {
-          console.log('Called on OK or Cancel')
-        })
-      }
     },
     exportFile() {
       widgetStore.WriteToXml()

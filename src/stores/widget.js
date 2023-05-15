@@ -320,75 +320,68 @@ export const useWidgetListStore = defineStore('widgetList', {
   actions: {
     SetNovoDS(data) {
       const RawData = JSON.parse(JSON.stringify(data))
-      RawData.NovoDS = this.parseObject(RawData.NovoDS)
-      console.log('RawData.NovoDS.parseObject', RawData.NovoDS)
-      if (RawData.NovoDS) {
-        // 將 RawData.NovoDS.Pages.Page 內的所有 Section 及其內部的 Content.State 物件轉換成陣列
-        // 取出 RawData.NovoDS.Pages.Page.Section 屬性
-        const sections = RawData.NovoDS.Pages.Page.Section
 
-        // 如果 sections 不是陣列，則轉換為陣列
-        if (!Array.isArray(sections)) {
-          RawData.NovoDS.Pages.Page.Section = [sections]
+      if (!RawData.NovoDS) {
+        return false
+      }
+
+      const sections = RawData.NovoDS.Pages.Page.Section
+      if (!Array.isArray(sections)) {
+        RawData.NovoDS.Pages.Page.Section = [sections]
+      }
+
+      RawData.NovoDS.Pages.Page.Section.forEach(section => {
+        const content = section.Content
+        if (!content.State) {
+          content.State = []
+        } else if (!Array.isArray(content.State)) {
+          content.State = [content.State]
         }
 
-        // 迭代處理每個 Section 裡的 Content.State 物件
-        RawData.NovoDS.Pages.Page.Section.forEach(section => {
-          // 取出 section.Content 屬性
-          const state = section.Content.State
-
-          // 如果 contents 不是陣列，則轉換為陣列
-          if (!Array.isArray(state)) {
-            section.Content.State = [state]
+        content.State.forEach(state => {
+          if (state.File && !Array.isArray(state.File)) {
+            state.File = [state.File]
+          } else if (!state.File) {
+            state.File = []
           }
 
-          // 迭代處理每個 Content 裡的 State 物件
-          section.Content.State.forEach(state => {
-            // 迭代處理每個 State 裡的 File 及 Event 物件
-            // 取出 state.File 及 state.Event 屬性
-            const files = state.File
-            const events = state.Event
-
-            // 如果 files 不是陣列，則轉換為陣列
-            if (files && !Array.isArray(files)) {
-              state.File = [files]
-            } else {
-              state.File = []
-            }
-
-            // 如果 events 不是陣列，則轉換為陣列
-            if (events && !Array.isArray(events)) {
-              state.Event = [events]
-            } else {
-              state.Event = []
-            }
-          })
+          if (state.Event && !Array.isArray(state.Event)) {
+            state.Event = [state.Event]
+          } else if (state.Event) {
+            state.Event.forEach(event => {
+              if (event.Action && !Array.isArray(event.Action)) {
+                event.Action = [event.Action]
+              } else if (!event.Action) {
+                event.Action = []
+              }
+            })
+          } else {
+            state.Event = []
+          }
         })
-        this.NovoDS = RawData.NovoDS
-        console.log('RawData.NovoDS', RawData.NovoDS)
-        if (RawData.NovoDS) {
-          return true
-        } else {
-          return false
-        }
-      }
+      })
+
+      this.NovoDS = this.parseObject(RawData.NovoDS)
+      console.log('this.NovoDS', this.NovoDS)
+
+      return true
     },
     parseObject(obj) {
       obj = JSON.parse(JSON.stringify(obj))
+
       Object.keys(obj).forEach((key) => {
         if (typeof obj[key] === 'object') {
           obj[key] = this.parseObject(obj[key])
-        } else {
+        } else if (typeof obj[key] === 'string') {
           try {
             obj[key] = JSON.parse(obj[key])
           } catch (e) {
-            // skip property if it is not a valid JSON string
           }
         }
       })
+
       return obj
     },
-
     SetFilePath() {
       const NowPlayListFolder = window.myAPI.setPlayListFolder()
       console.log('NowPlayListFolder', NowPlayListFolder)
@@ -437,12 +430,12 @@ export const useWidgetListStore = defineStore('widgetList', {
       })
       if (eventIndex !== -1) {
         this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event[eventIndex] = {
-          Action: [],
+          _id: this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event[eventIndex]._id,
           _type: '',
           _gpio_number: '',
-          _id: this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event[eventIndex]._id,
           _stateId: currentStateData._id,
-          _next_state_id: currentStateData._stateIndex
+          _next_state_id: currentStateData._stateIndex,
+          Action: []
         }
       }
     },
@@ -476,8 +469,8 @@ export const useWidgetListStore = defineStore('widgetList', {
       this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event.push({
         _id: uid(),
         _type: '',
-        // _stateId: this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index]._id,
         _gpio_number: '',
+        _stateId: this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index]._id,
         _next_state_id: '',
         Action: []
       })
