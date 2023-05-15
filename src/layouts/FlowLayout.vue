@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh LpR lFf">
+  <q-layout view="hHr LpR lFf">
     <q-header class="shadow-1">
       <q-bar class="q-electron-drag text-black" style="border-bottom: 1px solid #f1f1f1;background-color: #f8f8f8">
         <q-space />
@@ -116,7 +116,7 @@ function saveAlert() {
       cancelBtn: 'No, just leave'
     }
   }).onOk(() => {
-    const result = leaveSaveFile()
+    const result = leaveSaveFileClose()
     if (result) {
       console.log('result', result)
       window.myAPI?.close()
@@ -138,15 +138,14 @@ function preview() {
     }
   })
 }
-function leaveSaveFile() {
+function leaveSaveFileClose() {
   const x2js = new X2js({ attributePrefix: '_' })
   const novoObj = { NovoDS: widgetStore.NovoDS }
   const xmlData = x2js.js2xml(novoObj)
   const result = window.myAPI.storeToXML(widgetStore.nowPlayListFolder, xmlData)
   if (result) {
     $q.dialog({
-      title: 'Saved successfully!',
-      message: 'The playlist has been successfully saved, do you want to view the folder?'
+      title: 'Saved successfully!'
     }).onDismiss(() => {
       window.myAPI?.close()
     })
