@@ -30,6 +30,7 @@
           </div>
           <div class="col">
             <q-tab-panels style="background-color: #F9F9F9;" v-model="panel">
+              <!-- GPIO -->
               <q-tab-panel :name="0">
                 <div class="">
                   <div class="row" style="height: 320px;">
@@ -87,10 +88,10 @@
                               {{ `${index + 1} . ${pin._name || 'No Name'}` }}
                               {{ `(${pin._role || `Not Set`}` }}
                               <span v-if="pin._output_value">
-                                /{{ pin._output_value }}
+                                /{{ computedGPIOVal(pin._output_value) }}
                               </span>
                               <span v-if="pin._key_action">
-                                /{{ pin._key_action }}
+                                /{{ computedGPIOVal(pin._key_action) }}
                               </span>
                               <span>)
                               </span>
@@ -133,6 +134,7 @@
                   </div>
                 </div>
               </q-tab-panel>
+              <!-- RS232 -->
               <q-tab-panel :name="1">
                 <div class="row" style="height: 340px;">
                   <q-tabs vertical v-model="subPanel" class="text-grey-8 q-mr-md" active-color="primary">
@@ -150,43 +152,55 @@
                         <q-separator class="q-mt-md q-mb-md" />
                         <div class="row q-mt-md">
                           <div class="col">
-                            <span class="q-pa-xs">BaudRate</span>
-                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[0]._baudRate"
-                              :disable="!RS232[0]._isEnabled"
+                            <q-select label="BaudRate" class="brand-round-m" bg-color="white" outlined dense
+                              v-model="RS232[0]._baudRate" :disable="!RS232[0]._isEnabled"
                               :options="[1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]" />
                           </div>
                           <div style="width:20px" />
                           <div class="col">
-                            <span class="q-pa-xs">Parity</span>
-                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[0]._parity"
-                              :disable="!RS232[0]._isEnabled" :options="['None', 'Even', 'Odd', 'Mark', 'Space']" />
+                            <q-select label="Parity" class="brand-round-m" bg-color="white" outlined dense
+                              v-model="RS232[0]._parity" :disable="!RS232[0]._isEnabled"
+                              :options="['None', 'Even', 'Odd', 'Mark', 'Space']" />
                           </div>
                         </div>
                         <div class="row q-mt-md">
                           <div class="col">
-                            <span class="q-pa-xs">Data Bits</span>
-                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[0]._dataBits"
-                              :disable="!RS232[0]._isEnabled" :options="[5, 6, 7, 8]" />
+                            <q-select label="Data Bits" class="brand-round-m" bg-color="white" outlined dense
+                              v-model="RS232[0]._dataBits" :disable="!RS232[0]._isEnabled" :options="[5, 6, 7, 8]" />
                           </div>
-                          <div style="width:20px" />
+                          <div style="width:10px" />
                           <div class="col">
-                            <span class="q-pa-xs">Stop Bits</span>
-                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[0]._stopBits"
-                              :disable="!RS232[0]._isEnabled" :options="[1, 2]" />
+                            <q-select label="Stop Bits" class="brand-round-m" bg-color="white" outlined dense
+                              v-model="RS232[0]._stopBits" :disable="!RS232[0]._isEnabled" :options="[1, 2]" />
                           </div>
-                        </div>
-                        <div class="row q-mt-md">
+                          <div style="width:10px" />
                           <div class="col">
-                            <span class="q-pa-xs">Flow Control</span>
-                            <q-select class="brand-round-m" bg-color="white" outlined dense
+                            <q-select label="Flow Control" class="brand-round-m" bg-color="white" outlined dense
                               v-model="RS232[0]._flowControl" :disable="!RS232[0]._isEnabled"
                               :options="['None', 'CTX', 'XOFF']" />
                           </div>
-                          <div style="width:20px" />
+                        </div>
+                        <q-separator class="q-mt-md q-mb-md" />
+                        <div class="row q-mt-sm">
                           <div class="col">
-                            <span class="q-pa-xs">Rs232 Type</span>
-                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[0]._rs232_type"
-                              :disable="!RS232[0]._isEnabled" :options="['hex', 'string']" />
+                            <q-input label="Name" class="brand-round-m" bg-color="white" dense outlined
+                              v-model="rs0._name" />
+                          </div>
+                        </div>
+                        <div class="row q-mt-sm">
+                          <div class="col">
+                            <q-select label="Type" class="brand-round-m" bg-color="white" outlined dense
+                              v-model="rs0._data_type" :options="['hex', 'string']" />
+                          </div>
+                          <div style="width:10px" />
+                          <div class="col">
+                            <q-input label="Commend" class="brand-round-m" bg-color="white" dense outlined
+                              v-model="rs0._value" />
+                          </div>
+                        </div>
+                        <div class="row q-mt-md">
+                          <div style="margin: auto">
+                            <q-btn rounded color="primary" class="text-capitalize" @click="addRs0" label="Add" />
                           </div>
                         </div>
                       </div>
@@ -194,12 +208,12 @@
                       <div class="col">
                         <q-list bordered class="rounded-borders" v-if="RS232[0].Command.length > 0"
                           style="max-height: 500px;overflow: auto;">
-                          <q-expansion-item group="tcp-tx" v-for="(tx, index) in RS232[0].Command" :key="index"
+                          <q-expansion-item group="tcp-tx" v-for="(rs0, index) in RS232[0].Command" :key="index"
                             expand-separator>
                             <template v-slot:header>
                               <q-item-section>
                                 <div class="text-body1">
-                                  {{ tx._name }}
+                                  {{ rs0._name }}
                                 </div>
                               </q-item-section>
                             </template>
@@ -208,15 +222,15 @@
                                 <div class="row">
                                   <div class="col">
                                     <div class="text-body1 text-grey-7">
-                                      Type : {{ tx._data_type }}
+                                      Type : {{ rs0._data_type }}
                                     </div>
                                     <div class="text-body1 text-grey-7">
-                                      Commend : {{ tx._value }}
+                                      Commend : {{ rs0._value }}
                                     </div>
                                   </div>
                                   <div class="col" />
                                   <div class="flex flex-center">
-                                    <q-btn flat size="md" round @click="removeRx0(index)">
+                                    <q-btn flat size="md" round @click="removeRs0(index)">
                                       <img src="~assets/icon/delete.svg" />
                                     </q-btn>
                                   </div>
@@ -237,43 +251,55 @@
                         <q-separator class="q-mt-md q-mb-md" />
                         <div class="row q-mt-md">
                           <div class="col">
-                            <span class="q-pa-xs">BaudRate</span>
-                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[1]._baudRate"
-                              :disable="!RS232[1]._isEnabled"
+                            <q-select label="BaudRate" class="brand-round-m" bg-color="white" outlined dense
+                              v-model="RS232[1]._baudRate" :disable="!RS232[1]._isEnabled"
                               :options="[1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]" />
                           </div>
                           <div style="width:20px" />
                           <div class="col">
-                            <span class="q-pa-xs">Parity</span>
-                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[1]._parity"
-                              :disable="!RS232[1]._isEnabled" :options="['None', 'Even', 'Odd', 'Mark', 'Space']" />
+                            <q-select label="Parity" class="brand-round-m" bg-color="white" outlined dense
+                              v-model="RS232[1]._parity" :disable="!RS232[1]._isEnabled"
+                              :options="['None', 'Even', 'Odd', 'Mark', 'Space']" />
                           </div>
                         </div>
                         <div class="row q-mt-md">
                           <div class="col">
-                            <span class="q-pa-xs">Data Bits</span>
-                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[1]._dataBits"
-                              :disable="!RS232[1]._isEnabled" :options="[5, 6, 7, 8]" />
+                            <q-select label="Data Bits" class="brand-round-m" bg-color="white" outlined dense
+                              v-model="RS232[1]._dataBits" :disable="!RS232[1]._isEnabled" :options="[5, 6, 7, 8]" />
                           </div>
-                          <div style="width:20px" />
+                          <div style="width:10px" />
                           <div class="col">
-                            <span class="q-pa-xs">Stop Bits</span>
-                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[1]._stopBits"
-                              :disable="!RS232[1]._isEnabled" :options="[1, 2]" />
+                            <q-select label="Stop Bits" class="brand-round-m" bg-color="white" outlined dense
+                              v-model="RS232[1]._stopBits" :disable="!RS232[1]._isEnabled" :options="[1, 2]" />
                           </div>
-                        </div>
-                        <div class="row q-mt-md">
+                          <div style="width:10px" />
                           <div class="col">
-                            <span class="q-pa-xs">Flow Control</span>
-                            <q-select class="brand-round-m" bg-color="white" outlined dense
+                            <q-select label="Flow Control" class="brand-round-m" bg-color="white" outlined dense
                               v-model="RS232[1]._flowControl" :disable="!RS232[1]._isEnabled"
                               :options="['None', 'CTX', 'XOFF']" />
                           </div>
-                          <div style="width:20px" />
+                        </div>
+                        <q-separator class="q-mt-md q-mb-md" />
+                        <div class="row q-mt-sm">
                           <div class="col">
-                            <span class="q-pa-xs">Rs232 Type</span>
-                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[1]._rs232_type"
-                              :disable="!RS232[1]._isEnabled" :options="['hex', 'string']" />
+                            <q-input label="Name" class="brand-round-m" bg-color="white" dense outlined
+                              v-model="rs1._name" />
+                          </div>
+                        </div>
+                        <div class="row q-mt-sm">
+                          <div class="col">
+                            <q-select label="Type" class="brand-round-m" bg-color="white" outlined dense
+                              v-model="rs1._data_type" :options="['hex', 'string']" />
+                          </div>
+                          <div style="width:10px" />
+                          <div class="col">
+                            <q-input label="Commend" class="brand-round-m" bg-color="white" dense outlined
+                              v-model="rs1._value" />
+                          </div>
+                        </div>
+                        <div class="row q-mt-md">
+                          <div style="margin: auto">
+                            <q-btn rounded color="primary" class="text-capitalize" @click="addRs1" label="Add" />
                           </div>
                         </div>
                       </div>
@@ -281,12 +307,12 @@
                       <div class="col">
                         <q-list bordered class="rounded-borders" v-if="RS232[1].Command.length > 0"
                           style="max-height: 500px;overflow: auto;">
-                          <q-expansion-item group="tcp-tx" v-for="(tx, index) in RS232[1].Command" :key="index"
+                          <q-expansion-item group="tcp-tx" v-for="(rs1, index) in RS232[1].Command" :key="index"
                             expand-separator>
                             <template v-slot:header>
                               <q-item-section>
                                 <div class="text-body1">
-                                  {{ tx._name }}
+                                  {{ rs1._name }}
                                 </div>
                               </q-item-section>
                             </template>
@@ -295,14 +321,15 @@
                                 <div class="row">
                                   <div class="col">
                                     <div class="text-body1 text-grey-7">
-                                      Type : {{ tx._data_type }}
+                                      Type : {{ rs1._data_type }}
                                     </div>
                                     <div class="text-body1 text-grey-7">
-                                      Commend : {{ tx._value }}
+                                      Commend : {{ rs1._value }}
                                     </div>
                                   </div>
+                                  <div class="col" />
                                   <div class="flex flex-center">
-                                    <q-btn flat size="md" round @click="removeRx0(index)">
+                                    <q-btn flat size="md" round @click="removeRs1(index)">
                                       <img src="~assets/icon/delete.svg" />
                                     </q-btn>
                                   </div>
@@ -316,9 +343,11 @@
                   </q-tab-panels>
                 </div>
               </q-tab-panel>
+              <!-- TCP/IP -->
               <q-tab-panel :name="2">
                 <div class="row">
                   <div class="col">
+                    <!-- TCPIP Receive -->
                     <div class="text-body1 row">
                       <div>RX ( Receive )</div>
                       <q-space />
@@ -327,34 +356,54 @@
                     <div class="row q-mt-sm">
                       <div style="margin: auto 2px; width:100px">Port Number : </div>
                       <div class="col" style="margin: auto 10px">
-                        <q-input class="brand-round-m" bg-color="white" dense outlined type="number"
-                          :disable="!TCPIP._isEnabled" :min="3000" :max="4000" v-model.number="TCPIP._local_port" />
+                        <q-input class="brand-round-m" bg-color="white" dense outlined type="number" :min="3000"
+                          :max="4000" v-model.number="TCPIP._local_port" />
+                      </div>
+                      <div class="text-grey" style="margin: auto 2px; width:180px">Range 3000 ~ 4000</div>
+                    </div>
+                    <div class="row q-mt-sm">
+                      <div class="col">
+                        <q-input label="Name" class="brand-round-m" bg-color="white" dense outlined type="text"
+                          v-model="trc._name" />
+                      </div>
+                      <div class="" style="width:10px"></div>
+                      <div class="col">
+                        <q-input label="Commend" class="brand-round-m" bg-color="white" dense outlined type="text"
+                          v-model="trc._value" />
+                      </div>
+                      <div class="" style="width:10px"></div>
+                      <div style="margin: auto">
+                        <q-btn unelevated rounded color="primary" class="text-capitalize" @click="addTrc" label="Add" />
                       </div>
                     </div>
                     <q-separator class="q-mt-md q-mb-md" color="black" />
+                    <!-- TCPIP Send -->
                     <div class="text-body1">tx ( Send )</div>
                     <div class="row q-mt-sm">
-                      <div style="margin: auto 2px; width:100px">Name : </div>
-                      <div class="col" style="margin: auto 10px">
-                        <q-input class="brand-round-m" bg-color="white" dense outlined v-model="tx._name" />
+                      <div style="margin: auto 2px; width:100px">IP Address : </div>
+                      <div class="col">
+                        <q-input class="brand-round-m" bg-color="white" dense outlined v-model="tx._destination_ip" />
                       </div>
                     </div>
                     <div class="row q-mt-sm">
                       <div style="margin: auto 2px; width:100px">Port Number : </div>
-                      <div class="col" style="margin: auto 10px">
+                      <div class="col">
                         <q-input class="brand-round-m" bg-color="white" dense outlined type="number" :min="3000"
                           :max="4000" v-model.number="tx._destination_port" />
                       </div>
                     </div>
                     <div class="row q-mt-sm">
-                      <div style="margin: auto 2px; width:100px">IP Address : </div>
-                      <div class="col" style="margin: auto 10px">
-                        <q-input class="brand-round-m" bg-color="white" dense outlined v-model="tx._destination_ip" />
+                      <div class="col">
+                        <q-input label="Name" class="brand-round-m" bg-color="white" dense outlined v-model="tx._name" />
                       </div>
-                    </div>
-                    <div class="row q-mt-lg">
+                      <div class="" style="width:10px"></div>
+                      <div class="col">
+                        <q-input label="Commend" class="brand-round-m" bg-color="white" dense outlined
+                          v-model="tx._value" />
+                      </div>
+                      <div class="" style="width:10px"></div>
                       <div style="margin: auto">
-                        <q-btn rounded color="primary" class="text-capitalize" @click="addTx" label="Add" />
+                        <q-btn unelevated rounded color="primary" class="text-capitalize" @click="addTx" label="Add" />
                       </div>
                     </div>
                   </div>
@@ -380,6 +429,9 @@
                                 <div class="text-body1 text-grey-7">
                                   IP Address : {{ tx._destination_ip }}
                                 </div>
+                                <div v-for="command in tx" :key="command._id" class="text-body1 text-grey-7">
+                                  Command : {{ command._value }}
+                                </div>
                               </div>
                               <div class="flex flex-center">
                                 <q-btn flat size="md" round @click="removeTx(index)">
@@ -394,6 +446,7 @@
                   </div>
                 </div>
               </q-tab-panel>
+              <!-- Timer -->
               <q-tab-panel :name="3">
                 <div class="row" style="height: 340px;">
                   <div class="col q-pa-xs">
@@ -469,11 +522,36 @@ export default {
       panel: 0,
       subPanel: 'on',
       currentPIN: 0,
+      rs0: {
+        _id: 0,
+        _name: '',
+        _data_type: '',
+        _value: ''
+      },
+      rs1: {
+        _id: 0,
+        _name: '',
+        _data_type: '',
+        _value: ''
+      },
+      trc: {
+        _id: 0,
+        _name: '',
+        _value: ''
+      },
       tx: {
-        id: 0,
-        destination_ip: '',
-        destination_port: '',
-        name: ''
+        _id: 0,
+        _destination_ip: '',
+        _destination_port: '',
+        _name: '',
+        _value: '',
+        Command: [
+          {
+            _id: 0,
+            _name: '',
+            _value: ''
+          }
+        ]
       }
     }
   },
@@ -489,6 +567,22 @@ export default {
     },
     gpioRoleOption() {
       return widgetStore.gpioRoleOption
+    },
+    computedGPIOVal() {
+      return function (state) {
+        switch (state) {
+          case '0':
+            return '0'
+          case '1':
+            return '1'
+          case 'down':
+            return 'Low'
+          case 'up':
+            return 'high'
+          default:
+            return ''
+        }
+      }
     }
   },
   methods: {
@@ -500,12 +594,48 @@ export default {
     showGPIOItem(index) {
       this.currentPIN = index
     },
+    addRs0() {
+      const rs = {
+        _id: 0,
+        _name: this.rs0._name,
+        _data_type: this.rs0._data_type,
+        _value: this.rs0._value
+      }
+
+      this.RS232[0].Command.push(rs)
+
+      rs._id = this.RS232[0].Command.length
+    },
+    addRs1() {
+      const rs = {
+        _id: 0,
+        _name: this.rs1._name,
+        _data_type: this.rs1._data_type,
+        _value: this.rs1._value
+      }
+
+      this.RS232[1].Command.push(rs)
+
+      rs._id = this.RS232[1].Command.length
+    },
+    addTrc() {
+      const trc = {
+        _id: 0,
+        _name: this.tx._name,
+        _value: this.tx._value
+      }
+
+      this.TCPIP.ReceivedCommands.Command.push(trc)
+
+      trc._id = this.TCPIP.ReceivedCommands.Command.length
+    },
     addTx() {
       const tx = {
         _id: 0,
         _destination_ip: this.tx._destination_ip,
         _destination_port: this.tx._destination_port,
-        _name: this.tx._name
+        _name: this.tx._name,
+        _value: this.tx._value
       }
 
       this.TCPIP.TcpIp.push(tx)
@@ -513,10 +643,10 @@ export default {
       tx._id = this.TCPIP.TcpIp.length
     },
     removeRs0(index) {
-      this.Rs232[0].Command.splice(index, 1)
+      this.RS232[0].Command.splice(index, 1)
     },
     removeRs1(index) {
-      this.Rs232[1].Command.splice(index, 1)
+      this.RS232[1].Command.splice(index, 1)
     },
     removeTx(index) {
       this.TCPIP.TcpIp.splice(index, 1)

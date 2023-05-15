@@ -74,8 +74,8 @@ export const useWidgetListStore = defineStore('widgetList', {
               _isEnabled: true,
               Command: [
                 {
-                  _id: '',
-                  _name: '',
+                  _id: '0',
+                  _name: 'Default',
                   _data_type: 'hex',
                   _value: '1A 3B 4D'
                 }
@@ -92,8 +92,8 @@ export const useWidgetListStore = defineStore('widgetList', {
               _isEnabled: true,
               Command: [
                 {
-                  _id: '',
-                  _name: '',
+                  _id: '1',
+                  _name: 'Default',
                   _data_type: 'string',
                   _value: '1A 3B 4D'
                 }
@@ -285,12 +285,12 @@ export const useWidgetListStore = defineStore('widgetList', {
         value: 'keyevent',
         children: [
           {
-            text: 'Up',
-            value: 'up'
+            text: 'Low',
+            value: 'down'
           },
           {
-            text: 'Down',
-            value: 'down'
+            text: 'High',
+            value: 'up'
           }
         ]
       }
