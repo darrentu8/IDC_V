@@ -70,9 +70,16 @@ export const useWidgetListStore = defineStore('widgetList', {
               _stopBits: 1,
               _baudRate: 9600,
               _parity: 'None',
-              _rs232_type: 'string',
               _interface: 'on_board',
-              _isEnabled: true
+              _isEnabled: true,
+              Command: [
+                {
+                  _id: '',
+                  _name: '',
+                  _data_type: 'hex',
+                  _value: '1A 3B 4D'
+                }
+              ]
             },
             {
               _id: 2,
@@ -81,33 +88,84 @@ export const useWidgetListStore = defineStore('widgetList', {
               _stopBits: 1,
               _baudRate: 9600,
               _parity: 'None',
-              _rs232_type: 'hex',
               _interface: 'usb',
-              _isEnabled: false
+              _isEnabled: true,
+              Command: [
+                {
+                  _id: '',
+                  _name: '',
+                  _data_type: 'string',
+                  _value: '1A 3B 4D'
+                }
+              ]
             }
           ]
         },
         TcpIpSettings: {
           _local_port: 1234,
           _isEnabled: false,
+          ReceivedCommands: {
+            Command: [
+              {
+                _id: 1,
+                _name: 'play video',
+                _value: 'play video'
+              },
+              {
+                _id: 2,
+                _name: 'play image',
+                _value: 'play image'
+              }
+            ]
+          },
           TcpIp: [
             {
               _id: 1,
-              _destination_ip: '192.168.1.1',
+              _destination_ip: '10.136.7.7',
               _destination_port: 1234,
-              _name: 'TCP Output1'
+              Command: [
+                {
+                  _id: 1,
+                  _name: 'door open',
+                  _value: 'door open'
+                },
+                {
+                  _id: 2,
+                  _name: 'door close',
+                  _value: 'door close'
+                }
+              ]
             },
             {
               _id: 2,
-              _destination_ip: '192.168.1.1',
-              _destination_port: 2223,
-              _name: 'TCP Output2'
+              _destination_ip: '10.136.7.7',
+              _destination_port: 5678,
+              Command: [
+                {
+                  _id: 1,
+                  _name: 'Add 1',
+                  _value: '+1'
+                },
+                {
+                  _id: 2,
+                  _name: 'Add 2',
+                  _value: '+2'
+                }
+              ]
+            }
+          ]
+        },
+        TimerSettings: {
+          Timer: [
+            {
+              _id: 1,
+              _name: '10 seconds event',
+              _duration: '10'
             },
             {
-              _id: 3,
-              _destination_ip: '192.168.1.1',
-              _destination_port: 4456,
-              _name: 'TCP Output3'
+              _id: 2,
+              _name: '20 seconds event',
+              _duration: '20'
             }
           ]
         }

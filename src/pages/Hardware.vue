@@ -6,14 +6,14 @@
           style="background-color: transparent;width: 800px;">
           <q-step :name="1" prefix="1" title="Enter playlist name" :done="true" />
           <q-step :name="2" prefix="2" title="Select layout" :done="true" />
-          <q-step :name="3" prefix="3" title="Configure hardware" />
+          <q-step :name="3" prefix="3" title="Configure Event/Action" />
         </q-stepper>
       </div>
       <div class="col flex flex-center">
         <q-card class="bg-white text-black brand-round-l q-pa-lg q-mb-lg"
           style="width:1100px;margin-top: -50px;height: 550px;">
           <div class="row" style="height:30px">
-            <div class="text-body1 text-bold" style="margin:auto 20px">Hardware Configurator</div>
+            <div class="text-body1 text-bold" style="margin:auto 20px">Configure Event/Action</div>
             <q-space />
             <div class="text-caption" style="margin:auto 20px">
               Help & resources
@@ -25,6 +25,7 @@
               <q-tab :name="0" label="GPIO" />
               <q-tab :name="1" label="RS232" />
               <q-tab :name="2" label="TCP/IP" />
+              <q-tab :name="3" label="Software Timer" />
             </q-tabs>
           </div>
           <div class="col">
@@ -134,103 +135,185 @@
               </q-tab-panel>
               <q-tab-panel :name="1">
                 <div class="row" style="height: 340px;">
-                  <div class="col q-pa-xs">
-                    <div class="text-body1 text-bold row">
-                      <div>On-board RS232 port</div>
-                      <q-space />
-                      <q-toggle v-model="RS232[0]._isEnabled" dense color="primary" />
-                    </div>
-                    <q-separator class="q-mt-md q-mb-md" />
-                    <div class="row q-mt-md">
+                  <q-tabs vertical v-model="subPanel" class="text-grey-8 q-mr-md" active-color="primary">
+                    <q-tab name="on" label="On-board RS232 port" />
+                    <q-tab name="usb" label="USB-RS232 dongle" />
+                  </q-tabs>
+                  <q-tab-panels class="col" style="background-color: #F9F9F9;" v-model="subPanel">
+                    <q-tab-panel class="flex" name="on">
                       <div class="col">
-                        <span class="q-pa-xs">BaudRate</span>
-                        <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[0]._baudRate"
-                          :disable="!RS232[0]._isEnabled"
-                          :options="[1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]" />
+                        <div class="text-body1 text-bold row">
+                          <div>On-board RS232 port</div>
+                          <q-space />
+                          <q-toggle v-model="RS232[0]._isEnabled" dense color="primary" />
+                        </div>
+                        <q-separator class="q-mt-md q-mb-md" />
+                        <div class="row q-mt-md">
+                          <div class="col">
+                            <span class="q-pa-xs">BaudRate</span>
+                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[0]._baudRate"
+                              :disable="!RS232[0]._isEnabled"
+                              :options="[1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]" />
+                          </div>
+                          <div style="width:20px" />
+                          <div class="col">
+                            <span class="q-pa-xs">Parity</span>
+                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[0]._parity"
+                              :disable="!RS232[0]._isEnabled" :options="['None', 'Even', 'Odd', 'Mark', 'Space']" />
+                          </div>
+                        </div>
+                        <div class="row q-mt-md">
+                          <div class="col">
+                            <span class="q-pa-xs">Data Bits</span>
+                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[0]._dataBits"
+                              :disable="!RS232[0]._isEnabled" :options="[5, 6, 7, 8]" />
+                          </div>
+                          <div style="width:20px" />
+                          <div class="col">
+                            <span class="q-pa-xs">Stop Bits</span>
+                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[0]._stopBits"
+                              :disable="!RS232[0]._isEnabled" :options="[1, 2]" />
+                          </div>
+                        </div>
+                        <div class="row q-mt-md">
+                          <div class="col">
+                            <span class="q-pa-xs">Flow Control</span>
+                            <q-select class="brand-round-m" bg-color="white" outlined dense
+                              v-model="RS232[0]._flowControl" :disable="!RS232[0]._isEnabled"
+                              :options="['None', 'CTX', 'XOFF']" />
+                          </div>
+                          <div style="width:20px" />
+                          <div class="col">
+                            <span class="q-pa-xs">Rs232 Type</span>
+                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[0]._rs232_type"
+                              :disable="!RS232[0]._isEnabled" :options="['hex', 'string']" />
+                          </div>
+                        </div>
                       </div>
-                      <div style="width:20px" />
+                      <q-separator vertical class="q-ma-lg" />
                       <div class="col">
-                        <span class="q-pa-xs">Parity</span>
-                        <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[0]._parity"
-                          :disable="!RS232[0]._isEnabled" :options="['None', 'Even', 'Odd', 'Mark', 'Space']" />
+                        <q-list bordered class="rounded-borders" v-if="RS232[0].Command.length > 0"
+                          style="max-height: 500px;overflow: auto;">
+                          <q-expansion-item group="tcp-tx" v-for="(tx, index) in RS232[0].Command" :key="index"
+                            expand-separator>
+                            <template v-slot:header>
+                              <q-item-section>
+                                <div class="text-body1">
+                                  {{ tx._name }}
+                                </div>
+                              </q-item-section>
+                            </template>
+                            <q-card>
+                              <q-card-section>
+                                <div class="row">
+                                  <div class="col">
+                                    <div class="text-body1 text-grey-7">
+                                      Type : {{ tx._data_type }}
+                                    </div>
+                                    <div class="text-body1 text-grey-7">
+                                      Commend : {{ tx._value }}
+                                    </div>
+                                  </div>
+                                  <div class="col" />
+                                  <div class="flex flex-center">
+                                    <q-btn flat size="md" round @click="removeRx0(index)">
+                                      <img src="~assets/icon/delete.svg" />
+                                    </q-btn>
+                                  </div>
+                                </div>
+                              </q-card-section>
+                            </q-card>
+                          </q-expansion-item>
+                        </q-list>
                       </div>
-                    </div>
-                    <div class="row q-mt-md">
+                    </q-tab-panel>
+                    <q-tab-panel class="flex" name="usb">
                       <div class="col">
-                        <span class="q-pa-xs">Data Bits</span>
-                        <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[0]._dataBits"
-                          :disable="!RS232[0]._isEnabled" :options="[5, 6, 7, 8]" />
+                        <div class="text-body1 text-bold row">
+                          <div>USB-RS232 dongle</div>
+                          <q-space />
+                          <q-toggle v-model="RS232[1]._isEnabled" dense color="primary" />
+                        </div>
+                        <q-separator class="q-mt-md q-mb-md" />
+                        <div class="row q-mt-md">
+                          <div class="col">
+                            <span class="q-pa-xs">BaudRate</span>
+                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[1]._baudRate"
+                              :disable="!RS232[1]._isEnabled"
+                              :options="[1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]" />
+                          </div>
+                          <div style="width:20px" />
+                          <div class="col">
+                            <span class="q-pa-xs">Parity</span>
+                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[1]._parity"
+                              :disable="!RS232[1]._isEnabled" :options="['None', 'Even', 'Odd', 'Mark', 'Space']" />
+                          </div>
+                        </div>
+                        <div class="row q-mt-md">
+                          <div class="col">
+                            <span class="q-pa-xs">Data Bits</span>
+                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[1]._dataBits"
+                              :disable="!RS232[1]._isEnabled" :options="[5, 6, 7, 8]" />
+                          </div>
+                          <div style="width:20px" />
+                          <div class="col">
+                            <span class="q-pa-xs">Stop Bits</span>
+                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[1]._stopBits"
+                              :disable="!RS232[1]._isEnabled" :options="[1, 2]" />
+                          </div>
+                        </div>
+                        <div class="row q-mt-md">
+                          <div class="col">
+                            <span class="q-pa-xs">Flow Control</span>
+                            <q-select class="brand-round-m" bg-color="white" outlined dense
+                              v-model="RS232[1]._flowControl" :disable="!RS232[1]._isEnabled"
+                              :options="['None', 'CTX', 'XOFF']" />
+                          </div>
+                          <div style="width:20px" />
+                          <div class="col">
+                            <span class="q-pa-xs">Rs232 Type</span>
+                            <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[1]._rs232_type"
+                              :disable="!RS232[1]._isEnabled" :options="['hex', 'string']" />
+                          </div>
+                        </div>
                       </div>
-                      <div style="width:20px" />
+                      <q-separator vertical class="q-ma-lg" />
                       <div class="col">
-                        <span class="q-pa-xs">Stop Bits</span>
-                        <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[0]._stopBits"
-                          :disable="!RS232[0]._isEnabled" :options="[1, 2]" />
+                        <q-list bordered class="rounded-borders" v-if="RS232[1].Command.length > 0"
+                          style="max-height: 500px;overflow: auto;">
+                          <q-expansion-item group="tcp-tx" v-for="(tx, index) in RS232[1].Command" :key="index"
+                            expand-separator>
+                            <template v-slot:header>
+                              <q-item-section>
+                                <div class="text-body1">
+                                  {{ tx._name }}
+                                </div>
+                              </q-item-section>
+                            </template>
+                            <q-card>
+                              <q-card-section>
+                                <div class="row">
+                                  <div class="col">
+                                    <div class="text-body1 text-grey-7">
+                                      Type : {{ tx._data_type }}
+                                    </div>
+                                    <div class="text-body1 text-grey-7">
+                                      Commend : {{ tx._value }}
+                                    </div>
+                                  </div>
+                                  <div class="flex flex-center">
+                                    <q-btn flat size="md" round @click="removeRx0(index)">
+                                      <img src="~assets/icon/delete.svg" />
+                                    </q-btn>
+                                  </div>
+                                </div>
+                              </q-card-section>
+                            </q-card>
+                          </q-expansion-item>
+                        </q-list>
                       </div>
-                    </div>
-                    <div class="row q-mt-md">
-                      <div class="col">
-                        <span class="q-pa-xs">Flow Control</span>
-                        <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[0]._flowControl"
-                          :disable="!RS232[0]._isEnabled" :options="['None', 'CTX', 'XOFF']" />
-                      </div>
-                      <div style="width:20px" />
-                      <div class="col">
-                        <span class="q-pa-xs">Rs232 Type</span>
-                        <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[0]._rs232_type"
-                          :disable="!RS232[0]._isEnabled" :options="['hex', 'string']" />
-                      </div>
-                    </div>
-                  </div>
-                  <q-separator vertical class="q-ma-lg" />
-                  <div class="col q-pa-xs">
-                    <div class="text-body1 text-bold row">
-                      <div>USB-RS232 dongle</div>
-                      <q-space />
-                      <q-toggle v-model="RS232[1]._isEnabled" dense color="primary" />
-                    </div>
-                    <q-separator class="q-mt-md q-mb-md" />
-                    <div class="row q-mt-md">
-                      <div class="col">
-                        <span class="q-pa-xs">BaudRate</span>
-                        <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[1]._baudRate"
-                          :disable="!RS232[1]._isEnabled"
-                          :options="[1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]" />
-                      </div>
-                      <div style="width:20px" />
-                      <div class="col">
-                        <span class="q-pa-xs">Parity</span>
-                        <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[1]._parity"
-                          :disable="!RS232[1]._isEnabled" :options="['None', 'Even', 'Odd', 'Mark', 'Space']" />
-                      </div>
-                    </div>
-                    <div class="row q-mt-md">
-                      <div class="col">
-                        <span class="q-pa-xs">Data Bits</span>
-                        <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[1]._dataBits"
-                          :disable="!RS232[1]._isEnabled" :options="[5, 6, 7, 8]" />
-                      </div>
-                      <div style="width:20px" />
-                      <div class="col">
-                        <span class="q-pa-xs">Stop Bits</span>
-                        <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[1]._stopBits"
-                          :disable="!RS232[1]._isEnabled" :options="[1, 2]" />
-                      </div>
-                    </div>
-                    <div class="row q-mt-md">
-                      <div class="col">
-                        <span class="q-pa-xs">Flow Control</span>
-                        <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[1]._flowControl"
-                          :disable="!RS232[1]._isEnabled" :options="['None', 'CTX', 'XOFF']" />
-                      </div>
-                      <div style="width:20px" />
-                      <div class="col">
-                        <span class="q-pa-xs">Rs232 Type</span>
-                        <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[1]._rs232_type"
-                          :disable="!RS232[1]._isEnabled" :options="['hex', 'string']" />
-                      </div>
-                    </div>
-                  </div>
+                    </q-tab-panel>
+                  </q-tab-panels>
                 </div>
               </q-tab-panel>
               <q-tab-panel :name="2">
@@ -298,7 +381,6 @@
                                   IP Address : {{ tx._destination_ip }}
                                 </div>
                               </div>
-                              <div class="col" />
                               <div class="flex flex-center">
                                 <q-btn flat size="md" round @click="removeTx(index)">
                                   <img src="~assets/icon/delete.svg" />
@@ -309,6 +391,54 @@
                         </q-card>
                       </q-expansion-item>
                     </q-list>
+                  </div>
+                </div>
+              </q-tab-panel>
+              <q-tab-panel :name="3">
+                <div class="row" style="height: 340px;">
+                  <div class="col q-pa-xs">
+                    <div class="text-body1 text-bold row">
+                      <div>Name</div>
+                      <q-space />
+                    </div>
+                    <q-separator class="q-mt-md q-mb-md" />
+                    <div class="row q-mt-md">
+                      <div class="col">
+                        <span class="q-pa-xs">BaudRate</span>
+                        <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[0]._baudRate"
+                          :disable="!RS232[0]._isEnabled"
+                          :options="[1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]" />
+                      </div>
+                      <div style="width:20px" />
+                      <div class="col">
+                        <span class="q-pa-xs">Parity</span>
+                        <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[0]._parity"
+                          :disable="!RS232[0]._isEnabled" :options="['None', 'Even', 'Odd', 'Mark', 'Space']" />
+                      </div>
+                    </div>
+                  </div>
+                  <q-separator vertical class="q-ma-lg" />
+                  <div class="col q-pa-xs">
+                    <div class="text-body1 text-bold row">
+                      <div>USB-RS232 dongle</div>
+                      <q-space />
+                      <q-toggle v-model="RS232[1]._isEnabled" dense color="primary" />
+                    </div>
+                    <q-separator class="q-mt-md q-mb-md" />
+                    <div class="row q-mt-md">
+                      <div class="col">
+                        <span class="q-pa-xs">BaudRate</span>
+                        <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[1]._baudRate"
+                          :disable="!RS232[1]._isEnabled"
+                          :options="[1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]" />
+                      </div>
+                      <div style="width:20px" />
+                      <div class="col">
+                        <span class="q-pa-xs">Parity</span>
+                        <q-select class="brand-round-m" bg-color="white" outlined dense v-model="RS232[1]._parity"
+                          :disable="!RS232[1]._isEnabled" :options="['None', 'Even', 'Odd', 'Mark', 'Space']" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </q-tab-panel>
@@ -337,6 +467,7 @@ export default {
     return {
       loading: false,
       panel: 0,
+      subPanel: 'on',
       currentPIN: 0,
       tx: {
         id: 0,
@@ -380,6 +511,12 @@ export default {
       this.TCPIP.TcpIp.push(tx)
 
       tx._id = this.TCPIP.TcpIp.length
+    },
+    removeRs0(index) {
+      this.Rs232[0].Command.splice(index, 1)
+    },
+    removeRs1(index) {
+      this.Rs232[1].Command.splice(index, 1)
     },
     removeTx(index) {
       this.TCPIP.TcpIp.splice(index, 1)

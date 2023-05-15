@@ -6,7 +6,7 @@
           style="background-color: transparent;width: 800px">
           <q-step :name="1" prefix="1" title="Enter playlist name" />
           <q-step :name="2" prefix="2" title="Select layout" />
-          <q-step :name="3" prefix="3" title="Configure hardware" />
+          <q-step :name="3" prefix="3" title="Configure Event/Action" />
         </q-stepper>
       </div>
       <div class="col flex flex-center">
