@@ -209,45 +209,58 @@ export const useEventListStore = defineStore('eventList', {
     },
     GetEventTypeOptions() {
       const widgetStore = useWidgetListStore()
-      const mapGPIO = widgetStore?.NovoDS?.Hardware?.GPIOSettings?.GPIO?.map((gpio, index) => {
-        if (!gpio || !gpio._isEnabled || gpio._role === 'keyevent') return null
-        return {
-          ...gpio,
+
+      const mapGPIO = widgetStore?.NovoDS?.Hardware?.GPIOSettings?.GPIO
+        ?.filter(gpio => gpio && gpio._role !== 'output')
+        ?.map(gpio => ({
           _uuid: uid(),
           _name: gpio._gpio_number + ' ' + gpio._name,
           _id: gpio._gpio_number,
+          _isEnabled: gpio._isEnabled,
           _gpio_number: gpio._gpio_number,
           _type: 'gpio'
-        }
-      }).filter(item => item !== null)
+        })) || []
 
-      const mapRs232 = widgetStore?.NovoDS?.Hardware?.Rs232Settings?.Rs232?.map((rs232, index) => {
-        if (!rs232 || !rs232._isEnabled) return null
-        return {
-          ...rs232,
+      const mapRs232 = widgetStore?.NovoDS?.Hardware?.Rs232Settings?.Rs232
+        ?.filter(rs232 => rs232 && rs232.Command)
+        ?.map(rs232 => rs232.Command?.map(commandData => ({
           _uuid: uid(),
-          _name: 'RS232-' + rs232._interface,
+          _name: `RS232-${rs232._interface} ${commandData._name}`,
           _rs232_id: rs232._id,
+          _command_id: commandData._id,
+          _isEnabled: rs232._isEnabled,
           _type: 'rs232'
-        }
-      }).filter(item => item !== null)
+        })))
+        .flat() || []
 
-      const mapTcpIp = widgetStore?.NovoDS?.Hardware?.TcpIpSettings?.isEnabled ? widgetStore?.NovoDS?.Hardware?.TcpIpSettings?.TcpIp?.map((tcpip, index) => {
-        if (!tcpip) return null
-        return {
-          ...tcpip,
+      const receivedCommands = widgetStore?.NovoDS?.Hardware?.TcpIpSettings?.ReceivedCommands?.Command ?? []
+      const mapTcpIp = [
+        ...receivedCommands.map((tcpip) => ({
           _uuid: uid(),
-          _name: tcpip._id + ' ' + tcpip._name,
+          _name: tcpip._name,
           _tcpip_id: tcpip._id,
+          _command_id: tcpip._id,
+          _isEnabled: widgetStore?.NovoDS?.Hardware?.TcpIpSettings?._isEnabled,
           _type: 'tcp/ip'
-        }
-      }).filter(item => item !== null) : []
+        }))
+      ]
+
+      const mapTimer = widgetStore?.NovoDS?.Hardware?.TimerSettings?.Timer
+        ?.filter(timer => timer && timer.Command)
+        ?.map(timer => ({
+          _uuid: uid(),
+          _name: `Timer-${timer._name}`,
+          _timer_id: timer._id,
+          _isEnabled: true,
+          _type: 'timer'
+        })) || []
 
       const combinedOptions = [
-        ...mapGPIO || [],
-        ...mapRs232 || [],
-        ...mapTcpIp || [],
-        ...this.extraEventOption || []
+        ...mapGPIO,
+        ...mapRs232,
+        ...mapTcpIp,
+        ...mapTimer,
+        ...(this.extraEventOption || [])
       ]
 
       return combinedOptions

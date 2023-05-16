@@ -152,7 +152,7 @@ export const useLayoutStore = defineStore('layout', {
     }
   },
   actions: {
-    SetLayout(layout) {
+    SetLayout(layoutNumber, layout) {
       const widgetStore = useWidgetListStore()
       const defaultData = layout.layout.map((e, Index) => ({
         x: e.x,
@@ -164,7 +164,7 @@ export const useLayoutStore = defineStore('layout', {
       this.layout = layout
       this.layout.layout = defaultData
       this.SetWidgetList()
-      widgetStore.SetRowCol(layout)
+      widgetStore.SetRowCol(layoutNumber, layout)
     },
     SetWidgetList() {
       const widgetStore = useWidgetListStore()
@@ -213,7 +213,7 @@ export const useLayoutStore = defineStore('layout', {
         }
       }))
       console.log('Section', Section)
-      widgetStore.SetRowCol(this.layout)
+      widgetStore.SetRowCol(this.layoutNumber, this.layout)
       widgetStore.SetWidgetListData(Section)
     },
     SetCurrentSection(i) {

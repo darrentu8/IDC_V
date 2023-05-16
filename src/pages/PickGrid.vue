@@ -26,8 +26,9 @@
                           :view-layout="customGrid.layout" :view-row-count="customGrid.rowCount"
                           :view-col-count="customGrid.colCount" :view-width="gridWidth" />
                         <GridViewStatic :selected="!isChooseCustom && grid === currentGrid" :isCustom="false"
-                          @click="chooseGrid(grid)" v-for="(grid, index) in grids" :key="index" :view-layout="grid.layout"
-                          :view-row-count="grid.rowCount" :view-col-count="grid.colCount" :view-width="gridWidth" />
+                          @click="chooseGrid(index, grid)" v-for="(grid, index) in grids" :key="index"
+                          :view-layout="grid.layout" :view-row-count="grid.rowCount" :view-col-count="grid.colCount"
+                          :view-width="gridWidth" />
                       </div>
                     </q-scroll-area>
                   </div>
@@ -236,6 +237,7 @@ export default {
       ],
       gridWidth: 160,
       currentGrid: null,
+      layoutNumber: '',
       currentCubeId: null,
       lock: true
     }
@@ -246,7 +248,8 @@ export default {
     }
   },
   methods: {
-    chooseGrid(grid) {
+    chooseGrid(index, grid) {
+      this.layoutNumber = index + 1
       this.currentGrid = grid
       this.currentCubeId = grid.layout[0].i
       this.isChooseCustom = false
@@ -260,13 +263,13 @@ export default {
     },
     toFlow() {
       const layoutStore = useLayoutStore()
-      layoutStore.SetLayout(this.currentGrid)
+      layoutStore.SetLayout(this.layoutNumber, this.currentGrid)
 
       this.$router.push({ path: '/flow' })
     },
     toHardware() {
       const layoutStore = useLayoutStore()
-      layoutStore.SetLayout(this.currentGrid)
+      layoutStore.SetLayout(this.layoutNumber, this.currentGrid)
 
       this.$router.push({ path: '/hardware' })
     },

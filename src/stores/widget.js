@@ -21,20 +21,20 @@ export const useWidgetListStore = defineStore('widgetList', {
               _gpio_number: 1,
               _name: 'GPIO1',
               _isEnabled: true,
-              _role: 'output',
-              _output_value: '0'
+              _role: 'keyevent',
+              _key_action: 'up'
             },
             {
               _gpio_number: 2,
               _name: 'GPIO2',
               _isEnabled: true,
-              _role: 'output',
-              _output_value: '0'
+              _role: 'keyevent',
+              _key_action: 'down'
             },
             {
               _gpio_number: 3,
               _name: 'GPIO3',
-              _isEnabled: true,
+              _isEnabled: false,
               _role: 'output',
               _output_value: '0'
             },
@@ -74,7 +74,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _isEnabled: true,
               Command: [
                 {
-                  _id: '0',
+                  _id: 0,
                   _name: 'Default',
                   _data_type: 'hex',
                   _value: '1A 3B 4D'
@@ -92,7 +92,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _isEnabled: true,
               Command: [
                 {
-                  _id: '1',
+                  _id: 0,
                   _name: 'Default',
                   _data_type: 'string',
                   _value: 'ccaaa'
@@ -107,12 +107,12 @@ export const useWidgetListStore = defineStore('widgetList', {
           ReceivedCommands: {
             Command: [
               {
-                _id: 1,
+                _id: 11,
                 _name: 'play video',
                 _value: 'play video'
               },
               {
-                _id: 2,
+                _id: 12,
                 _name: 'play image',
                 _value: 'play image'
               }
@@ -125,12 +125,12 @@ export const useWidgetListStore = defineStore('widgetList', {
               _destination_port: 1234,
               Command: [
                 {
-                  _id: 1,
+                  _id: 21,
                   _name: 'door open',
                   _value: 'door open'
                 },
                 {
-                  _id: 2,
+                  _id: 22,
                   _name: 'door close',
                   _value: 'door close'
                 }
@@ -142,12 +142,12 @@ export const useWidgetListStore = defineStore('widgetList', {
               _destination_port: 5678,
               Command: [
                 {
-                  _id: 1,
+                  _id: 23,
                   _name: 'Add 1',
                   _value: '+1'
                 },
                 {
-                  _id: 2,
+                  _id: 24,
                   _name: 'Add 2',
                   _value: '+2'
                 }
@@ -178,6 +178,7 @@ export const useWidgetListStore = defineStore('widgetList', {
           _Orientation: '', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
           _FreeDesignerMode: 'false', // Grid -> false, Flexi -> true
           _ID: 'Page 1',
+          _Description: '',
           _SerialNumber: '', // 流水號 Page 1, Page 2 …沒用到
           _AudioSource: '',
           _BackgroundImageSize: '0',
@@ -448,9 +449,10 @@ export const useWidgetListStore = defineStore('widgetList', {
       this.currentStateId = ''
       eventStore.SetCurrentEvent('')
     },
-    SetRowCol(data) {
+    SetRowCol(layoutNumber, data) {
       this.NovoDS.Pages.Page._Row = data.rowCount
       this.NovoDS.Pages.Page._Column = data.colCount
+      this.NovoDS.Pages.Page._Layout = layoutNumber
     },
     // Section
     SetWidgetListData(data) {
