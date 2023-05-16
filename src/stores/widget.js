@@ -95,7 +95,7 @@ export const useWidgetListStore = defineStore('widgetList', {
                   _id: '1',
                   _name: 'Default',
                   _data_type: 'string',
-                  _value: '1A 3B 4D'
+                  _value: 'ccaaa'
                 }
               ]
             }

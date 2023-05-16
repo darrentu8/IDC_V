@@ -24,7 +24,7 @@ const routes = [
     path: '/hardware',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('src/pages/Hardware.vue') }
+      { path: '', component: () => import('src/pages/HardwarePage.vue') }
     ]
   }, {
     path: '/flow',

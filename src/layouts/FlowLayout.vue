@@ -16,7 +16,7 @@
         </q-btn>
         <q-btn class="" unelevated rounded color="" text-color="grey-9" size="md" @click="showHardware()">
           <img class="q-mr-xs" src="~assets/icon/adjustments.svg" color="white" size="xs" />
-          Hardware Configurator
+          Configure Event/Action
         </q-btn>
         <q-separator vertical class="q-mx-md" />
         <q-btn class="" unelevated color="primary" rounded size="md" @click="preview()">
