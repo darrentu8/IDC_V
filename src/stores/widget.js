@@ -449,10 +449,10 @@ export const useWidgetListStore = defineStore('widgetList', {
       this.currentStateId = ''
       eventStore.SetCurrentEvent('')
     },
-    SetRowCol(layoutNumber, data) {
-      this.NovoDS.Pages.Page._Row = data.rowCount
-      this.NovoDS.Pages.Page._Column = data.colCount
-      this.NovoDS.Pages.Page._Layout = layoutNumber
+    SetRowCol(data) {
+      this.NovoDS.Pages.Page._Row = data._Row
+      this.NovoDS.Pages.Page._Column = data._Column
+      this.NovoDS.Pages.Page._Layout = data._Layout
     },
     // Section
     SetWidgetListData(data) {

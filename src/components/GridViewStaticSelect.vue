@@ -4,11 +4,11 @@
     <grid-layout :layout="viewLayout" :col-num="viewColCount" :maxRows="viewRowCount"
       :row-height="((viewWidth * 1400 / 1920) / viewRowCount) - 5" :is-draggable="false" :is-resizable="false"
       :vertical-compact="true" :margin="[5, 5]">
-      <grid-item class="gridItem" static v-for="(item, Index) in viewLayout" :x="item.x" :y="item.y" :w="item.w"
-        :h="item.h" :i="item.i" :key="item.i">
-        <div @click="selectGrid(Index)" class="fit flex flex-center rounded-borders"
-          :class="[currentSection == Index ? ['bg-grey-5', 'active'] : 'bg-grey-3']">
-          {{ Index + 1 }}
+      <grid-item class="gridItem" static v-for="(item, index) in viewLayout" :x="item._X" :y="item._Y" :w="item._Width"
+        :h="item._Height" :i="item._Index" :key="item._Index">
+        <div @click="selectGrid(index)" class="fit flex flex-center rounded-borders"
+          :class="[currentSection == index ? ['bg-grey-5', 'active'] : 'bg-grey-3']">
+          {{ index + 1 }}
         </div>
       </grid-item>
     </grid-layout>

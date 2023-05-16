@@ -23,11 +23,11 @@
                     <q-scroll-area style="height: 400px; width: 100%;">
                       <div class="row q-gutter-sm">
                         <GridViewStatic :selected="isChooseCustom" :isCustom="true" @click="toCustomize"
-                          :view-layout="customGrid.layout" :view-row-count="customGrid.rowCount"
-                          :view-col-count="customGrid.colCount" :view-width="gridWidth" />
+                          :view-layout="customGrid.Section" :view-row-count="customGrid._Row"
+                          :view-col-count="customGrid._Column" :view-width="gridWidth" />
                         <GridViewStatic :selected="!isChooseCustom && grid === currentGrid" :isCustom="false"
-                          @click="chooseGrid(index, grid)" v-for="(grid, index) in grids" :key="index"
-                          :view-layout="grid.layout" :view-row-count="grid.rowCount" :view-col-count="grid.colCount"
+                          @click="chooseGrid(grid)" v-for="(grid, index) in grids" :key="index"
+                          :view-layout="grid.Section" :view-row-count="grid._Row" :view-col-count="grid._Column"
                           :view-width="gridWidth" />
                       </div>
                     </q-scroll-area>
@@ -38,31 +38,31 @@
                         <div class="col-6">
                           <div class="text-body2 q-pa-sm">
                             Grids :
-                            {{ `(${currentGrid.rowCount} x ${currentGrid.colCount})` }}
+                            {{ `(${currentGrid._Row} x ${currentGrid._Column})` }}
                           </div>
                         </div>
                         <div class="col-6">
                           <div class="text-body2 q-pa-sm">Region size :
                             <span v-if="currentCube">
-                              {{ `(${currentCube.w} x ${currentCube.h})` }}
+                              {{ `(${currentCube._Width} x ${currentCube._Height})` }}
                             </span>
                           </div>
                         </div>
                         <div class="col-6">
                           <div class="text-body2 q-pa-sm">Region location :
                             <span v-if="currentCube">
-                              {{ `(${currentCube.x} , ${currentCube.y})` }} -
-                              {{ `(${currentCube.x + currentCube.w} , ${currentCube.y +
-                                currentCube.h})` }}
+                              {{ `(${currentCube._X} , ${currentCube._Y})` }} -
+                              {{ `(${currentCube._X + currentCube._Width} , ${currentCube._Y +
+                                currentCube._Height})` }}
                             </span>
                           </div>
                         </div>
                         <div class="col-6">
                           <div class="text-body2 q-pa-sm">Dimension :
                             <span v-if="currentCube">
-                              {{ `(${(currentCube.w / currentGrid.colCount *
+                              {{ `(${(currentCube._Width / currentGrid._Column *
                                 1920).toFixed(0)}` }} x
-                              {{ `${(currentCube.h / currentGrid.rowCount *
+                              {{ `${(currentCube._Height / currentGrid._Row *
                                 1080).toFixed(0)})` }}
                             </span>
                           </div>
@@ -70,19 +70,19 @@
                         <div class="col-6">
                           <div class="text-body2 q-pa-sm">Ratio :
                             <span v-if="currentCube">
-                              {{ `(${(currentCube.w / currentGrid.colCount * 1920).toFixed(0)
+                              {{ `(${(currentCube._Width / currentGrid._Column * 1920).toFixed(0)
                                 /
-                                getMaxCommonDivisor((currentCube.w / currentGrid.colCount *
+                                getMaxCommonDivisor((currentCube._Width / currentGrid._Column *
                                   1920).toFixed(0),
-                                  (currentCube.h
+                                  (currentCube._Height
                                     /
-                                    currentGrid.rowCount * 1080).toFixed(0))}` }} /
-                              {{ `${(currentCube.h / currentGrid.rowCount * 1080).toFixed(0) /
-                                getMaxCommonDivisor((currentCube.w / currentGrid.colCount *
+                                    currentGrid._Row * 1080).toFixed(0))}` }} /
+                              {{ `${(currentCube._Height / currentGrid._Row * 1080).toFixed(0) /
+                                getMaxCommonDivisor((currentCube._Width / currentGrid._Column *
                                   1920).toFixed(0),
-                                  (currentCube.h
+                                  (currentCube._Height
                                     /
-                                    currentGrid.rowCount * 1080).toFixed(0))})` }}
+                                    currentGrid._Row * 1080).toFixed(0))})` }}
                             </span>
                           </div>
                         </div>
@@ -90,14 +90,14 @@
                     </div>
                     <div v-if="currentGrid" class="q-pt-md flex flex-center">
                       <div style="width:100%">
-                        <grid-layout :layout="currentGrid.layout" :col-num="currentGrid.colCount"
-                          :maxRows="currentGrid.rowCount" :row-height="265 / currentGrid.rowCount" :is-draggable="false"
+                        <grid-layout :layout="currentGrid.Section" :col-num="currentGrid._Column"
+                          :maxRows="currentGrid._Row" :row-height="265 / currentGrid._Row" :is-draggable="false"
                           :is-resizable="false" :vertical-compact="true" :margin="[0, 0]">
-                          <grid-item static v-for="(item, index) in currentGrid.layout" :x="item.x" :y="item.y"
-                            :w="item.w" :h="item.h" :i="item.i" :key="item.i">
-                            <div class="fit cursor-pointer" @click="chooseCube(item.i)">
+                          <grid-item static v-for="(item, index) in currentGrid.Section" :x="item._X" :y="item._Y"
+                            :w="item._Width" :h="item._Height" :i="item._Index" :key="item._Index">
+                            <div class="fit cursor-pointer" @click="chooseCube(item._Index)">
                               <div class="Frounded-borders flex flex-center grid-cube bg-grey-3"
-                                :class="{ 'selected-cube': currentCubeId === item.i }"
+                                :class="{ 'selected-cube': currentCubeId === item._Index }"
                                 style="width: calc(100% - 3px); height: calc(100% - 3px);border-radius: 2px;">
                                 {{ index + 1 }}
                               </div>
@@ -138,6 +138,7 @@
 
 <script>
 import { uid } from 'quasar'
+import { defTemplateLandscape } from '../components/widget/OnLineEditor'
 import GridViewStatic from 'src/components/GridViewStatic.vue'
 import CustomizeGrid from 'src/pages/CustomizeGrid.vue'
 import { useLayoutStore } from 'src/stores/layout'
@@ -153,88 +154,12 @@ export default {
     return {
       panel: 'pickGrid',
       customGrid: {
-        rowCount: 1,
-        colCount: 1,
-        layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }]
+        _Row: 1,
+        _Column: 1,
+        Section: [{ _X: 0, _Y: 0, _Width: 1, _Height: 1, _Index: uid() }]
       },
       isChooseCustom: false,
-      grids: [
-        {
-          rowCount: 1,
-          colCount: 2,
-          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }]
-        },
-        {
-          rowCount: 2,
-          colCount: 2,
-          layout: [{ x: 0, y: 0, w: 1, h: 2, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 1, w: 1, h: 1, i: uid() }]
-        },
-        {
-          rowCount: 2,
-          colCount: 3,
-          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 3, h: 1, i: uid() }]
-        },
-        {
-          rowCount: 1,
-          colCount: 4,
-          layout: [{ x: 0, y: 0, w: 3, h: 1, i: uid() }, { x: 3, y: 0, w: 1, h: 1, i: uid() }]
-        },
-        {
-          rowCount: 2,
-          colCount: 2,
-          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 2, i: uid() }]
-        },
-        {
-          rowCount: 1,
-          colCount: 1,
-          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }]
-        },
-        {
-          rowCount: 2,
-          colCount: 3,
-          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 2, h: 1, i: uid() }, { x: 1, y: 1, w: 3, h: 1, i: uid() }]
-        },
-        {
-          rowCount: 4,
-          colCount: 4,
-          layout: [{ x: 0, y: 0, w: 3, h: 2, i: uid() }, { x: 0, y: 2, w: 3, h: 2, i: uid() }, { x: 3, y: 0, w: 1, h: 4, i: uid() }]
-        },
-        {
-          rowCount: 2,
-          colCount: 2,
-          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 1, w: 1, h: 1, i: uid() }]
-        },
-        {
-          rowCount: 2,
-          colCount: 3,
-          layout: [{ x: 0, y: 0, w: 1, h: 2, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 1, w: 1, h: 1, i: uid() }, { x: 2, y: 1, w: 1, h: 1, i: uid() }]
-        },
-        {
-          rowCount: 2,
-          colCount: 7,
-          layout: [{ x: 0, y: 0, w: 7, h: 1, i: uid() }, { x: 0, y: 1, w: 2, h: 1, i: uid() }, { x: 2, y: 1, w: 3, h: 1, i: uid() }, { x: 5, y: 1, w: 2, h: 1, i: uid() }]
-        },
-        {
-          rowCount: 3,
-          colCount: 4,
-          layout: [{ x: 0, y: 0, w: 1, h: 2, i: uid() }, { x: 1, y: 0, w: 3, h: 2, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 3, h: 1, i: uid() }]
-        },
-        {
-          rowCount: 2,
-          colCount: 3,
-          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 1, w: 1, h: 1, i: uid() }, { x: 2, y: 1, w: 1, h: 1, i: uid() }]
-        },
-        {
-          rowCount: 10,
-          colCount: 10,
-          layout: [{ x: 0, y: 0, w: 10, h: 3, i: uid() }, { x: 0, y: 3, w: 6, h: 7, i: uid() }, { x: 6, y: 3, w: 2, h: 2, i: uid() }, { x: 8, y: 3, w: 2, h: 2, i: uid() }, { x: 6, y: 5, w: 4, h: 3, i: uid() }, { x: 6, y: 8, w: 4, h: 2, i: uid() }]
-        },
-        {
-          rowCount: 3,
-          colCount: 4,
-          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 3, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 4, h: 2, i: uid() }]
-        }
-      ],
+      grids: defTemplateLandscape,
       gridWidth: 160,
       currentGrid: null,
       layoutNumber: '',
@@ -244,14 +169,14 @@ export default {
   },
   computed: {
     currentCube() {
-      return this.currentGrid.layout.find(o => o.i === this.currentCubeId)
+      return this.currentGrid.Section.find(o => o._Index === this.currentCubeId)
     }
   },
   methods: {
-    chooseGrid(index, grid) {
-      this.layoutNumber = index + 1
+    chooseGrid(grid) {
+      this.layoutNumber = grid._Layout
       this.currentGrid = grid
-      this.currentCubeId = grid.layout[0].i
+      this.currentCubeId = grid.Section[0]._Index
       this.isChooseCustom = false
       this.lock = false
     },
@@ -263,13 +188,13 @@ export default {
     },
     toFlow() {
       const layoutStore = useLayoutStore()
-      layoutStore.SetLayout(this.layoutNumber, this.currentGrid)
+      layoutStore.SetLayout(this.currentGrid)
 
       this.$router.push({ path: '/flow' })
     },
     toHardware() {
       const layoutStore = useLayoutStore()
-      layoutStore.SetLayout(this.layoutNumber, this.currentGrid)
+      layoutStore.SetLayout(this.currentGrid)
 
       this.$router.push({ path: '/hardware' })
     },
@@ -285,7 +210,7 @@ export default {
       this.toPickGrid()
       this.customGrid = customGrid
       this.currentGrid = customGrid
-      this.currentCubeId = customGrid.layout[0].i
+      this.currentCubeId = customGrid.Section[0]._Index
       this.isChooseCustom = true
     },
     getMaxCommonDivisor(n1, n2) {

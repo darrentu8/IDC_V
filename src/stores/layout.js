@@ -139,9 +139,9 @@ export const useLayoutStore = defineStore('layout', {
     //   }
     // },
     layout: {
-      rowCount: '',
-      colCount: '',
-      layout: []
+      _Row: '',
+      _Column: '',
+      Section: []
     },
     currentSection: 0
   }
@@ -152,31 +152,31 @@ export const useLayoutStore = defineStore('layout', {
     }
   },
   actions: {
-    SetLayout(layoutNumber, layout) {
+    SetLayout(layout) {
       const widgetStore = useWidgetListStore()
-      const defaultData = layout.layout.map((e, Index) => ({
-        x: e.x,
-        y: e.y,
-        w: e.w,
-        h: e.h,
-        i: Index
+      const defaultData = layout.Section.map((e, Index) => ({
+        _X: e._X,
+        _Y: e._Y,
+        _Width: e._Width,
+        _Height: e._Height,
+        _Index: Index
       }))
       this.layout = layout
-      this.layout.layout = defaultData
+      this.layout.Section = defaultData
       this.SetWidgetList()
-      widgetStore.SetRowCol(layoutNumber, layout)
+      widgetStore.SetRowCol(this.layout)
     },
     SetWidgetList() {
       const widgetStore = useWidgetListStore()
-      const Data = this.layout.layout
+      const Data = this.layout.Section
       // Section
       const Section = Data.map((e, i) => ({
-        _Index: e.i,
-        _X: e.x,
-        _Y: e.y,
+        _Index: e._Index,
+        _X: e._X,
+        _Y: e._Y,
         _Z: 0,
-        _Height: e.h,
-        _Width: e.w,
+        _Height: e._Height,
+        _Width: e._Width,
         _is169: '',
         _SectionValid: 1,
         _isFixedRatio: '',
@@ -213,7 +213,7 @@ export const useLayoutStore = defineStore('layout', {
         }
       }))
       console.log('Section', Section)
-      widgetStore.SetRowCol(this.layoutNumber, this.layout)
+      widgetStore.SetRowCol(this.layout)
       widgetStore.SetWidgetListData(Section)
     },
     SetCurrentSection(i) {

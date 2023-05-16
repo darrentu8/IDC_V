@@ -78,20 +78,19 @@ const _Column = computed({
 })
 const _layout = computed({
   get() {
-    if (!layouts.value.layout.length) {
+    if (!layouts.value.layout?.length) {
       const sections = NovoDS.value.Pages.Page.Section
-      const sectionPropsArr = sections.map(section => {
-        const { _Index: i, _X: x, _Y: y, _Z: z, _Height: h, _Width: w } = section
-        return { i, x, y, z, h, w }
+      const sectionPropsArr = sections.map(({ _Index, _X, _Y, _Z, _Height, _Width }) => {
+        return { _Index, _X, _Y, _Z, _Height, _Width }
       })
       console.log(sectionPropsArr)
       return sectionPropsArr
     } else {
-      return layouts.value.layout
+      return layouts.value.Section
     }
   },
   set(newValue) {
-    layouts.value = newValue
+    layouts.value.Section = newValue
   }
 })
 const updateContentType = function (e) {
