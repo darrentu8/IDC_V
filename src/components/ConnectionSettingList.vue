@@ -197,11 +197,19 @@ function filterEventTypeOptions(val, update) {
     eventTypeOptionsData.value = eventTypeOptions.value
     return
   }
+
   if (update) {
     console.log('currentStateSelectedEvent.value', currentStateSelectedEvent.value)
     update(() => {
-      eventTypeOptionsData.value = eventTypeOptions.value.filter(option => {
-        return !currentStateSelectedEvent.value.includes(option._uuid)
+      eventTypeOptionsData.value = eventTypeOptions.value.map(option => {
+        if (!currentStateSelectedEvent.value.includes(option._uuid)) {
+          return option
+        } else {
+          return {
+            ...option,
+            disabled: true
+          }
+        }
       })
       console.log('eventTypeOptionsData.value', eventTypeOptionsData.value)
     })
