@@ -32,7 +32,10 @@
                       </div>
                     </template> -->
                     <template v-slot:option="scope">
-                      <q-item v-if="scope.opt._isEnabled" class="q-pt-sm" v-bind="scope.itemProps">
+                      <q-item v-if="scope.opt.disable" class="q-pt-sm hidden" v-bind="scope.itemProps">
+                        <q-item-label>{{ scope.opt._name }}</q-item-label>
+                      </q-item>
+                      <q-item v-else-if="scope.opt._isEnabled" class="q-pt-sm" v-bind="scope.itemProps">
                         <q-item-label>{{ scope.opt._name }}</q-item-label>
                       </q-item>
                       <q-item v-else v-bind="scope.itemProps" class="q-pt-sm">
@@ -63,24 +66,25 @@
                     </div>
                     <div class="col-12">
                       <!-- Action 選單 -->
-                      <q-select class="theme brand-round-m" options-selected-class="text-black"
-                        :disable="EventData._next_state_id === ''" label="Select Type" bg-color="white" rounded outlined
-                        dense options-dense v-model="actionData._type" :options="actionTypeOptions" option-value="_uuid"
-                        option-label="_name">
-                        <template v-slot:selected>
+                      <q-select @click="setCurentEventID(EventData._id)" :loading="loadingFilter"
+                        @update:model-value="(val) => setAction(EventIndex, actionData, val)"
+                        @filter="filterActionTypeOptions" emit-value map-options class="theme brand-round-m"
+                        options-selected-class="text-black" :disable="EventData._next_state_id === ''" label="Select Type"
+                        bg-color="white" rounded outlined dense options-dense v-model="actionData._conId"
+                        :options="actionTypeOptions" option-value="_uuid" option-label="_name">
+                        <!-- <template v-slot:selected>
                           <div v-if="actionData._type._isEnabled" class="ellipsis">
                             {{ actionData._type._name }}
                           </div>
                           <div v-else>
                             <span class="text-grey ellipsis">{{ actionData._type._name }}</span>
                           </div>
-                        </template>
+                        </template> -->
                         <template v-slot:option="scope">
-                          <q-item v-if="scope.opt._isEnabled" class="q-pt-sm" v-bind="scope.itemProps"
-                            v-on="scope.itemEvents">
+                          <q-item v-if="scope.opt._isEnabled" class="q-pt-sm" v-bind="scope.itemProps">
                             <q-item-label>{{ scope.opt._name }}</q-item-label>
                           </q-item>
-                          <q-item v-else v-bind="scope.itemProps" class="q-pt-sm" v-on="scope.itemEvents">
+                          <q-item v-else v-bind="scope.itemProps" class="q-pt-sm">
                             <q-item-label class="text-grey">{{ scope.opt._name }}</q-item-label>
                           </q-item>
                         </template>
@@ -130,10 +134,13 @@ const currentState = computed(() => widgetStore.GetCurrentState)
 const currentStateId = computed(() => widgetStore.GetCurrentStateId)
 const stateEventData = computed(() => widgetStore.GetStateEventData)
 const currentStateSelectedEvent = computed(() => widgetStore.GetCurrentStateSelectedEvent)
+const currentStateSelectedAction = computed(() => widgetStore.GetCurrentStateSelectedAction)
 
 const eventTypeOptions = computed(() => eventStore.GetEventTypeOptions)
 const actionTypeOptions = computed(() => eventStore.GetActionTypeOptions)
 const eventTypeOptionsData = ref(null)
+const actionTypeOptionsData = ref(null)
+const loadingFilter = ref(false)
 const addStateEventSame = async (currentState) => {
   widgetStore.SetLoading(true)
   widgetStore.AddStateEventSame(currentState)
@@ -143,10 +150,22 @@ const addStateEventSame = async (currentState) => {
 const addAction = (EventId) => {
   widgetStore.AddAction(EventId)
 }
+const setCurentEventID = (_uuid) => {
+  console.log('_uuid', _uuid)
+  eventStore.SetCurentEventID(_uuid)
+}
 const setEvent = (EventData, _conId) => {
   console.log('EventData', EventData)
   console.log('_conId', _conId)
   widgetStore.SetEvent(EventData, _conId)
+}
+const setAction = (EventIndex, actionData, _conId) => {
+  console.log('EventIndex', EventIndex)
+  console.log('actionData', actionData)
+  console.log('_conId', _conId)
+  loadingFilter.value = true
+  widgetStore.SetAction(EventIndex, actionData, _conId)
+  loadingFilter.value = false
 }
 const delAction = (EventId, ActionId) => {
   $q.dialog({
@@ -207,11 +226,36 @@ function filterEventTypeOptions(val, update) {
         } else {
           return {
             ...option,
-            disabled: true
+            disable: true
           }
         }
       })
       console.log('eventTypeOptionsData.value', eventTypeOptionsData.value)
+    })
+  }
+}
+function filterActionTypeOptions(val, update) {
+  console.log('val', val)
+  console.log('update', update)
+  if (currentStateSelectedAction.value.length === 0) {
+    actionTypeOptionsData.value = actionTypeOptions.value
+    return
+  }
+
+  if (update) {
+    console.log('currentStateSelectedAction.value', currentStateSelectedAction.value)
+    update(() => {
+      actionTypeOptionsData.value = actionTypeOptions.value.map(option => {
+        if (!currentStateSelectedAction.value.includes(option._uuid)) {
+          return option
+        } else {
+          return {
+            ...option,
+            disable: true
+          }
+        }
+      })
+      console.log('actionTypeOptionsData.value', actionTypeOptionsData.value)
     })
   }
 }

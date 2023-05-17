@@ -308,13 +308,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       Action: []
     },
     ActionData: {
-      _type: '',
-      _gpio_number: '',
-      _next_state_id: '',
-      _rs232_id: '',
-      _tcpip_id: '',
-      _role: '',
-      _output_value: ''
+      _type: ''
     },
     currentState: 0,
     currentStateId: '',
@@ -375,6 +369,26 @@ export const useWidgetListStore = defineStore('widgetList', {
         const events = this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState].Event
         const selectedEvents = [].concat(...events).filter(Boolean).map(event => event._conId)
         return selectedEvents
+      }
+
+      return []
+    },
+    GetCurrentStateSelectedAction() {
+      const layoutStore = useLayoutStore()
+      const eventStore = useEventListStore()
+      const currentSection = layoutStore.currentSection
+      const curentEventID = eventStore.GetCurrentEventID
+
+      const eventIndex = this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState].Event.findIndex((event) => {
+        return event._id === curentEventID
+      })
+
+      console.log('eventIndex', eventIndex)
+      if (eventIndex !== -1 && currentSection !== null) {
+        const actions = this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState].Event[eventIndex].Action
+        const selectedActions = [].concat(...actions).filter(Boolean).map(action => action._conId)
+        console.log('selectedActions', selectedActions)
+        return selectedActions
       }
 
       return []
@@ -534,6 +548,32 @@ export const useWidgetListStore = defineStore('widgetList', {
         }
       }
     },
+    SetAction(EventIndex, actionData, _conId) {
+      const layoutStore = useLayoutStore()
+      const eventStore = useEventListStore()
+      const actionOptions = eventStore.GetActionTypeOptions
+      const currentSection = layoutStore.currentSection
+      const selectOptionDataIndex = actionOptions.findIndex(actionOption => actionOption._uuid === _conId)
+      const actionArr = this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState].Event[EventIndex].Action
+      console.log('EventIndex', EventIndex)
+      console.log('actionData', actionData)
+      console.log('_conId', _conId)
+      console.log('selectOptionDataIndex', selectOptionDataIndex)
+      if (EventIndex === undefined || selectOptionDataIndex === undefined) {
+        return
+      }
+
+      for (let i = 0; i < actionArr.length; i++) {
+        if (actionArr[i]._id === actionData._id) {
+          for (const [key, value] of Object.entries(actionOptions[selectOptionDataIndex])) { // iterate over key-value pairs in eventOpionData
+            if (!['_conId', '_uuid', '_isEnabled', '_name', '_id'].includes(key)) { // check if key is not excluded
+              actionArr[i][key] = value // update corresponding value in actionArr
+            }
+          }
+          break
+        }
+      }
+    },
     AddState() {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
@@ -588,13 +628,7 @@ export const useWidgetListStore = defineStore('widgetList', {
         this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState].Event[eventIndex].Action.push({
           _id: uid(),
           _type: '',
-          _conId: '',
-          _gpio_number: '',
-          _next_state_id: '',
-          _rs232_id: '',
-          _tcpip_id: '',
-          _role: '',
-          _output_value: ''
+          _conId: ''
         })
       } else {
         console.error(`Could not find an event with id ${EventId}`)

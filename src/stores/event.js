@@ -5,6 +5,7 @@ export const useEventListStore = defineStore('eventList', {
   state: () => ({
     currentEvent: '',
     currentEventIndex: '',
+    curentEventID: '',
     eventTypeOptions: {
       type: [
         {
@@ -207,6 +208,9 @@ export const useEventListStore = defineStore('eventList', {
     GetCurrentEventIndex() {
       return this.currentEventIndex
     },
+    GetCurrentEventID() {
+      return this.curentEventID
+    },
     GetEventTypeOptions() {
       const widgetStore = useWidgetListStore()
 
@@ -303,18 +307,18 @@ export const useEventListStore = defineStore('eventList', {
         })))
         .flat() || []
 
-      const sendCommands = widgetStore?.NovoDS?.Hardware?.TcpIpSettings?.TcpIp?.Command ?? []
-      const mapTcpIp = [
-        ...sendCommands.map((tcpip) => ({
-          _uuid: uid(),
-          _name: tcpip._name,
-          _tcpip_id: tcpip._id,
-          _role: 'output',
-          _command_id: tcpip._id,
-          _isEnabled: widgetStore?.NovoDS?.Hardware?.TcpIpSettings?._isEnabled,
-          _type: 'tcp/ip'
-        }))
-      ]
+      const tcpIpSettings = widgetStore?.NovoDS?.Hardware?.TcpIpSettings?.TcpIp ?? []
+      const commands = tcpIpSettings.flatMap(tcpip => tcpip.Command ?? [])
+      const filteredCommands = commands.filter(command => command !== null && command !== undefined)
+      const mapTcpIp = filteredCommands.map(command => ({
+        _uuid: uid(),
+        _name: command._name,
+        _tcpip_id: command._id,
+        _role: 'output',
+        _command_id: command._id,
+        _isEnabled: widgetStore?.NovoDS?.Hardware?.TcpIpSettings?._isEnabled,
+        _type: 'tcp/ip'
+      }))
 
       const mapTimer = widgetStore?.NovoDS?.Hardware?.TimerSettings?.Timer
         ?.filter(timer => timer)
@@ -330,8 +334,7 @@ export const useEventListStore = defineStore('eventList', {
         ...mapGPIO,
         ...mapRs232,
         ...mapTcpIp,
-        ...mapTimer,
-        ...(this.extraEventOption || [])
+        ...mapTimer
       ]
 
       return combinedOptions
@@ -344,6 +347,9 @@ export const useEventListStore = defineStore('eventList', {
     },
     SetCurrentEventIndex(Index) {
       this.currentEventIndex = Index
+    },
+    SetCurentEventID(_uuid) {
+      this.curentEventID = _uuid
     },
     SetEventOptions(data) {
       this.eventOptions = data

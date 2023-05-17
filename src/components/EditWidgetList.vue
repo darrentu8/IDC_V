@@ -7,7 +7,7 @@
     </q-item-section>
     <q-item-section>
       <q-select dense outlined :model-value="ContentType" :options="options" class="brand-round-m rounded-borders"
-        bg-color="white" option-disable="disable" label="Select a widget" option-value="value" option-label="label"
+        bg-color="white" option-disable="disable" label="Select widget" option-value="value" option-label="label"
         emit-value @update:model-value="(val) => $emit('updateContentType', { Index, val })">
         <template v-slot:append>
           <img v-if="ContentType == 'TEXT'" src="~assets/icon/text.png" />
