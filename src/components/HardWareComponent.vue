@@ -365,31 +365,27 @@
             <div class="row q-mt-sm">
               <div style="margin: auto 2px; width:100px">IP Address : </div>
               <div class="col">
-                <q-input :disable="!TCPIP._isEnabled" class="brand-round-m" bg-color="white" dense outlined
-                  v-model="tx._destination_ip" />
+                <q-input class="brand-round-m" bg-color="white" dense outlined v-model="tx._destination_ip" />
               </div>
             </div>
             <div class="row q-mt-sm">
               <div style="margin: auto 2px; width:100px">Port Number : </div>
               <div class="col">
-                <q-input :disable="!TCPIP._isEnabled" class="brand-round-m" bg-color="white" dense outlined type="number"
-                  :min="3000" :max="4000" v-model.number="tx._destination_port" />
+                <q-input class="brand-round-m" bg-color="white" dense outlined type="number" :min="3000" :max="4000"
+                  v-model.number="tx._destination_port" />
               </div>
             </div>
             <div class="row q-mt-sm">
               <div class="col">
-                <q-input :disable="!TCPIP._isEnabled" label="Name" class="brand-round-m" bg-color="white" dense outlined
-                  v-model="tx._name" />
+                <q-input label="Name" class="brand-round-m" bg-color="white" dense outlined v-model="tx._name" />
               </div>
               <div class="" style="width:10px"></div>
               <div class="col">
-                <q-input :disable="!TCPIP._isEnabled" label="Commend" class="brand-round-m" bg-color="white" dense
-                  outlined v-model="tx._value" />
+                <q-input label="Commend" class="brand-round-m" bg-color="white" dense outlined v-model="tx._value" />
               </div>
               <div class="" style="width:10px"></div>
               <div style="margin: auto">
-                <q-btn :disable="!TCPIP._isEnabled" unelevated rounded color="primary" class="text-capitalize"
-                  @click="addTx" label="Add" />
+                <q-btn unelevated rounded color="primary" class="text-capitalize" @click="addTx" label="Add" />
               </div>
             </div>
           </div>
