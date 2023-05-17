@@ -18,21 +18,32 @@
                 </div>
                 <div class="col-12">
                   <!-- Event 選單 -->
-                  <q-select class="theme brand-round-m" options-selected-class="text-black" bg-color="white" rounded
-                    label="Select Type" :disable="EventData._next_state_id === ''" outlined dense options-dense
-                    v-model="EventData._type" :options="eventTypeOptions" option-value="_uuid" option-label="_name">
+                  <q-select @update:model-value="(val) => setEvent(EventData, val)" @filter="filterEventTypeOptions"
+                    emit-value map-options class="theme brand-round-m" options-selected-class="text-black"
+                    bg-color="white" rounded label="Select Type" :disable="EventData._next_state_id === ''" outlined dense
+                    options-dense v-model="EventData._conId" :options="eventTypeOptionsData" option-value="_uuid"
+                    option-label="_name">
+                    <!-- <template v-slot:selected>
+                      <div v-if="EventData._type._isEnabled" class="ellipsis">
+                        {{ EventData._type._name }}
+                      </div>
+                      <div v-else>
+                        <span class="text-grey ellipsis">{{ EventData._type._name }}</span>
+                      </div>
+                    </template> -->
+                    <template v-slot:option="scope">
+                      <q-item v-if="scope.opt._isEnabled" class="q-pt-sm" v-bind="scope.itemProps">
+                        <q-item-label>{{ scope.opt._name }}</q-item-label>
+                      </q-item>
+                      <q-item v-else v-bind="scope.itemProps" class="q-pt-sm">
+                        <q-item-label class="text-grey">{{ scope.opt._name }}</q-item-label>
+                      </q-item>
+                    </template>
                     <template v-slot:after>
                       <img class="q-mr-sm q-mt-sm cursor-pointer" label="" size="md" @click="delEvent(EventData._id)"
                         round flat color="red" src="~assets/icon/delete.svg" />
                     </template>
                   </q-select>
-                  <!-- Event 子選單 -->
-                  <q-input v-if="EventData._type == 'rs232' || EventData._type == 'tcp/ip'" label="Type command"
-                    class="theme brand-round-m sub q-mt-sm" bg-color="white" rounded dense outlined
-                    v-model="EventData._input_value" type="text" prefix="" suffix="" />
-                  <q-input v-if="EventData._type == 'timeout'" label="Duration" class="theme brand-round-m sub q-mt-sm"
-                    bg-color="white" rounded dense outlined v-model="EventData._duration" type="number" maxlength="4"
-                    min="0" prefix="" suffix="sec" />
                 </div>
               </div>
               <div class="col-6">
@@ -56,17 +67,29 @@
                         :disable="EventData._next_state_id === ''" label="Select Type" bg-color="white" rounded outlined
                         dense options-dense v-model="actionData._type" :options="actionTypeOptions" option-value="_uuid"
                         option-label="_name">
+                        <template v-slot:selected>
+                          <div v-if="actionData._type._isEnabled" class="ellipsis">
+                            {{ actionData._type._name }}
+                          </div>
+                          <div v-else>
+                            <span class="text-grey ellipsis">{{ actionData._type._name }}</span>
+                          </div>
+                        </template>
+                        <template v-slot:option="scope">
+                          <q-item v-if="scope.opt._isEnabled" class="q-pt-sm" v-bind="scope.itemProps"
+                            v-on="scope.itemEvents">
+                            <q-item-label>{{ scope.opt._name }}</q-item-label>
+                          </q-item>
+                          <q-item v-else v-bind="scope.itemProps" class="q-pt-sm" v-on="scope.itemEvents">
+                            <q-item-label class="text-grey">{{ scope.opt._name }}</q-item-label>
+                          </q-item>
+                        </template>
                         <template v-slot:after>
                           <img class="q-mr-sm q-mt-sm cursor-pointer" label="" size="md"
                             @click="delAction(EventData._id, actionData._id)" round flat color="red"
                             src="~assets/icon/delete.svg" />
                         </template>
                       </q-select>
-
-                      <!-- Action 子選單 -->
-                      <q-input v-if="actionData._type === 'rs232' || actionData._type === 'tcp/ip'" label="Type command"
-                        class="theme brand-round-m sub q-mt-sm" bg-color="white" rounded dense outlined
-                        v-model="actionData._input_value" type="text" prefix="" suffix="" />
                     </div>
                   </div>
                   <!-- <q-btn label="" size="md" @click="addAction(EventData._id)" round flat class="" color="primary"
@@ -94,7 +117,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { useWidgetListStore } from 'src/stores/widget'
 import { useEventListStore } from 'src/stores/event'
 import DelDialog from './dialog/DelDialog.vue'
@@ -106,10 +129,11 @@ const loading = computed(() => widgetStore.GetLoading)
 const currentState = computed(() => widgetStore.GetCurrentState)
 const currentStateId = computed(() => widgetStore.GetCurrentStateId)
 const stateEventData = computed(() => widgetStore.GetStateEventData)
+const currentStateSelectedEvent = computed(() => widgetStore.GetCurrentStateSelectedEvent)
 
 const eventTypeOptions = computed(() => eventStore.GetEventTypeOptions)
 const actionTypeOptions = computed(() => eventStore.GetActionTypeOptions)
-
+const eventTypeOptionsData = ref(null)
 const addStateEventSame = async (currentState) => {
   widgetStore.SetLoading(true)
   widgetStore.AddStateEventSame(currentState)
@@ -118,6 +142,11 @@ const addStateEventSame = async (currentState) => {
 }
 const addAction = (EventId) => {
   widgetStore.AddAction(EventId)
+}
+const setEvent = (EventData, _conId) => {
+  console.log('EventData', EventData)
+  console.log('_conId', _conId)
+  widgetStore.SetEvent(EventData, _conId)
 }
 const delAction = (EventId, ActionId) => {
   $q.dialog({
@@ -159,6 +188,24 @@ function transformEventData(eventData, currentStateId) {
 
   console.log('resultEvent', resultEvent)
   return resultEvent
+}
+function filterEventTypeOptions(val, update) {
+  console.log('val', val)
+  console.log('update', update)
+  // 確保 currentStateSelectedEvent 不為空陣列
+  if (currentStateSelectedEvent.value.length === 0) {
+    eventTypeOptionsData.value = eventTypeOptions.value
+    return
+  }
+  if (update) {
+    console.log('currentStateSelectedEvent.value', currentStateSelectedEvent.value)
+    update(() => {
+      eventTypeOptionsData.value = eventTypeOptions.value.filter(option => {
+        return !currentStateSelectedEvent.value.includes(option._uuid)
+      })
+      console.log('eventTypeOptionsData.value', eventTypeOptionsData.value)
+    })
+  }
 }
 
 </script>

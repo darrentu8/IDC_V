@@ -304,7 +304,6 @@ export const useWidgetListStore = defineStore('widgetList', {
     },
     EventData: {
       _type: '',
-      _gpio_number: '',
       _next_state_id: '',
       Action: []
     },
@@ -367,6 +366,18 @@ export const useWidgetListStore = defineStore('widgetList', {
         })
         return oData
       }
+    },
+    GetCurrentStateSelectedEvent() {
+      const layoutStore = useLayoutStore()
+      const currentSection = layoutStore.currentSection
+
+      if (currentSection !== null) {
+        const events = this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState].Event
+        const selectedEvents = [].concat(...events).filter(Boolean).map(event => event._conId)
+        return selectedEvents
+      }
+
+      return []
     }
   },
   actions: {
@@ -485,7 +496,7 @@ export const useWidgetListStore = defineStore('widgetList', {
         this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event[eventIndex] = {
           _id: this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event[eventIndex]._id,
           _type: '',
-          _gpio_number: '',
+          _conId: '',
           _stateId: currentStateData._id,
           _next_state_id: currentStateData._stateIndex,
           Action: []
@@ -499,6 +510,29 @@ export const useWidgetListStore = defineStore('widgetList', {
       const Data = this.NovoDS.Pages.Page.Section[currentSection].Content.State[stateIndex].Event.filter(e => e._stateId === stateId)
       this.stateEventData = Data
       console.log('stateEventData', Data)
+    },
+    SetEvent(EventData, _conId) {
+      const layoutStore = useLayoutStore()
+      const eventStore = useEventListStore()
+      const eventOpionData = eventStore.GetEventTypeOptions
+      const currentSection = layoutStore.currentSection
+      const selectOptionDataIndex = eventOpionData.findIndex(eventOption => eventOption._uuid === _conId)
+      const eventArr = this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState].Event
+      console.log('selectOptionDataIndex', selectOptionDataIndex)
+      if (selectOptionDataIndex === undefined) {
+        return
+      }
+
+      for (let i = 0; i < eventArr.length; i++) {
+        if (eventArr[i]._id === EventData._id) {
+          for (const [key, value] of Object.entries(eventOpionData[selectOptionDataIndex])) { // iterate over key-value pairs in eventOpionData
+            if (!['_conId', '_uuid', '_isEnabled', '_name', '_id'].includes(key)) { // check if key is not excluded
+              eventArr[i][key] = value // update corresponding value in eventArr
+            }
+          }
+          break
+        }
+      }
     },
     AddState() {
       const layoutStore = useLayoutStore()
@@ -522,7 +556,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event.push({
         _id: uid(),
         _type: '',
-        _gpio_number: '',
+        _conId: '',
         _next_state_id: '',
         Action: []
       })
@@ -537,7 +571,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       const pushData = {
         _id: uid(),
         _type: '',
-        _gpio_number: '',
+        _conId: '',
         _stateId: stateId,
         _next_state_id: id,
         Action: []
@@ -554,6 +588,7 @@ export const useWidgetListStore = defineStore('widgetList', {
         this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState].Event[eventIndex].Action.push({
           _id: uid(),
           _type: '',
+          _conId: '',
           _gpio_number: '',
           _next_state_id: '',
           _rs232_id: '',
