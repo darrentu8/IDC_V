@@ -201,7 +201,7 @@ export const useWidgetListStore = defineStore('widgetList', {
           _BackgroundImage: '',
           _BgMusicApplyToAll: '',
           _BackgroundMusicUrl: '',
-          _BackgroundMusicSize: '',
+          _BackgroundMusicSize: '0',
           _BackgroundMusic: '',
           Section: [
             {
