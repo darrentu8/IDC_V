@@ -36,6 +36,10 @@ import fs from 'fs'
 import X2js from 'x2js'
 // import xml2js from 'xml2js'
 
+const { createPinia } = require('pinia')
+const pinia = createPinia()
+module.exports = { pinia }
+
 const novoDirName = 'NovoDS Studio'
 
 contextBridge.exposeInMainWorld('myAPI', {
@@ -67,6 +71,8 @@ contextBridge.exposeInMainWorld('myAPI', {
     BrowserWindow.getFocusedWindow().close()
   },
   watchJson: () => {
+    const { pinia } = window.require('./electron-preload')
+    const myStore = pinia.getStore('widgetList')
     const fileName = 'interactive.json'
 
     const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER)
@@ -88,13 +94,17 @@ contextBridge.exposeInMainWorld('myAPI', {
           const obj = JSON.parse(data)
           console.log('Run Watch Json')
           console.log('obj', obj)
-          const prop = obj.NovoDS._Model_Type // 需要監聽的屬性名稱
+          const prop = obj.Focus // 需要監聽的屬性名稱
           switch (prop) {
-            case 'DS310':
-              console.log('DS310')
+            case 'signage':
+              console.log('Focus:', prop)
+              focusWindow()
+              myStore.myAction()
+              break
+            case 'studio':
+              console.log('Focus:', prop)
               break
             default:
-              console.log(`Property "property" has been modified: ${prop}`)
           }
         })
       }
@@ -249,6 +259,21 @@ contextBridge.exposeInMainWorld('myAPI', {
   }
 })
 
+const focusWindow = () => {
+  // 取得當前的視窗對象
+  let window = BrowserWindow.getFocusedWindow()
+
+  // 如果目前沒有任何視窗被聚焦，則選擇第一個視窗
+  if (!window) {
+    window = BrowserWindow.getAllWindows()[0]
+  }
+
+  // 聚焦到該視窗
+  if (window) {
+    window.focus()
+  }
+  return window
+}
 const isDuplicateFile = (targetPath) => {
   const existingFiles = fs.readdirSync(getSourceFolder())
   return existingFiles.includes(path.basename(targetPath))
