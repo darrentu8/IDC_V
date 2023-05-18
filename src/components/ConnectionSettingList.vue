@@ -83,7 +83,10 @@
                           </div>
                         </template> -->
                         <template v-slot:option="scope">
-                          <q-item v-if="scope.opt._isEnabled" class="q-pt-sm" v-bind="scope.itemProps">
+                          <q-item v-if="scope.opt.disable" class="q-pt-sm hidden" v-bind="scope.itemProps">
+                            <q-item-label>{{ scope.opt._name }}</q-item-label>
+                          </q-item>
+                          <q-item v-else-if="scope.opt._isEnabled" class="q-pt-sm" v-bind="scope.itemProps">
                             <q-item-label>{{ scope.opt._name }}</q-item-label>
                           </q-item>
                           <q-item v-else v-bind="scope.itemProps" class="q-pt-sm">

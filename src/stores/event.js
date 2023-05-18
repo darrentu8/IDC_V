@@ -232,7 +232,7 @@ export const useEventListStore = defineStore('eventList', {
       const mapRs232 = widgetStore?.NovoDS?.Hardware?.Rs232Settings?.Rs232
         ?.filter(rs232 => rs232 && rs232.Command)
         ?.map(rs232 => rs232.Command?.map(commandData => ({
-          _uuid: rs232._uuid || uid(),
+          _uuid: commandData._uuid || uid(),
           _name: `RS232-${rs232._interface} ${commandData._name}`,
           _rs232_id: rs232._id,
           _command_id: commandData._id,

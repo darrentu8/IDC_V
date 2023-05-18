@@ -434,9 +434,6 @@ export const useWidgetListStore = defineStore('widgetList', {
           tcpip.Command = [tcpip.Command]
         }
       }
-      if (RawData.NovoDS.Hardware && RawData.NovoDS.Hardware.TimerSettings && !Array.isArray(RawData.NovoDS.Hardware.TimerSettings)) {
-        RawData.NovoDS.Hardware.TimerSettings = [RawData.NovoDS.Hardware.TimerSettings]
-      }
 
       const sections = RawData.NovoDS.Pages.Page.Section
       if (!Array.isArray(sections)) {
@@ -574,7 +571,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       for (let i = 0; i < eventArr.length; i++) {
         if (eventArr[i]._id === EventData._id) {
           for (const [key, value] of Object.entries(eventOpionData[selectOptionDataIndex])) { // iterate over key-value pairs in eventOpionData
-            if (!['_conId', '_uuid', '_isEnabled', '_name', '_id'].includes(key)) { // check if key is not excluded
+            if (!['disable', '_conId', '_uuid', '_isEnabled', '_name', '_id'].includes(key)) { // check if key is not excluded
               eventArr[i][key] = value // update corresponding value in eventArr
             }
           }
@@ -600,7 +597,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       for (let i = 0; i < actionArr.length; i++) {
         if (actionArr[i]._id === actionData._id) {
           for (const [key, value] of Object.entries(actionOptions[selectOptionDataIndex])) { // iterate over key-value pairs in eventOpionData
-            if (!['_conId', '_uuid', '_isEnabled', '_name', '_id'].includes(key)) { // check if key is not excluded
+            if (!['disable', '_conId', '_uuid', '_isEnabled', '_name', '_id'].includes(key)) { // check if key is not excluded
               actionArr[i][key] = value // update corresponding value in actionArr
             }
           }
