@@ -19,6 +19,7 @@ export const useWidgetListStore = defineStore('widgetList', {
           GPIO: [
             {
               _gpio_number: 1,
+              _uuid: uid(),
               _name: 'GPIO1',
               _isEnabled: true,
               _role: 'keyevent',
@@ -26,6 +27,7 @@ export const useWidgetListStore = defineStore('widgetList', {
             },
             {
               _gpio_number: 2,
+              _uuid: uid(),
               _name: 'GPIO2',
               _isEnabled: true,
               _role: 'keyevent',
@@ -33,6 +35,7 @@ export const useWidgetListStore = defineStore('widgetList', {
             },
             {
               _gpio_number: 3,
+              _uuid: uid(),
               _name: 'GPIO3',
               _isEnabled: false,
               _role: 'output',
@@ -40,6 +43,7 @@ export const useWidgetListStore = defineStore('widgetList', {
             },
             {
               _gpio_number: 4,
+              _uuid: uid(),
               _name: 'GPIO4',
               _isEnabled: true,
               _role: 'output',
@@ -47,6 +51,7 @@ export const useWidgetListStore = defineStore('widgetList', {
             },
             {
               _gpio_number: 5,
+              _uuid: uid(),
               _name: 'GPIO5',
               _isEnabled: true,
               _role: 'output',
@@ -54,6 +59,7 @@ export const useWidgetListStore = defineStore('widgetList', {
             },
             {
               _gpio_number: 6,
+              _uuid: uid(),
               _name: 'GPIO6',
               _isEnabled: true,
               _role: 'output',
@@ -75,6 +81,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               Command: [
                 {
                   _id: 0,
+                  _uuid: uid(),
                   _name: 'Default',
                   _data_type: 'hex',
                   _value: '1A 3B 4D'
@@ -93,6 +100,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               Command: [
                 {
                   _id: 0,
+                  _uuid: uid(),
                   _name: 'Default',
                   _data_type: 'string',
                   _value: 'ccaaa'
@@ -108,11 +116,13 @@ export const useWidgetListStore = defineStore('widgetList', {
             Command: [
               {
                 _id: 11,
+                _uuid: uid(),
                 _name: 'play video',
                 _value: 'play video'
               },
               {
                 _id: 12,
+                _uuid: uid(),
                 _name: 'play image',
                 _value: 'play image'
               }
@@ -126,11 +136,13 @@ export const useWidgetListStore = defineStore('widgetList', {
               Command: [
                 {
                   _id: 21,
+                  _uuid: uid(),
                   _name: 'door open',
                   _value: 'door open'
                 },
                 {
                   _id: 22,
+                  _uuid: uid(),
                   _name: 'door close',
                   _value: 'door close'
                 }
@@ -143,11 +155,13 @@ export const useWidgetListStore = defineStore('widgetList', {
               Command: [
                 {
                   _id: 23,
+                  _uuid: uid(),
                   _name: 'Add 1',
                   _value: '+1'
                 },
                 {
                   _id: 24,
+                  _uuid: uid(),
                   _name: 'Add 2',
                   _value: '+2'
                 }
@@ -159,11 +173,13 @@ export const useWidgetListStore = defineStore('widgetList', {
           Timer: [
             {
               _id: 1,
+              _uuid: uid(),
               _name: '10 seconds event',
               _duration: '10'
             },
             {
               _id: 2,
+              _uuid: uid(),
               _name: '20 seconds event',
               _duration: '20'
             }
@@ -395,18 +411,37 @@ export const useWidgetListStore = defineStore('widgetList', {
     }
   },
   actions: {
+    // 設置xml產生的單一物件改成陣列
     SetNovoDS(data) {
       const RawData = JSON.parse(JSON.stringify(data))
 
       if (!RawData.NovoDS) {
         return false
       }
+      if (RawData.NovoDS.Hardware && RawData.NovoDS.Hardware.Rs232Settings && Array.isArray(RawData.NovoDS.Hardware.Rs232Settings.Rs232)) {
+        RawData.NovoDS.Hardware.Rs232Settings.Rs232.forEach(rs232 => {
+          if (rs232.Command && !Array.isArray(rs232.Command)) {
+            rs232.Command = [rs232.Command]
+          }
+        })
+      }
+      if (RawData.NovoDS.Hardware && RawData.NovoDS.Hardware.TcpIpSettings) {
+        const tcpip = RawData.NovoDS.Hardware.TcpIpSettings
+        if (tcpip.ReceivedCommands && tcpip.ReceivedCommands.Command && !Array.isArray(tcpip.ReceivedCommands.Command)) {
+          tcpip.ReceivedCommands.Command = [tcpip.ReceivedCommands.Command]
+        }
+        if (tcpip.Command && !Array.isArray(tcpip.Command)) {
+          tcpip.Command = [tcpip.Command]
+        }
+      }
+      if (RawData.NovoDS.Hardware && RawData.NovoDS.Hardware.TimerSettings && !Array.isArray(RawData.NovoDS.Hardware.TimerSettings)) {
+        RawData.NovoDS.Hardware.TimerSettings = [RawData.NovoDS.Hardware.TimerSettings]
+      }
 
       const sections = RawData.NovoDS.Pages.Page.Section
       if (!Array.isArray(sections)) {
         RawData.NovoDS.Pages.Page.Section = [sections]
       }
-
       RawData.NovoDS.Pages.Page.Section.forEach(section => {
         const content = section.Content
         if (!content.State) {
@@ -421,7 +456,6 @@ export const useWidgetListStore = defineStore('widgetList', {
           } else if (!state.File) {
             state.File = []
           }
-
           if (state.Event && !Array.isArray(state.Event)) {
             state.Event = [state.Event]
           } else if (state.Event) {
