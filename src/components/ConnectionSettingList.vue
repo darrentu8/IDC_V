@@ -21,8 +21,9 @@
                   <q-select @update:model-value="(val) => setEvent(EventData, val)" @filter="filterEventTypeOptions"
                     emit-value map-options class="theme brand-round-m" options-selected-class="text-black"
                     bg-color="white" rounded label="Select Type" :disable="EventData._next_state_id === ''" outlined dense
-                    options-dense v-model="EventData._conId" :options="eventTypeOptionsData" option-value="_uuid"
-                    option-label="_name">
+                    options-dense v-model="EventData._conId"
+                    :options="eventTypeOptionsData !== null ? eventTypeOptionsData : eventTypeOptions"
+                    option-value="_uuid" option-label="_name">
                     <!-- <template v-slot:selected>
                       <div v-if="EventData._type._isEnabled" class="ellipsis">
                         {{ EventData._type._name }}
@@ -71,7 +72,8 @@
                         @filter="filterActionTypeOptions" emit-value map-options class="theme brand-round-m"
                         options-selected-class="text-black" :disable="EventData._next_state_id === ''" label="Select Type"
                         bg-color="white" rounded outlined dense options-dense v-model="actionData._conId"
-                        :options="actionTypeOptions" option-value="_uuid" option-label="_name">
+                        :options="actionTypeOptionsData !== null ? actionTypeOptionsData : actionTypeOptions"
+                        option-value="_uuid" option-label="_name">
                         <!-- <template v-slot:selected>
                           <div v-if="actionData._type._isEnabled" class="ellipsis">
                             {{ actionData._type._name }}

@@ -85,9 +85,9 @@ export default {
     }
   },
   setup() {
+    const $q = useQuasar()
     const router = useRouter()
     function loadXMLTest() {
-      const $q = useQuasar()
       const textXMLString = window.myAPI.loadXMLTest()
       console.log('textXMLString', textXMLString)
       const setData = widgetStore.SetNovoDS(textXMLString)

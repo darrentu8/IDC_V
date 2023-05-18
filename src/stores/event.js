@@ -192,12 +192,12 @@ export const useEventListStore = defineStore('eventList', {
     // },
     extraEventOption: [
       {
-        _uuid: uid(),
+        _uuid: 'playend',
         _name: 'Playback end',
         _type: 'playend'
       },
       {
-        _uuid: uid(),
+        _uuid: 'timeout',
         _name: 'Time out',
         _type: 'timeout'
       }
