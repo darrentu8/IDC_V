@@ -4,140 +4,6 @@ import { uid } from 'quasar'
 
 export const useLayoutStore = defineStore('layout', {
   state: () => ({
-    // NovoDS: {
-    //   _Description: '',
-    //   _Layout_Type: '0', // 0 -> Grid, 1 -> Flexible
-    //   _Playlist_Name: '',
-    //   _Playlist_UUID: '',
-    //   _Model_Type: 'DS310',
-    //   _Interactive: true,
-    //   Hardware: {
-    //     GPIOSettings: {
-    //       GPIO: [
-    //         {
-    //           _gpio_number: 1,
-    //           _name: 'GPIO1',
-    //           _isEnabled: true,
-    //           _role: 'output',
-    //           _output_value: '0'
-    //         },
-    //         {
-    //           _gpio_number: 2,
-    //           _name: 'GPIO2',
-    //           _isEnabled: true,
-    //           _role: 'output',
-    //           _output_value: '0'
-    //         },
-    //         {
-    //           _gpio_number: 3,
-    //           _name: 'GPIO3',
-    //           _isEnabled: true,
-    //           _role: 'output',
-    //           _output_value: '0'
-    //         },
-    //         {
-    //           _gpio_number: 4,
-    //           _name: 'GPIO4',
-    //           _isEnabled: true,
-    //           _role: 'output',
-    //           _output_value: '0'
-    //         },
-    //         {
-    //           _gpio_number: 5,
-    //           _name: 'GPIO5',
-    //           _isEnabled: true,
-    //           _role: 'output',
-    //           _output_value: '0'
-    //         },
-    //         {
-    //           _gpio_number: 6,
-    //           _name: 'GPIO6',
-    //           _isEnabled: true,
-    //           _role: 'output',
-    //           _output_value: '0'
-    //         }
-    //       ]
-    //     },
-    //     Rs232Settings: {
-    //       Rs232: [
-    //         {
-    //           _id: 1,
-    //           _dataBits: 8,
-    //           _flowControl: 'None',
-    //           _stopBits: 1,
-    //           _baudRate: 9600,
-    //           _parity: 'None',
-    //           _rs232_type: 'string',
-    //           _interface: 'on_board',
-    //           _isEnabled: true
-    //         },
-    //         {
-    //           _id: 2,
-    //           _dataBits: 8,
-    //           _flowControl: 'None',
-    //           _stopBits: 1,
-    //           _baudRate: 9600,
-    //           _parity: 'None',
-    //           _rs232_type: 'hex',
-    //           _interface: 'usb',
-    //           _isEnabled: false
-    //         }
-    //       ]
-    //     },
-    //     TcpIpSettings: {
-    //       _local_port: 1234,
-    //       _isEnabled: false,
-    //       TcpIp: [
-    //         {
-    //           _id: 1,
-    //           _destination_ip: '192.168.1.1',
-    //           _destination_port: 1234,
-    //           _name: 'TCP Output1'
-    //         },
-    //         {
-    //           _id: 2,
-    //           _destination_ip: '192.168.1.1',
-    //           _destination_port: 2223,
-    //           _name: 'TCP Output2'
-    //         },
-    //         {
-    //           _id: 3,
-    //           _destination_ip: '192.168.1.1',
-    //           _destination_port: 4456,
-    //           _name: 'TCP Output3'
-    //         }
-    //       ]
-    //     }
-    //   },
-    //   Pages: {
-    //     Page: {
-    //       _Layout: '',
-    //       _Column: '',
-    //       _Row: '',
-    //       _Orientation: '', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
-    //       _FreeDesignerMode: 'false', // Grid -> false, Flexi -> true
-    //       _ID: 'Page 1',
-    //       _Description: '',
-    //       _SerialNumber: '', // 流水號 Page 1, Page 2 …沒用到
-    //       _AudioSource: '',
-    //       _BackgroundImageSize: '',
-    //       _BackgroundImage: '_BackgroundImage',
-    //       _BgMusicApplyToAll: '',
-    //       _BackgroundMusicUrl: '',
-    //       _BackgroundMusicSize: '',
-    //       _Script: '',
-    //       _BackgroundMusic: '',
-    //       Section: null
-    //     }
-    //   },
-    //   Timeline: {
-    //     _Looping: 'true',
-    //     Item: {
-    //       _Page: 'Page 1',
-    //       _Duration: '1800'
-    //     }
-    //   }
-    // },
     layout: {
       rowCount: '',
       colCount: '',
@@ -152,7 +18,7 @@ export const useLayoutStore = defineStore('layout', {
     }
   },
   actions: {
-    SetLayout(layoutNumber, layout) {
+    SetLayout(chooseLayout, layout) {
       const widgetStore = useWidgetListStore()
       const defaultData = layout.layout.map((e, Index) => ({
         x: e.x,
@@ -164,23 +30,22 @@ export const useLayoutStore = defineStore('layout', {
       this.layout = layout
       this.layout.layout = defaultData
       this.SetWidgetList()
-      widgetStore.SetRowCol(layoutNumber, layout)
+      widgetStore.SetRowCol(chooseLayout, layout)
     },
     SetWidgetList() {
       const widgetStore = useWidgetListStore()
       const Data = this.layout.layout
       // Section
       const Section = Data.map((e, i) => ({
+        _ID: i++,
+        _uuid: uid(),
         _Index: e.i,
         _X: e.x,
         _Y: e.y,
         _Z: 0,
         _Height: e.h,
         _Width: e.w,
-        _is169: '',
-        _SectionValid: 1,
-        _isFixedRatio: '',
-        _Script: '',
+        _isFixedRatio: 'false',
         _ContentType: '',
         Content: {
           _scaleType: '', // (View Type: Default), Stretch to fill region -> FIT_XY, Fit region -> FIT_CENTER, Scale to fill region -> CENTER_CROP
@@ -194,17 +59,18 @@ export const useLayoutStore = defineStore('layout', {
           _Live_Update_ID: '',
           _Detect_Picture_Orientation: 'false',
           _FloatIn_Direction: '',
-          _isVideoFillArea: '',
+          _isVideoFillArea: 'false',
           _Live_Update_Access_Way: '',
           _Live_Update_password: '',
-          _duration: '',
+          _duration: '10',
           _Live_Update_port: '',
           _Live_Update_Show_Status: '',
           AttachmentFiles: [],
           MediaItem: [],
           State: [
             {
-              _id: uid(),
+              _id: i++,
+              _uuid: uid(),
               _name: '',
               File: [],
               Event: []
@@ -212,8 +78,6 @@ export const useLayoutStore = defineStore('layout', {
           ]
         }
       }))
-      console.log('Section', Section)
-      widgetStore.SetRowCol(this.layoutNumber, this.layout)
       widgetStore.SetWidgetListData(Section)
     },
     SetCurrentSection(i) {

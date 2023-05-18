@@ -261,15 +261,13 @@ export default {
     toNew() {
       this.$router.push({ path: '/new' })
     },
-    toFlow() {
-      const layoutStore = useLayoutStore()
-      layoutStore.SetLayout(this.layoutNumber, this.currentGrid)
-
-      this.$router.push({ path: '/flow' })
-    },
     toHardware() {
       const layoutStore = useLayoutStore()
-      layoutStore.SetLayout(this.layoutNumber, this.currentGrid)
+      if (this.isChooseCustom) {
+        layoutStore.SetLayout('@Frame Designer@', this.currentGrid)
+      } else {
+        layoutStore.SetLayout('Landscape' + ' ' + this.layoutNumber, this.currentGrid)
+      }
 
       this.$router.push({ path: '/hardware' })
     },
@@ -282,11 +280,12 @@ export default {
     saveCustom() {
       const customGrid = this.$refs.customGrid.grid
 
-      this.toPickGrid()
       this.customGrid = customGrid
       this.currentGrid = customGrid
       this.currentCubeId = customGrid.layout[0].i
       this.isChooseCustom = true
+      this.lock = false
+      this.toPickGrid()
     },
     getMaxCommonDivisor(n1, n2) {
       return getMaxCommonDivisor(n1, n2)

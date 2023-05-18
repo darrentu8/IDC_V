@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-12">
       <div class="row flex q-pb-lg q-mb-md border-w"
-        v-for="(state, Index) in widgetListData[currentSection].Content.State" :key="state._id">
+        v-for="(state, Index) in widgetListData[currentSection].Content.State" :key="state._uuid">
         <div :class="[widgetListData[currentSection]._ContentType ? 'col-3' : 'col-3']">
           <q-card bordered class="q-mt-lg q-mx-auto cursor-pointer flowBox">
             <img size="lg" src="~assets/icon/mark.svg" class="q-mt-xs flag" />
@@ -20,7 +20,7 @@
             </q-card-section>
             <!-- 刪除 -->
             <div v-if="currentStateLength > 1" class="absolute-right del-card">
-              <q-btn size="sm" class="" color="negative" round dense icon="clear" @click="delState(state._id)" />
+              <q-btn size="sm" class="" color="negative" round dense icon="clear" @click="delState(state._uuid)" />
             </div>
           </q-card>
         </div>
@@ -46,7 +46,7 @@ const widgetStore = useWidgetListStore()
 const widgetListData = computed(() => widgetStore.GetWidgetListData)
 const currentStateLength = computed(() => widgetStore.GetCurrentStateLength)
 const currentSection = computed(() => layoutStore.GetCurrentSection)
-const delState = (id) => {
+const delState = (uuid) => {
   $q.dialog({
     component: DelDialog,
     componentProps: {
@@ -56,7 +56,7 @@ const delState = (id) => {
       cancelBtn: 'cancel'
     }
   }).onOk(() => {
-    widgetStore.DelState(id)
+    widgetStore.DelState(uuid)
   }).onCancel(() => {
     console.log('Cancel')
   }).onDismiss(() => {

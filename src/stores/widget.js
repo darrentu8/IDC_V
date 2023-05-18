@@ -191,11 +191,11 @@ export const useWidgetListStore = defineStore('widgetList', {
           _Layout: '',
           _Column: '',
           _Row: '',
-          _Orientation: '', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
+          _Orientation: '0', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
           _FreeDesignerMode: 'false', // Grid -> false, Flexi -> true
           _ID: 'Page 1',
           _Description: '',
-          _SerialNumber: '', // 流水號 Page 1, Page 2 …沒用到
+          _SerialNumber: 'Page 1', // 流水號 Page 1, Page 2 …沒用到
           _AudioSource: '',
           _BackgroundImageSize: '0',
           _BackgroundImage: '',
@@ -211,7 +211,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _Z: 0,
               _Height: '',
               _Width: '',
-              _isFixedRatio: '',
+              _isFixedRatio: 'false',
               _ContentType: '',
               Content: {
                 _scaleType: '',
@@ -505,10 +505,10 @@ export const useWidgetListStore = defineStore('widgetList', {
       this.currentStateId = ''
       eventStore.SetCurrentEvent('')
     },
-    SetRowCol(layoutNumber, data) {
+    SetRowCol(chooseLayout, data) {
       this.NovoDS.Pages.Page._Row = data.rowCount
       this.NovoDS.Pages.Page._Column = data.colCount
-      this.NovoDS.Pages.Page._Layout = layoutNumber
+      this.NovoDS.Pages.Page._Layout = chooseLayout
     },
     // Section
     SetWidgetListData(data) {
@@ -741,16 +741,16 @@ export const useWidgetListStore = defineStore('widgetList', {
       const Data = this.NovoDS.Pages.Page.Section[currentSection].Content.State.filter(e => e._id !== ID)
       this.NovoDS.Pages.Page.Section[currentSection].Content.State = Data
     },
-    DelState(ID) {
+    DelState(UUID) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
       // 刪除 ID 對應的物件
-      this.NovoDS.Pages.Page.Section[currentSection].Content.State = this.NovoDS.Pages.Page.Section[currentSection].Content.State.filter((state) => state._id !== ID)
+      this.NovoDS.Pages.Page.Section[currentSection].Content.State = this.NovoDS.Pages.Page.Section[currentSection].Content.State.filter((state) => state._uuid !== UUID)
 
       // 過濾掉 Event 的 _stateId 與 ID 相同的物件
       this.NovoDS.Pages.Page.Section[currentSection].Content.State.forEach((state) => {
         if (state.Event && state.Event.length > 0) {
-          const events = state.Event.filter((event) => event._stateId !== ID)
+          const events = state.Event.filter((event) => event._stateId !== UUID)
           state.Event = events
         }
       })

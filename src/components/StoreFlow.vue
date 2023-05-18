@@ -1,6 +1,6 @@
 <template>
   <div class="col-6">
-    <div v-for="(stateData, Index) in calcDiff(widgetListData[currentSection].Content.State)" :key="stateData._id"
+    <div v-for="(stateData, Index) in calcDiff(widgetListData[currentSection].Content.State)" :key="stateData._uuid"
       class="flowBoxWrap border-w">
       <div class="row justify-center items-top q-pt-md">
         <!-- Flow Labels -->
@@ -20,7 +20,7 @@
             </q-card-section>
             <!-- 刪除 -->
             <div v-if="currentStateLength > 1" class="absolute-right del-card">
-              <q-btn size="sm" class="" color="negative" round dense icon="clear" @click="delState(stateData._id)" />
+              <q-btn size="sm" class="" color="negative" round dense icon="clear" @click="delState(stateData._uuid)" />
             </div>
           </q-card>
         </div>
@@ -98,7 +98,7 @@
       </div>
       <!-- 刪除 state -->
       <!-- <div v-if="currentStateLength > 1" class="absolute-right q-ma-xs">
-        <q-btn class="" color="grey" round flat dense icon="clear" @click="delState(stateData._id)" />
+        <q-btn class="" color="grey" round flat dense icon="clear" @click="delState(stateData._uuid)" />
       </div> -->
     </div>
   </div>
@@ -144,7 +144,7 @@ const setCurrentEvent = (stateIndex, EventDataStateId, eventId) => {
 const addStateEvent = (Index) => {
   widgetStore.AddStateEvent(Index)
 }
-const delState = (ID) => {
+const delState = (UUID) => {
   $q.dialog({
     component: DelDialog,
     componentProps: {
@@ -154,14 +154,14 @@ const delState = (ID) => {
       cancelBtn: 'cancel'
     }
   }).onOk(() => {
-    widgetStore.DelState(ID)
+    widgetStore.DelState(UUID)
   }).onCancel(() => {
     console.log('Cancel')
   }).onDismiss(() => {
     console.log('Called on OK or Cancel')
   })
 }
-const delAllStateEvent = (ID, Index, EventIndex) => {
+const delAllStateEvent = (UUID, Index, EventIndex) => {
   $q.dialog({
     component: DelDialog,
     componentProps: {
@@ -171,7 +171,7 @@ const delAllStateEvent = (ID, Index, EventIndex) => {
       cancelBtn: 'cancel'
     }
   }).onOk(() => {
-    widgetStore.DelAllStateEvent(ID, Index, EventIndex)
+    widgetStore.DelAllStateEvent(UUID, Index, EventIndex)
   }).onCancel(() => {
     console.log('Cancel')
   }).onDismiss(() => {
