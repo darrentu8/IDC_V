@@ -20,7 +20,8 @@
             </q-card-section>
             <!-- 刪除 -->
             <div v-if="currentStateLength > 1" class="absolute-right del-card">
-              <q-btn size="sm" class="" color="negative" round dense icon="clear" @click="delState(state._uuid)" />
+              <q-btn size="sm" class="" color="negative" round dense icon="clear"
+                @click="delState(state._uuid, state._id)" />
             </div>
           </q-card>
         </div>
@@ -56,7 +57,7 @@ const lockState = computed(() => widgetStore.GetLockState)
 const widgetListData = computed(() => widgetStore.GetWidgetListData)
 const currentStateLength = computed(() => widgetStore.GetCurrentStateLength)
 const currentSection = computed(() => layoutStore.GetCurrentSection)
-const delState = (uuid) => {
+const delState = (stateUUID, stateID) => {
   $q.dialog({
     component: DelDialog,
     componentProps: {
@@ -66,7 +67,7 @@ const delState = (uuid) => {
       cancelBtn: 'cancel'
     }
   }).onOk(() => {
-    widgetStore.DelState(uuid)
+    widgetStore.DelState(stateUUID, stateID)
   }).onCancel(() => {
     console.log('Cancel')
   }).onDismiss(() => {

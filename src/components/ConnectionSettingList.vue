@@ -9,7 +9,7 @@
       <div v-if="stateEventData.length">
         <div class="row col-12" v-for="(EventData, EventIndex) in transformEventData(stateEventData, currentStateId)"
           :key="EventData._id">
-          <div v-if="EventData._stateId === currentStateId" class="row border-b col-12 q-pl-sm q-pb-md">
+          <div v-if="EventData._next_state_id === currentStateId" class="row border-b col-12 q-pl-sm q-pb-md">
             <div class="row col-12 items-top">
               <div class="col-6">
                 <div class="col-12">
@@ -208,7 +208,7 @@ const delEvent = (EventId) => {
 function transformEventData(eventData, currentStateId) {
   console.log('eventData', eventData)
   console.log('currentStateId', currentStateId)
-  const resultEvent = eventData.filter(obj => obj._stateId === currentStateId)
+  const resultEvent = eventData.filter(obj => obj._next_state_id === currentStateId)
 
   console.log('resultEvent', resultEvent)
   return resultEvent

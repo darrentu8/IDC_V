@@ -361,13 +361,11 @@ export const useWidgetListStore = defineStore('widgetList', {
         if (e._name === '') {
           return {
             _id: e._id,
-            _stateIndex: i,
             _name: 'State' + ' ' + (i + 1)
           }
         } else {
           return {
             _id: e._id,
-            _stateIndex: i,
             _name: e._name
           }
         }
@@ -544,7 +542,8 @@ export const useWidgetListStore = defineStore('widgetList', {
     SetCurrentStateId(ID) {
       this.currentStateId = ID
     },
-    SetFlowState(Index, EventId, currentStateData) {
+    SetFlowState(Index, EventId, selectStateData) {
+      console.log('selectStateData', selectStateData)
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
       const eventIndex = this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event.findIndex((event) => {
@@ -555,16 +554,15 @@ export const useWidgetListStore = defineStore('widgetList', {
           _id: this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event[eventIndex]._id,
           _type: '',
           _conId: '',
-          _stateId: currentStateData._id,
-          _next_state_id: currentStateData._stateIndex
+          _next_state_id: selectStateData._id
         }
       }
     },
-    SetCurrentEventData(stateIndex, stateId, eventId) {
-      // console.log('stateId', stateId)
+    SetCurrentEventData(stateIndex, next_state_id, eventId) {
+      // console.log('next_state_id', next_state_id)
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      const Data = this.NovoDS.Pages.Page.Section[currentSection].Content.State[stateIndex].Event.filter(e => e._stateId === stateId)
+      const Data = this.NovoDS.Pages.Page.Section[currentSection].Content.State[stateIndex].Event.filter(e => e._next_state_id === next_state_id)
       this.stateEventData = Data
       // console.log('stateEventData', Data)
     },
@@ -630,8 +628,6 @@ export const useWidgetListStore = defineStore('widgetList', {
       const newState = {
         _id: maxId + 1,
         _uuid: uid(),
-        // File: [],
-        // Event: [],
         _name: 'State' + ' ' + (maxId + 1)
       }
 
@@ -663,9 +659,9 @@ export const useWidgetListStore = defineStore('widgetList', {
         return
       }
 
-      const { _next_state_id: id, _stateId: stateId } = this.stateEventData[0]
+      const { _next_state_id: id } = this.stateEventData[0]
 
-      if (id === undefined || stateId === undefined) {
+      if (id === undefined) {
         console.error('Error: Missing required properties from stateEventData')
         return
       }
@@ -682,7 +678,6 @@ export const useWidgetListStore = defineStore('widgetList', {
         _id: uid(),
         _type: '',
         _conId: '',
-        _stateId: stateId,
         _next_state_id: id,
         Action: []
       }
@@ -799,16 +794,18 @@ export const useWidgetListStore = defineStore('widgetList', {
       const Data = this.NovoDS.Pages.Page.Section[currentSection].Content.State.filter(e => e._id !== ID)
       this.NovoDS.Pages.Page.Section[currentSection].Content.State = Data
     },
-    DelState(UUID, _id) {
+    DelState(stateUUID, stateID) {
+      console.log('stateUUID', stateUUID)
+      console.log('stateID', stateID)
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
       // 刪除 ID 對應的物件
-      this.NovoDS.Pages.Page.Section[currentSection].Content.State = this.NovoDS.Pages.Page.Section[currentSection].Content.State.filter((state) => state._uuid !== UUID)
+      this.NovoDS.Pages.Page.Section[currentSection].Content.State = this.NovoDS.Pages.Page.Section[currentSection].Content.State.filter((state) => state._uuid !== stateUUID)
 
-      // 過濾掉 Event 的 _stateId 與 ID 相同的物件
+      // 過濾掉 Event 的 _next_state_id 與 ID 相同的物件
       this.NovoDS.Pages.Page.Section[currentSection].Content.State.forEach((state) => {
         if (state.Event && state.Event.length > 0) {
-          const events = state.Event.filter((event) => event._next_state_id !== _id)
+          const events = state.Event.filter((event) => event._next_state_id !== stateID)
           state.Event = events
         }
       })
@@ -820,10 +817,10 @@ export const useWidgetListStore = defineStore('widgetList', {
       const Data = this.NovoDS.Pages.Page.Section[currentSection].Content.State.filter(e => e._id !== ID)
       this.NovoDS.Pages.Page.Section[currentSection].Content.State = Data
     },
-    DelAllStateEvent(ID, Index, EventIndex) {
+    DelAllStateEvent(next_state_id, Index, EventIndex) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      const Data = this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event.filter(e => e._stateId !== ID)
+      const Data = this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event.filter(e => e._next_state_id !== next_state_id)
       this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event = Data
       this.ResetWidgetListData()
     },
@@ -833,6 +830,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       const Data = this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event.filter(e => e._id !== ID)
       this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event = Data
     },
+    //待修復刪除Event[0]link會失焦
     DelEvent(EventId) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
@@ -842,6 +840,7 @@ export const useWidgetListStore = defineStore('widgetList', {
         const Data = this.stateEventData.filter(event => event._id !== EventId)
         this.stateEventData = Data
         if (!this.stateEventData.length) {
+          console.log('Data', Data)
           this.ResetWidgetListData()
         }
       } else {

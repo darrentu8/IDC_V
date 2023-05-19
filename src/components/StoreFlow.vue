@@ -32,12 +32,12 @@
               <div>
                 <!-- 有Event -->
                 <div v-if="stateData">
-                  <div v-for="(EventData, EventIndex) in transformEventData(stateData.Event)" :key="EventData._uuid"
+                  <div v-for="(EventData, EventIndex) in transformEventData(stateData.Event)" :key="EventData._id"
                     class="flex items-center q-mb-md">
                     <div class="q-mr-md q-ml-lg">
                       <!-- link -->
                       <q-btn v-if="currentEvent === EventData._id" :disable="EventData._next_state_id === ''"
-                        @click="setCurrentEvent(Index, EventData._stateId, EventData._id)" unelevated
+                        @click="setCurrentEvent(Index, EventData._next_state_id, EventData._id)" unelevated
                         class="border-round-select" text-color="white" color="primary" round><img
                           src="~assets/icon/link.svg" />
                         <q-badge color="primary" class="link-badge" floating>{{ EventData._sameNextStateIdCount ?
@@ -45,7 +45,7 @@
                         }}</q-badge>
                       </q-btn>
                       <q-btn v-else :disable="EventData._next_state_id === ''"
-                        @click="setCurrentEvent(Index, EventData._stateId, EventData._id)" unelevated
+                        @click="setCurrentEvent(Index, EventData._next_state_id, EventData._id)" unelevated
                         class="border-round-select" text-color="white" color="grey-6" round><img
                           src="~assets/icon/link.svg" />
                         <q-badge color="primary" class="link-badge" floating>{{ EventData._sameNextStateIdCount ?
@@ -61,28 +61,28 @@
                           mapCurrentStateOptions(EventData._next_state_id) }}</div>
                       <q-btn v-else flat class="full-width full-heigth theme-border" color=" grey-6" icon="add" />
                       <q-popup-edit v-model="EventData._next_state_id" v-slot="scope" class="theme-border">
-                        <q-select v-model="scope.value" :options="filterCurrentStateOptions(stateData)"
-                          option-value="_stateIndex" option-label="_name" dense autofocus
+                        <q-select v-model="scope.value" :options="filterCurrentStateOptions(stateData)" option-value="_id"
+                          option-label="_name" dense autofocus
                           @update:model-value="setFlowState(Index, EventData._id, scope.value)" />
                       </q-popup-edit>
                       <!-- 刪除 -->
                       <div class="absolute-right del-card">
                         <q-btn size="sm" class="" color="negative" round dense icon="clear"
-                          @click.stop="delAllStateEvent(EventData._stateId, Index, EventIndex)" />
+                          @click.stop="delAllStateEvent(EventData._next_state_id, Index, EventIndex)" />
                       </div>
                     </q-card>
                     <q-card v-else bordered class="flowBox q-ml-md select">
                       <q-btn flat size="16px" class="full-width full-heigth theme-border ellipsis-2-lines maxW"
                         color="grey-5" icon="add" />
                       <q-popup-edit v-model="EventData._next_state_id" v-slot="scope" class="theme-border">
-                        <q-select v-model="scope.value" :options="currentStateOptions" option-value="_stateIndex"
+                        <q-select v-model="scope.value" :options="currentStateOptions" option-value="_id"
                           option-label="_name" dense autofocus
                           @update:model-value="setFlowState(Index, EventIndex, scope.value)" />
                       </q-popup-edit>
                       <!-- 刪除 -->
                       <div class="absolute-right del-card" style="pointer-events: none;">
                         <q-btn size="sm" class="" color="negative" round dense icon="clear"
-                          @click.stop="delAllStateEvent(EventData._stateId, Index, EventIndex)" />
+                          @click.stop="delAllStateEvent(EventData._next_state_id, Index, EventIndex)" />
                       </div>
                     </q-card>
                   </div>
@@ -133,15 +133,14 @@ const widgetListData = computed(() => widgetStore.GetWidgetListData)
 // const setCurrentState = (Index) => {
 //   widgetStore.SetCurrentState(Index)
 // }
-const setFlowState = (Index, EventIndex = 0, currentStateData) => {
-  widgetStore.SetFlowState(Index, EventIndex, currentStateData)
+const setFlowState = (Index, EventIndex = 0, selectStateData) => {
+  widgetStore.SetFlowState(Index, EventIndex, selectStateData)
   popEdit.value = false
 }
-const setCurrentEvent = (stateIndex, EventDataStateId, eventId) => {
-  console.log('EventDataStateId', EventDataStateId)
+const setCurrentEvent = (stateIndex, next_state_id, eventId) => {
   widgetStore.SetCurrentState(stateIndex)
-  widgetStore.SetCurrentStateId(EventDataStateId)
-  widgetStore.SetCurrentEventData(stateIndex, EventDataStateId, eventId)
+  widgetStore.SetCurrentStateId(next_state_id)
+  widgetStore.SetCurrentEventData(stateIndex, next_state_id, eventId)
   eventStore.SetCurrentEvent(eventId)
 }
 const addStateEvent = (Index) => {
@@ -164,7 +163,7 @@ const delState = (UUID, _id) => {
     console.log('Called on OK or Cancel')
   })
 }
-const delAllStateEvent = (UUID, Index, EventIndex) => {
+const delAllStateEvent = (next_state_id, Index, EventIndex) => {
   $q.dialog({
     component: DelDialog,
     componentProps: {
@@ -174,7 +173,7 @@ const delAllStateEvent = (UUID, Index, EventIndex) => {
       cancelBtn: 'cancel'
     }
   }).onOk(() => {
-    widgetStore.DelAllStateEvent(UUID, Index, EventIndex)
+    widgetStore.DelAllStateEvent(next_state_id, Index, EventIndex)
   }).onCancel(() => {
     console.log('Cancel')
   }).onDismiss(() => {
@@ -182,8 +181,8 @@ const delAllStateEvent = (UUID, Index, EventIndex) => {
   })
 }
 const mapCurrentStateOptions = computed(() => {
-  return function (stateIndex) {
-    const Data = currentStateOptions.value.filter(e => e._stateIndex === stateIndex)
+  return function (next_state_id) {
+    const Data = currentStateOptions.value.filter(e => e._id === next_state_id)
     console.log('Data', Data)
     if (Data && Data.length) {
       return Data[0]._name
@@ -196,7 +195,7 @@ const filterCurrentStateOptions = computed(() => {
   return function (stateData) {
     console.log('stateData', stateData)
     const differentIdElements = currentStateOptions.value.filter(
-      option => !stateData.Event.some(event => event._stateId === option._id)
+      option => !stateData.Event.some(event => event._next_state_id === option._id)
     )
     return differentIdElements
   }
