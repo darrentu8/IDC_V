@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div v-if="widgetListData[currentSection].Content.State.length" class="col-12">
+    <div v-if="widgetListData[currentSection].Content.State" class="col-12">
       <div class="row flex q-pb-lg q-mb-md border-w"
         v-for="(state, Index) in widgetListData[currentSection].Content.State" :key="state._uuid">
         <div :class="[widgetListData[currentSection]._ContentType ? 'col-3' : 'col-3']">
@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    <div v-else class="justify-center flex items-center full-width" style="height: 200px;">
+    <div v-if="lockState" class="justify-center flex items-center full-width" style="height: 200px;">
       <div class="text-grey-6 flex flex-center items-center full-height" style="margin-top: -30px;">
         <q-icon size="md" name="info" />
         <span class="q-ml-md" style="font-size: 16px;">
@@ -51,6 +51,7 @@ import useQuasar from 'quasar/src/composables/use-quasar.js'
 const $q = useQuasar()
 const layoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
+const lockState = computed(() => widgetStore.GetLockState)
 const widgetListData = computed(() => widgetStore.GetWidgetListData)
 const currentStateLength = computed(() => widgetStore.GetCurrentStateLength)
 const currentSection = computed(() => layoutStore.GetCurrentSection)

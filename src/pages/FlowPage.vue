@@ -22,8 +22,8 @@
         <q-tab name="flow" label="Story Flow" style="text-transform: capitalize;">
           <img class="q-ml-xs" src="~assets/icon/flow.svg" />
         </q-tab>
-        <q-btn v-if="tab === 'source'" :disable="lockState" label="Add new state" @click="addState()" flat
-          class="theme-tab-btn" color="primary" icon="add">
+        <q-btn v-if="tab === 'source'" label="Add new state" @click="addState()" flat class="theme-tab-btn"
+          color="primary" icon="add">
         </q-btn>
       </q-tabs>
 
