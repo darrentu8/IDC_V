@@ -2,7 +2,7 @@
   <q-page :class="['items-start', tab === 'source' ? 'col-12 row' : 'col-6 row']">
     <div v-if="!lockState" class="fixed fixed-full full-width full-height absolute-right absolute-top"
       style="background-color: rgb(238 238 238 / 60%);z-index:100;">
-      <div class="text-grey-7 flex flex-center items-center full-height" style="margin-top: -30px;">
+      <div class="text-primary flex flex-center items-center full-height" style="margin-top: -30px;">
         <q-icon size="lg" name="info" />
         <span class="q-ml-md" style="font-size: 16px;">
           Please select the widget type on the left.

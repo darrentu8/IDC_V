@@ -21,7 +21,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _gpio_number: 1,
               _uuid: uid(),
               _name: 'GPIO1',
-              _isEnabled: true,
+              _isEnabled: false,
               _role: 'keyevent',
               _key_action: 'up'
             },
@@ -29,7 +29,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _gpio_number: 2,
               _uuid: uid(),
               _name: 'GPIO2',
-              _isEnabled: true,
+              _isEnabled: false,
               _role: 'keyevent',
               _key_action: 'down'
             },
@@ -45,7 +45,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _gpio_number: 4,
               _uuid: uid(),
               _name: 'GPIO4',
-              _isEnabled: true,
+              _isEnabled: false,
               _role: 'output',
               _output_value: '0'
             },
@@ -53,7 +53,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _gpio_number: 5,
               _uuid: uid(),
               _name: 'GPIO5',
-              _isEnabled: true,
+              _isEnabled: false,
               _role: 'output',
               _output_value: '0'
             },
@@ -61,7 +61,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _gpio_number: 6,
               _uuid: uid(),
               _name: 'GPIO6',
-              _isEnabled: true,
+              _isEnabled: false,
               _role: 'output',
               _output_value: '0'
             }
@@ -77,7 +77,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _baudRate: 9600,
               _parity: 'None',
               _interface: 'on_board',
-              _isEnabled: true,
+              _isEnabled: false,
               Command: [
                 {
                   _id: 0,
@@ -96,7 +96,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _baudRate: 9600,
               _parity: 'None',
               _interface: 'usb',
-              _isEnabled: true,
+              _isEnabled: false,
               Command: [
                 {
                   _id: 0,
@@ -343,36 +343,37 @@ export const useWidgetListStore = defineStore('widgetList', {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
       const content = this.NovoDS.Pages.Page.Section[currentSection].Content
-
-      if (!content.State) {
-        content.State = []
+      if (content.State) {
+        return content.State.length
+      } else {
+        return 0
       }
-
-      return content.State.length || 0
     },
     GetCurrentStateOptions() {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      console.log('currentSection', currentSection)
-      console.log('this.NovoDS.Pages.Page.Section[currentSection].Content.State', this.NovoDS.Pages.Page.Section[currentSection].Content.State)
-      if (currentSection !== null) {
-        const oData = this.NovoDS.Pages.Page.Section[currentSection].Content.State.map((e, i) => {
-          if (e._name === '') {
-            return {
-              _id: e._id,
-              _stateIndex: i,
-              _name: 'State' + ' ' + (i + 1)
-            }
-          } else {
-            return {
-              _id: e._id,
-              _stateIndex: i,
-              _name: e._name
-            }
-          }
-        })
-        return oData
+
+      if (!Array.isArray(this.NovoDS.Pages.Page.Section[currentSection].Content.State) || this.NovoDS.Pages.Page.Section[currentSection].Content.State.length === 0) {
+        return []
       }
+
+      const stateOptionData = this.NovoDS.Pages.Page.Section[currentSection].Content.State.map((e, i) => {
+        if (e._name === '') {
+          return {
+            _id: e._id,
+            _stateIndex: i,
+            _name: 'State' + ' ' + (i + 1)
+          }
+        } else {
+          return {
+            _id: e._id,
+            _stateIndex: i,
+            _name: e._name
+          }
+        }
+      })
+
+      return stateOptionData
     },
     GetCurrentStateSelectedEvent() {
       const layoutStore = useLayoutStore()
@@ -380,8 +381,13 @@ export const useWidgetListStore = defineStore('widgetList', {
 
       if (currentSection !== null) {
         const content = this.NovoDS.Pages.Page.Section[currentSection].Content
-        const events = content.State[this.currentState]?.Event || []
+        const state = content.State
 
+        if (!Array.isArray(state) || state.length === 0 || state[this.currentState] === undefined) {
+          return []
+        }
+
+        const events = state[this.currentState].Event || []
         const selectedEvents = [].concat(...events).filter(Boolean).map(event => event._conId)
         return selectedEvents
       }
@@ -395,22 +401,27 @@ export const useWidgetListStore = defineStore('widgetList', {
       const curentEventID = eventStore.GetCurrentEventID
 
       if (currentSection !== undefined && curentEventID !== undefined) {
-        const events = this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState]?.Event || []
+        const state = this.NovoDS.Pages.Page.Section[currentSection].Content.State
+
+        if (!Array.isArray(state) || state.length === 0 || state[this.currentState] === undefined) {
+          return []
+        }
+
+        const events = state[this.currentState].Event || []
         const eventIndex = events.findIndex((event) => {
           return event._id === curentEventID
         })
 
-        // console.log('eventIndex', eventIndex)
         if (eventIndex !== -1) {
           const actions = events[eventIndex].Action
           const selectedActions = [].concat(...actions).filter(Boolean).map(action => action._conId)
-          // console.log('selectedActions', selectedActions)
           return selectedActions
         }
       }
 
       return []
     }
+
   },
   actions: {
     // 設置xml產生的單一物件改成陣列
@@ -500,10 +511,10 @@ export const useWidgetListStore = defineStore('widgetList', {
     },
     // Section
     ResetWidgetListData() {
-      console.log('ResetWidgetListData')
+      // console.log('ResetWidgetListData')
       const eventStore = useEventListStore()
       this.stateEventData = []
-      console.log('this.stateEventData', this.stateEventData)
+      // console.log('this.stateEventData', this.stateEventData)
       this.currentStateId = ''
       eventStore.SetCurrentEvent('')
     },
@@ -520,11 +531,11 @@ export const useWidgetListStore = defineStore('widgetList', {
     },
     SetLoading(val) {
       this.loading = val
-      console.log('this.loading', this.loading)
+      // console.log('this.loading', this.loading)
     },
     SetWidget(Index, ContentType) {
-      console.log('Index', Index)
-      console.log('ContentType', ContentType)
+      // console.log('Index', Index)
+      // console.log('ContentType', ContentType)
       this.NovoDS.Pages.Page.Section[Index]._ContentType = ContentType
     },
     SetCurrentState(Index) {
@@ -545,18 +556,17 @@ export const useWidgetListStore = defineStore('widgetList', {
           _type: '',
           _conId: '',
           _stateId: currentStateData._id,
-          _next_state_id: currentStateData._stateIndex,
-          Action: []
+          _next_state_id: currentStateData._stateIndex
         }
       }
     },
     SetCurrentEventData(stateIndex, stateId, eventId) {
-      console.log('stateId', stateId)
+      // console.log('stateId', stateId)
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
       const Data = this.NovoDS.Pages.Page.Section[currentSection].Content.State[stateIndex].Event.filter(e => e._stateId === stateId)
       this.stateEventData = Data
-      console.log('stateEventData', Data)
+      // console.log('stateEventData', Data)
     },
     SetEvent(EventData, _conId) {
       const layoutStore = useLayoutStore()
@@ -565,7 +575,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       const currentSection = layoutStore.currentSection
       const selectOptionDataIndex = eventOpionData.findIndex(eventOption => eventOption._uuid === _conId)
       const eventArr = this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState].Event
-      console.log('selectOptionDataIndex', selectOptionDataIndex)
+      // console.log('selectOptionDataIndex', selectOptionDataIndex)
       if (selectOptionDataIndex === undefined) {
         return
       }
@@ -588,11 +598,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       const currentSection = layoutStore.currentSection
       const selectOptionDataIndex = actionOptions.findIndex(actionOption => actionOption._uuid === _conId)
       const actionArr = this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState].Event[EventIndex].Action
-      console.log('EventIndex', EventIndex)
-      console.log('actionData', actionData)
-      console.log('_conId', _conId)
-      console.log('selectOptionDataIndex', selectOptionDataIndex)
-      if (EventIndex === undefined || selectOptionDataIndex === undefined) {
+      if (EventIndex === undefined || selectOptionDataIndex === undefined || actionArr === undefined || actionArr.length === 0) {
         return
       }
 
@@ -659,7 +665,7 @@ export const useWidgetListStore = defineStore('widgetList', {
 
       const { _next_state_id: id, _stateId: stateId } = this.stateEventData[0]
 
-      if (!id || !stateId) {
+      if (id === undefined || stateId === undefined) {
         console.error('Error: Missing required properties from stateEventData')
         return
       }
@@ -735,15 +741,22 @@ export const useWidgetListStore = defineStore('widgetList', {
           _targetPath: e._targetPath
         }))
 
-      const newFileArray = fileDatas.filter((e) => !fileSrcs.includes(e._src))
-        .map((e) => ({
-          _src: e._src,
-          _type: e._type,
-          _duration: e._duration,
-          _videoDuration: '0',
-          _fileSize: e._fileSize,
-          _targetPath: e._targetPath
-        }))
+      const newFileArray = fileDatas
+        .filter((e) => !fileSrcs.includes(e._src))
+        .map((e) => {
+          if (e._type === 'video') {
+            return {
+              _src: e._src,
+              _fileSize: e._fileSize
+            }
+          } else {
+            return {
+              _src: e._src,
+              _duration: e._duration,
+              _fileSize: e._fileSize
+            }
+          }
+        })
 
       // Concatenate the new content and file arrays with the existing ones
       if (mediaItemsExist) {

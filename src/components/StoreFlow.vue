@@ -1,105 +1,107 @@
 <template>
   <div class="col-6">
-    <div v-for="(stateData, Index) in calcDiff(widgetListData[currentSection].Content.State)" :key="stateData._uuid"
-      class="flowBoxWrap border-w">
-      <div class="row justify-center items-top q-pt-md">
-        <!-- Flow Labels -->
-        <div class="flex text-center" style="min-height: 139px;">
-          <q-chip v-if="Index == 0" class="q-mr-md" text-color="white" color="grey-5"
-            style="margin-top:35px;margin-left: -20px;">Default</q-chip>
-          <q-chip v-else class="q-mr-md" text-color="white" color="grey-5"
-            style="margin-top:35px;margin-left: -20px;">Flow {{ Index
-            }}</q-chip>
-          <q-card bordered class="flowBox">
-            <img src="~assets/icon/mark.svg" class="q-mt-xs flag" />
-            <q-card-section v-if="stateData._name !== ''" class="q-pa-xs">
-              <div class="text-subtitle2 ellipsis-2-lines maxW">{{ stateData._name }}</div>
-            </q-card-section>
-            <q-card-section v-else class="q-pa-xs">
-              <div class="text-subtitle2 ellipsis-2-lines maxW">State {{ Number(Index + 1) }}</div>
-            </q-card-section>
-            <!-- 刪除 -->
-            <div v-if="currentStateLength > 1" class="absolute-right del-card">
-              <q-btn size="sm" class="" color="negative" round dense icon="clear" @click="delState(stateData._uuid)" />
-            </div>
-          </q-card>
-        </div>
-        <!-- Flow Events -->
-        <div class="no-wrap">
-          <div class="flex items-center">
-            <div>
-              <!-- 有Event -->
-              <div v-if="stateData">
-                <div v-for="(EventData, EventIndex) in transformEventData(stateData.Event)" :key="EventData._id"
-                  class="flex items-center q-mb-md">
-                  <div class="q-mr-md q-ml-lg">
-                    <!-- link -->
-                    <q-btn v-if="currentEvent === EventData._id" :disable="EventData._next_state_id === ''"
-                      @click="setCurrentEvent(Index, EventData._stateId, EventData._id)" unelevated
-                      class="border-round-select" text-color="white" color="primary" round><img
-                        src="~assets/icon/link.svg" />
-                      <q-badge color="primary" class="link-badge" floating>{{ EventData._sameNextStateIdCount ?
-                        EventData._sameNextStateIdCount : 0
-                      }}</q-badge>
-                    </q-btn>
-                    <q-btn v-else :disable="EventData._next_state_id === ''"
-                      @click="setCurrentEvent(Index, EventData._stateId, EventData._id)" unelevated
-                      class="border-round-select" text-color="white" color="grey-6" round><img
-                        src="~assets/icon/link.svg" />
-                      <q-badge color="primary" class="link-badge" floating>{{ EventData._sameNextStateIdCount ?
-                        EventData._sameNextStateIdCount : 0
-                      }}</q-badge>
-                    </q-btn>
-                  </div>
-                  <!-- state -->
-                  <q-card v-if="EventData._next_state_id !== undefined" bordered class="flowBox q-ml-md select">
-                    <img v-if="EventData._next_state_id !== ''" src="~assets/icon/mark.svg" class="q-mt-xs flag" />
-                    <div v-if="EventData._next_state_id !== ''"
-                      class="cursor-pointer text-subtitle2 ellipsis-2-lines maxW">{{
-                        mapCurrentStateOptions(EventData._next_state_id) }}</div>
-                    <q-btn v-else flat class="full-width full-heigth theme-border" color=" grey-6" icon="add" />
-                    <q-popup-edit v-model="EventData._next_state_id" v-slot="scope" class="theme-border">
-                      <q-select v-model="scope.value" :options="filterCurrentStateOptions(stateData)"
-                        option-value="_stateIndex" option-label="_name" dense autofocus
-                        @update:model-value="setFlowState(Index, EventData._id, scope.value)" />
-                    </q-popup-edit>
-                    <!-- 刪除 -->
-                    <div class="absolute-right del-card">
-                      <q-btn size="sm" class="" color="negative" round dense icon="clear"
-                        @click.stop="delAllStateEvent(EventData._stateId, Index, EventIndex)" />
-                    </div>
-                  </q-card>
-                  <q-card v-else bordered class="flowBox q-ml-md select">
-                    <q-btn flat size="16px" class="full-width full-heigth theme-border ellipsis-2-lines maxW"
-                      color="grey-5" icon="add" />
-                    <q-popup-edit v-model="EventData._next_state_id" v-slot="scope" class="theme-border">
-                      <q-select v-model="scope.value" :options="currentStateOptions" option-value="_stateIndex"
-                        option-label="_name" dense autofocus
-                        @update:model-value="setFlowState(Index, EventIndex, scope.value)" />
-                    </q-popup-edit>
-                    <!-- 刪除 -->
-                    <div class="absolute-right del-card" style="pointer-events: none;">
-                      <q-btn size="sm" class="" color="negative" round dense icon="clear"
-                        @click.stop="delAllStateEvent(EventData._stateId, Index, EventIndex)" />
-                    </div>
-                  </q-card>
-                </div>
+    <div v-if="widgetListData[currentSection].Content.State">
+      <div v-for="(stateData, Index) in calcDiff(widgetListData[currentSection].Content.State)" :key="stateData._uuid"
+        class="flowBoxWrap border-w">
+        <div class="row justify-center items-top q-pt-md">
+          <!-- Flow Labels -->
+          <div class="flex text-center" style="min-height: 139px;">
+            <q-chip v-if="Index == 0" class="q-mr-md" text-color="white" color="grey-5"
+              style="margin-top:35px;margin-left: -20px;">Default</q-chip>
+            <q-chip v-else class="q-mr-md" text-color="white" color="grey-5"
+              style="margin-top:35px;margin-left: -20px;">Flow {{ Index
+              }}</q-chip>
+            <q-card bordered class="flowBox">
+              <img src="~assets/icon/mark.svg" class="q-mt-xs flag" />
+              <q-card-section v-if="stateData._name !== ''" class="q-pa-xs">
+                <div class="text-subtitle2 ellipsis-2-lines maxW">{{ stateData._name }}</div>
+              </q-card-section>
+              <q-card-section v-else class="q-pa-xs">
+                <div class="text-subtitle2 ellipsis-2-lines maxW">State {{ Number(Index + 1) }}</div>
+              </q-card-section>
+              <!-- 刪除 -->
+              <div v-if="currentStateLength > 1" class="absolute-right del-card">
+                <q-btn size="sm" class="" color="negative" round dense icon="clear" @click="delState(stateData._uuid)" />
               </div>
-              <!-- Add Flow Btn -->
-              <div
-                v-if="stateData._emptyNextStateCount < 1 && stateData._uniqueNextStateIdsCount + 1 <= stateData._totalStateDataLength"
-                flat square class="q-mb-md text-center" style="margin-top:30px;width:200px;">
-                <q-btn @click="addStateEvent(Index)" unelevated round dense color="grey-2" text-color="grey-6"
-                  icon="add" />
+            </q-card>
+          </div>
+          <!-- Flow Events -->
+          <div class="no-wrap">
+            <div class="flex items-center">
+              <div>
+                <!-- 有Event -->
+                <div v-if="stateData">
+                  <div v-for="(EventData, EventIndex) in transformEventData(stateData.Event)" :key="EventData._id"
+                    class="flex items-center q-mb-md">
+                    <div class="q-mr-md q-ml-lg">
+                      <!-- link -->
+                      <q-btn v-if="currentEvent === EventData._id" :disable="EventData._next_state_id === ''"
+                        @click="setCurrentEvent(Index, EventData._stateId, EventData._id)" unelevated
+                        class="border-round-select" text-color="white" color="primary" round><img
+                          src="~assets/icon/link.svg" />
+                        <q-badge color="primary" class="link-badge" floating>{{ EventData._sameNextStateIdCount ?
+                          EventData._sameNextStateIdCount : 0
+                        }}</q-badge>
+                      </q-btn>
+                      <q-btn v-else :disable="EventData._next_state_id === ''"
+                        @click="setCurrentEvent(Index, EventData._stateId, EventData._id)" unelevated
+                        class="border-round-select" text-color="white" color="grey-6" round><img
+                          src="~assets/icon/link.svg" />
+                        <q-badge color="primary" class="link-badge" floating>{{ EventData._sameNextStateIdCount ?
+                          EventData._sameNextStateIdCount : 0
+                        }}</q-badge>
+                      </q-btn>
+                    </div>
+                    <!-- state -->
+                    <q-card v-if="EventData._next_state_id !== undefined" bordered class="flowBox q-ml-md select">
+                      <img v-if="EventData._next_state_id !== ''" src="~assets/icon/mark.svg" class="q-mt-xs flag" />
+                      <div v-if="EventData._next_state_id !== ''"
+                        class="cursor-pointer text-subtitle2 ellipsis-2-lines maxW">{{
+                          mapCurrentStateOptions(EventData._next_state_id) }}</div>
+                      <q-btn v-else flat class="full-width full-heigth theme-border" color=" grey-6" icon="add" />
+                      <q-popup-edit v-model="EventData._next_state_id" v-slot="scope" class="theme-border">
+                        <q-select v-model="scope.value" :options="filterCurrentStateOptions(stateData)"
+                          option-value="_stateIndex" option-label="_name" dense autofocus
+                          @update:model-value="setFlowState(Index, EventData._id, scope.value)" />
+                      </q-popup-edit>
+                      <!-- 刪除 -->
+                      <div class="absolute-right del-card">
+                        <q-btn size="sm" class="" color="negative" round dense icon="clear"
+                          @click.stop="delAllStateEvent(EventData._stateId, Index, EventIndex)" />
+                      </div>
+                    </q-card>
+                    <q-card v-else bordered class="flowBox q-ml-md select">
+                      <q-btn flat size="16px" class="full-width full-heigth theme-border ellipsis-2-lines maxW"
+                        color="grey-5" icon="add" />
+                      <q-popup-edit v-model="EventData._next_state_id" v-slot="scope" class="theme-border">
+                        <q-select v-model="scope.value" :options="currentStateOptions" option-value="_stateIndex"
+                          option-label="_name" dense autofocus
+                          @update:model-value="setFlowState(Index, EventIndex, scope.value)" />
+                      </q-popup-edit>
+                      <!-- 刪除 -->
+                      <div class="absolute-right del-card" style="pointer-events: none;">
+                        <q-btn size="sm" class="" color="negative" round dense icon="clear"
+                          @click.stop="delAllStateEvent(EventData._stateId, Index, EventIndex)" />
+                      </div>
+                    </q-card>
+                  </div>
+                </div>
+                <!-- Add Flow Btn -->
+                <div
+                  v-if="stateData._emptyNextStateCount < 1 && stateData._uniqueNextStateIdsCount + 1 <= stateData._totalStateDataLength"
+                  flat square class="q-mb-md text-center" style="margin-top:30px;width:200px;">
+                  <q-btn @click="addStateEvent(Index)" unelevated round dense color="grey-2" text-color="grey-6"
+                    icon="add" />
+                </div>
               </div>
             </div>
           </div>
         </div>
+        <!-- 刪除 state -->
+        <!-- <div v-if="currentStateLength > 1" class="absolute-right q-ma-xs">
+          <q-btn class="" color="grey" round flat dense icon="clear" @click="delState(stateData._uuid)" />
+        </div> -->
       </div>
-      <!-- 刪除 state -->
-      <!-- <div v-if="currentStateLength > 1" class="absolute-right q-ma-xs">
-        <q-btn class="" color="grey" round flat dense icon="clear" @click="delState(stateData._uuid)" />
-      </div> -->
     </div>
   </div>
   <DelDialog />

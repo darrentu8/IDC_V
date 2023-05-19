@@ -50,21 +50,11 @@ export const useLayoutStore = defineStore('layout', {
         Content: {
           _showType: 'Default',
           _scaleType: 'stretchToFillRegion',
-          _Live_Update_Frequency: '',
-          _MuteVideo: '',
-          _Live_Update_type: '',
-          _Live_Update_type_storage: '',
-          _Live_Update_userName: '',
-          _Live_Update_path: '',
-          _Live_Update_ID: '',
+          _Live_Update_type: '0',
           _Detect_Picture_Orientation: 'false',
-          _FloatIn_Direction: '',
+          _FloatIn_Direction: '0',
           _isVideoFillArea: 'false',
-          _Live_Update_Access_Way: '',
-          _Live_Update_password: '',
-          _duration: '10',
-          _Live_Update_port: '21',
-          _Live_Update_Show_Status: ''
+          _duration: '10'
         }
       }))
       widgetStore.SetWidgetListData(Section)

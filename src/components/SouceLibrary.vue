@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    <div v-if="lockState && !widgetListData[currentSection].Content.State.length"
+    <div v-if="lockState && !widgetListData[currentSection].Content.State"
       class="justify-center flex items-center full-width" style="height: 200px;">
       <div class="text-grey-6 flex flex-center items-center full-height" style="margin-top: -30px;">
         <q-icon size="md" name="info" />
