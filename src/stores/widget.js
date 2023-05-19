@@ -632,7 +632,7 @@ export const useWidgetListStore = defineStore('widgetList', {
         _uuid: uid(),
         // File: [],
         // Event: [],
-        _name: ''
+        _name: 'State' + ' ' + (maxId + 1)
       }
 
       stateArray.push(newState)
@@ -799,7 +799,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       const Data = this.NovoDS.Pages.Page.Section[currentSection].Content.State.filter(e => e._id !== ID)
       this.NovoDS.Pages.Page.Section[currentSection].Content.State = Data
     },
-    DelState(UUID) {
+    DelState(UUID, _id) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
       // 刪除 ID 對應的物件
@@ -808,7 +808,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       // 過濾掉 Event 的 _stateId 與 ID 相同的物件
       this.NovoDS.Pages.Page.Section[currentSection].Content.State.forEach((state) => {
         if (state.Event && state.Event.length > 0) {
-          const events = state.Event.filter((event) => event._stateId !== UUID)
+          const events = state.Event.filter((event) => event._next_state_id !== _id)
           state.Event = events
         }
       })

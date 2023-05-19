@@ -21,7 +21,8 @@
               </q-card-section>
               <!-- 刪除 -->
               <div v-if="currentStateLength > 1" class="absolute-right del-card">
-                <q-btn size="sm" class="" color="negative" round dense icon="clear" @click="delState(stateData._uuid)" />
+                <q-btn size="sm" class="" color="negative" round dense icon="clear"
+                  @click="delState(stateData._uuid, stateData._id)" />
               </div>
             </q-card>
           </div>
@@ -31,7 +32,7 @@
               <div>
                 <!-- 有Event -->
                 <div v-if="stateData">
-                  <div v-for="(EventData, EventIndex) in transformEventData(stateData.Event)" :key="EventData._id"
+                  <div v-for="(EventData, EventIndex) in transformEventData(stateData.Event)" :key="EventData._uuid"
                     class="flex items-center q-mb-md">
                     <div class="q-mr-md q-ml-lg">
                       <!-- link -->
@@ -146,7 +147,7 @@ const setCurrentEvent = (stateIndex, EventDataStateId, eventId) => {
 const addStateEvent = (Index) => {
   widgetStore.AddStateEvent(Index)
 }
-const delState = (UUID) => {
+const delState = (UUID, _id) => {
   $q.dialog({
     component: DelDialog,
     componentProps: {
@@ -156,7 +157,7 @@ const delState = (UUID) => {
       cancelBtn: 'cancel'
     }
   }).onOk(() => {
-    widgetStore.DelState(UUID)
+    widgetStore.DelState(UUID, _id)
   }).onCancel(() => {
     console.log('Cancel')
   }).onDismiss(() => {
@@ -184,7 +185,7 @@ const mapCurrentStateOptions = computed(() => {
   return function (stateIndex) {
     const Data = currentStateOptions.value.filter(e => e._stateIndex === stateIndex)
     console.log('Data', Data)
-    if (Data) {
+    if (Data && Data.length) {
       return Data[0]._name
     } else {
       return ''
