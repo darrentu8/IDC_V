@@ -48,8 +48,8 @@ export const useLayoutStore = defineStore('layout', {
         _isFixedRatio: 'false',
         _ContentType: '',
         Content: {
-          _scaleType: '', // (View Type: Default), Stretch to fill region -> FIT_XY, Fit region -> FIT_CENTER, Scale to fill region -> CENTER_CROP
-          _showType: '', // Default, Ken Burns Effect, Card Flip, Zoom In, Fade In, Fly In, Float In, Fly Out, Rotate
+          _showType: 'Default',
+          _scaleType: 'stretchToFillRegion',
           _Live_Update_Frequency: '',
           _MuteVideo: '',
           _Live_Update_type: '',
@@ -63,19 +63,8 @@ export const useLayoutStore = defineStore('layout', {
           _Live_Update_Access_Way: '',
           _Live_Update_password: '',
           _duration: '10',
-          _Live_Update_port: '',
-          _Live_Update_Show_Status: '',
-          AttachmentFiles: [],
-          MediaItem: [],
-          State: [
-            {
-              _id: i++,
-              _uuid: uid(),
-              _name: '',
-              File: [],
-              Event: []
-            }
-          ]
+          _Live_Update_port: '21',
+          _Live_Update_Show_Status: ''
         }
       }))
       widgetStore.SetWidgetListData(Section)

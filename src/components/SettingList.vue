@@ -10,23 +10,20 @@
         option-label="text">
       </q-select> -->
       <q-item-label header class="q-pa-none q-mb-sm">View Type</q-item-label>
-      <q-select :disable="!widgetListData[currentSection]._ContentType" bg-color="white" emit-value map-options outlined
-        rounded dense v-model="widgetListData[currentSection].Content._showType" :options="WidgetOptions.showTypeChoice"
+      <q-select bg-color="white" emit-value map-options outlined rounded dense
+        v-model="widgetListData[currentSection].Content._showType" :options="WidgetOptions.showTypeChoice"
         option-value="value" option-label="value" label="View Type" class="q-mb-md" />
       <q-item-label header class="q-pa-none q-mb-sm">Scale type</q-item-label>
-      <q-select :disable="!widgetListData[currentSection]._ContentType" bg-color="white" emit-value map-options outlined
-        rounded dense v-model="widgetListData[currentSection].Content._scaleType" :options="WidgetOptions.scaleTypeChoice"
+      <q-select bg-color="white" emit-value map-options outlined rounded dense
+        v-model="widgetListData[currentSection].Content._scaleType" :options="WidgetOptions.scaleTypeChoice"
         option-value="value" option-label="value" label="Scale type" class="q-mb-md" />
-      <q-checkbox :disable="!widgetListData[currentSection]._ContentType"
-        v-model="widgetListData[currentSection].Content._Detect_Picture_Orientation" label="Detect picture orientatioin"
-        color="" />
-      <q-checkbox :disable="!widgetListData[currentSection]._ContentType"
-        v-model="widgetListData[currentSection].Content._isVideoFillArea" label="Stretch video to fill region" color="" />
+      <q-checkbox v-model="Dpo" label="Detect picture orientatioin" color="" />
+      <q-checkbox v-model="Ifa" label="Stretch video to fill region" color="" />
     </div>
     <div v-else class="justify-center flex items-center" style="height: 200px;">
-      <div class="text-grey">
+      <!-- <div class="text-grey">
         Please select a widget first
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -44,6 +41,32 @@ const widgetListData = computed(() => widgetStore.GetWidgetListData)
 export default defineComponent({
   name: 'SettingList',
   components: {
+  },
+  computed: {
+    Dpo: {
+      get() {
+        const layoutStore = useLayoutStore()
+        const currentSection = layoutStore.currentSection
+        return JSON.parse(widgetStore.NovoDS.Pages.Page.Section[currentSection].Content._Detect_Picture_Orientation)
+      },
+      set(newValue) {
+        const layoutStore = useLayoutStore()
+        const currentSection = layoutStore.currentSection
+        widgetStore.NovoDS.Pages.Page.Section[currentSection].Content._Detect_Picture_Orientation = newValue
+      }
+    },
+    Ifa: {
+      get() {
+        const layoutStore = useLayoutStore()
+        const currentSection = layoutStore.currentSection
+        return JSON.parse(widgetStore.NovoDS.Pages.Page.Section[currentSection].Content._isVideoFillArea)
+      },
+      set(newValue) {
+        const layoutStore = useLayoutStore()
+        const currentSection = layoutStore.currentSection
+        widgetStore.NovoDS.Pages.Page.Section[currentSection].Content._isVideoFillArea = newValue
+      }
+    }
   },
   setup() {
     return {

@@ -214,8 +214,8 @@ export const useWidgetListStore = defineStore('widgetList', {
               _isFixedRatio: 'false',
               _ContentType: '',
               Content: {
-                _scaleType: '',
-                _showType: '',
+                _showType: 'Default',
+                _scaleType: 'stretchToFillRegion',
                 _Live_Update_Frequency: '',
                 _MuteVideo: '',
                 _Live_Update_type: '',
@@ -228,8 +228,8 @@ export const useWidgetListStore = defineStore('widgetList', {
                 _isVideoFillArea: 'false',
                 _Live_Update_Access_Way: '',
                 _Live_Update_password: '',
-                _duration: '',
-                _Live_Update_port: '',
+                _duration: '10',
+                _Live_Update_port: '21',
                 _Live_Update_Show_Status: '',
                 AttachmentFiles: {
                   File: null
@@ -312,20 +312,6 @@ export const useWidgetListStore = defineStore('widgetList', {
         ]
       }
     ],
-    StateData: {
-      _id: '',
-      _name: 'State',
-      File: [],
-      Event: []
-    },
-    EventData: {
-      _type: '',
-      _next_state_id: '',
-      Action: []
-    },
-    ActionData: {
-      _type: ''
-    },
     currentState: 0,
     currentStateId: '',
     currentWidget: {},
@@ -335,6 +321,11 @@ export const useWidgetListStore = defineStore('widgetList', {
   getters: {
     GetLoading() {
       return this.loading
+    },
+    GetLockState() {
+      const layoutStore = useLayoutStore()
+      const currentSection = layoutStore.currentSection
+      return this.NovoDS.Pages.Page.Section[currentSection]._ContentType
     },
     GetWidgetListData() {
       return this.NovoDS.Pages.Page.Section
@@ -351,7 +342,13 @@ export const useWidgetListStore = defineStore('widgetList', {
     GetCurrentStateLength() {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      return this.NovoDS.Pages.Page.Section[currentSection].Content.State.length
+      const content = this.NovoDS.Pages.Page.Section[currentSection].Content
+
+      if (!content.State) {
+        content.State = []
+      }
+
+      return content.State.length || 0
     },
     GetCurrentStateOptions() {
       const layoutStore = useLayoutStore()
@@ -382,7 +379,9 @@ export const useWidgetListStore = defineStore('widgetList', {
       const currentSection = layoutStore.currentSection
 
       if (currentSection !== null) {
-        const events = this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState].Event
+        const content = this.NovoDS.Pages.Page.Section[currentSection].Content
+        const events = content.State[this.currentState]?.Event || []
+
         const selectedEvents = [].concat(...events).filter(Boolean).map(event => event._conId)
         return selectedEvents
       }
@@ -395,16 +394,19 @@ export const useWidgetListStore = defineStore('widgetList', {
       const currentSection = layoutStore.currentSection
       const curentEventID = eventStore.GetCurrentEventID
 
-      const eventIndex = this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState].Event.findIndex((event) => {
-        return event._id === curentEventID
-      })
+      if (currentSection !== undefined && curentEventID !== undefined) {
+        const events = this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState]?.Event || []
+        const eventIndex = events.findIndex((event) => {
+          return event._id === curentEventID
+        })
 
-      console.log('eventIndex', eventIndex)
-      if (eventIndex !== -1 && currentSection !== null) {
-        const actions = this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState].Event[eventIndex].Action
-        const selectedActions = [].concat(...actions).filter(Boolean).map(action => action._conId)
-        console.log('selectedActions', selectedActions)
-        return selectedActions
+        // console.log('eventIndex', eventIndex)
+        if (eventIndex !== -1) {
+          const actions = events[eventIndex].Action
+          const selectedActions = [].concat(...actions).filter(Boolean).map(action => action._conId)
+          // console.log('selectedActions', selectedActions)
+          return selectedActions
+        }
       }
 
       return []
@@ -608,37 +610,68 @@ export const useWidgetListStore = defineStore('widgetList', {
     AddState() {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      const arr = this.NovoDS.Pages.Page.Section[currentSection].Content.State
-      let getLastNumber = Math.max(...arr.map(p => p._id))
-      if (getLastNumber === 0) {
-        getLastNumber = 1
+      const content = this.NovoDS.Pages.Page.Section[currentSection].Content
+
+      if (!content.State) {
+        content.State = []
       }
-      this.NovoDS.Pages.Page.Section[currentSection].Content.State.push({
-        _id: uid(),
-        File: [],
-        Event: [],
+      const stateArray = content.State
+
+      // 取得 _id 的最大值，若無則設為 0
+      const maxId = stateArray.reduce((max, state) => Math.max(max, state._id), 0)
+
+      // 新增 State 物件
+      const newState = {
+        _id: maxId + 1,
+        _uuid: uid(),
+        // File: [],
+        // Event: [],
         _name: ''
-      })
-      console.log('this.NovoDS.Pages.Page.Section[currentSection].Content', this.NovoDS.Pages.Page.Section[currentSection].Content)
+      }
+
+      stateArray.push(newState)
     },
     AddStateEvent(Index) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
+
+      if (!this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index]) {
+        console.log(`Error: State ${Index} doesn't exist`)
+        return
+      }
+
+      if (!Array.isArray(this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event)) {
+        this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event = []
+      }
+
       this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event.push({
         _id: uid(),
         _type: '',
         _conId: '',
-        _next_state_id: '',
-        Action: []
+        _next_state_id: ''
       })
     },
     AddStateEventSame(currentState) {
-      const id = this.stateEventData[0]._next_state_id
-      const stateId = this.stateEventData[0]._stateId
-      console.log('id', id)
-      console.log('stateId', stateId)
+      if (!Array.isArray(this.stateEventData) || this.stateEventData.length === 0) {
+        console.error('Error: stateEventData is not defined or has no data')
+        return
+      }
+
+      const { _next_state_id: id, _stateId: stateId } = this.stateEventData[0]
+
+      if (!id || !stateId) {
+        console.error('Error: Missing required properties from stateEventData')
+        return
+      }
+
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
+
+      if (!this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentState]) {
+        console.log(`Error: State ${currentState} doesn't exist`)
+        return
+      }
+
       const pushData = {
         _id: uid(),
         _type: '',
@@ -647,16 +680,28 @@ export const useWidgetListStore = defineStore('widgetList', {
         _next_state_id: id,
         Action: []
       }
+
       this.stateEventData.push(pushData)
       this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentState].Event.push(pushData)
     },
     AddAction(EventId) {
-      console.log('EventId', EventId)
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
-      const eventIndex = this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState].Event.findIndex(event => event._id === EventId)
+      const currentState = this.currentState
+
+      if (!this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentState]) {
+        console.log(`Error: State ${currentState} doesn't exist`)
+        return
+      }
+
+      const eventIndex = this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentState].Event.findIndex(event => event._id === EventId)
+
       if (eventIndex !== -1) { // If the event with specified id was found
-        this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState].Event[eventIndex].Action.push({
+        if (!Array.isArray(this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentState].Event[eventIndex].Action)) {
+          this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentState].Event[eventIndex].Action = []
+        }
+
+        this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentState].Event[eventIndex].Action.push({
           _id: uid(),
           _type: '',
           _conId: ''

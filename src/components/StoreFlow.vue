@@ -198,7 +198,12 @@ const filterCurrentStateOptions = computed(() => {
     return differentIdElements
   }
 })
-function calcDiff(stateData) {
+function calcDiff(stateData = null) {
+  if (!stateData || stateData.length === 0) {
+    console.log('Error: stateData is not defined or empty')
+    return null
+  }
+
   const totalLength = stateData.length
 
   stateData = stateData.map(item => {
@@ -229,8 +234,14 @@ function calcDiff(stateData) {
   console.log('stateData', stateData)
   return stateData
 }
-function transformEventData(EventData) {
+function transformEventData(EventData = {}) {
   console.log('transformEventData', EventData)
+
+  if (!Array.isArray(EventData) || EventData.length === 0) {
+    console.log('Error: EventData is not an array or is empty')
+    return []
+  }
+
   const result = EventData.reduce((acc, obj) => {
     if (obj._next_state_id === '') {
       acc.push({ ...obj, _sameNextStateIdCount: 1 })
@@ -244,5 +255,6 @@ function transformEventData(EventData) {
   console.log('result', result)
   return result
 }
+
 </script>
 <style lang="scss"></style>

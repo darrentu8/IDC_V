@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="col-12">
+    <div v-if="widgetListData[currentSection].Content.State.length" class="col-12">
       <div class="row flex q-pb-lg q-mb-md border-w"
         v-for="(state, Index) in widgetListData[currentSection].Content.State" :key="state._uuid">
         <div :class="[widgetListData[currentSection]._ContentType ? 'col-3' : 'col-3']">
@@ -27,6 +27,14 @@
         <div class="col-9 q-px-md">
           <SourceManager :File="state.File" :currentStateIndex='Index' />
         </div>
+      </div>
+    </div>
+    <div v-else class="justify-center flex items-center full-width" style="height: 200px;">
+      <div class="text-grey-6 flex flex-center items-center full-height" style="margin-top: -30px;">
+        <q-icon size="md" name="info" />
+        <span class="q-ml-md" style="font-size: 16px;">
+          Please add a state first.
+        </span>
       </div>
     </div>
   </div>
