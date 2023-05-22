@@ -49,7 +49,7 @@ export const useLayoutStore = defineStore('layout', {
         _ContentType: '',
         Content: {
           _showType: 'Default',
-          _scaleType: 'stretchToFillRegion',
+          _scaleType: 'FIT_XY',
           _Live_Update_type: '0',
           _Detect_Picture_Orientation: 'false',
           _FloatIn_Direction: '0',

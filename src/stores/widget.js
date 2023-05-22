@@ -215,7 +215,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _ContentType: '',
               Content: {
                 _showType: 'Default',
-                _scaleType: 'stretchToFillRegion',
+                _scaleType: 'FIT_XY',
                 _Live_Update_Frequency: '',
                 _MuteVideo: '',
                 _Live_Update_type: '',
@@ -830,7 +830,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       const Data = this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event.filter(e => e._id !== ID)
       this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event = Data
     },
-    //待修復刪除Event[0]link會失焦
+    // 待修復刪除Event[0]link會失焦
     DelEvent(EventId) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection

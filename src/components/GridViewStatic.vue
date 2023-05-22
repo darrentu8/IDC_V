@@ -4,12 +4,12 @@
       <grid-layout :layout="viewLayout" :col-num="viewColCount" :maxRows="viewRowCount"
         :row-height="(viewWidth * 1080 / 1920) / viewRowCount" :is-draggable="false" :is-resizable="false"
         :vertical-compact="true" :margin="[0, 0]">
-        <grid-item static v-for="(item, index) in viewLayout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i"
+        <grid-item static v-for="(item) in viewLayout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i"
           :key="item.i">
           <div class="fit">
             <div class="bg-grey-3 flex flex-center" :class="{ 'is-selected': selected }"
               style="width: calc(100% - 3px); height: calc(100% - 3px);border-radius: 2px;">
-              <div v-if="!isCustom"> {{ index + 1 }}</div>
+              <div v-if="!isCustom"></div>
             </div>
           </div>
         </grid-item>

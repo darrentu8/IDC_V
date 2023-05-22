@@ -2,7 +2,7 @@
   "name": "idc-vue",
   "version": "0.0.1",
   "description": "A Quasar Project",
-  "productName": "Interactive Editor",
+  "productName": "Interactive Playlist Editor",
   "author": "darren <darrentu8@gmail.com>",
   "private": true,
   "scripts": {

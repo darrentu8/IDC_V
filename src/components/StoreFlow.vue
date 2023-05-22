@@ -87,12 +87,12 @@
                     </q-card>
                   </div>
                 </div>
-                <!-- Add Flow Btn -->
-                <div
-                  v-if="stateData._emptyNextStateCount < 1 && stateData._uniqueNextStateIdsCount + 1 <= stateData._totalStateDataLength"
-                  flat square class="q-mb-md text-center" style="margin-top:30px;width:200px;">
-                  <q-btn @click="addStateEvent(Index)" unelevated round dense color="grey-2" text-color="grey-6"
-                    icon="add" />
+                <div class="empty">
+                  <q-card class="flowBox select"
+                    v-if="stateData._emptyNextStateCount < 1 && stateData._uniqueNextStateIdsCount + 1 <= stateData._totalStateDataLength">
+                    <q-btn flat size="16px" class="full-width full-heigth theme-border" color="grey-5"
+                      label="Define the next state" @click="addStateEvent(Index)" />
+                  </q-card>
                 </div>
               </div>
             </div>

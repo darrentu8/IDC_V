@@ -142,8 +142,20 @@
   &.select {
     height: 100px;
   }
-}
 
+}
+.empty{
+  width: 198px;
+  display: flex;
+  justify-content: flex-end;
+  .flowBox {
+   border: 2px dashed #BBBBBB80;
+   span {
+     text-transform: initial;
+   }
+
+}
+}
 .flowBoxAction {
   height: 138px;
 }

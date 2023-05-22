@@ -6,53 +6,53 @@ import {
 const showTypeChoice = [
   {
     value: Const_Media_ShowType.SHOW_TYPE_DEFAULT,
-    text: 'default'
+    text: 'Default'
   },
   {
     value: Const_Media_ShowType.SHOW_TYPE_KenBurnsEffect,
-    text: 'kenBurnsEffect'
+    text: 'Ken Burns Effect'
   },
   {
     value: Const_Media_ShowType.SHOW_TYPE_CARD_FLIP,
-    text: 'cardFlip'
+    text: 'Card Flip'
   },
   {
     value: Const_Media_ShowType.SHOW_TYPE_ZOOM_ANIMATION,
-    text: 'zoomIn'
+    text: 'Zoom In'
   },
   {
     value: Const_Media_ShowType.SHOW_TYPE_FADE_IN,
-    text: 'fadeIn'
+    text: 'Fade In'
   },
   {
     value: Const_Media_ShowType.SHOW_TYPE_FLY_IN,
-    text: 'flyIn'
+    text: 'Fly In'
   },
   {
     value: Const_Media_ShowType.SHOW_TYPE_FLOAT_IN,
-    text: 'floatIn'
+    text: 'Float In'
   },
   {
     value: Const_Media_ShowType.SHOW_TYPE_FLY_OUT,
-    text: 'flyOut'
+    text: 'Fly Out'
   },
   {
     value: Const_Media_ShowType.SHOW_TYPE_ROTATE,
-    text: 'rotate'
+    text: 'Rotate'
   }
 ]
 const scaleTypeChoice = [
   {
     value: Const_Media_ScaleType.SHOW_TYPE_FIT_XY,
-    text: 'stretchToFillRegion'
+    text: 'Stretch to fill region'
   },
   {
     value: Const_Media_ScaleType.SHOW_TYPE_FIT_CENTER,
-    text: 'fitRegion'
+    text: 'Fit region'
   },
   {
     value: Const_Media_ScaleType.SHOW_TYPE_CENTER_CROP,
-    text: 'scaleToFillRegion'
+    text: 'Scale to fill region'
   }
 ]
 export default {

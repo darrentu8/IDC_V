@@ -161,6 +161,11 @@ export default {
       grids: [
         {
           rowCount: 1,
+          colCount: 1,
+          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }]
+        },
+        {
+          rowCount: 1,
           colCount: 2,
           layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }]
         },
@@ -183,11 +188,6 @@ export default {
           rowCount: 2,
           colCount: 2,
           layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 2, i: uid() }]
-        },
-        {
-          rowCount: 1,
-          colCount: 1,
-          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }]
         },
         {
           rowCount: 2,
