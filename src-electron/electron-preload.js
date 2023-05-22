@@ -280,7 +280,10 @@ const isDuplicateFile = (targetPath) => {
 }
 const getSourceFolder = () => {
   const NovoFolder = getNovoFolder()
-  const SourceFolder = path.join(NovoFolder, '@_Temp_interactive')
+  const strftime = require('strftime')
+  const timestamp = strftime('%Y%m%d%H%M%S', new Date())
+  const newPlayListName = `PlayList_${timestamp}`
+  const SourceFolder = path.join(NovoFolder, '@_Temp_interactive_' + newPlayListName)
   if (!fs.existsSync(SourceFolder)) {
     fs.mkdirSync(SourceFolder)
   }
