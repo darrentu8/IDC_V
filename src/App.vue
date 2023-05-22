@@ -18,6 +18,7 @@ export default defineComponent({
       const loadData = await window.myAPI?.loadFile()
       if (loadData === 'OpenNew') {
         console.log('OpenNew')
+        window.myAPI?.watchJson()
       } else if (loadData !== 'OpenNew' && loadData) {
         widgetStore.SetNovoDS(loadData)
         window.myAPI?.watchJson()

@@ -35,7 +35,6 @@ import path from 'path'
 import fs from 'fs'
 import X2js from 'x2js'
 // import xml2js from 'xml2js'
-
 const novoDirName = 'NovoDS.PlayLists'
 
 contextBridge.exposeInMainWorld('myAPI', {
@@ -119,21 +118,15 @@ contextBridge.exposeInMainWorld('myAPI', {
             console.log('obj', obj)
             const propOpenNew = obj.OpenNew // 需要監聽的屬性名稱
             const propFilePath = obj.FilePath // 需要監聽的屬性名稱
-            if (propOpenNew === 'true') {
-              alert('OpenNew', propOpenNew)
+            if (propOpenNew === 'true' && !propFilePath) {
+              console.log('oOpenNewbj', propOpenNew)
+              // 呼叫主進程重新啟動應用程序
+              // ipcRenderer.send('app-restart')
             }
             if (propOpenNew === 'false' && propFilePath) {
-              // alert('propFilePath', propFilePath)
               const result = loadXMLTest(propFilePath)
               return result
             }
-            // switch (prop) {
-            //   case 'DS310':
-            //     console.log('DS310')
-            //     break
-            //   default:
-            //     console.log(`Property "property" has been modified: ${prop}`)
-            // }
           })
         }
       })
