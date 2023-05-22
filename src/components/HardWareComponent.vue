@@ -623,6 +623,12 @@ export default {
       }
     }
   },
+  setup() {
+    function hasChild(scope) {
+      return scope.opt.children.some(c => c.value === this.model)
+    }
+    return { hasChild }
+  },
   methods: {
     changeCurrentPIN(index) {
       this.currentPIN = index
@@ -779,9 +785,6 @@ export default {
       if (result === undefined) {
         this.loading = false
       }
-    },
-    hasChild(scope) {
-      return scope.opt.children.some(c => c.value === this.model)
     },
     SetPin(index, role, childValue) {
       this.GPIO[index]._role = role

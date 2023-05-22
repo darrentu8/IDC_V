@@ -220,7 +220,7 @@ export const useEventListStore = defineStore('eventList', {
         ?.filter(gpio => gpio && gpio._role !== 'output')
         ?.map(gpio => ({
           _uuid: gpio._uuid || uid(),
-          _name: gpio._gpio_number + ' ' + gpio._name,
+          _name: gpio._gpio_number + ' ' + gpio._name + ' ' + gpio._role + ' ' + gpio._key_action,
           _id: gpio._gpio_number,
           _isEnabled: gpio._isEnabled,
           _gpio_number: gpio._gpio_number,
@@ -288,7 +288,7 @@ export const useEventListStore = defineStore('eventList', {
         ?.filter(gpio => gpio && gpio._role === 'output')
         ?.map(gpio => ({
           _uuid: gpio._uuid || uid(),
-          _name: gpio._gpio_number + ' ' + gpio._name,
+          _name: gpio._gpio_number + ' ' + gpio._name + ' ' + gpio._role + ' ' + gpio._output_value,
           _id: gpio._gpio_number,
           _role: 'output',
           _isEnabled: gpio._isEnabled,

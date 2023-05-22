@@ -39,18 +39,10 @@
                   <div class="text-body2 q-mt-sm">Landscape</div>
                 </div>
               </div>
-              <div class="col" v-show="true">
+              <div class="col" v-show="false">
                 <div class="row">
                   <div class="col">
-                    <q-btn @click="loadJSONTest" color="grey-3" text-color="black" label="Load JSON Test"
-                      style="width: 140px;border-radius: 10px;" />
-                  </div>
-                  <div class="col">
                     <q-btn @click="loadXMLTest" color="grey-3" text-color="black" label="Load XML Test"
-                      style="width: 140px;border-radius: 10px;" />
-                  </div>
-                  <div class="col">
-                    <q-btn @click="exportFile" color="grey-3" text-color="black" label="Export XML Test"
                       style="width: 140px;border-radius: 10px;" />
                   </div>
                 </div>
@@ -134,7 +126,7 @@ export default {
     }
   },
   mounted() {
-    this.getFilePath()
+    // this.getFilePath()
   },
   methods: {
     getFilePath() {
@@ -142,13 +134,6 @@ export default {
     },
     toGrid() {
       this.$router.push({ path: '/grid' })
-    },
-    loadJSONTest() {
-      const testFileString = window.myAPI.loadJSONTest()
-      alert(testFileString)
-    },
-    exportFile() {
-      widgetStore.WriteToXml()
     }
   }
 }

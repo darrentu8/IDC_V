@@ -5,13 +5,13 @@ import { uid } from 'quasar'
 
 export const useWidgetListStore = defineStore('widgetList', {
   state: () => ({
+    fileData: null,
     nowPlayListName: '',
     nowPlayListFolder: '',
     NovoDS: {
       _Description: '',
       _Layout_Type: '0', // 0 -> Grid, 1 -> Flexible
       _Playlist_Name: '',
-      _Playlist_UUID: '',
       _Model_Type: 'DS310',
       _Interactive: true,
       Hardware: {
@@ -422,10 +422,24 @@ export const useWidgetListStore = defineStore('widgetList', {
 
   },
   actions: {
+    SetNewFilePath() {
+      const NowPlayListFolder = window.myAPI.setPlayListFolder()
+      console.log('NowPlayListFolder', NowPlayListFolder)
+      this.nowPlayListName = NowPlayListFolder.newPlayListName
+      this.nowPlayListFolder = NowPlayListFolder.PlayListFolder
+    },
+    SetLoadFileData(fileData) {
+      this.fileData = fileData
+      this.nowPlayListName = fileData.FileName
+      this.nowPlayListFolder = fileData.FilePath
+      this._Layout_Type = fileData.LayoutType
+      this._Model_Type = fileData.ModelType
+      this.NovoDS.Pages.Page._Orientation = fileData.Orientation
+      this.NovoDS.Pages.Page._FreeDesignerMode = 'false'
+    },
     // 設置xml產生的單一物件改成陣列
     SetNovoDS(data) {
-      const RawData = JSON.parse(JSON.stringify(data))
-
+      const RawData = JSON.parse(JSON.stringify(data.result))
       if (!RawData.NovoDS) {
         return false
       }
@@ -483,6 +497,10 @@ export const useWidgetListStore = defineStore('widgetList', {
       this.NovoDS = this.parseObject(RawData.NovoDS)
       console.log('this.NovoDS', this.NovoDS)
 
+      if (data.propFileData) {
+        console.log('data.propFileData', data.propFileData)
+        this.SetLoadFileData(data.propFileData)
+      }
       return true
     },
     parseObject(obj) {
@@ -500,12 +518,6 @@ export const useWidgetListStore = defineStore('widgetList', {
       })
 
       return obj
-    },
-    SetFilePath() {
-      const NowPlayListFolder = window.myAPI.setPlayListFolder()
-      console.log('NowPlayListFolder', NowPlayListFolder)
-      this.nowPlayListName = NowPlayListFolder.newPlayListName
-      this.nowPlayListFolder = NowPlayListFolder.PlayListFolder
     },
     // Section
     ResetWidgetListData() {
@@ -768,24 +780,24 @@ export const useWidgetListStore = defineStore('widgetList', {
 
       console.log('this.NovoDS.Pages.Page.Section[currentSection].Content', this.NovoDS.Pages.Page.Section[currentSection].Content)
     },
-    DelSourceList(currentStateIndex, fileName, sourceFile) {
+    DelSourceList(currentStateIndex, fileSrc, sourceFile) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
 
       // Remove file from State File array
       this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentStateIndex].File =
-        this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentStateIndex].File.filter(e => e._src !== fileName)
+        this.NovoDS.Pages.Page.Section[currentSection].Content.State[currentStateIndex].File.filter(e => e._src !== fileSrc)
 
       const existingFileInState = this.NovoDS.Pages.Page.Section.some(section =>
         section.Content?.State?.some(state =>
-          state.File?.some(file => file._src === fileName)))
+          state.File?.some(file => file._src === fileSrc)))
 
       if (!existingFileInState) {
         // Remove file from MediaItem array
         this.NovoDS.Pages.Page.Section[currentSection].Content.MediaItem =
-          this.NovoDS.Pages.Page.Section[currentSection].Content.MediaItem.filter(e => e._src !== fileName)
+          this.NovoDS.Pages.Page.Section[currentSection].Content.MediaItem.filter(e => e._src !== fileSrc)
         // Remove file from folder
-        window.myAPI.deleteFile(sourceFile)
+        window.myAPI.deleteFile(this.nowPlayListFolder, sourceFile)
       }
     },
     CheckDelStateObj(ID) {

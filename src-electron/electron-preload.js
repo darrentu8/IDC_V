@@ -36,13 +36,15 @@ import fs from 'fs'
 import X2js from 'x2js'
 // import xml2js from 'xml2js'
 
-const novoDirName = 'NovoDS Studio'
+const novoDirName = 'NovoDS.PlayLists'
 
 contextBridge.exposeInMainWorld('myAPI', {
   minimize() {
     BrowserWindow.getFocusedWindow().minimize()
   },
-
+  close() {
+    BrowserWindow.getFocusedWindow().close()
+  },
   toggleMaximize() {
     const win = BrowserWindow.getFocusedWindow()
 
@@ -63,82 +65,83 @@ contextBridge.exposeInMainWorld('myAPI', {
     }
     return { PlayListFolder, newPlayListName }
   },
-  close() {
-    BrowserWindow.getFocusedWindow().close()
-  },
-  watchJson: () => {
-    const fileName = 'interactive.json'
-
-    const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER)
-    const sourceFile = path.join(publicFolder, fileName)
-
-    const NovoFolder = getNovoFolder()
-
-    const targetFile = path.join(NovoFolder, fileName)
-    if (!fs.existsSync(targetFile)) {
-      fs.copyFileSync(sourceFile, targetFile)
-    }
-
-    console.log('targetFolder', targetFile)
-    fs.watch(targetFile, (eventType, filename) => {
-      if (filename && eventType === 'change') {
+  loadFile: () => {
+    return new Promise((resolve, reject) => {
+      const fileName = 'interactive.json'
+      const appPath = app.getAppPath()
+      console.log('appPath', appPath)
+      const targetFile = path.join(appPath, fileName)
+      if (!fs.existsSync(targetFile)) {
+        alert('Novo Ds Studio has not been installed.')
+        reject()
+      } else {
         fs.readFile(targetFile, 'utf8', (err, data) => {
           if (err) throw err
 
           const obj = JSON.parse(data)
           console.log('Run Watch Json')
           console.log('obj', obj)
-          const prop = obj.NovoDS._Model_Type // 需要監聽的屬性名稱
-          switch (prop) {
-            case 'DS310':
-              console.log('DS310')
-              break
-            default:
-              console.log(`Property "property" has been modified: ${prop}`)
+          const propOpenNew = obj.OpenNew // 需要監聽的屬性名稱
+          const propFileData = {
+            FileName: obj.FileName,
+            FilePath: obj.FilePath,
+            LayoutType: obj.LayoutType,
+            ModelType: obj.ModelType,
+            Orientation: obj.Orientation,
+            PlaylistType: obj.PlaylistType
+          }
+          if (propOpenNew === 'true') {
+            resolve('OpenNew')
+          }
+          if (propOpenNew === 'false' && propFileData.FilePath) {
+            const result = loadXMLTest(propFileData.FilePath)
+            console.log('result', result)
+            resolve({ result, propFileData })
           }
         })
       }
     })
   },
+  watchJson: () => {
+    const fileName = 'interactive.json'
+    const appPath = app.getAppPath()
+    console.log('appPath', appPath)
+    const targetFile = path.join(appPath, fileName)
+    if (fs.existsSync(targetFile)) {
+      console.log('targetFolder', targetFile)
+      fs.watch(targetFile, (eventType, filename) => {
+        if (filename && eventType === 'change') {
+          fs.readFile(targetFile, 'utf8', (err, data) => {
+            if (err) throw err
+
+            const obj = JSON.parse(data)
+            console.log('Run Watch Json')
+            console.log('obj', obj)
+            const propOpenNew = obj.OpenNew // 需要監聽的屬性名稱
+            const propFilePath = obj.FilePath // 需要監聽的屬性名稱
+            if (propOpenNew === 'true') {
+              alert('OpenNew', propOpenNew)
+            }
+            if (propOpenNew === 'false' && propFilePath) {
+              // alert('propFilePath', propFilePath)
+              const result = loadXMLTest(propFilePath)
+              return result
+            }
+            // switch (prop) {
+            //   case 'DS310':
+            //     console.log('DS310')
+            //     break
+            //   default:
+            //     console.log(`Property "property" has been modified: ${prop}`)
+            // }
+          })
+        }
+      })
+    }
+  },
   closeWatchJson: () => {
     this.watcher.close()
     console.log('Close watch Json')
-  },
-  loadJSONTest: () => {
-    const fileName = 'interactive.json'
-
-    const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER)
-    const sourceFile = path.join(publicFolder, fileName)
-
-    const NovoFolder = getNovoFolder()
-
-    const targetFile = path.join(NovoFolder, fileName)
-    if (!fs.existsSync(targetFile)) {
-      fs.copyFileSync(sourceFile, targetFile)
-    }
-
-    return fs.readFileSync(targetFile, 'utf8')
-  },
-  loadXMLTest: () => {
-    const fileName = 'index.xml'
-    const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER)
-    const sourceFile = path.join(publicFolder, fileName)
-
-    const NovoFolder = getNovoFolder()
-
-    const targetFile = path.join(NovoFolder, fileName)
-    if (!fs.existsSync(targetFile)) {
-      fs.copyFileSync(sourceFile, targetFile)
-    }
-
-    const x2js = new X2js({
-      attributePrefix: '_'
-    })
-
-    const xml = fs.readFileSync(targetFile, 'utf-8')
-    const parser = x2js.xml2js(xml)
-
-    return parser
   },
   storeToXML(nowPlayListFolder, NovoDsData) {
     const fileName = 'index.xml'
@@ -158,7 +161,7 @@ contextBridge.exposeInMainWorld('myAPI', {
     console.log('nowPlayListFolder', nowPlayListFolder)
     opn(nowPlayListFolder)
   },
-  chooseSources(nowPlayListFolder) {
+  chooseSources(nowPlayListFolder = '') {
     const sourcePaths = dialog.showOpenDialogSync({
       title: 'Choose Media',
       filters: [
@@ -167,28 +170,33 @@ contextBridge.exposeInMainWorld('myAPI', {
       properties: ['openFile', 'multiSelections']
     })
 
-    if (sourcePaths) {
-      // const sourceFolder = getSourceFolder()
-      const fileDataArray = []
-
-      sourcePaths.forEach((sourcePath) => {
-        const fileName = path.basename(sourcePath)
-        const targetPath = path.join(nowPlayListFolder, fileName)
-
-        if (!isDuplicateFile(targetPath)) {
-          try {
-            fs.copyFileSync(sourcePath, targetPath)
-            fileDataArray.push({ fileName, targetPath })
-          } catch (err) {
-            console.error(err)
-          }
-        } else {
-          fileDataArray.push({ fileName, targetPath })
-        }
-      })
-
-      return fileDataArray
+    if (!sourcePaths) {
+      return []
     }
+
+    const sourceFolder = getSourceFolder()
+    const fileDataArray = []
+
+    for (const sourcePath of sourcePaths) {
+      const fileName = path.basename(sourcePath)
+      const targetFolder = nowPlayListFolder || sourceFolder
+      const targetPath = path.join(targetFolder, fileName)
+      console.log('targetFolder', targetFolder)
+      const relativePath = path.relative(targetFolder, targetPath)
+
+      if (!isDuplicateFile(targetPath)) {
+        try {
+          fs.copyFileSync(sourcePath, targetPath)
+        } catch (err) {
+          console.error(err)
+          continue
+        }
+      }
+
+      fileDataArray.push({ fileName, targetPath, relativePath })
+    }
+
+    return fileDataArray
   },
   async getFileData(fileDatas) {
     const promises = fileDatas.map((fileData) => {
@@ -201,7 +209,7 @@ contextBridge.exposeInMainWorld('myAPI', {
             _videoDuration: '0',
             _fileSize: stats.size,
             _src: fileData.fileName,
-            _targetPath: fileData.targetPath
+            _targetPath: fileData.relativePath
           }
           // Get file type based on extension
           if (stats.isFile()) {
@@ -243,22 +251,56 @@ contextBridge.exposeInMainWorld('myAPI', {
     const validFileDatas = resolvedPromises.filter(fileData => fileData !== null)
     return validFileDatas
   },
-  deleteFile(sourceFile) {
-    console.log('sourceFile', sourceFile)
-    fs.unlinkSync(sourceFile)
+  deleteFile(nowPlayListFolder = '', sourceFile) {
+    const sourceFolder = getSourceFolder()
+    if (nowPlayListFolder) {
+      const targetPath = path.join(nowPlayListFolder, sourceFile)
+      fs.unlinkSync(targetPath)
+    } else {
+      const targetPath = path.join(sourceFolder, sourceFile)
+      fs.unlinkSync(targetPath)
+    }
   }
 })
+const loadXMLTest = (propFilePath) => {
+  const fileName = 'index.xml'
+  console.log('propFilePath', propFilePath)
 
+  const targetFile = path.join(propFilePath, fileName)
+  if (!fs.existsSync(targetFile)) {
+    alert('file read error', fileName)
+  }
+
+  console.log('targetFile', targetFile)
+  const x2js = new X2js({
+    attributePrefix: '_'
+  })
+
+  const xml = fs.readFileSync(targetFile, 'utf-8')
+  const parser = x2js.xml2js(xml)
+
+  return parser
+}
 const isDuplicateFile = (targetPath) => {
   const existingFiles = fs.readdirSync(getSourceFolder())
   return existingFiles.includes(path.basename(targetPath))
 }
+const getSourceFolder = () => {
+  const NovoFolder = getNovoFolder()
+  const SourceFolder = path.join(NovoFolder, '@_Temp_interactive')
+  if (!fs.existsSync(SourceFolder)) {
+    fs.mkdirSync(SourceFolder)
+  }
+
+  return SourceFolder
+}
 const getNovoFolder = () => {
-  const folder = path.join(app.getPath('appData'), novoDirName)
+  const homedir = require('os').homedir()
+  const folder = path.join(homedir, novoDirName)
   if (!fs.existsSync(folder)) {
     fs.mkdirSync(folder)
   }
-
+  console.log('folder', folder)
   return folder
 }
 // const getPlayListFolder = () => {
@@ -273,13 +315,3 @@ const getNovoFolder = () => {
 
 //   return PlayListFolder
 // }
-
-const getSourceFolder = () => {
-  const NovoFolder = getNovoFolder()
-  const SourceFolder = path.join(NovoFolder, 'Source')
-  if (!fs.existsSync(SourceFolder)) {
-    fs.mkdirSync(SourceFolder)
-  }
-
-  return SourceFolder
-}
