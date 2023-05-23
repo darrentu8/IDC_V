@@ -16,6 +16,9 @@ export default defineComponent({
     async function startWatchJson() {
       const widgetStore = useWidgetListStore()
       const loadData = await window.myAPI?.loadFile()
+      if (loadData.openType === 'focus') {
+        console.log('focus')
+      }
       if (loadData.openType === 'new') {
         console.log('new')
         widgetStore.SetOpenNewFileData(loadData.propFileData)

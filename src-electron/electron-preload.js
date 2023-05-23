@@ -122,6 +122,12 @@ contextBridge.exposeInMainWorld('myAPI', {
             console.log('obj', obj)
             const propOpenNew = obj.OpenNew // 需要監聽的屬性名稱
             const propFilePath = obj.FilePath // 需要監聽的屬性名稱
+            const propFocus = obj.Focus // 需要監聽的屬性名稱
+            if (propFocus === 'signage') {
+              const win = BrowserWindow.getFocusedWindow()
+              win.focus()
+              return { openType: 'focus' }
+            }
             if (propOpenNew === 'true' && !propFilePath) {
               console.log('oOpenNewbj', propOpenNew)
               // 呼叫主進程重新啟動應用程序
