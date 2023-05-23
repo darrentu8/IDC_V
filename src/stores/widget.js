@@ -428,7 +428,8 @@ export const useWidgetListStore = defineStore('widgetList', {
       this.nowPlayListName = NowPlayListFolder.newPlayListName
       this.nowPlayListFolder = NowPlayListFolder.PlayListFolder
     },
-    SetLoadFileData(fileData) {
+    // 開新檔案
+    SetOpenNewFileData(fileData) {
       this.fileData = fileData
       this.nowPlayListName = fileData.FileName
       this.nowPlayListFolder = fileData.FilePath
@@ -437,9 +438,15 @@ export const useWidgetListStore = defineStore('widgetList', {
       this.NovoDS.Pages.Page._Orientation = fileData.Orientation
       this.NovoDS.Pages.Page._FreeDesignerMode = 'false'
     },
-    // 設置xml產生的單一物件改成陣列
-    SetNovoDS(data) {
-      const RawData = JSON.parse(JSON.stringify(data.result))
+    // 讀檔
+    SetLoadFileData(fileData) {
+      this.fileData = fileData
+      this.nowPlayListName = fileData.FileName
+      this.nowPlayListFolder = fileData.FilePath
+    },
+    // 讀檔 並設置Nove DS XML 將產生的單一物件改成陣列
+    SetNovoDS(fileData, xml) {
+      const RawData = JSON.parse(JSON.stringify(xml))
       if (!RawData.NovoDS) {
         return false
       }
@@ -480,6 +487,21 @@ export const useWidgetListStore = defineStore('widgetList', {
           }
           if (state.Event && !Array.isArray(state.Event)) {
             state.Event = [state.Event]
+            state.Event.forEach(event => {
+              if (event.Action && !Array.isArray(event.Action)) {
+                event.Action = [event.Action]
+              } else if (!event.Action) {
+                event.Action = []
+              }
+
+              event.Action.forEach(action => {
+                if (action.Data && !Array.isArray(action.Data)) {
+                  action.Data = [action.Data]
+                } else if (!action.Data) {
+                  action.Data = []
+                }
+              })
+            })
           } else if (state.Event) {
             state.Event.forEach(event => {
               if (event.Action && !Array.isArray(event.Action)) {
@@ -487,6 +509,14 @@ export const useWidgetListStore = defineStore('widgetList', {
               } else if (!event.Action) {
                 event.Action = []
               }
+
+              event.Action.forEach(action => {
+                if (action.Data && !Array.isArray(action.Data)) {
+                  action.Data = [action.Data]
+                } else if (!action.Data) {
+                  action.Data = []
+                }
+              })
             })
           } else {
             state.Event = []
@@ -497,9 +527,8 @@ export const useWidgetListStore = defineStore('widgetList', {
       this.NovoDS = this.parseObject(RawData.NovoDS)
       console.log('this.NovoDS', this.NovoDS)
 
-      if (data.propFileData) {
-        console.log('data.propFileData', data.propFileData)
-        this.SetLoadFileData(data.propFileData)
+      if (fileData) {
+        this.SetLoadFileData(fileData)
       }
       return true
     },
@@ -759,6 +788,7 @@ export const useWidgetListStore = defineStore('widgetList', {
           } else {
             return {
               _src: e._src,
+              _type: e._type,
               _duration: e._duration,
               _fileSize: e._fileSize
             }

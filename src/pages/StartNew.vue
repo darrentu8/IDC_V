@@ -42,7 +42,7 @@
               <div class="col" v-show="false">
                 <div class="row">
                   <div class="col">
-                    <q-btn @click="loadXMLTest" color="grey-3" text-color="black" label="Load XML Test"
+                    <q-btn @click="transXml" color="grey-3" text-color="black" label="Load XML Test"
                       style="width: 140px;border-radius: 10px;" />
                   </div>
                 </div>
@@ -79,8 +79,8 @@ export default {
   setup() {
     const $q = useQuasar()
     const router = useRouter()
-    function loadXMLTest() {
-      const textXMLString = window.myAPI.loadXMLTest()
+    function transXml() {
+      const textXMLString = window.myAPI.transXml()
       console.log('textXMLString', textXMLString)
       const setData = widgetStore.SetNovoDS(textXMLString)
       if (setData) {
@@ -97,7 +97,7 @@ export default {
         })
       }
     }
-    return { loadXMLTest }
+    return { transXml }
   },
   computed: {
     _Playlist_Name: {

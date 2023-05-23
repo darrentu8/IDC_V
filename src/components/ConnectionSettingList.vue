@@ -39,7 +39,7 @@
                       <q-item v-else-if="scope.opt._isEnabled" class="q-pt-sm" v-bind="scope.itemProps">
                         <q-item-label>{{ scope.opt._name }}</q-item-label>
                       </q-item>
-                      <q-item v-else v-bind="scope.itemProps" class="q-pt-sm">
+                      <q-item v-else v-bind="scope.itemProps" class="q-pt-sm hidden">
                         <q-item-label class="text-grey">{{ scope.opt._name }}</q-item-label>
                       </q-item>
                     </template>
@@ -89,7 +89,7 @@
                           <q-item v-else-if="scope.opt._isEnabled" class="q-pt-sm" v-bind="scope.itemProps">
                             <q-item-label>{{ scope.opt._name }}</q-item-label>
                           </q-item>
-                          <q-item v-else v-bind="scope.itemProps" class="q-pt-sm">
+                          <q-item v-else v-bind="scope.itemProps" class="q-pt-sm hidden">
                             <q-item-label class="text-grey">{{ scope.opt._name }}</q-item-label>
                           </q-item>
                         </template>

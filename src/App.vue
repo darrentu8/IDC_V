@@ -16,11 +16,12 @@ export default defineComponent({
     async function startWatchJson() {
       const widgetStore = useWidgetListStore()
       const loadData = await window.myAPI?.loadFile()
-      if (loadData === 'OpenNew') {
-        console.log('OpenNew')
+      if (loadData.openType === 'new') {
+        console.log('new')
+        widgetStore.SetOpenNewFileData(loadData.propFileData)
         window.myAPI?.watchJson()
-      } else if (loadData !== 'OpenNew' && loadData) {
-        widgetStore.SetNovoDS(loadData)
+      } else if (loadData.openType === 'load') {
+        widgetStore.SetNovoDS(loadData.propFileData, loadData.result)
         window.myAPI?.watchJson()
         router.push({ path: '/flow' })
       } else {

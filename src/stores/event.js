@@ -195,11 +195,6 @@ export const useEventListStore = defineStore('eventList', {
         _uuid: 'playend',
         _name: 'Playback end',
         _type: 'playend'
-      },
-      {
-        _uuid: 'timeout',
-        _name: 'Time out',
-        _type: 'timeout'
       }
     ]
   }),

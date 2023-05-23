@@ -90,12 +90,16 @@ contextBridge.exposeInMainWorld('myAPI', {
             PlaylistType: obj.PlaylistType
           }
           if (propOpenNew === 'true') {
-            resolve('OpenNew')
+            resolve({ openType: 'new', propFileData })
           }
           if (propOpenNew === 'false' && propFileData.FilePath) {
-            const result = loadXMLTest(propFileData.FilePath)
+            const result = transXml(propFileData.FilePath)
             console.log('result', result)
-            resolve({ result, propFileData })
+            resolve({
+              openType: 'load',
+              propFileData,
+              result
+            })
           }
         })
       }
@@ -124,7 +128,7 @@ contextBridge.exposeInMainWorld('myAPI', {
               // ipcRenderer.send('app-restart')
             }
             if (propOpenNew === 'false' && propFilePath) {
-              const result = loadXMLTest(propFilePath)
+              const result = transXml(propFilePath)
               return result
             }
           })
@@ -255,7 +259,7 @@ contextBridge.exposeInMainWorld('myAPI', {
     }
   }
 })
-const loadXMLTest = (propFilePath) => {
+const transXml = (propFilePath) => {
   const fileName = 'index.xml'
   console.log('propFilePath', propFilePath)
 
