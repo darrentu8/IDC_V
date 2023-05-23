@@ -7,7 +7,6 @@
 import { defineComponent } from 'vue'
 import { useWidgetListStore } from 'src/stores/widget'
 import { useRouter } from 'vue-router'
-
 export default defineComponent({
   name: 'App',
   setup() {

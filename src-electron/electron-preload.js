@@ -34,7 +34,9 @@ import opn from 'opn'
 import path from 'path'
 import fs from 'fs'
 import X2js from 'x2js'
-// import xml2js from 'xml2js'
+
+const fse = require('fs-extra')
+
 const novoDirName = 'NovoDS.PlayLists'
 
 contextBridge.exposeInMainWorld('myAPI', {
@@ -304,6 +306,16 @@ contextBridge.exposeInMainWorld('myAPI', {
     const validFileDatas = resolvedPromises.filter(fileData => fileData !== null)
     return validFileDatas
   },
+  delTempFolder: async (nowPlayListPath) => {
+    if (nowPlayListPath) {
+      try {
+        await fse.remove(nowPlayListPath)
+        console.log(`${nowPlayListPath} 已被刪除`)
+      } catch (error) {
+        console.error(`刪除 ${nowPlayListPath} 時發生錯誤：`, error)
+      }
+    }
+  },
   deleteFile(nowPlayListPath = '', sourceFile) {
     const sourceFolder = getSourceFolder()
     if (nowPlayListPath) {
@@ -315,8 +327,6 @@ contextBridge.exposeInMainWorld('myAPI', {
     }
   }
 })
-const fse = require('fs-extra')
-
 const writeAndCopyFolder = (nowPlayListPath, newPlayListPath, xmlData) => {
   const indexFile = path.join(nowPlayListPath, 'index.xml')
 
