@@ -15,7 +15,6 @@ export default defineComponent({
     const router = useRouter()
     async function startWatchJson() {
       const widgetStore = useWidgetListStore()
-      widgetStore.SetNewFilePath()
       const loadConfigData = await window.myAPI?.loadConfigFile()
       if (loadConfigData !== null) {
         if (loadConfigData.openType === 'new') {
@@ -46,6 +45,7 @@ export default defineComponent({
     return { startWatchJson }
   },
   mounted() {
+    window.myAPI?.checkJson()
     this.startWatchJson()
   }
 })

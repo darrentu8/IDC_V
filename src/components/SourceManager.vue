@@ -56,7 +56,7 @@ const widgetStore = useWidgetListStore()
 // const currentSection = computed(() => layoutStore.GetCurrentSection)
 // const currentState = computed(() => widgetStore.GetCurrentState)
 const widgetListData = widgetStore.widgetListData
-const nowPlayListFolder = widgetStore.nowPlayListFolder
+const nowPlayListPath = widgetStore.nowPlayListPath
 const props = defineProps({
   File: {
     type: Array,
@@ -85,7 +85,7 @@ const drag = ref(false)
 // }
 const add = async (currentStateIndex) => {
   console.log('currentStateIndex', currentStateIndex)
-  const fileData = await window.myAPI.chooseSources(nowPlayListFolder)
+  const fileData = await window.myAPI.chooseSources(nowPlayListPath)
 
   console.log('fileData', fileData)
   const fileDatas = await window.myAPI.getFileData(fileData)

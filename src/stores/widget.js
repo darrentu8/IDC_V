@@ -8,6 +8,7 @@ export const useWidgetListStore = defineStore('widgetList', {
     fileData: null,
     nowPlayListName: '',
     nowPlayListFolder: '',
+    nowPlayListPath: '',
     NovoDS: {
       _Description: '',
       _Layout_Type: '0', // 0 -> Grid, 1 -> Flexible
@@ -422,17 +423,20 @@ export const useWidgetListStore = defineStore('widgetList', {
 
   },
   actions: {
-    SetNewFilePath() {
-      const NowPlayListFolder = window.myAPI.setPlayListFolder()
-      console.log('NowPlayListFolder', NowPlayListFolder)
-      this.nowPlayListName = NowPlayListFolder.newPlayListName
-      this.nowPlayListFolder = NowPlayListFolder.PlayListFolder
-    },
     // 開新檔案
-    SetOpenNewFileData(fileData) {
+    async SetOpenNewFileData(fileData) {
       this.fileData = fileData
-      this.nowPlayListName = fileData.FileName
-      this.nowPlayListFolder = fileData.FilePath
+      if (fileData.FileName === '') {
+        const NowPlayListFolder = await window.myAPI.setPlayListFolder()
+        console.log('NowPlayListFolder', NowPlayListFolder)
+        this.nowPlayListName = NowPlayListFolder.nowPlayListName
+        this.nowPlayListFolder = NowPlayListFolder.NovoFolder
+        this.nowPlayListPath = NowPlayListFolder.NovoFolder + '/' + NowPlayListFolder.nowPlayListName
+      } else {
+        this.nowPlayListName = fileData.FileName
+        this.nowPlayListFolder = fileData.FilePath
+        this.nowPlayListPath = fileData.FilePath + '/' + fileData.FileName
+      }
       this._Layout_Type = fileData.LayoutType
       this._Model_Type = fileData.ModelType
       this.NovoDS.Pages.Page._Orientation = fileData.Orientation

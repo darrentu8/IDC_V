@@ -54,15 +54,47 @@ contextBridge.exposeInMainWorld('myAPI', {
     }
   },
   setPlayListFolder() {
-    const NovoFolder = getNovoFolder()
-    const strftime = require('strftime')
-    const timestamp = strftime('%Y%m%d%H%M%S', new Date())
-    const newPlayListName = `PlayList_${timestamp}`
-    const PlayListFolder = path.join(NovoFolder, newPlayListName)
-    if (!fs.existsSync(PlayListFolder)) {
-      fs.mkdirSync(PlayListFolder)
+    return new Promise((resolve, reject) => {
+      const NovoFolder = getNovoFolder()
+      const strftime = require('strftime')
+      const timestamp = strftime('%Y%m%d%H%M%S', new Date())
+      const nowPlayListName = `@_Temp_PlayList_${timestamp}`
+      const PlayListFolder = path.join(NovoFolder, nowPlayListName)
+      if (!fs.existsSync(PlayListFolder)) {
+        fs.mkdir(PlayListFolder, (err) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve({ NovoFolder, nowPlayListName })
+          }
+        })
+      } else {
+        resolve({ NovoFolder, nowPlayListName })
+      }
+    })
+  },
+  checkJson: () => {
+    const appPath = app.getAppPath()
+    const data = {
+      Focus: 'signage',
+      OpenNew: 'true',
+      Reload: 'true',
+      FileName: '',
+      FilePath: '',
+      LayoutType: '',
+      ModelType: '',
+      Orientation: '',
+      PlaylistType: ''
     }
-    return { PlayListFolder, newPlayListName }
+    const fileName = 'interactive.json'
+    const targetFile = path.join(appPath, fileName)
+    if (!fs.existsSync(targetFile)) {
+      alert('NovoDs Studio has not been installed.')
+      fs.writeFile(targetFile, JSON.stringify(data), (err) => {
+        if (err) throw err
+        console.log('interactive.json has been added!')
+      })
+    }
   },
   loadConfigFile: () => {
     return new Promise((resolve, reject) => {
@@ -164,32 +196,22 @@ contextBridge.exposeInMainWorld('myAPI', {
       console.log('Close watch Json')
     }
   },
-
-  storeToXML(nowPlayListFolder, NovoDsData) {
-    const fileName = 'index.xml'
+  async storeToXML(playListName, nowPlayListFolder, nowPlayListPath, NovoDsData) {
+    // console.log('playListName', playListName)
+    // console.log('nowPlayListFolder', nowPlayListFolder)
+    // console.log('nowPlayListPath', nowPlayListPath)
+    // console.log('NovoDsData', NovoDsData)
+    const newPlayListPath = path.join(nowPlayListFolder, playListName)
     const xmlData = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + NovoDsData
-    // const PlayListFolder = getPlayListFolder()
-    // if (!nowPlayListFolder) {
-    //   const targetFile = setSourceFolder()
+    const { targetFile, xmlData: data } = await writeAndCopyFolder(nowPlayListPath, newPlayListPath, xmlData)
 
-    //   fs.writeFileSync(targetFile, xmlData)
-
-    //   return { nowPlayListFolder, xmlData }
-    // }
-    const targetFile = path.join(nowPlayListFolder, fileName)
-
-    // const builder = new xml2js.Builder({ headless: true, attrkey: '_attr' })
-    // const xml = builder.buildObject(NovoDsData)
-
-    fs.writeFileSync(targetFile, xmlData)
-
-    return { nowPlayListFolder, xmlData }
+    return { targetFile, xmlData: data }
   },
-  openSaveFolder(nowPlayListFolder) {
-    console.log('nowPlayListFolder', nowPlayListFolder)
-    opn(nowPlayListFolder)
+  openSaveFolder(exportPath) {
+    console.log('exportPath', exportPath)
+    opn(exportPath)
   },
-  chooseSources(nowPlayListFolder = '') {
+  chooseSources(nowPlayListPath = '') {
     const sourcePaths = dialog.showOpenDialogSync({
       title: 'Choose Media',
       filters: [
@@ -202,23 +224,26 @@ contextBridge.exposeInMainWorld('myAPI', {
       return []
     }
 
-    const sourceFolder = getSourceFolder()
     const fileDataArray = []
 
     for (const sourcePath of sourcePaths) {
       const fileName = path.basename(sourcePath)
-      const targetFolder = nowPlayListFolder || sourceFolder
+      const targetFolder = nowPlayListPath
       const targetPath = path.join(targetFolder, fileName)
       console.log('targetFolder', targetFolder)
+      console.log('sourcePath', sourcePath)
+      console.log('sourcePaths', sourcePaths)
       const relativePath = path.relative(targetFolder, targetPath)
 
-      if (!isDuplicateFile(targetPath)) {
+      if (!isDuplicateFile(targetFolder, targetPath)) {
         try {
           fs.copyFileSync(sourcePath, targetPath)
         } catch (err) {
           console.error(err)
           continue
         }
+      } else {
+        alert('The same file is already in the same state exists!')
       }
 
       fileDataArray.push({ fileName, targetPath, relativePath })
@@ -279,10 +304,10 @@ contextBridge.exposeInMainWorld('myAPI', {
     const validFileDatas = resolvedPromises.filter(fileData => fileData !== null)
     return validFileDatas
   },
-  deleteFile(nowPlayListFolder = '', sourceFile) {
+  deleteFile(nowPlayListPath = '', sourceFile) {
     const sourceFolder = getSourceFolder()
-    if (nowPlayListFolder) {
-      const targetPath = path.join(nowPlayListFolder, sourceFile)
+    if (nowPlayListPath) {
+      const targetPath = path.join(nowPlayListPath, sourceFile)
       fs.unlinkSync(targetPath)
     } else {
       const targetPath = path.join(sourceFolder, sourceFile)
@@ -290,6 +315,28 @@ contextBridge.exposeInMainWorld('myAPI', {
     }
   }
 })
+const fse = require('fs-extra')
+
+const writeAndCopyFolder = (nowPlayListPath, newPlayListPath, xmlData) => {
+  const indexFile = path.join(nowPlayListPath, 'index.xml')
+
+  return new Promise((resolve, reject) => {
+    // 寫入檔案
+    fs.writeFile(indexFile, xmlData, (err) => {
+      if (err) reject(err)
+
+      // 複製資料夾
+      fse.copy(nowPlayListPath, newPlayListPath)
+        .then(() => {
+          resolve({
+            targetFile: newPlayListPath,
+            xmlData
+          })
+        })
+        .catch((err) => reject(err))
+    })
+  })
+}
 const transXml = (propFilePath) => {
   const fileName = 'index.xml'
   console.log('propFilePath', propFilePath)
@@ -309,22 +356,17 @@ const transXml = (propFilePath) => {
 
   return parser
 }
-const isDuplicateFile = (targetPath) => {
-  const existingFiles = fs.readdirSync(getSourceFolder())
+const isDuplicateFile = (targetFolder, targetPath) => {
+  const existingFiles = fs.readdirSync(checkSourceFolder(targetFolder))
   return existingFiles.includes(path.basename(targetPath))
 }
-// const setSourceFolder = () => {
-//   const NovoFolder = getNovoFolder()
-//   const strftime = require('strftime')
-//   const timestamp = strftime('%Y%m%d%H%M%S', new Date())
-//   const newPlayListName = `PlayList_${timestamp}`
-//   const SourceFolder = path.join(NovoFolder, newPlayListName)
-//   if (!fs.existsSync(SourceFolder)) {
-//     fs.mkdirSync(SourceFolder)
-//   }
+const checkSourceFolder = (targetFolder) => {
+  if (!fs.existsSync(targetFolder)) {
+    fs.mkdirSync(targetFolder)
+  }
 
-//   return SourceFolder
-// }
+  return targetFolder
+}
 const getSourceFolder = () => {
   const NovoFolder = getNovoFolder()
   const strftime = require('strftime')

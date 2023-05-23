@@ -142,7 +142,7 @@ function leaveSaveFileClose() {
   const x2js = new X2js({ attributePrefix: '_' })
   const novoObj = { NovoDS: widgetStore.NovoDS }
   const xmlData = x2js.js2xml(novoObj)
-  const result = window.myAPI.storeToXML(widgetStore.nowPlayListFolder, xmlData)
+  const result = window.myAPI.storeToXML(widgetStore.nowPlayListPath, xmlData)
   if (result) {
     $q.dialog({
       title: 'Saved successfully!'
@@ -151,11 +151,11 @@ function leaveSaveFileClose() {
     })
   }
 }
-function exportFile() {
+async function exportFile() {
   const x2js = new X2js({ attributePrefix: '_' })
   const novoObj = { NovoDS: widgetStore.NovoDS }
   const xmlData = x2js.js2xml(novoObj)
-  const result = window.myAPI.storeToXML(widgetStore.nowPlayListFolder, xmlData)
+  const result = await window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
   if (result) {
     $q.dialog({
       component: ConfirmDialog,
@@ -167,7 +167,7 @@ function exportFile() {
       }
     }).onOk(() => {
       console.log('xmlData', xmlData)
-      window.myAPI.openSaveFolder(widgetStore.nowPlayListFolder)
+      window.myAPI.openSaveFolder(result.targetFile)
     })
   }
 }
