@@ -781,7 +781,7 @@ export default {
     async toFlow() {
       this.loading = true
       const result = await this.$router.push({ path: '/flow' })
-      console.log('result', result)
+      // console.log('result', result)
       if (result === undefined) {
         this.loading = false
       }

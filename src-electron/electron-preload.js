@@ -64,23 +64,27 @@ contextBridge.exposeInMainWorld('myAPI', {
     }
     return { PlayListFolder, newPlayListName }
   },
-  loadFile: () => {
+  loadConfigFile: () => {
     return new Promise((resolve, reject) => {
       const fileName = 'interactive.json'
       const appPath = app.getAppPath()
-      console.log('appPath', appPath)
       const targetFile = path.join(appPath, fileName)
       if (!fs.existsSync(targetFile)) {
-        alert('Novo Ds Studio has not been installed.')
-        reject()
+        alert('NovoDs Studio has not been installed.')
+        resolve(null) // 将 reject 改为 resolve 并返回 null
       } else {
         fs.readFile(targetFile, 'utf8', (err, data) => {
           if (err) throw err
+          if (!data) { // 如果 data 不存在则直接返回 null
+            resolve(null)
+            return
+          }
 
           const obj = JSON.parse(data)
           console.log('Run Watch Json')
           console.log('obj', obj)
-          const propOpenNew = obj.OpenNew // 需要監聽的屬性名稱
+          const propFocus = obj.Focus
+          const propOpenNew = obj.OpenNew
           const propFileData = {
             FileName: obj.FileName,
             FilePath: obj.FilePath,
@@ -89,17 +93,22 @@ contextBridge.exposeInMainWorld('myAPI', {
             Orientation: obj.Orientation,
             PlaylistType: obj.PlaylistType
           }
-          if (propOpenNew === 'true') {
-            resolve({ openType: 'new', propFileData })
-          }
-          if (propOpenNew === 'false' && propFileData.FilePath) {
-            const result = transXml(propFileData.FilePath)
-            console.log('result', result)
-            resolve({
-              openType: 'load',
-              propFileData,
-              result
-            })
+          if (propFocus === 'signage') {
+            if (propOpenNew === 'true') {
+              resolve({ openType: 'new', propFileData })
+            }
+            if (propOpenNew === 'false' && propFileData.FilePath) {
+              const targetFile = path.join(propFileData.FilePath, propFileData.FileName)
+              const result = transXml(targetFile)
+              console.log('result', result)
+              resolve({
+                openType: 'load',
+                propFileData,
+                result
+              })
+            }
+          } else {
+            resolve(null)
           }
         })
       }
@@ -108,7 +117,6 @@ contextBridge.exposeInMainWorld('myAPI', {
   watchJson: () => {
     const fileName = 'interactive.json'
     const appPath = app.getAppPath()
-    console.log('appPath', appPath)
     const targetFile = path.join(appPath, fileName)
     if (fs.existsSync(targetFile)) {
       console.log('targetFolder', targetFile)
@@ -120,22 +128,30 @@ contextBridge.exposeInMainWorld('myAPI', {
             const obj = JSON.parse(data)
             console.log('Run Watch Json')
             console.log('obj', obj)
-            const propOpenNew = obj.OpenNew // 需要監聽的屬性名稱
-            const propFilePath = obj.FilePath // 需要監聽的屬性名稱
-            const propFocus = obj.Focus // 需要監聽的屬性名稱
+            const propFocus = obj.Focus
+            const propOpenNew = obj.OpenNew
+            const propFileName = obj.FileName
+            const propFilePath = obj.FilePath
             if (propFocus === 'signage') {
-              const win = BrowserWindow.getFocusedWindow()
-              win.focus()
-              return { openType: 'focus' }
-            }
-            if (propOpenNew === 'true' && !propFilePath) {
-              console.log('oOpenNewbj', propOpenNew)
-              // 呼叫主進程重新啟動應用程序
-              // ipcRenderer.send('app-restart')
-            }
-            if (propOpenNew === 'false' && propFilePath) {
-              const result = transXml(propFilePath)
-              return result
+              focusWindow()
+              if (propOpenNew === 'true' && !propFilePath) {
+                // 呼叫主進程重新啟動應用程序
+                // ipcRenderer.send('app-restart')
+              }
+              if (propOpenNew === 'false' && propFilePath) {
+                const targetFile = path.join(propFilePath, propFileName)
+                console.log('targetFile', targetFile)
+                const result = transXml(targetFile)
+                return result
+              }
+              // // Modify the contents of targetFile
+              // obj.someProperty = 'new value'
+              // fs.writeFile(targetFile, JSON.stringify(obj), (err) => {
+              //   if (err) throw err
+              //   console.log('File has been saved')
+              // })
+            } else {
+              return null
             }
           })
         }
@@ -143,14 +159,23 @@ contextBridge.exposeInMainWorld('myAPI', {
     }
   },
   closeWatchJson: () => {
-    this.watcher.close()
-    console.log('Close watch Json')
+    if (this.watcher) {
+      this.watcher.close()
+      console.log('Close watch Json')
+    }
   },
+
   storeToXML(nowPlayListFolder, NovoDsData) {
     const fileName = 'index.xml'
     const xmlData = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + NovoDsData
     // const PlayListFolder = getPlayListFolder()
+    // if (!nowPlayListFolder) {
+    //   const targetFile = setSourceFolder()
 
+    //   fs.writeFileSync(targetFile, xmlData)
+
+    //   return { nowPlayListFolder, xmlData }
+    // }
     const targetFile = path.join(nowPlayListFolder, fileName)
 
     // const builder = new xml2js.Builder({ headless: true, attrkey: '_attr' })
@@ -288,12 +313,24 @@ const isDuplicateFile = (targetPath) => {
   const existingFiles = fs.readdirSync(getSourceFolder())
   return existingFiles.includes(path.basename(targetPath))
 }
+// const setSourceFolder = () => {
+//   const NovoFolder = getNovoFolder()
+//   const strftime = require('strftime')
+//   const timestamp = strftime('%Y%m%d%H%M%S', new Date())
+//   const newPlayListName = `PlayList_${timestamp}`
+//   const SourceFolder = path.join(NovoFolder, newPlayListName)
+//   if (!fs.existsSync(SourceFolder)) {
+//     fs.mkdirSync(SourceFolder)
+//   }
+
+//   return SourceFolder
+// }
 const getSourceFolder = () => {
   const NovoFolder = getNovoFolder()
   const strftime = require('strftime')
   const timestamp = strftime('%Y%m%d%H%M%S', new Date())
   const newPlayListName = `PlayList_${timestamp}`
-  const SourceFolder = path.join(NovoFolder, '@_Temp_interactive_' + newPlayListName)
+  const SourceFolder = path.join(NovoFolder, newPlayListName)
   if (!fs.existsSync(SourceFolder)) {
     fs.mkdirSync(SourceFolder)
   }
@@ -301,23 +338,36 @@ const getSourceFolder = () => {
   return SourceFolder
 }
 const getNovoFolder = () => {
-  const homedir = require('os').homedir()
-  const folder = path.join(homedir, novoDirName)
+  const osType = require('os').type()
+  let folder
+  if (osType === 'Windows_NT') {
+    // Windows 操作系统
+    const winDir = process.env.APPDATA || path.join(process.env.USERPROFILE, 'AppData', 'Roaming')
+    folder = path.join(winDir, novoDirName)
+  } else {
+    // Linux 或 macOS 操作系统
+    const homeDir = require('os').homedir()
+    folder = path.join(homeDir, novoDirName)
+  }
+
   if (!fs.existsSync(folder)) {
     fs.mkdirSync(folder)
   }
   console.log('folder', folder)
   return folder
 }
-// const getPlayListFolder = () => {
-//   const NovoFolder = getNovoFolder()
-//   const strftime = require('strftime')
-//   const timestamp = strftime('%Y%m%d%H%M%S', new Date())
-//   const newPlayListName = `PlayList_${timestamp}`
-//   const PlayListFolder = path.join(NovoFolder, newPlayListName)
-//   if (!fs.existsSync(PlayListFolder)) {
-//     fs.mkdirSync(PlayListFolder)
-//   }
+const focusWindow = () => {
+  // 取得當前的視窗對象
+  let window = BrowserWindow.getFocusedWindow()
 
-//   return PlayListFolder
-// }
+  // 如果目前沒有任何視窗被聚焦，則選擇第一個視窗
+  if (!window) {
+    window = BrowserWindow.getAllWindows()[0]
+  }
+
+  // 聚焦到該視窗
+  if (window) {
+    window.focus()
+  }
+  return window
+}

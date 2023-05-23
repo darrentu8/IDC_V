@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import useQuasar from 'quasar/src/composables/use-quasar.js'
+// import useQuasar from 'quasar/src/composables/use-quasar.js'
 import { defineComponent } from 'vue'
 import { useWidgetListStore } from 'src/stores/widget'
 import { useRouter } from 'vue-router'
@@ -11,32 +11,36 @@ import { useRouter } from 'vue-router'
 export default defineComponent({
   name: 'App',
   setup() {
-    const $q = useQuasar()
+    // const $q = useQuasar()
     const router = useRouter()
     async function startWatchJson() {
       const widgetStore = useWidgetListStore()
-      const loadData = await window.myAPI?.loadFile()
-      if (loadData.openType === 'focus') {
-        console.log('focus')
-      }
-      if (loadData.openType === 'new') {
-        console.log('new')
-        widgetStore.SetOpenNewFileData(loadData.propFileData)
-        window.myAPI?.watchJson()
-      } else if (loadData.openType === 'load') {
-        widgetStore.SetNovoDS(loadData.propFileData, loadData.result)
-        window.myAPI?.watchJson()
-        router.push({ path: '/flow' })
-      } else {
-        $q.dialog({
-          title: 'File format error',
-          okBtn: 'ok'
-        }).onOk(() => {
-        }).onCancel(() => {
-          console.log('Cancel')
-        }).onDismiss(() => {
-          console.log('Called on OK or Cancel')
-        })
+      widgetStore.SetNewFilePath()
+      const loadConfigData = await window.myAPI?.loadConfigFile()
+      if (loadConfigData !== null) {
+        if (loadConfigData.openType === 'new') {
+          console.log('new')
+          widgetStore.SetOpenNewFileData(loadConfigData.propFileData)
+          window.myAPI?.closeWatchJson()
+          window.myAPI?.watchJson()
+          router.push({ path: '/' })
+        } else if (loadConfigData.openType === 'load') {
+          widgetStore.SetNovoDS(loadConfigData.propFileData, loadConfigData.result)
+          window.myAPI?.closeWatchJson()
+          window.myAPI?.watchJson()
+          router.push({ path: '/flow' })
+        } else {
+          console.log(loadConfigData)
+          // $q.dialog({
+          //   title: 'File format error',
+          //   okBtn: 'ok'
+          // }).onOk(() => {
+          // }).onCancel(() => {
+          //   console.log('Cancel')
+          // }).onDismiss(() => {
+          //   console.log('Called on OK or Cancel')
+          // })
+        }
       }
     }
     return { startWatchJson }
