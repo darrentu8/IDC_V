@@ -426,6 +426,7 @@ export const useWidgetListStore = defineStore('widgetList', {
   actions: {
     // 開新檔案
     async SetOpenNewFileData(fileData) {
+      console.log('fileData', fileData)
       this.fileData = fileData
       if (fileData.FileName === '') {
         const NowPlayListFolder = await window.myAPI.setPlayListFolder()

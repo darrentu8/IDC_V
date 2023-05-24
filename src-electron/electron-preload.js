@@ -29,7 +29,7 @@
  */
 
 import { contextBridge } from 'electron'
-import { BrowserWindow, app, dialog } from '@electron/remote'
+import { BrowserWindow, dialog } from '@electron/remote'
 import opn from 'opn'
 import path from 'path'
 import fs from 'fs'
@@ -60,6 +60,7 @@ contextBridge.exposeInMainWorld('myAPI', {
       const timestamp = strftime('%Y%m%d%H%M%S', new Date())
       const nowPlayListName = `@_Temp_PlayList_${timestamp}`
       const PlayListFolder = path.join(NovoFolder, nowPlayListName)
+
       if (!fs.existsSync(PlayListFolder)) {
         fs.mkdir(PlayListFolder, (err) => {
           if (err) {
@@ -72,9 +73,14 @@ contextBridge.exposeInMainWorld('myAPI', {
         resolve({ NovoFolder, nowPlayListName })
       }
     })
+      .catch((error) => {
+        console.error(error)
+        return Promise.reject(error)
+      })
   },
   checkJson: () => {
-    const appPath = app.getAppPath()
+    const appPath = path.dirname(__dirname)
+    console.log('appPath', appPath)
     const data = {
       Focus: 'signage',
       OpenNew: 'true',
@@ -88,6 +94,7 @@ contextBridge.exposeInMainWorld('myAPI', {
     }
     const fileName = 'interactive.json'
     const targetFile = path.join(appPath, fileName)
+    console.log('targetFile', targetFile)
     if (!fs.existsSync(targetFile)) {
       alert('NovoDs Studio has not been installed.')
       try {
@@ -99,73 +106,81 @@ contextBridge.exposeInMainWorld('myAPI', {
     }
   },
   loadConfigFile: () => {
-    return new Promise((resolve, reject) => {
-      const fileName = 'interactive.json'
-      const appPath = app.getAppPath()
-      const targetFile = path.join(appPath, fileName)
-      if (!fs.existsSync(targetFile)) {
-        alert('NovoDs Studio has not been installed.')
-        const defaultFileData = {
-          Focus: 'signage',
-          OpenNew: 'true',
-          Reload: 'false',
-          FileName: '',
-          FilePath: '',
-          LayoutType: '',
-          ModelType: '',
-          Orientation: '',
-          PlaylistType: '',
-          Preview: {
-            Ready: 'false',
-            Path: ''
-          }
-        }
-        resolve({ openType: 'new', defaultFileData })
-      } else {
-        fs.readFile(targetFile, 'utf8', (err, data) => {
-          if (err) throw err
-          if (!data) { // 如果 data 不存在则直接返回 null
-            resolve(null)
-            return
-          }
+    const fileName = 'interactive.json'
+    const appPath = path.dirname(__dirname)
+    const targetFile = path.join(appPath, fileName)
 
-          const obj = JSON.parse(data)
-          console.log('Run Watch Json')
-          console.log('obj', obj)
-          const propFocus = obj.Focus
-          const propOpenNew = obj.OpenNew
-          const propFileData = {
-            FileName: obj.FileName,
-            FilePath: obj.FilePath,
-            LayoutType: obj.LayoutType,
-            ModelType: obj.ModelType,
-            Orientation: obj.Orientation,
-            PlaylistType: obj.PlaylistType
-          }
-          if (propFocus === 'signage') {
-            if (propOpenNew === 'true') {
-              resolve({ openType: 'new', propFileData })
-            }
-            if (propOpenNew === 'false' && propFileData.FilePath) {
-              const targetFile = path.join(propFileData.FilePath, propFileData.FileName)
-              const result = transXml(targetFile)
-              console.log('result', result)
-              resolve({
-                openType: 'load',
-                propFileData,
-                result
-              })
-            }
-          } else {
-            resolve(null)
-          }
-        })
+    if (!fs.existsSync(targetFile)) {
+      alert('NovoDs Studio has not been installed.')
+      const defaultFileData = {
+        Focus: 'signage',
+        OpenNew: 'true',
+        Reload: 'false',
+        FileName: '',
+        FilePath: '',
+        LayoutType: '',
+        ModelType: '',
+        Orientation: '',
+        PlaylistType: '',
+        Preview: {
+          Ready: 'false',
+          Path: ''
+        }
       }
+      return Promise.resolve({ openType: 'new', defaultFileData })
+    }
+
+    return new Promise((resolve, reject) => {
+      fs.readFile(targetFile, 'utf8', (err, data) => {
+        if (err) {
+          return reject(err)
+        }
+
+        if (!data) { // 如果 data 不存在则直接返回 null
+          return resolve(null)
+        }
+
+        const obj = JSON.parse(data)
+        console.log('Run Watch Json')
+        console.log('obj', obj)
+        const propFocus = obj.Focus
+        const propOpenNew = obj.OpenNew
+        const propFileData = {
+          FileName: obj.FileName,
+          FilePath: obj.FilePath,
+          LayoutType: obj.LayoutType,
+          ModelType: obj.ModelType,
+          Orientation: obj.Orientation,
+          PlaylistType: obj.PlaylistType
+        }
+
+        if (propFocus === 'signage') {
+          if (propOpenNew === 'true') {
+            resolve({ openType: 'new', propFileData })
+          } else if (propOpenNew === 'false' && propFileData.FilePath) {
+            const targetFile = path.join(propFileData.FilePath, propFileData.FileName)
+            const result = transXml(targetFile)
+            console.log('result', result)
+
+            resolve({
+              openType: 'load',
+              propFileData,
+              result
+            })
+          }
+        } else {
+          resolve(null)
+        }
+      })
     })
+      .catch(error => {
+        console.error(error)
+        return Promise.reject(error)
+      })
   },
   watchJson: () => {
     const fileName = 'interactive.json'
-    const appPath = app.getAppPath()
+    const appPath = path.dirname(__dirname)
     const targetFile = path.join(appPath, fileName)
     if (fs.existsSync(targetFile)) {
       console.log('targetFolder', targetFile)
