@@ -311,6 +311,7 @@ contextBridge.exposeInMainWorld('myAPI', {
       try {
         await fse.remove(nowPlayListPath)
         console.log(`${nowPlayListPath} 已被刪除`)
+        window.myAPI?.close()
       } catch (error) {
         console.error(`刪除 ${nowPlayListPath} 時發生錯誤：`, error)
       }
@@ -394,7 +395,7 @@ const getNovoFolder = () => {
   let folder
   if (osType === 'Windows_NT') {
     // Windows 操作系统
-    const winDir = process.env.APPDATA || path.join(process.env.USERPROFILE, 'AppData', 'Roaming')
+    const winDir = process.env.APPDATA || process.env.USERPROFILE
     folder = path.join(winDir, novoDirName)
   } else {
     // Linux 或 macOS 操作系统

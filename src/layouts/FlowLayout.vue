@@ -119,12 +119,10 @@ function saveAlert() {
     const result = leaveSaveFileClose()
     if (result) {
       console.log('result', result)
-      window.myAPI?.close()
     }
   }).onCancel(() => {
     console.log('Cancel')
     window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
-    window.myAPI?.close()
   }).onDismiss(() => {
     window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
     console.log('Called on OK or Cancel')
@@ -150,7 +148,6 @@ function leaveSaveFileClose() {
       title: 'Saved successfully!'
     }).onDismiss(() => {
       window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
-      window.myAPI?.close()
     })
   }
 }
