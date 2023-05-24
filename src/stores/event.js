@@ -313,7 +313,7 @@ export const useEventListStore = defineStore('eventList', {
         _tcpip_id: command._id,
         _role: 'output',
         _command_id: command._id,
-        _isEnabled: widgetStore?.NovoDS?.Hardware?.TcpIpSettings?._isEnabled,
+        _isEnabled: true,
         _type: 'tcp/ip'
       }))
 

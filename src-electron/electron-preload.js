@@ -36,6 +36,8 @@ import fs from 'fs'
 import X2js from 'x2js'
 
 const novoDirName = 'NovoDS.PlayLists'
+const interactiveFileName = 'interactive.json'
+const xmlFileName = 'index.xml'
 
 contextBridge.exposeInMainWorld('myAPI', {
   minimize() {
@@ -60,7 +62,7 @@ contextBridge.exposeInMainWorld('myAPI', {
       const timestamp = strftime('%Y%m%d%H%M%S', new Date())
       const nowPlayListName = `@_Temp_PlayList_${timestamp}`
       const PlayListFolder = path.join(NovoFolder, nowPlayListName)
-
+      // process.env.RESOURCES_PATH = NovoFolder
       if (!fs.existsSync(PlayListFolder)) {
         fs.mkdir(PlayListFolder, (err) => {
           if (err) {
@@ -79,7 +81,7 @@ contextBridge.exposeInMainWorld('myAPI', {
       })
   },
   checkJson: () => {
-    const appPath = path.dirname(__dirname)
+    const appPath = getDirFolder()
     console.log('appPath', appPath)
     const data = {
       Focus: 'signage',
@@ -95,8 +97,7 @@ contextBridge.exposeInMainWorld('myAPI', {
         Ready: false
       }
     }
-    const fileName = 'interactive.json'
-    const targetFile = path.join(appPath, fileName)
+    const targetFile = path.join(appPath, interactiveFileName)
     console.log('targetFile', targetFile)
     if (!fs.existsSync(targetFile)) {
       alert('NovoDs Studio has not been installed.')
@@ -109,9 +110,8 @@ contextBridge.exposeInMainWorld('myAPI', {
     }
   },
   loadConfigFile: () => {
-    const fileName = 'interactive.json'
-    const appPath = path.dirname(__dirname)
-    const targetFile = path.join(appPath, fileName)
+    const appPath = getDirFolder()
+    const targetFile = path.join(appPath, interactiveFileName)
 
     if (!fs.existsSync(targetFile)) {
       alert('NovoDs Studio has not been installed.')
@@ -180,48 +180,66 @@ contextBridge.exposeInMainWorld('myAPI', {
       })
   },
   watchJson: () => {
-    const fileName = 'interactive.json'
-    const appPath = path.dirname(__dirname)
-    const targetFile = path.join(appPath, fileName)
-    if (fs.existsSync(targetFile)) {
-      console.log('targetFolder', targetFile)
+    return new Promise((resolve, reject) => {
+      const appPath = getDirFolder()
+      const targetFile = path.join(appPath, interactiveFileName)
+
+      if (!fs.existsSync(targetFile)) {
+        reject(new Error(`File ${targetFile} does not exist`))
+      }
+
       fs.watch(targetFile, (eventType, filename) => {
         if (filename && eventType === 'change') {
           fs.readFile(targetFile, 'utf8', (err, data) => {
-            if (err) throw err
-
-            const obj = JSON.parse(data)
-            console.log('Run Watch Json')
-            console.log('obj', obj)
-            const propFocus = obj.Focus
-            const propOpenNew = obj.OpenNew
-            const propFileName = obj.Playlist
-            const propFilePath = obj.PlaylistPath
-            if (propFocus === 'signage') {
-              focusWindow()
-              if (propOpenNew === true && !propFilePath) {
-                // 呼叫主進程重新啟動應用程序
-                // ipcRenderer.send('app-restart')
-              }
-              if (propOpenNew === false && propFilePath) {
-                const targetFile = path.join(propFilePath, propFileName)
-                console.log('targetFile', targetFile)
-                const result = transXml(targetFile)
-                return result
-              }
-              // // Modify the contents of targetFile
-              // obj.someProperty = 'new value'
-              // fs.writeFile(targetFile, JSON.stringify(obj), (err) => {
-              //   if (err) throw err
-              //   console.log('File has been saved')
-              // })
+            if (err) {
+              reject(err)
             } else {
-              return null
+              const obj = JSON.parse(data)
+              console.log('Run Watch Json')
+              console.log('obj', obj)
+              const propReload = obj.Reload // true則重新讀取整份
+              const propFocus = obj.Focus // signage || studio
+              const propOpenNew = obj.OpenNew
+              const propFileName = obj.Playlist
+              const propFilePath = obj.PlaylistPath
+              const propFileData = { ...obj }
+
+              // 如果重load
+              if (propReload) {
+                focusWindow()
+                if (propOpenNew === true && !propFileName && propFilePath) {
+                  resolve({ openType: 'new', propFileData })
+                } else if (propOpenNew === false && propFileName && propFilePath) {
+                  const targetFile = path.join(propFilePath, propFileName)
+                  console.log('reloadFile', targetFile)
+                  const result = transXml(targetFile)
+                  console.log('result', result)
+                  resolve({ openType: 'load', propFileData, result })
+                } else {
+                  resolve(null)
+                }
+              } else {
+                // 沒重load
+                if (propFocus === 'signage') {
+                  focusWindow()
+                  if (propOpenNew === true && !propFileName && propFilePath) {
+                    resolve({ openType: 'new', propFileData })
+                  } else if (propOpenNew === false && propFileName && propFilePath) {
+                    const targetFile = path.join(propFilePath, propFileName)
+                    console.log('reloadFile', targetFile)
+                    const result = transXml(targetFile)
+                    console.log('result', result)
+                    resolve({ openType: 'load', propFileData, result })
+                  }
+                } else {
+                  resolve(null)
+                }
+              }
             }
           })
         }
       })
-    }
+    })
   },
   closeWatchJson: () => {
     if (this.watcher) {
@@ -359,53 +377,58 @@ contextBridge.exposeInMainWorld('myAPI', {
     }
   }
 })
-const writeAndCopyFolder = (nowPlayListPath, newPlayListPath, xmlData) => {
-  const indexFile = path.join(nowPlayListPath, 'index.xml')
-
-  return new Promise((resolve, reject) => {
-    // 寫入檔案
-    fs.writeFile(indexFile, xmlData, (err) => {
-      if (err) reject(err)
-
-      // 複製資料夾
-      fs.mkdir(newPlayListPath, { recursive: true }, (err) => {
-        if (err) reject(err)
-
-        fs.readdir(nowPlayListPath, (err, files) => {
-          if (err) reject(err)
-
-          files.forEach(file => {
-            const sourcePath = path.join(nowPlayListPath, file)
-            const targetPath = path.join(newPlayListPath, file)
-
-            const readStream = fs.createReadStream(sourcePath)
-            const writeStream = fs.createWriteStream(targetPath)
-
-            readStream.on('error', reject)
-            writeStream.on('error', reject)
-
-            readStream.pipe(writeStream)
-          })
-
-          resolve({
-            targetFile: newPlayListPath,
-            xmlData
-          })
-        })
+const writeAndCopyFolder = async (nowPlayListPath, newPlayListPath, xmlData) => {
+  try {
+    // Check if paths are the same
+    if (nowPlayListPath === newPlayListPath) {
+      return Promise.resolve({
+        targetFile: newPlayListPath,
+        xmlData
       })
-    })
-  })
+    }
+
+    const indexFile = path.join(nowPlayListPath, 'index.xml')
+
+    // 寫入檔案
+    await fs.promises.writeFile(indexFile, xmlData)
+
+    // 複製資料夾
+    await fs.promises.mkdir(newPlayListPath, { recursive: true })
+
+    const files = await fs.promises.readdir(nowPlayListPath)
+
+    for (const file of files) {
+      const sourcePath = path.join(nowPlayListPath, file)
+      const targetPath = path.join(newPlayListPath, file)
+
+      const readStream = fs.createReadStream(sourcePath)
+      const writeStream = fs.createWriteStream(targetPath)
+
+      await new Promise((resolve, reject) => {
+        readStream.on('error', reject)
+        writeStream.on('error', reject)
+        writeStream.on('finish', resolve)
+        readStream.pipe(writeStream)
+      })
+    }
+
+    return {
+      targetFile: newPlayListPath,
+      xmlData
+    }
+  } catch (err) {
+    console.error(`Error in writeAndCopyFolder: ${err.message}`)
+    throw err
+  }
 }
-const closeWindow = () => {
-  BrowserWindow.getFocusedWindow().close()
-}
+
+// 轉XML檔案成物件
 const transXml = (propFilePath) => {
-  const fileName = 'index.xml'
   console.log('propFilePath', propFilePath)
 
-  const targetFile = path.join(propFilePath, fileName)
+  const targetFile = path.join(propFilePath, xmlFileName)
   if (!fs.existsSync(targetFile)) {
-    alert('file read error', fileName)
+    alert('file read error', xmlFileName)
   }
 
   console.log('targetFile', targetFile)
@@ -418,10 +441,12 @@ const transXml = (propFilePath) => {
 
   return parser
 }
+// 檢查目標重複上傳檔案1
 const isDuplicateFile = (targetFolder, targetPath) => {
   const existingFiles = fs.readdirSync(checkSourceFolder(targetFolder))
   return existingFiles.includes(path.basename(targetPath))
 }
+// 檢查目標重複上傳檔案2
 const checkSourceFolder = (targetFolder) => {
   if (!fs.existsSync(targetFolder)) {
     fs.mkdirSync(targetFolder)
@@ -429,6 +454,19 @@ const checkSourceFolder = (targetFolder) => {
 
   return targetFolder
 }
+// 取得APP安裝資料夾
+const getDirFolder = () => {
+  const osType = require('os').type()
+  let appPath
+  if (osType === 'Windows_NT') {
+    // Windows 操作系统
+    appPath = getDirFolder()
+  } else {
+    appPath = __dirname
+  }
+  return appPath
+}
+// 取得USER資料夾並創建PlayList_yyyyMMddhhmmss
 const getSourceFolder = () => {
   const NovoFolder = getNovoFolder()
   const strftime = require('strftime')
@@ -441,6 +479,7 @@ const getSourceFolder = () => {
 
   return SourceFolder
 }
+// 取得USER資料夾
 const getNovoFolder = () => {
   const osType = require('os').type()
   let folder
@@ -474,4 +513,7 @@ const focusWindow = () => {
     window.focus()
   }
   return window
+}
+const closeWindow = () => {
+  BrowserWindow.getFocusedWindow().close()
 }

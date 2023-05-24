@@ -425,11 +425,11 @@ export const useWidgetListStore = defineStore('widgetList', {
   },
   actions: {
     // 開新檔案
-    async SetOpenNewFileData(fileData) {
+    SetOpenNewFileData(fileData) {
       console.log('fileData', fileData)
       this.fileData = fileData
       if (fileData.Playlist === '') {
-        const NowPlayListFolder = await window.myAPI.setPlayListFolder()
+        const NowPlayListFolder = window.myAPI.setPlayListFolder()
         console.log('NowPlayListFolder', NowPlayListFolder)
         this.nowPlayListName = NowPlayListFolder.nowPlayListName
         this.nowPlayListFolder = NowPlayListFolder.NovoFolder
@@ -449,6 +449,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       this.fileData = fileData
       this.nowPlayListName = fileData.Playlist
       this.nowPlayListFolder = fileData.PlaylistPath
+      this.nowPlayListPath = fileData.PlaylistPath + '/' + fileData.Playlist
     },
     // 讀檔 並設置Nove DS XML 將產生的單一物件改成陣列
     SetNovoDS(fileData, xml) {

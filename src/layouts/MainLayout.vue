@@ -20,8 +20,10 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
+import { useWidgetListStore } from 'src/stores/widget'
 import logoSVG from '../assets/logo.svg'
 
+const widgetStore = useWidgetListStore()
 export default defineComponent({
   name: 'MainLayout',
 
@@ -40,7 +42,8 @@ export default defineComponent({
     }
 
     function closeApp() {
-      window.myAPI?.close()
+      window.myAPI?.closeWatchJson()
+      window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
     }
 
     return { logo, minimize, toggleMaximize, closeApp }

@@ -122,6 +122,7 @@ function saveAlert() {
     }
   }).onCancel(() => {
     console.log('Cancel')
+    window.myAPI?.closeWatchJson()
     window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
   }).onDismiss(() => {
     console.log('Called on OK or Cancel')
@@ -146,6 +147,7 @@ function leaveSaveFileClose() {
     $q.dialog({
       title: 'Saved successfully!'
     }).onDismiss(() => {
+      window.myAPI?.closeWatchJson()
       window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
     })
   }
