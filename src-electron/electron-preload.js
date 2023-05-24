@@ -108,12 +108,17 @@ contextBridge.exposeInMainWorld('myAPI', {
         const defaultFileData = {
           Focus: 'signage',
           OpenNew: 'true',
+          Reload: 'false',
           FileName: '',
           FilePath: '',
           LayoutType: '',
           ModelType: '',
           Orientation: '',
-          PlaylistType: ''
+          PlaylistType: '',
+          Preview: {
+            Ready: 'false',
+            Path: ''
+          }
         }
         resolve({ openType: 'new', defaultFileData })
       } else {
