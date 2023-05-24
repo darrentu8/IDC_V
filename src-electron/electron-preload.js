@@ -74,10 +74,7 @@ contextBridge.exposeInMainWorld('myAPI', {
     })
   },
   checkJson: () => {
-    const userDataPath = app.getPath('userData')
-    const fileName = 'interactive.json'
-    const targetFile = path.join(userDataPath, fileName)
-
+    const appPath = app.getAppPath()
     const data = {
       Focus: 'signage',
       OpenNew: 'true',
@@ -89,13 +86,16 @@ contextBridge.exposeInMainWorld('myAPI', {
       Orientation: '',
       PlaylistType: ''
     }
-
+    const fileName = 'interactive.json'
+    const targetFile = path.join(appPath, fileName)
     if (!fs.existsSync(targetFile)) {
       alert('NovoDs Studio has not been installed.')
-      fs.writeFile(targetFile, JSON.stringify(data), (err) => {
-        if (err) throw err
+      try {
+        fs.writeFileSync(targetFile, JSON.stringify(data))
         console.log('interactive.json has been added!')
-      })
+      } catch (err) {
+        console.error(err)
+      }
     }
   },
   loadConfigFile: () => {
