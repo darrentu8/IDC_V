@@ -74,7 +74,10 @@ contextBridge.exposeInMainWorld('myAPI', {
     })
   },
   checkJson: () => {
-    const appPath = app.getAppPath()
+    const userDataPath = app.getPath('userData')
+    const fileName = 'interactive.json'
+    const targetFile = path.join(userDataPath, fileName)
+
     const data = {
       Focus: 'signage',
       OpenNew: 'true',
@@ -86,8 +89,7 @@ contextBridge.exposeInMainWorld('myAPI', {
       Orientation: '',
       PlaylistType: ''
     }
-    const fileName = 'interactive.json'
-    const targetFile = path.join(appPath, fileName)
+
     if (!fs.existsSync(targetFile)) {
       alert('NovoDs Studio has not been installed.')
       fs.writeFile(targetFile, JSON.stringify(data), (err) => {
@@ -309,7 +311,7 @@ contextBridge.exposeInMainWorld('myAPI', {
       try {
         await fs.rmdirSync(nowPlayListPath, { recursive: true })
         console.log(`${nowPlayListPath} 已被刪除`)
-        window.myAPI?.close()
+        closeWindow()
       } catch (error) {
         console.error(`刪除 ${nowPlayListPath} 時發生錯誤：`, error)
       }
@@ -363,7 +365,9 @@ const writeAndCopyFolder = (nowPlayListPath, newPlayListPath, xmlData) => {
     })
   })
 }
-
+const closeWindow = () => {
+  BrowserWindow.getFocusedWindow().close()
+}
 const transXml = (propFilePath) => {
   const fileName = 'index.xml'
   console.log('propFilePath', propFilePath)
