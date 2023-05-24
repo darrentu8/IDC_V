@@ -428,16 +428,16 @@ export const useWidgetListStore = defineStore('widgetList', {
     async SetOpenNewFileData(fileData) {
       console.log('fileData', fileData)
       this.fileData = fileData
-      if (fileData.FileName === '') {
+      if (fileData.Playlist === '') {
         const NowPlayListFolder = await window.myAPI.setPlayListFolder()
         console.log('NowPlayListFolder', NowPlayListFolder)
         this.nowPlayListName = NowPlayListFolder.nowPlayListName
         this.nowPlayListFolder = NowPlayListFolder.NovoFolder
         this.nowPlayListPath = NowPlayListFolder.NovoFolder + '/' + NowPlayListFolder.nowPlayListName
       } else {
-        this.nowPlayListName = fileData.FileName
-        this.nowPlayListFolder = fileData.FilePath
-        this.nowPlayListPath = fileData.FilePath + '/' + fileData.FileName
+        this.nowPlayListName = fileData.Playlist
+        this.nowPlayListFolder = fileData.PlaylistPath
+        this.nowPlayListPath = fileData.PlaylistPath + '/' + fileData.Playlist
       }
       this._Layout_Type = fileData.LayoutType
       this._Model_Type = fileData.ModelType
@@ -447,8 +447,8 @@ export const useWidgetListStore = defineStore('widgetList', {
     // 讀檔
     SetLoadFileData(fileData) {
       this.fileData = fileData
-      this.nowPlayListName = fileData.FileName
-      this.nowPlayListFolder = fileData.FilePath
+      this.nowPlayListName = fileData.Playlist
+      this.nowPlayListFolder = fileData.PlaylistPath
     },
     // 讀檔 並設置Nove DS XML 將產生的單一物件改成陣列
     SetNovoDS(fileData, xml) {

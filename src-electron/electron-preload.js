@@ -83,14 +83,17 @@ contextBridge.exposeInMainWorld('myAPI', {
     console.log('appPath', appPath)
     const data = {
       Focus: 'signage',
-      OpenNew: 'true',
-      Reload: 'true',
-      FileName: '',
-      FilePath: '',
-      LayoutType: '',
+      LayoutType: 0,
       ModelType: '',
-      Orientation: '',
-      PlaylistType: ''
+      OpenNew: true,
+      Reload: false,
+      Orientation: 0,
+      Playlist: '',
+      PlaylistPath: '',
+      Preview: {
+        Path: '',
+        Ready: false
+      }
     }
     const fileName = 'interactive.json'
     const targetFile = path.join(appPath, fileName)
@@ -114,17 +117,16 @@ contextBridge.exposeInMainWorld('myAPI', {
       alert('NovoDs Studio has not been installed.')
       const defaultFileData = {
         Focus: 'signage',
-        OpenNew: 'true',
-        Reload: 'false',
-        FileName: '',
-        FilePath: '',
-        LayoutType: '',
+        LayoutType: 0,
         ModelType: '',
-        Orientation: '',
-        PlaylistType: '',
+        OpenNew: true,
+        Reload: false,
+        Orientation: 0,
+        Playlist: '',
+        PlaylistPath: '',
         Preview: {
-          Ready: 'false',
-          Path: ''
+          Path: '',
+          Ready: false
         }
       }
       return Promise.resolve({ openType: 'new', defaultFileData })
@@ -146,19 +148,18 @@ contextBridge.exposeInMainWorld('myAPI', {
         const propFocus = obj.Focus
         const propOpenNew = obj.OpenNew
         const propFileData = {
-          FileName: obj.FileName,
-          FilePath: obj.FilePath,
+          Playlist: obj.Playlist,
+          PlaylistPath: obj.PlaylistPath,
           LayoutType: obj.LayoutType,
           ModelType: obj.ModelType,
-          Orientation: obj.Orientation,
-          PlaylistType: obj.PlaylistType
+          Orientation: obj.Orientation
         }
 
         if (propFocus === 'signage') {
-          if (propOpenNew === 'true') {
+          if (propOpenNew === true) {
             resolve({ openType: 'new', propFileData })
-          } else if (propOpenNew === 'false' && propFileData.FilePath) {
-            const targetFile = path.join(propFileData.FilePath, propFileData.FileName)
+          } else if (propOpenNew === false && propFileData.PlaylistPath) {
+            const targetFile = path.join(propFileData.PlaylistPath, propFileData.Playlist)
             const result = transXml(targetFile)
             console.log('result', result)
 
@@ -194,15 +195,15 @@ contextBridge.exposeInMainWorld('myAPI', {
             console.log('obj', obj)
             const propFocus = obj.Focus
             const propOpenNew = obj.OpenNew
-            const propFileName = obj.FileName
-            const propFilePath = obj.FilePath
+            const propFileName = obj.Playlist
+            const propFilePath = obj.PlaylistPath
             if (propFocus === 'signage') {
               focusWindow()
-              if (propOpenNew === 'true' && !propFilePath) {
+              if (propOpenNew === true && !propFilePath) {
                 // 呼叫主進程重新啟動應用程序
                 // ipcRenderer.send('app-restart')
               }
-              if (propOpenNew === 'false' && propFilePath) {
+              if (propOpenNew === false && propFilePath) {
                 const targetFile = path.join(propFilePath, propFileName)
                 console.log('targetFile', targetFile)
                 const result = transXml(targetFile)
