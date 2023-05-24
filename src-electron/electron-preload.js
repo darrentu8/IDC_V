@@ -395,7 +395,7 @@ const getNovoFolder = () => {
   let folder
   if (osType === 'Windows_NT') {
     // Windows 操作系统
-    const winDir = process.env.APPDATA || process.env.USERPROFILE
+    const winDir = process.env.USERPROFILE
     folder = path.join(winDir, novoDirName)
   } else {
     // Linux 或 macOS 操作系统

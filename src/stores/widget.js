@@ -10,6 +10,7 @@ export const useWidgetListStore = defineStore('widgetList', {
     nowPlayListFolder: '',
     nowPlayListPath: '',
     NovoDS: {
+      _Version: '1.1',
       _Description: '',
       _Layout_Type: '0', // 0 -> Grid, 1 -> Flexible
       _Playlist_Name: '',
@@ -189,21 +190,21 @@ export const useWidgetListStore = defineStore('widgetList', {
       },
       Pages: {
         Page: {
+          _ID: 'Page 1',
+          _Description: '',
+          _SerialNumber: 'Page 1', // 流水號 Page 1, Page 2 …沒用到
           _Layout: '',
           _Column: '',
           _Row: '',
           _Orientation: '0', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
-          _FreeDesignerMode: 'false', // Grid -> false, Flexi -> true
-          _ID: 'Page 1',
-          _Description: '',
-          _SerialNumber: 'Page 1', // 流水號 Page 1, Page 2 …沒用到
+          _FreeDesignerMode: false, // Grid -> false, Flexi -> true
           _AudioSource: '',
-          _BackgroundImageSize: '0',
           _BackgroundImage: '',
-          _BgMusicApplyToAll: '',
+          _BackgroundImageSize: '0',
+          _BgMusicApplyToAll: false,
+          _BackgroundMusic: '',
           _BackgroundMusicUrl: '',
           _BackgroundMusicSize: '0',
-          _BackgroundMusic: '',
           Section: [
             {
               _Index: 0,
@@ -212,26 +213,26 @@ export const useWidgetListStore = defineStore('widgetList', {
               _Z: 0,
               _Height: '',
               _Width: '',
-              _isFixedRatio: 'false',
+              _isFixedRatio: false,
               _ContentType: '',
               Content: {
+                _duration: '10',
                 _showType: 'Default',
                 _scaleType: 'FIT_XY',
-                _Live_Update_Frequency: '',
-                _MuteVideo: '',
-                _Live_Update_type: '',
-                _Live_Update_type_storage: '',
-                _Live_Update_userName: '',
-                _Live_Update_path: '',
-                _Live_Update_ID: '',
-                _Detect_Picture_Orientation: 'false',
-                _FloatIn_Direction: '',
-                _isVideoFillArea: 'false',
-                _Live_Update_Access_Way: '',
+                _MuteVideo: false,
+                _isVideoFillArea: false,
+                _Detect_Picture_Orientation: false,
+                _FloatIn_Direction: '1',
+                _Live_Update_type: '0',
                 _Live_Update_password: '',
-                _duration: '10',
+                _Live_Update_Access_Way: '0',
+                _Live_Update_path: '',
+                _Live_Update_Show_Status: true,
+                _Live_Update_userName: '',
+                _Live_Update_Frequency: '15',
                 _Live_Update_port: '21',
-                _Live_Update_Show_Status: '',
+                _Live_Update_ID: '',
+                _Live_Update_type_storage: '1',
                 AttachmentFiles: {
                   File: null
                 },
