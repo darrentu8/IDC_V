@@ -198,7 +198,7 @@ export const useWidgetListStore = defineStore('widgetList', {
           _Row: '',
           _Orientation: '0', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
           _FreeDesignerMode: false, // Grid -> false, Flexi -> true
-          _AudioSource: '',
+          _AudioSource: '0',
           _BackgroundImage: '',
           _BackgroundImageSize: '0',
           _BgMusicApplyToAll: false,
@@ -440,7 +440,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       }
       this._Layout_Type = fileData.LayoutType
       this._Model_Type = fileData.ModelType
-      this.NovoDS.Pages.Page._Orientation = fileData.Orientation
+      this.NovoDS.Pages.Page._Orientation = fileData.Orientation || '0'
       this.NovoDS.Pages.Page._FreeDesignerMode = 'false'
     },
     // 讀檔
