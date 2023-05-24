@@ -35,8 +35,6 @@ import path from 'path'
 import fs from 'fs'
 import X2js from 'x2js'
 
-const fse = require('fs-extra')
-
 const novoDirName = 'NovoDS.PlayLists'
 
 contextBridge.exposeInMainWorld('myAPI', {
@@ -309,7 +307,7 @@ contextBridge.exposeInMainWorld('myAPI', {
   delTempFolder: async (nowPlayListPath) => {
     if (nowPlayListPath) {
       try {
-        await fse.remove(nowPlayListPath)
+        await fs.rmdirSync(nowPlayListPath, { recursive: true })
         console.log(`${nowPlayListPath} 已被刪除`)
         window.myAPI?.close()
       } catch (error) {
@@ -337,17 +335,35 @@ const writeAndCopyFolder = (nowPlayListPath, newPlayListPath, xmlData) => {
       if (err) reject(err)
 
       // 複製資料夾
-      fse.copy(nowPlayListPath, newPlayListPath)
-        .then(() => {
+      fs.mkdir(newPlayListPath, { recursive: true }, (err) => {
+        if (err) reject(err)
+
+        fs.readdir(nowPlayListPath, (err, files) => {
+          if (err) reject(err)
+
+          files.forEach(file => {
+            const sourcePath = path.join(nowPlayListPath, file)
+            const targetPath = path.join(newPlayListPath, file)
+
+            const readStream = fs.createReadStream(sourcePath)
+            const writeStream = fs.createWriteStream(targetPath)
+
+            readStream.on('error', reject)
+            writeStream.on('error', reject)
+
+            readStream.pipe(writeStream)
+          })
+
           resolve({
             targetFile: newPlayListPath,
             xmlData
           })
         })
-        .catch((err) => reject(err))
+      })
     })
   })
 }
+
 const transXml = (propFilePath) => {
   const fileName = 'index.xml'
   console.log('propFilePath', propFilePath)

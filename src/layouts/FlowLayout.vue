@@ -124,7 +124,6 @@ function saveAlert() {
     console.log('Cancel')
     window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
   }).onDismiss(() => {
-    window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
     console.log('Called on OK or Cancel')
   })
 }
