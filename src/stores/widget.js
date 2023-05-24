@@ -425,119 +425,138 @@ export const useWidgetListStore = defineStore('widgetList', {
   },
   actions: {
     // 開新檔案
-    SetOpenNewFileData(fileData) {
+    async SetOpenNewFileData(fileData = null) {
       console.log('fileData', fileData)
       this.fileData = fileData
-      if (fileData.Playlist === '') {
-        const NowPlayListFolder = window.myAPI.setPlayListFolder()
-        console.log('NowPlayListFolder', NowPlayListFolder)
-        this.nowPlayListName = NowPlayListFolder.nowPlayListName
-        this.nowPlayListFolder = NowPlayListFolder.NovoFolder
-        this.nowPlayListPath = NowPlayListFolder.NovoFolder + '/' + NowPlayListFolder.nowPlayListName
+
+      if (!fileData.Playlist || !fileData.PlaylistPath) {
+        // 建立 PlayList Temp
+        try {
+          const NowPlayListFolder = await window.myAPI.setPlayListFolder()
+          console.log('NowPlayListFolder', NowPlayListFolder)
+          this.nowPlayListName = NowPlayListFolder.nowPlayListName
+          this.nowPlayListFolder = NowPlayListFolder.NovoFolder
+          this.nowPlayListPath = NowPlayListFolder.NovoFolder + '/' + NowPlayListFolder.nowPlayListName
+        } catch (err) {
+          console.error(`Failed to set PlayList folder: ${err}`)
+        }
       } else {
         this.nowPlayListName = fileData.Playlist
         this.nowPlayListFolder = fileData.PlaylistPath
         this.nowPlayListPath = fileData.PlaylistPath + '/' + fileData.Playlist
       }
+
       this._Layout_Type = fileData.LayoutType
       this._Model_Type = fileData.ModelType
       this.NovoDS.Pages.Page._Orientation = fileData.Orientation || '0'
       this.NovoDS.Pages.Page._FreeDesignerMode = 'false'
+      return 'new'
     },
-    // 讀檔
-    SetLoadFileData(fileData) {
+    // 讀Json內資料
+    SetLoadFileData(fileData = null) {
       this.fileData = fileData
       this.nowPlayListName = fileData.Playlist
       this.nowPlayListFolder = fileData.PlaylistPath
       this.nowPlayListPath = fileData.PlaylistPath + '/' + fileData.Playlist
     },
     // 讀檔 並設置Nove DS XML 將產生的單一物件改成陣列
-    SetNovoDS(fileData, xml) {
-      const RawData = JSON.parse(JSON.stringify(xml))
-      if (!RawData.NovoDS) {
-        return false
-      }
-      if (RawData.NovoDS.Hardware && RawData.NovoDS.Hardware.Rs232Settings && Array.isArray(RawData.NovoDS.Hardware.Rs232Settings.Rs232)) {
-        RawData.NovoDS.Hardware.Rs232Settings.Rs232.forEach(rs232 => {
-          if (rs232.Command && !Array.isArray(rs232.Command)) {
-            rs232.Command = [rs232.Command]
+    async SetNovoDS(fileData, xml) {
+      try {
+        const RawData = JSON.parse(JSON.stringify(xml))
+        if (!RawData.NovoDS) {
+          return Promise.reject('Invalid XML data')
+        }
+
+        if (!RawData.NovoDS) {
+          return false
+        }
+        if (RawData.NovoDS.Hardware && RawData.NovoDS.Hardware.Rs232Settings && Array.isArray(RawData.NovoDS.Hardware.Rs232Settings.Rs232)) {
+          RawData.NovoDS.Hardware.Rs232Settings.Rs232.forEach(rs232 => {
+            if (rs232.Command && !Array.isArray(rs232.Command)) {
+              rs232.Command = [rs232.Command]
+            }
+          })
+        }
+        if (RawData.NovoDS.Hardware && RawData.NovoDS.Hardware.TcpIpSettings) {
+          const tcpip = RawData.NovoDS.Hardware.TcpIpSettings
+          if (tcpip.ReceivedCommands && tcpip.ReceivedCommands.Command && !Array.isArray(tcpip.ReceivedCommands.Command)) {
+            tcpip.ReceivedCommands.Command = [tcpip.ReceivedCommands.Command]
           }
-        })
-      }
-      if (RawData.NovoDS.Hardware && RawData.NovoDS.Hardware.TcpIpSettings) {
-        const tcpip = RawData.NovoDS.Hardware.TcpIpSettings
-        if (tcpip.ReceivedCommands && tcpip.ReceivedCommands.Command && !Array.isArray(tcpip.ReceivedCommands.Command)) {
-          tcpip.ReceivedCommands.Command = [tcpip.ReceivedCommands.Command]
-        }
-        if (tcpip.Command && !Array.isArray(tcpip.Command)) {
-          tcpip.Command = [tcpip.Command]
-        }
-      }
-
-      const sections = RawData.NovoDS.Pages.Page.Section
-      if (!Array.isArray(sections)) {
-        RawData.NovoDS.Pages.Page.Section = [sections]
-      }
-      RawData.NovoDS.Pages.Page.Section.forEach(section => {
-        const content = section.Content
-        if (!content.State) {
-          content.State = []
-        } else if (!Array.isArray(content.State)) {
-          content.State = [content.State]
-        }
-
-        content.State.forEach(state => {
-          if (state.File && !Array.isArray(state.File)) {
-            state.File = [state.File]
-          } else if (!state.File) {
-            state.File = []
+          if (tcpip.Command && !Array.isArray(tcpip.Command)) {
+            tcpip.Command = [tcpip.Command]
           }
-          if (state.Event && !Array.isArray(state.Event)) {
-            state.Event = [state.Event]
-            state.Event.forEach(event => {
-              if (event.Action && !Array.isArray(event.Action)) {
-                event.Action = [event.Action]
-              } else if (!event.Action) {
-                event.Action = []
-              }
+        }
 
-              event.Action.forEach(action => {
-                if (action.Data && !Array.isArray(action.Data)) {
-                  action.Data = [action.Data]
-                } else if (!action.Data) {
-                  action.Data = []
+        const sections = RawData.NovoDS.Pages.Page.Section
+        if (!Array.isArray(sections)) {
+          RawData.NovoDS.Pages.Page.Section = [sections]
+        }
+        RawData.NovoDS.Pages.Page.Section.forEach(section => {
+          const content = section.Content
+          if (!content.State) {
+            content.State = []
+          } else if (!Array.isArray(content.State)) {
+            content.State = [content.State]
+          }
+
+          content.State.forEach(state => {
+            if (state.File && !Array.isArray(state.File)) {
+              state.File = [state.File]
+            } else if (!state.File) {
+              state.File = []
+            }
+            if (state.Event && !Array.isArray(state.Event)) {
+              state.Event = [state.Event]
+              state.Event.forEach(event => {
+                if (event.Action && !Array.isArray(event.Action)) {
+                  event.Action = [event.Action]
+                } else if (!event.Action) {
+                  event.Action = []
                 }
-              })
-            })
-          } else if (state.Event) {
-            state.Event.forEach(event => {
-              if (event.Action && !Array.isArray(event.Action)) {
-                event.Action = [event.Action]
-              } else if (!event.Action) {
-                event.Action = []
-              }
 
-              event.Action.forEach(action => {
-                if (action.Data && !Array.isArray(action.Data)) {
-                  action.Data = [action.Data]
-                } else if (!action.Data) {
-                  action.Data = []
+                event.Action.forEach(action => {
+                  if (action.Data && !Array.isArray(action.Data)) {
+                    action.Data = [action.Data]
+                  } else if (!action.Data) {
+                    action.Data = []
+                  }
+                })
+              })
+            } else if (state.Event) {
+              state.Event.forEach(event => {
+                if (event.Action && !Array.isArray(event.Action)) {
+                  event.Action = [event.Action]
+                } else if (!event.Action) {
+                  event.Action = []
                 }
+
+                event.Action.forEach(action => {
+                  if (action.Data && !Array.isArray(action.Data)) {
+                    action.Data = [action.Data]
+                  } else if (!action.Data) {
+                    action.Data = []
+                  }
+                })
               })
-            })
-          } else {
-            state.Event = []
-          }
+            } else {
+              state.Event = []
+            }
+          })
         })
-      })
 
-      this.NovoDS = this.parseObject(RawData.NovoDS)
-      console.log('this.NovoDS', this.NovoDS)
+        this.NovoDS = this.parseObject(RawData.NovoDS)
+        console.log('this.NovoDS', this.NovoDS)
 
-      if (fileData) {
-        this.SetLoadFileData(fileData)
+        if (fileData) {
+          this.SetLoadFileData(fileData)
+        }
+
+        // 使用 Promise.resolve() 返回解析後的數據
+        return Promise.resolve(this.NovoDS)
+      } catch (error) {
+        // 使用 Promise.reject() 返回錯誤信息
+        return Promise.reject(error)
       }
-      return true
     },
     parseObject(obj) {
       obj = JSON.parse(JSON.stringify(obj))

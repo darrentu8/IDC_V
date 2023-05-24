@@ -1,4 +1,5 @@
 <template>
+  <q-ajax-bar position="top" color="primary" size="7px" />
   <router-view />
 </template>
 
@@ -12,8 +13,9 @@ export default defineComponent({
   setup() {
     const $q = useQuasar()
     const router = useRouter()
+    const widgetStore = useWidgetListStore()
+
     async function loadConfigData() {
-      const widgetStore = useWidgetListStore()
       const loadConfigData = await window.myAPI?.loadConfigFile()
       if (loadConfigData !== null) {
         if (loadConfigData.openType === 'new') {
@@ -37,27 +39,38 @@ export default defineComponent({
         }
       }
     }
-    return { loadConfigData }
-  },
-  async mounted() {
-    await window.myAPI?.checkJson()
-    await this.loadConfigData()
-    await this.watchJson()
-  },
-  methods: {
-    async watchJson() {
-      const $q = useQuasar()
-      const router = useRouter()
-      const widgetStore = useWidgetListStore()
-      const loadConfigData = await window.myAPI?.watchJson()
-      if (loadConfigData !== null) {
-        if (loadConfigData.openType === 'new') {
-          console.log('new')
-          widgetStore.SetOpenNewFileData(loadConfigData.propFileData)
-          router.push({ path: '/' })
-        } else if (loadConfigData.openType === 'load') {
-          widgetStore.SetNovoDS(loadConfigData.propFileData, loadConfigData.result)
-          router.push({ path: '/flow' })
+    let watchJsonPromise // 定義一個變數來存放 Promise 物件
+
+    // 啟動監聽
+    function startWatching() {
+      watchJsonPromise = window.myAPI.watchJson().then((loadConfigData) => {
+        console.log('Received data:', loadConfigData)
+        if (loadConfigData !== null) {
+          if (loadConfigData.openType === 'new') {
+            console.log('new')
+            widgetStore.SetOpenNewFileData(loadConfigData.propFileData).then((result) => {
+              console.log('SetOpenNewFileData', result)
+              router.push({ path: '/' })
+            })
+            router.push({ path: '/' })
+          } else if (loadConfigData.openType === 'load') {
+            console.log('load')
+            widgetStore.SetNovoDS(loadConfigData.propFileData, loadConfigData.result).then((result) => {
+              console.log('SetNovoDS', result)
+              router.push({ path: '/flow' })
+            })
+          } else {
+            console.log(loadConfigData)
+            $q.dialog({
+              title: 'File format error',
+              okBtn: 'ok'
+            }).onOk(() => {
+            }).onCancel(() => {
+              console.log('Cancel')
+            }).onDismiss(() => {
+              console.log('Called on OK or Cancel')
+            })
+          }
         } else {
           console.log(loadConfigData)
           $q.dialog({
@@ -70,8 +83,91 @@ export default defineComponent({
             console.log('Called on OK or Cancel')
           })
         }
+        // 然後重新啟動監聽
+        startWatching()
+      }).catch((error) => {
+        console.error('Error:', error)
+        // 然後重新啟動監聽
+        startWatching()
+      })
+    }
+
+    // 停止監聽
+    function stopWatching() {
+      if (watchJsonPromise) {
+        watchJsonPromise.catch(() => { }) // 必須攔截 Promise 的錯誤，否則可能會產生 unhandled promise rejection 警告
+        watchJsonPromise = null
       }
     }
+
+    // 開始監聽
+    startWatching()
+
+    // 5 秒後停止監聽
+    setTimeout(stopWatching, 5000)
+
+    // async function watchJson() {
+    //   const loadConfigData = await window.myAPI?.watchJson()
+    //   if (loadConfigData !== null) {
+    //     if (loadConfigData.openType === 'new') {
+    //       console.log('new')
+    //       widgetStore.SetOpenNewFileData(loadConfigData.propFileData).then((result) => {
+    //         console.log('SetOpenNewFileData', result)
+    //         router.push({ path: '/' })
+    //       })
+    //       router.push({ path: '/' })
+    //     } else if (loadConfigData.openType === 'load') {
+    //       console.log('load')
+    //       widgetStore.SetNovoDS(loadConfigData.propFileData, loadConfigData.result).then((result) => {
+    //         console.log('SetNovoDS', result)
+    //         router.push({ path: '/flow' })
+    //       })
+    //     } else {
+    //       console.log(loadConfigData)
+    //       $q.dialog({
+    //         title: 'File format error',
+    //         okBtn: 'ok'
+    //       }).onOk(() => {
+    //       }).onCancel(() => {
+    //         console.log('Cancel')
+    //       }).onDismiss(() => {
+    //         console.log('Called on OK or Cancel')
+    //       })
+    //     }
+    //   } else {
+    //     console.log(loadConfigData)
+    //     $q.dialog({
+    //       title: 'File format error',
+    //       okBtn: 'ok'
+    //     }).onOk(() => {
+    //     }).onCancel(() => {
+    //       console.log('Cancel')
+    //     }).onDismiss(() => {
+    //       console.log('Called on OK or Cancel')
+    //     })
+    //   }
+    // }
+    return { loadConfigData, startWatching }
+  },
+  async mounted() {
+    try {
+      await new Promise((resolve, reject) => {
+        window.myAPI?.checkJson().then(() => {
+          console.log('interactive.json is ready')
+          resolve()
+        }).catch((err) => {
+          console.error(`Failed to create interactive.json: ${err}`)
+          reject(err)
+        })
+      })
+      await this.loadConfigData()
+      await this.startWatching()
+    } catch (err) {
+      console.error(err)
+    }
+  },
+  methods: {
+
   }
 })
 </script>

@@ -55,6 +55,7 @@ contextBridge.exposeInMainWorld('myAPI', {
       win.maximize()
     }
   },
+  // 建立 PlayList Temp
   setPlayListFolder() {
     return new Promise((resolve, reject) => {
       const NovoFolder = getNovoFolder()
@@ -80,6 +81,7 @@ contextBridge.exposeInMainWorld('myAPI', {
         return Promise.reject(error)
       })
   },
+  // 檢查建立Json
   checkJson: () => {
     const appPath = getDirFolder()
     console.log('appPath', appPath)
@@ -99,22 +101,38 @@ contextBridge.exposeInMainWorld('myAPI', {
     }
     const targetFile = path.join(appPath, interactiveFileName)
     console.log('targetFile', targetFile)
-    if (!fs.existsSync(targetFile)) {
-      alert('NovoDs Studio has not been installed.')
+
+    return new Promise((resolve, reject) => {
       try {
-        fs.writeFileSync(targetFile, JSON.stringify(data))
-        console.log('interactive.json has been added!')
-      } catch (err) {
-        console.error(err)
+        fs.access(targetFile, (exists) => {
+          if (!exists) {
+            alert('NovoDs Studio has not been installed.')
+            fs.writeFile(targetFile, JSON.stringify(data), (err) => {
+              if (err) {
+                console.error(err)
+                reject(err)
+              } else {
+                console.log('interactive.json has been added!')
+                resolve()
+              }
+            })
+          } else {
+            resolve()
+          }
+        })
+      } catch (error) {
+        console.error(error)
+        reject(error)
       }
-    }
+    })
   },
+  // 讀取Json檔
   loadConfigFile: () => {
     const appPath = getDirFolder()
     const targetFile = path.join(appPath, interactiveFileName)
-
+    // 未建立或建立失敗
     if (!fs.existsSync(targetFile)) {
-      alert('NovoDs Studio has not been installed.')
+      alert('The interactive file could not be found!')
       const defaultFileData = {
         Focus: 'signage',
         LayoutType: 0,
@@ -131,7 +149,7 @@ contextBridge.exposeInMainWorld('myAPI', {
       }
       return Promise.resolve({ openType: 'new', defaultFileData })
     }
-
+    // 已建立
     return new Promise((resolve, reject) => {
       fs.readFile(targetFile, 'utf8', (err, data) => {
         if (err) {
@@ -139,6 +157,7 @@ contextBridge.exposeInMainWorld('myAPI', {
         }
 
         if (!data) { // 如果 data 不存在则直接返回 null
+          console.log('No Json data')
           return resolve(null)
         }
 
@@ -148,15 +167,14 @@ contextBridge.exposeInMainWorld('myAPI', {
         const propFocus = obj.Focus
         const propOpenNew = obj.OpenNew
         const propFileData = {
-          Playlist: obj.Playlist,
-          PlaylistPath: obj.PlaylistPath,
-          LayoutType: obj.LayoutType,
-          ModelType: obj.ModelType,
-          Orientation: obj.Orientation
+          ...obj
         }
 
         if (propFocus === 'signage') {
+          focusWindow()
+          // 開新檔案
           if (propOpenNew === true) {
+            console.log('propFileData', propFileData)
             resolve({ openType: 'new', propFileData })
           } else if (propOpenNew === false && propFileData.PlaylistPath) {
             const targetFile = path.join(propFileData.PlaylistPath, propFileData.Playlist)
@@ -169,7 +187,12 @@ contextBridge.exposeInMainWorld('myAPI', {
               result
             })
           }
+          console.log('Json資料錯誤！')
+          // 例外情況暫不處理
+          resolve(null)
         } else {
+          console.log('Json資料錯誤！')
+          // 例外情況暫不處理
           resolve(null)
         }
       })
@@ -198,42 +221,38 @@ contextBridge.exposeInMainWorld('myAPI', {
               console.log('Run Watch Json')
               console.log('obj', obj)
               const propReload = obj.Reload // true則重新讀取整份
-              const propFocus = obj.Focus // signage || studio
+              // const propFocus = obj.Focus // signage || studio
               const propOpenNew = obj.OpenNew
-              const propFileName = obj.Playlist
-              const propFilePath = obj.PlaylistPath
+              // const propFileName = obj.Playlist
+              // const propFilePath = obj.PlaylistPath
               const propFileData = { ...obj }
 
               // 如果重load
               if (propReload) {
                 focusWindow()
-                if (propOpenNew === true && !propFileName && propFilePath) {
+                // 開新檔案
+                if (propOpenNew === true) {
+                  console.log('propFileData', propFileData)
                   resolve({ openType: 'new', propFileData })
-                } else if (propOpenNew === false && propFileName && propFilePath) {
-                  const targetFile = path.join(propFilePath, propFileName)
-                  console.log('reloadFile', targetFile)
+                } else if (propOpenNew === false && propFileData.PlaylistPath) {
+                  const targetFile = path.join(propFileData.PlaylistPath, propFileData.Playlist)
                   const result = transXml(targetFile)
                   console.log('result', result)
-                  resolve({ openType: 'load', propFileData, result })
+
+                  resolve({
+                    openType: 'load',
+                    propFileData,
+                    result
+                  })
                 } else {
+                  // 例外情況暫不處理
+                  console.log('Json資料錯誤！')
                   resolve(null)
                 }
               } else {
                 // 沒重load
-                if (propFocus === 'signage') {
-                  focusWindow()
-                  if (propOpenNew === true && !propFileName && propFilePath) {
-                    resolve({ openType: 'new', propFileData })
-                  } else if (propOpenNew === false && propFileName && propFilePath) {
-                    const targetFile = path.join(propFilePath, propFileName)
-                    console.log('reloadFile', targetFile)
-                    const result = transXml(targetFile)
-                    console.log('result', result)
-                    resolve({ openType: 'load', propFileData, result })
-                  }
-                } else {
-                  resolve(null)
-                }
+                console.log('Json資料錯誤！')
+                resolve(null)
               }
             }
           })
