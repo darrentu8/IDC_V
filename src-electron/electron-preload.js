@@ -105,7 +105,17 @@ contextBridge.exposeInMainWorld('myAPI', {
       const targetFile = path.join(appPath, fileName)
       if (!fs.existsSync(targetFile)) {
         alert('NovoDs Studio has not been installed.')
-        resolve(null) // 将 reject 改为 resolve 并返回 null
+        const defaultFileData = {
+          Focus: 'signage',
+          OpenNew: 'true',
+          FileName: '',
+          FilePath: '',
+          LayoutType: '',
+          ModelType: '',
+          Orientation: '',
+          PlaylistType: ''
+        }
+        resolve({ openType: 'new', defaultFileData })
       } else {
         fs.readFile(targetFile, 'utf8', (err, data) => {
           if (err) throw err
