@@ -42,8 +42,7 @@ export default defineComponent({
     }
 
     function closeApp() {
-      window.myAPI?.closeWatchJson()
-      window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
+      window.myAPI.delTempFolderWithClose(widgetStore.nowPlayListPath)
     }
 
     return { logo, minimize, toggleMaximize, closeApp }
