@@ -78,8 +78,8 @@ export default defineComponent({
         // 然後重新啟動監聽
         watchJsonPromise = null // 清除 Promise 物件
         startWatching()
-      }).catch(() => {
-        // console.error('Error:', error)
+      }).catch((error) => {
+        console.error('Error:', error)
 
         // 然後重新啟動監聽
         watchJsonPromise = null // 清除 Promise 物件
