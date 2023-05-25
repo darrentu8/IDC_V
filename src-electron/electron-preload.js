@@ -104,22 +104,13 @@ contextBridge.exposeInMainWorld('myAPI', {
 
     return new Promise((resolve, reject) => {
       try {
-        fs.access(targetFile, (exists) => {
-          if (!exists) {
-            // alert('NovoDs Studio has not been installed.')
-            fs.writeFile(targetFile, JSON.stringify(data), (err) => {
-              if (err) {
-                console.error(err)
-                reject(err)
-              } else {
-                console.log('interactive.json has been added!')
-                resolve()
-              }
-            })
-          } else {
-            resolve()
-          }
-        })
+        if (!fs.existsSync(targetFile)) {
+          fs.writeFileSync(targetFile, JSON.stringify(data))
+          console.log('interactive.json has been created!')
+        } else {
+          console.log('interactive.json already exists.')
+        }
+        resolve()
       } catch (error) {
         console.error(error)
         reject(error)
@@ -539,7 +530,7 @@ const getDirFolder = () => {
   let appPath
   if (osType === 'Windows_NT') {
     // Windows 操作系统
-    appPath = getDirFolder()
+    appPath = path.dirname(__dirname)
   } else {
     appPath = __dirname
   }

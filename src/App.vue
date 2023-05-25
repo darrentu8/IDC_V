@@ -70,11 +70,6 @@ export default defineComponent({
               router.push({ path: '/flow' })
               $q.dialog({
                 title: 'PlayList File successfully opened!'
-              }).onOk(() => {
-              }).onCancel(() => {
-                console.log('Cancel')
-              }).onDismiss(() => {
-                console.log('Called on OK or Cancel')
               })
             })
           }
