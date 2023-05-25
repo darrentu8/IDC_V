@@ -106,7 +106,7 @@ contextBridge.exposeInMainWorld('myAPI', {
       try {
         fs.access(targetFile, (exists) => {
           if (!exists) {
-            alert('NovoDs Studio has not been installed.')
+            // alert('NovoDs Studio has not been installed.')
             fs.writeFile(targetFile, JSON.stringify(data), (err) => {
               if (err) {
                 console.error(err)
@@ -132,7 +132,7 @@ contextBridge.exposeInMainWorld('myAPI', {
     const targetFile = path.join(appPath, interactiveFileName)
     // 未建立或建立失敗
     if (!fs.existsSync(targetFile)) {
-      alert('The interactive file could not be found!')
+      // alert('The interactive file could not be found!')
       const defaultFileData = {
         Focus: 'signage',
         LayoutType: 0,
@@ -187,11 +187,11 @@ contextBridge.exposeInMainWorld('myAPI', {
               result
             })
           }
-          console.log('Json資料錯誤！')
+          console.log('Json資料不完整！')
           // 例外情況暫不處理
           resolve(null)
         } else {
-          console.log('Json資料錯誤！')
+          console.log('Json資料不完整！')
           // 例外情況暫不處理
           resolve(null)
         }
@@ -246,12 +246,12 @@ contextBridge.exposeInMainWorld('myAPI', {
                   })
                 } else {
                   // 例外情況暫不處理
-                  console.log('Json資料錯誤！')
+                  console.log('Json資料不完整！')
                   resolve(null)
                 }
               } else {
                 // 沒重load
-                console.log('Json資料錯誤！')
+                console.log('Json資料不完整！')
                 resolve(null)
               }
             }
@@ -313,7 +313,7 @@ contextBridge.exposeInMainWorld('myAPI', {
           continue
         }
       } else {
-        alert('The same file is already in the same state exists!')
+        // alert('The same file is already in the same state exists!')
       }
 
       fileDataArray.push({ fileName, targetPath, relativePath })
@@ -375,13 +375,23 @@ contextBridge.exposeInMainWorld('myAPI', {
     return validFileDatas
   },
   delTempFolder: async (nowPlayListPath) => {
-    if (nowPlayListPath) {
+    if (nowPlayListPath && path.basename(nowPlayListPath).includes('@_Temp_PlayList_')) {
+      try {
+        await fs.rmdirSync(nowPlayListPath, { recursive: true })
+        console.log(`${nowPlayListPath} 已被刪除`)
+      } catch (error) {
+        // console.error(`刪除 ${nowPlayListPath} 時發生錯誤：`, error)
+      }
+    }
+  },
+  delTempFolderWithClose: async (nowPlayListPath) => {
+    if (nowPlayListPath && path.basename(nowPlayListPath).includes('@_Temp_PlayList_')) {
       try {
         await fs.rmdirSync(nowPlayListPath, { recursive: true })
         console.log(`${nowPlayListPath} 已被刪除`)
         closeWindow()
       } catch (error) {
-        console.error(`刪除 ${nowPlayListPath} 時發生錯誤：`, error)
+        // console.error(`刪除 ${nowPlayListPath} 時發生錯誤：`, error)
       }
     }
   },
@@ -446,20 +456,26 @@ const transXml = (propFilePath) => {
   console.log('propFilePath', propFilePath)
 
   const targetFile = path.join(propFilePath, xmlFileName)
-  if (!fs.existsSync(targetFile)) {
-    alert('file read error', xmlFileName)
+  try {
+    if (!fs.existsSync(targetFile)) {
+      throw new Error(`XML file read error: ${xmlFileName}`)
+    }
+
+    console.log('targetFile', targetFile)
+    const x2js = new X2js({
+      attributePrefix: '_'
+    })
+
+    const xml = fs.readFileSync(targetFile, 'utf-8')
+    const parser = x2js.xml2js(xml)
+
+    return parser
+  } catch (error) {
+    console.error(error)
+    // Handle the error here or re-throw it.
   }
-
-  console.log('targetFile', targetFile)
-  const x2js = new X2js({
-    attributePrefix: '_'
-  })
-
-  const xml = fs.readFileSync(targetFile, 'utf-8')
-  const parser = x2js.xml2js(xml)
-
-  return parser
 }
+
 // 檢查目標重複上傳檔案1
 const isDuplicateFile = (targetFolder, targetPath) => {
   const existingFiles = fs.readdirSync(checkSourceFolder(targetFolder))

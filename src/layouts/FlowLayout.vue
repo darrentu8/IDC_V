@@ -123,7 +123,7 @@ function saveAlert() {
   }).onCancel(() => {
     console.log('Cancel')
     window.myAPI?.closeWatchJson()
-    window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
+    window.myAPI.delTempFolderWithClose(widgetStore.nowPlayListPath)
   }).onDismiss(() => {
     console.log('Called on OK or Cancel')
   })
@@ -142,13 +142,13 @@ function leaveSaveFileClose() {
   const x2js = new X2js({ attributePrefix: '_' })
   const novoObj = { NovoDS: widgetStore.NovoDS }
   const xmlData = x2js.js2xml(novoObj)
-  const result = window.myAPI.storeToXML(widgetStore.nowPlayListPath, xmlData)
+  const result = window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
   if (result) {
     $q.dialog({
       title: 'Saved successfully!'
     }).onDismiss(() => {
       window.myAPI?.closeWatchJson()
-      window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
+      window.myAPI.delTempFolderWithClose(widgetStore.nowPlayListPath)
     })
   }
 }

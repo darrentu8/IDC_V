@@ -318,7 +318,256 @@ export const useWidgetListStore = defineStore('widgetList', {
     currentStateId: '',
     currentWidget: {},
     stateEventData: [],
-    loading: false
+    loading: false,
+    defaultNovoDS: {
+      _Version: '1.1',
+      _Description: '',
+      _Layout_Type: '0', // 0 -> Grid, 1 -> Flexible
+      _Playlist_Name: '',
+      _Model_Type: 'DS310',
+      _Interactive: true,
+      Hardware: {
+        GPIOSettings: {
+          GPIO: [
+            {
+              _gpio_number: 1,
+              _uuid: uid(),
+              _name: 'GPIO1',
+              _isEnabled: false,
+              _role: 'keyevent',
+              _key_action: 'up'
+            },
+            {
+              _gpio_number: 2,
+              _uuid: uid(),
+              _name: 'GPIO2',
+              _isEnabled: false,
+              _role: 'keyevent',
+              _key_action: 'down'
+            },
+            {
+              _gpio_number: 3,
+              _uuid: uid(),
+              _name: 'GPIO3',
+              _isEnabled: false,
+              _role: 'output',
+              _output_value: '0'
+            },
+            {
+              _gpio_number: 4,
+              _uuid: uid(),
+              _name: 'GPIO4',
+              _isEnabled: false,
+              _role: 'output',
+              _output_value: '0'
+            },
+            {
+              _gpio_number: 5,
+              _uuid: uid(),
+              _name: 'GPIO5',
+              _isEnabled: false,
+              _role: 'output',
+              _output_value: '0'
+            },
+            {
+              _gpio_number: 6,
+              _uuid: uid(),
+              _name: 'GPIO6',
+              _isEnabled: false,
+              _role: 'output',
+              _output_value: '0'
+            }
+          ]
+        },
+        Rs232Settings: {
+          Rs232: [
+            {
+              _id: 1,
+              _dataBits: 8,
+              _flowControl: 'None',
+              _stopBits: 1,
+              _baudRate: 9600,
+              _parity: 'None',
+              _interface: 'on_board',
+              _isEnabled: false,
+              Command: [
+                {
+                  _id: 0,
+                  _uuid: uid(),
+                  _name: 'Default',
+                  _data_type: 'hex',
+                  _value: '1A 3B 4D'
+                }
+              ]
+            },
+            {
+              _id: 2,
+              _dataBits: 8,
+              _flowControl: 'None',
+              _stopBits: 1,
+              _baudRate: 9600,
+              _parity: 'None',
+              _interface: 'usb',
+              _isEnabled: false,
+              Command: [
+                {
+                  _id: 0,
+                  _uuid: uid(),
+                  _name: 'Default',
+                  _data_type: 'string',
+                  _value: 'ccaaa'
+                }
+              ]
+            }
+          ]
+        },
+        TcpIpSettings: {
+          _local_port: 1234,
+          _isEnabled: false,
+          ReceivedCommands: {
+            Command: [
+              {
+                _id: 11,
+                _uuid: uid(),
+                _name: 'play video',
+                _value: 'play video'
+              },
+              {
+                _id: 12,
+                _uuid: uid(),
+                _name: 'play image',
+                _value: 'play image'
+              }
+            ]
+          },
+          TcpIp: [
+            {
+              _id: 1,
+              _destination_ip: '10.136.7.7',
+              _destination_port: 1234,
+              Command: [
+                {
+                  _id: 21,
+                  _uuid: uid(),
+                  _name: 'door open',
+                  _value: 'door open'
+                },
+                {
+                  _id: 22,
+                  _uuid: uid(),
+                  _name: 'door close',
+                  _value: 'door close'
+                }
+              ]
+            },
+            {
+              _id: 2,
+              _destination_ip: '10.136.7.7',
+              _destination_port: 5678,
+              Command: [
+                {
+                  _id: 23,
+                  _uuid: uid(),
+                  _name: 'Add 1',
+                  _value: '+1'
+                },
+                {
+                  _id: 24,
+                  _uuid: uid(),
+                  _name: 'Add 2',
+                  _value: '+2'
+                }
+              ]
+            }
+          ]
+        },
+        TimerSettings: {
+          Timer: [
+            {
+              _id: 1,
+              _uuid: uid(),
+              _name: '10 seconds event',
+              _duration: '10'
+            },
+            {
+              _id: 2,
+              _uuid: uid(),
+              _name: '20 seconds event',
+              _duration: '20'
+            }
+          ]
+        }
+      },
+      Pages: {
+        Page: {
+          _ID: 'Page 1',
+          _Description: '',
+          _SerialNumber: 'Page 1', // 流水號 Page 1, Page 2 …沒用到
+          _Layout: '',
+          _Column: '',
+          _Row: '',
+          _Orientation: '0', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
+          _FreeDesignerMode: false, // Grid -> false, Flexi -> true
+          _AudioSource: '0',
+          _BackgroundImage: '',
+          _BackgroundImageSize: '0',
+          _BgMusicApplyToAll: false,
+          _BackgroundMusic: '',
+          _BackgroundMusicUrl: '',
+          _BackgroundMusicSize: '0',
+          Section: [
+            {
+              _Index: 0,
+              _X: 0,
+              _Y: 0,
+              _Z: 0,
+              _Height: '',
+              _Width: '',
+              _isFixedRatio: false,
+              _ContentType: '',
+              Content: {
+                _duration: '10',
+                _showType: 'Default',
+                _scaleType: 'FIT_XY',
+                _MuteVideo: false,
+                _isVideoFillArea: false,
+                _Detect_Picture_Orientation: false,
+                _FloatIn_Direction: '1',
+                _Live_Update_type: '0',
+                _Live_Update_password: '',
+                _Live_Update_Access_Way: '0',
+                _Live_Update_path: '',
+                _Live_Update_Show_Status: true,
+                _Live_Update_userName: '',
+                _Live_Update_Frequency: '15',
+                _Live_Update_port: '21',
+                _Live_Update_ID: '',
+                _Live_Update_type_storage: '1',
+                AttachmentFiles: {
+                  File: null
+                },
+                MediaItem: null,
+                State: [
+                  {
+                    _id: uid(),
+                    _name: '',
+                    File: [],
+                    Event: []
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      Timeline: {
+        _Looping: 'true',
+        Item: {
+          _Page: 'Page 1',
+          _Duration: '1800'
+        }
+      }
+    }
   }),
   getters: {
     GetLoading() {
@@ -424,6 +673,9 @@ export const useWidgetListStore = defineStore('widgetList', {
 
   },
   actions: {
+    resetNovoDS() {
+      this.NovoDS = this.defaultNovoDS
+    },
     // 開新檔案
     async SetOpenNewFileData(fileData = null) {
       console.log('fileData', fileData)
