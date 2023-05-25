@@ -674,7 +674,7 @@ export const useWidgetListStore = defineStore('widgetList', {
   },
   actions: {
     resetNovoDS() {
-      this.NovoDS = this.defaultNovoDS
+      Object.assign(this.NovoDS, this.defaultNovoDS)
     },
     // 開新檔案
     async SetOpenNewFileData(fileData = null) {

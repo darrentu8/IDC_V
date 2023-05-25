@@ -202,6 +202,50 @@ contextBridge.exposeInMainWorld('myAPI', {
         return Promise.reject(error)
       })
   },
+  writeJson: (Playlist_Name = '') => {
+    console.log('Playlist_Name', Playlist_Name)
+    return new Promise((resolve, reject) => {
+      if (!Playlist_Name) {
+        reject()
+      }
+      const appPath = getDirFolder()
+      const targetFile = path.join(appPath, interactiveFileName)
+
+      if (!fs.existsSync(targetFile)) {
+        reject(new Error(`File ${targetFile} does not exist`))
+      }
+
+      // Read the existing file contents
+      fs.readFile(targetFile, 'utf-8', (error, data) => {
+        if (error) {
+          reject(error)
+        } else {
+          try {
+            // Parse the contents as a JSON object
+            const json = JSON.parse(data)
+
+            // Update the playlist object with the new name
+            const JsonData = {
+              ...json
+            }
+            JsonData.Focus = 'studio'
+            JsonData.Playlist = Playlist_Name
+            JsonData.Preview = {
+              Path: Playlist_Name,
+              Ready: true
+            }
+            // Write the updated object back to the file
+            fs.writeFile(targetFile, JSON.stringify(JsonData), 'utf-8', (error) => {
+              if (error) reject(error)
+              else resolve()
+            })
+          } catch (error) {
+            reject(error)
+          }
+        }
+      })
+    })
+  },
   watchJson: () => {
     return new Promise((resolve, reject) => {
       const appPath = getDirFolder()
@@ -221,17 +265,17 @@ contextBridge.exposeInMainWorld('myAPI', {
               console.log('Run Watch Json')
               console.log('obj', obj)
               const propReload = obj.Reload // true則重新讀取整份
-              // const propFocus = obj.Focus // signage || studio
+              const propFocus = obj.Focus // signage || studio
               const propOpenNew = obj.OpenNew
               // const propFileName = obj.Playlist
               // const propFilePath = obj.PlaylistPath
               const propFileData = { ...obj }
 
               // 如果重load
-              if (propReload) {
+              if (propFocus === 'signage' && propReload) {
                 focusWindow()
                 // 開新檔案
-                if (propOpenNew === true) {
+                if (propFocus === 'signage' && propOpenNew === true) {
                   console.log('propFileData', propFileData)
                   resolve({ openType: 'new', propFileData })
                 } else if (propOpenNew === false && propFileData.PlaylistPath) {
@@ -247,12 +291,12 @@ contextBridge.exposeInMainWorld('myAPI', {
                 } else {
                   // 例外情況暫不處理
                   console.log('Json資料不完整！')
-                  resolve(null)
+                  reject()
                 }
               } else {
                 // 沒重load
-                console.log('Json資料不完整！')
-                resolve(null)
+                // console.log('Json資料不完整！')
+                reject()
               }
             }
           })

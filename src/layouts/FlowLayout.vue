@@ -121,22 +121,26 @@ function saveAlert() {
       console.log('result', result)
     }
   }).onCancel(() => {
-    console.log('Cancel')
     window.myAPI?.closeWatchJson()
     window.myAPI.delTempFolderWithClose(widgetStore.nowPlayListPath)
   }).onDismiss(() => {
-    console.log('Called on OK or Cancel')
   })
 }
 function preview() {
-  $q.dialog({
-    component: ConfirmDialog,
-    componentProps: {
-      title: 'Preview' + ' ' + widgetStore.nowPlayListName + ' ' + 'now !',
-      okBtn: 'Open',
-      cancelBtn: 'close'
-    }
-  })
+  const x2js = new X2js({ attributePrefix: '_' })
+  const novoObj = { NovoDS: widgetStore.NovoDS }
+  const xmlData = x2js.js2xml(novoObj)
+  const result = window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
+  if (result) {
+    window.myAPI?.writeJson(widgetStore.NovoDS._Playlist_Name).then(() => {
+      $q.dialog({
+        title: 'Preview' + ' ' + widgetStore.NovoDS._Playlist_Name + ' ' + 'now !'
+      }).onOk(() => {
+      }).onCancel(() => {
+      }).onDismiss(() => {
+      })
+    })
+  }
 }
 function leaveSaveFileClose() {
   const x2js = new X2js({ attributePrefix: '_' })
