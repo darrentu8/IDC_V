@@ -429,6 +429,7 @@ contextBridge.exposeInMainWorld('myAPI', {
         // console.error(`刪除 ${nowPlayListPath} 時發生錯誤：`, error)
       }
     }
+    closeWindow()
   },
   deleteFile(nowPlayListPath = '', sourceFile) {
     const sourceFolder = getSourceFolder()
