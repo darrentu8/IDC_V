@@ -5,15 +5,11 @@
         label="Playlist Name" class="q-pb-none">
         <template v-slot:append>
           <img v-if="focus || !PlaylistName" src="~assets/icon/pencil.svg" />
-          <!-- <img v-if="NovoDS._Playlist_Name !== PlaylistName" name="close" @click="PlaylistName = ''"
-            class="cursor-pointer" /> -->
-          <!-- <img v-if="NovoDS._Playlist_Name !== PlaylistName" name="check" color="green" @click="saveName()"
-            class="cursor-pointer" /> -->
         </template>
-        <template v-if="widgetStore.checkVali" v-slot:after>
+        <template v-if="focus && widgetStore.checkVali" v-slot:after>
           <q-btn round dense flat color="primary" icon="check_circle" />
         </template>
-        <template v-else v-slot:after>
+        <template v-else-if="focus && !widgetStore.checkVali" v-slot:after>
           <q-btn round dense flat color="negative" icon="cancel" />
         </template>
       </q-input>
