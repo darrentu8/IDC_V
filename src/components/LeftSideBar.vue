@@ -10,8 +10,11 @@
           <!-- <img v-if="NovoDS._Playlist_Name !== PlaylistName" name="check" color="green" @click="saveName()"
             class="cursor-pointer" /> -->
         </template>
-        <template v-if="NovoDS._Playlist_Name !== PlaylistName && PlaylistName" v-slot:after>
+        <template v-if="widgetStore.checkVali" v-slot:after>
           <q-btn round dense flat color="primary" icon="check_circle" />
+        </template>
+        <template v-else v-slot:after>
+          <q-btn round dense flat color="negative" icon="cancel" />
         </template>
       </q-input>
       <div>
@@ -58,8 +61,14 @@ const PlaylistName = computed({
   },
   set(newValue) {
     NovoDS.value._Playlist_Name = newValue
+    window.myAPI.watchSameFileName(newValue, widgetStore.nowPlayListPath).then(isUnique => {
+      widgetStore.SetCheckVali(isUnique)
+    }).catch(error => {
+      console.error(error)
+    })
   }
 })
+
 const _Row = computed({
   get() {
     return NovoDS.value.Pages.Page._Row

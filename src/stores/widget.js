@@ -6,6 +6,7 @@ import { uid } from 'quasar'
 export const useWidgetListStore = defineStore('widgetList', {
   state: () => ({
     fileData: null,
+    checkVali: true,
     nowPlayListName: '',
     nowPlayListFolder: '',
     nowPlayListPath: '',
@@ -673,7 +674,13 @@ export const useWidgetListStore = defineStore('widgetList', {
 
   },
   actions: {
-    resetNovoDS() {
+    SetCheckVali(val) {
+      this.checkVali = val
+    },
+    ResetNewPlaylistName(newPlayListPath) {
+      this.nowPlayListPath = newPlayListPath
+    },
+    ResetNovoDS() {
       Object.assign(this.NovoDS, this.defaultNovoDS)
     },
     // 開新檔案

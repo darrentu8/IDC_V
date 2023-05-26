@@ -59,11 +59,11 @@ contextBridge.exposeInMainWorld('myAPI', {
   setPlayListFolder() {
     return new Promise((resolve, reject) => {
       const NovoFolder = getNovoFolder()
+      process.env.RESOURCES_PATH = NovoFolder
       const strftime = require('strftime')
       const timestamp = strftime('%Y%m%d%H%M%S', new Date())
       const nowPlayListName = `@_Temp_PlayList_${timestamp}`
       const PlayListFolder = path.join(NovoFolder, nowPlayListName)
-      // process.env.RESOURCES_PATH = NovoFolder
       if (!fs.existsSync(PlayListFolder)) {
         fs.mkdir(PlayListFolder, (err) => {
           if (err) {
@@ -220,6 +220,7 @@ contextBridge.exposeInMainWorld('myAPI', {
               ...json
             }
             JsonData.Focus = 'studio'
+            JsonData.Reload = false
             JsonData.Playlist = Playlist_Name
             JsonData.Preview = {
               Path: Playlist_Name,
@@ -235,6 +236,34 @@ contextBridge.exposeInMainWorld('myAPI', {
           }
         }
       })
+    })
+  },
+  async watchSameFileName(_Playlist_Name, nowPlayListPath) {
+    const NovoFolder = getNovoFolder()
+    const oldPlayListName = path.basename(nowPlayListPath)
+    console.log('_Playlist_Name', _Playlist_Name)
+    console.log('oldPlayListName', oldPlayListName)
+    console.log('NovoFolder', NovoFolder)
+    return new Promise((resolve, reject) => {
+      if (!_Playlist_Name) {
+        resolve(false)
+      }
+      if (_Playlist_Name !== oldPlayListName) {
+        fs.readdir(NovoFolder, (err, files) => {
+          if (err) {
+            // 發生錯誤時回傳 reject
+            resolve(false)
+          } else {
+            // 檢查是否有相同名稱的資料夾
+            const sameFolderExists = files.some((fileName) => {
+              return fileName === _Playlist_Name
+            })
+            resolve(!sameFolderExists) // 回傳 true 或 false
+          }
+        })
+      } else {
+        resolve(true)
+      }
     })
   },
   watchJson: () => {
@@ -268,11 +297,13 @@ contextBridge.exposeInMainWorld('myAPI', {
                 // 開新檔案
                 if (propFocus === 'signage' && propOpenNew === true) {
                   console.log('propFileData', propFileData)
+                  writeJsonReset()
                   resolve({ openType: 'new', propFileData })
                 } else if (propOpenNew === false && propFileData.PlaylistPath) {
                   const targetFile = path.join(propFileData.PlaylistPath, propFileData.Playlist)
                   const result = transXml(targetFile)
                   console.log('result', result)
+                  writeJsonReset()
 
                   resolve({
                     openType: 'load',
@@ -444,20 +475,19 @@ contextBridge.exposeInMainWorld('myAPI', {
 })
 const writeAndCopyFolder = async (nowPlayListPath, newPlayListPath, xmlData) => {
   try {
-    // Check if paths are the same
+    // 同樣資料夾則只寫入index.xml
     if (nowPlayListPath === newPlayListPath) {
+      const indexFile = path.join(nowPlayListPath, 'index.xml')
+      // 寫入檔案
+      await fs.promises.writeFile(indexFile, xmlData)
+
       return Promise.resolve({
-        targetFile: newPlayListPath,
+        targetFile: nowPlayListPath,
         xmlData
       })
     }
 
-    const indexFile = path.join(nowPlayListPath, 'index.xml')
-
-    // 寫入檔案
-    await fs.promises.writeFile(indexFile, xmlData)
-
-    // 複製資料夾
+    // 不同資料夾則全複製
     await fs.promises.mkdir(newPlayListPath, { recursive: true })
 
     const files = await fs.promises.readdir(nowPlayListPath)
@@ -476,6 +506,9 @@ const writeAndCopyFolder = async (nowPlayListPath, newPlayListPath, xmlData) => 
         readStream.pipe(writeStream)
       })
     }
+    // 於新資料夾寫入indexl.xml檔案
+    const indexFile = path.join(newPlayListPath, 'index.xml')
+    await fs.promises.writeFile(indexFile, xmlData)
 
     return {
       targetFile: newPlayListPath,
@@ -512,6 +545,41 @@ const transXml = (propFilePath) => {
   }
 }
 
+const writeJsonReset = () => {
+  return new Promise((resolve, reject) => {
+    const appPath = getDirFolder()
+    const targetFile = path.join(appPath, interactiveFileName)
+
+    if (!fs.existsSync(targetFile)) {
+      reject(new Error(`File ${targetFile} does not exist`))
+    }
+
+    // Read the existing file contents
+    fs.readFile(targetFile, 'utf-8', (error, data) => {
+      if (error) {
+        reject(error)
+      } else {
+        try {
+          // Parse the contents as a JSON object
+          const json = JSON.parse(data)
+
+          // Update the playlist object with the new name
+          const JsonData = {
+            ...json
+          }
+          JsonData.Reload = false
+          // Write the updated object back to the file
+          fs.writeFile(targetFile, JSON.stringify(JsonData), 'utf-8', (error) => {
+            if (error) reject(error)
+            else resolve()
+          })
+        } catch (error) {
+          reject(error)
+        }
+      }
+    })
+  })
+}
 // 檢查目標重複上傳檔案1
 const isDuplicateFile = (targetFolder, targetPath) => {
   const existingFiles = fs.readdirSync(checkSourceFolder(targetFolder))

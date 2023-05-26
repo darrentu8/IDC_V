@@ -19,11 +19,11 @@
           Configure Event/Action
         </q-btn>
         <q-separator vertical class="q-mx-md" />
-        <q-btn class="" unelevated color="primary" rounded size="md" @click="preview()">
+        <q-btn :disable="!checkVali" class="" unelevated color="primary" rounded size="md" @click="preview()">
           <img class="q-mr-xs" src="~assets/icon/see.svg" color="white" size="xs" />
           Preview
         </q-btn>
-        <q-btn class="q-ml-md" unelevated color="primary" rounded size="md" @click="exportFile()">
+        <q-btn :disable="!checkVali" class="q-ml-md" unelevated color="primary" rounded size="md" @click="exportFile()">
           <img class="q-mr-xs" src="~assets/icon/save.svg" color="white" size="xs" />
           Save
         </q-btn>
@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useWidgetListStore } from 'src/stores/widget'
 const widgetStore = useWidgetListStore()
 // import { useRouter } from 'vue-router'
@@ -66,6 +66,7 @@ const logo = ref(logoSVG)
 // const router = useRouter()
 const leftDrawerOpen = ref(false)
 const rightDrawerOpen = ref(false)
+const checkVali = computed(() => widgetStore.checkVali)
 
 // function toggleLeftDrawer() {
 //   leftDrawerOpen.value = !leftDrawerOpen.value
@@ -162,6 +163,7 @@ async function exportFile() {
   const xmlData = x2js.js2xml(novoObj)
   const result = await window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
   if (result) {
+    widgetStore.ResetNewPlaylistName(result.targetFile)
     $q.dialog({
       component: ConfirmDialog,
       componentProps: {

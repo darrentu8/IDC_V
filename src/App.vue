@@ -50,14 +50,13 @@ export default defineComponent({
         console.log('Watch is already running')
         return
       }
-
       watchJsonPromise = window.myAPI.watchJson().then((loadConfigData) => {
         console.log('Received data:', loadConfigData)
         if (loadConfigData !== null) {
           if (loadConfigData.openType === 'new') {
             console.log('Reopen new')
             window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
-            widgetStore.resetNovoDS()
+            widgetStore.ResetNovoDS()
             widgetStore.SetOpenNewFileData(loadConfigData.propFileData).then((result) => {
               console.log('SetOpenNewFileData', result)
               router.push({ path: '/' })
@@ -79,7 +78,7 @@ export default defineComponent({
         watchJsonPromise = null // 清除 Promise 物件
         startWatching()
       }).catch((error) => {
-        console.error('Error:', error)
+        console.log('Error:', error)
 
         // 然後重新啟動監聽
         watchJsonPromise = null // 清除 Promise 物件
