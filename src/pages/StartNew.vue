@@ -19,8 +19,17 @@
               </div>
               <div class="col q-mt-sm">
                 <div class="text-body1">Play List Name</div>
-                <q-input v-model="_Playlist_Name" placeholder="Enter playlist name" class="brand-round-s input-border"
-                  bg-color="grey-2" dense outlined>
+                <q-input v-on:focus="focus = true" v-on:blur="focus = false" v-model="PlaylistName"
+                  placeholder="Enter playlist name" class="brand-round-s input-border" bg-color="grey-2" dense outlined>
+                  <template v-slot:append>
+                    <img v-if="focus || !PlaylistName" src="~assets/icon/pencil.svg" />
+                  </template>
+                  <template v-if="focus && checkVali && PlaylistName" v-slot:after>
+                    <q-btn round dense flat color="primary" icon="check_circle" />
+                  </template>
+                  <template v-else-if="!checkVali" v-slot:after>
+                    <q-btn round dense flat color="negative" icon="cancel" />
+                  </template>
                 </q-input>
               </div>
               <div class="col q-mt-sm">
@@ -51,8 +60,8 @@
           </q-card-section>
           <q-card-actions class="q-pb-lg q-mr-lg absolute-bottom">
             <q-space />
-            <q-btn :disable="!_Playlist_Name" class="brand-round-l text-capitalize" @click="toGrid" style="width:116px"
-              color="primary" label="Next" icon="arrow_forward" />
+            <q-btn :disable="!PlaylistName || !checkVali" class="brand-round-l text-capitalize" @click="toGrid"
+              style="width:116px" color="primary" label="Next" icon="arrow_forward" />
           </q-card-actions>
         </q-card>
       </div>
@@ -62,18 +71,19 @@
 </template>
 
 <script>
+import { computed } from 'vue'
 import useQuasar from 'quasar/src/composables/use-quasar.js'
 import { useWidgetListStore } from 'src/stores/widget'
 import { useRouter } from 'vue-router'
 const widgetStore = useWidgetListStore()
-
+const NovoDS = computed(() => widgetStore.NovoDS)
 export default {
   name: 'StartNew',
   components: {
   },
   data() {
     return {
-
+      focus: false
     }
   },
   setup() {
@@ -100,6 +110,22 @@ export default {
     return { transXml }
   },
   computed: {
+    PlaylistName: {
+      get() {
+        return NovoDS.value._Playlist_Name
+      },
+      set(newValue) {
+        NovoDS.value._Playlist_Name = newValue
+        window.myAPI.watchSameFileName(newValue, widgetStore.nowPlayListPath).then(isUnique => {
+          widgetStore.SetCheckVali(isUnique)
+        }).catch(error => {
+          console.error(error)
+        })
+      }
+    },
+    checkVali() {
+      return widgetStore.checkVali
+    },
     _Playlist_Name: {
       get() {
         return widgetStore.NovoDS._Playlist_Name
