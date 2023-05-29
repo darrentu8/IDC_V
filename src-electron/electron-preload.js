@@ -241,9 +241,9 @@ contextBridge.exposeInMainWorld('myAPI', {
   async watchSameFileName(_Playlist_Name, nowPlayListPath) {
     const NovoFolder = getNovoFolder()
     const oldPlayListName = path.basename(nowPlayListPath)
-    console.log('_Playlist_Name', _Playlist_Name)
-    console.log('oldPlayListName', oldPlayListName)
-    console.log('NovoFolder', NovoFolder)
+    // console.log('_Playlist_Name', _Playlist_Name)
+    // console.log('oldPlayListName', oldPlayListName)
+    // console.log('NovoFolder', NovoFolder)
     return new Promise((resolve, reject) => {
       if (!_Playlist_Name) {
         resolve(false)
@@ -635,7 +635,7 @@ const getNovoFolder = () => {
   if (!fs.existsSync(folder)) {
     fs.mkdirSync(folder)
   }
-  console.log('folder', folder)
+  // console.log('folder', folder)
   return folder
 }
 const focusWindow = () => {

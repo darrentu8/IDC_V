@@ -318,6 +318,7 @@ export const useWidgetListStore = defineStore('widgetList', {
     currentState: 0,
     currentStateId: '',
     currentWidget: {},
+    sectionOptionData: [],
     stateEventData: [],
     loading: false,
     defaultNovoDS: {
@@ -601,6 +602,20 @@ export const useWidgetListStore = defineStore('widgetList', {
         return 0
       }
     },
+    GetSectionOptions() {
+      if (!Array.isArray(this.NovoDS.Pages.Page.Section) || this.NovoDS.Pages.Page.Section.length === 0) {
+        return []
+      }
+
+      const sectionOptionData = this.NovoDS.Pages.Page.Section.map((e, i) => {
+        return {
+          _ID: e._ID,
+          _name: 'Section' + ' ' + (i + 1)
+        }
+      })
+      this.sectionOptionData = sectionOptionData
+      return sectionOptionData
+    },
     GetCurrentStateOptions() {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
@@ -676,6 +691,21 @@ export const useWidgetListStore = defineStore('widgetList', {
   actions: {
     SetCheckVali(val) {
       this.checkVali = val
+    },
+    SetAudioSource(val) {
+      switch (val) {
+        case 'Widget':
+          this.NovoDS.Pages.Page._AudioSource = this.sectionOptionData[0]._ID ?? ''
+          break
+        case 'Mute':
+          this.NovoDS.Pages.Page._AudioSource = 'mute'
+          break
+        case 'BackgroundMusic':
+          this.NovoDS.Pages.Page._AudioSource = 'background_music'
+          break
+        default:
+          return ''
+      }
     },
     ResetNewPlaylistName(newPlayListPath) {
       this.nowPlayListPath = newPlayListPath

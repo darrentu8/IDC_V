@@ -52,18 +52,23 @@
             <span class="q-pa-xs">Audio source</span>
           </div>
           <div class="col-12">
-            <q-radio v-model="BackgroundMusicType" val="Mute" label="Mute" class="" color="" />
+            <q-radio @update:model-value="(val) => setAudioSource(val)" v-model="BackgroundMusicType" val="Mute"
+              label="Mute" class="" color="" />
           </div>
           <div class="col-12">
-            <q-radio v-model="BackgroundMusicType" val="BackgroundMusic" label="Background music" class="" color="" />
+            <q-radio @update:model-value="(val) => setAudioSource(val)" v-model="BackgroundMusicType"
+              val="BackgroundMusic" label="Background music" class="" color="" />
             <q-file :disable="BackgroundMusicType !== 'BackgroundMusic'" label="Upload audio file" clearable
               placeholder="File name" class="brand-round-m q-mx-lg q-mb-md" v-model="BackgroundMusicData" dense
               outlined />
           </div>
           <div class="col-12">
-            <q-radio v-model="BackgroundMusicType" val="Widget" label="Widget" class="" color="" />
+            <q-radio @update:model-value="(val) => setAudioSource(val)" v-model="BackgroundMusicType" val="Widget"
+              label="Widget" class="" color="" />
             <q-select class="brand-round-m q-mx-lg q-mb-md" label="Select audio source" bg-color="white" outlined dense
-              v-model="AudioSource" :disable="BackgroundMusicType !== 'Widget'" :options="['Mute']" />
+              v-model="AudioSource" :disable="BackgroundMusicType !== 'Widget'" :options="sectionOptions"
+              option-value="_ID" option-label="_name" emit-value map-options>
+            </q-select>
           </div>
         </div>
       </q-card-section>
@@ -77,15 +82,21 @@
 </template>
 
 <script>
+import { computed } from 'vue'
 import { useWidgetListStore } from 'src/stores/widget'
 const widgetStore = useWidgetListStore()
-
 export default {
   name: 'PlaylistSettingsDialog',
+  setup() {
+    const sectionOptions = computed(() => widgetStore.GetSectionOptions)
+    return { sectionOptions }
+  },
+  created() {
+  },
   data() {
     return {
       BackgroundImageType: '',
-      BackgroundMusicType: '',
+      BackgroundMusicType: 'Widget',
       BackgroundImageData: null,
       BackgroundMusicData: null
     }
@@ -117,7 +128,14 @@ export default {
     },
     AudioSource: {
       get() {
-        return widgetStore.NovoDS.Pages.Page._AudioSource
+        let val = widgetStore.NovoDS.Pages.Page._AudioSource
+        if (typeof val === 'string' && val !== 'mute' && val !== 'background_music' && val !== 'background_design') {
+          val = parseInt(val)
+          val = this.sectionOptions.find(
+            (o) => o._ID === val
+          )
+        }
+        return val
       },
       set(newValue) {
         widgetStore.NovoDS.Pages.Page._AudioSource = newValue
@@ -130,6 +148,10 @@ export default {
     },
     hide() {
       this.$refs.dialog.hide()
+    },
+    setAudioSource(val) {
+      console.log('val', val)
+      widgetStore.SetAudioSource(val)
     },
     SetBGC(index) {
       console.log('SetBGC')
