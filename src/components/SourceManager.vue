@@ -16,7 +16,7 @@
                     {{ index + 1 }}.
                   </div>
                   <div class="col-10">
-                    <div class="flex ellipsis">
+                    <div class="ellipsis">
                       {{ element._src }}
                     </div>
                     <div class="q-mt-xs" style="max-width: 150px;">

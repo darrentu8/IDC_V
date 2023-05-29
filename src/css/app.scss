@@ -44,6 +44,23 @@
 }
 .theme-border {
   border-radius: 20px;
+  &.add {
+    opacity: 40%;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    i {
+      margin-top: 12px;
+      margin-right: 0;
+    }
+    .block{
+      color: #3C3B3B;
+      padding: 0 7px;
+      font-size: .8rem;
+      line-height: 1rem;
+      margin-bottom: 12px;
+  }
+  }
 }
 .theme-bg-select img {
   width: 24px;
@@ -150,6 +167,8 @@
   justify-content: flex-end;
   .flowBox {
    border: 2px dashed #BBBBBB80;
+   background-color: transparent;
+   box-shadow: none;
    span {
      text-transform: initial;
    }

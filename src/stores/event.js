@@ -307,10 +307,11 @@ export const useEventListStore = defineStore('eventList', {
       const tcpIpSettings = widgetStore?.NovoDS?.Hardware?.TcpIpSettings?.TcpIp ?? []
       const commands = tcpIpSettings.flatMap(tcpip => tcpip.Command ?? [])
       const filteredCommands = commands.filter(command => command !== null && command !== undefined)
+
       const mapTcpIp = filteredCommands.map(command => ({
         _uuid: command._uuid || uid(),
         _name: command._name,
-        _tcpip_id: command._id,
+        _tcpip_id: tcpIpSettings.find(tcpip => tcpip.Command.includes(command))._id,
         _role: 'output',
         _command_id: command._id,
         _isEnabled: true,
