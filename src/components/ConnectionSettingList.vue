@@ -20,8 +20,8 @@
                   <!-- Event 選單 -->
                   <q-select @update:model-value="(val) => setEvent(EventData, val)" @filter="filterEventTypeOptions"
                     emit-value map-options class="theme brand-round-m" options-selected-class="text-black"
-                    bg-color="white" rounded label="Select Type" :disable="EventData._next_state_id === ''" outlined dense
-                    options-dense v-model="EventData._conId"
+                    bg-color="white" rounded :disable="EventData._next_state_id === ''" outlined dense options-dense
+                    v-model="EventData._conId"
                     :options="eventTypeOptionsData !== null ? eventTypeOptionsData : eventTypeOptions"
                     option-value="_uuid" option-label="_name">
                     <!-- <template v-slot:selected>
@@ -70,8 +70,8 @@
                       <q-select @click="setCurentEventID(EventData._id)" :loading="loadingFilter"
                         @update:model-value="(val) => setAction(EventIndex, actionData, val)"
                         @filter="filterActionTypeOptions" emit-value map-options class="theme brand-round-m"
-                        options-selected-class="text-black" :disable="EventData._next_state_id === ''" label="Select Type"
-                        bg-color="white" rounded outlined dense options-dense v-model="actionData._conId"
+                        options-selected-class="text-black" :disable="EventData._next_state_id === ''" bg-color="white"
+                        rounded outlined dense options-dense v-model="actionData._conId"
                         :options="actionTypeOptionsData !== null ? actionTypeOptionsData : actionTypeOptions"
                         option-value="_uuid" option-label="_name">
                         <!-- <template v-slot:selected>
