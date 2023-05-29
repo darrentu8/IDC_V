@@ -8,8 +8,8 @@
       <HardWareComponent />
       <q-card-actions class="q-pb-lg absolute-bottom">
         <q-space />
-        <q-btn v-close-popup color="primary" label="Apply" class="brand-round-l text-capitalize"
-          style="width:116px;margin:auto 20px" icon="check" />
+        <q-btn v-close-popup color="primary" label="close" class="brand-round-l text-capitalize"
+          style="width:116px;margin:auto 20px" />
       </q-card-actions>
     </q-card>
   </q-dialog>

@@ -96,10 +96,10 @@
                           <grid-item static v-for="(item, index) in currentGrid.layout" :x="item.x" :y="item.y"
                             :w="item.w" :h="item.h" :i="item.i" :key="item.i">
                             <div class="fit cursor-pointer" @click="chooseCube(item.i)">
-                              <div class="Frounded-borders flex flex-center grid-cube bg-grey-3"
+                              <div class="Frounded-borders flex flex-start grid-cube bg-grey-3"
                                 :class="{ 'selected-cube': currentCubeId === item.i }"
                                 style="width: calc(100% - 3px); height: calc(100% - 3px);border-radius: 2px;">
-                                {{ index + 1 }}
+                                <span class="q-pa-sm">{{ index + 1 }}</span>
                               </div>
                             </div>
                           </grid-item>

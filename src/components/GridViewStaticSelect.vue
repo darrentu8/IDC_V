@@ -6,9 +6,9 @@
       :vertical-compact="true" :margin="[5, 5]">
       <grid-item class="gridItem" static v-for="(item, Index) in viewLayout" :x="item.x" :y="item.y" :w="item.w"
         :h="item.h" :i="item.i" :key="item.i">
-        <div @click="selectGrid(Index)" class="fit flex flex-center rounded-borders"
+        <div @click="selectGrid(Index)" class="fit flex flex-start rounded-borders"
           :class="[currentSection == Index ? ['bg-grey-5', 'active'] : 'bg-grey-3']">
-          {{ Index + 1 }}
+          <span class="q-pa-xs">{{ Index + 1 }}</span>
         </div>
       </grid-item>
     </grid-layout>
