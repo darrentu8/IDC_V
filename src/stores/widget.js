@@ -1125,6 +1125,26 @@ export const useWidgetListStore = defineStore('widgetList', {
 
       console.log('this.NovoDS.Pages.Page.Section[currentSection].Content', this.NovoDS.Pages.Page.Section[currentSection].Content)
     },
+    AddBGSourceList(fileDatas) {
+      console.log('fileDatas', fileDatas)
+      this.NovoDS.Pages.Page._BackgroundImage = fileDatas._src
+      this.NovoDS.Pages.Page._BackgroundImageSize = fileDatas._fileSize
+    },
+    DelBGSource() {
+      this.NovoDS.Pages.Page._BackgroundImage = ''
+      this.NovoDS.Pages.Page._BackgroundImageSize = 0
+    },
+    AddAudioSourceList(fileDatas) {
+      console.log('fileDatas', fileDatas)
+      this.NovoDS.Pages.Page._AudioSource = 'background_music'
+      this.NovoDS.Pages.Page._BackgroundMusic = fileDatas._src
+      this.NovoDS.Pages.Page._BackgroundMusicSize = fileDatas._fileSize
+    },
+    DelAudioSource() {
+      this.NovoDS.Pages.Page._AudioSource = ''
+      this.NovoDS.Pages.Page._BackgroundMusic = ''
+      this.NovoDS.Pages.Page._BackgroundMusicSize = 0
+    },
     DelSourceList(currentStateIndex, fileSrc, sourceFile) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection

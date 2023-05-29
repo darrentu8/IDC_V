@@ -387,8 +387,124 @@ contextBridge.exposeInMainWorld('myAPI', {
 
     return fileDataArray
   },
+  chooseAudioSource(nowPlayListPath = '') {
+    const sourcePath = dialog.showOpenDialogSync({
+      title: 'Choose Audio',
+      filters: [
+        { name: 'Audio', extensions: ['mp3'] }
+      ],
+      properties: ['openFile']
+    })
+
+    if (!sourcePath) {
+      return null
+    }
+
+    const fileName = path.basename(sourcePath[0])
+    const targetFolder = nowPlayListPath
+    const targetPath = path.join(targetFolder, fileName)
+    const relativePath = path.relative(targetFolder, targetPath)
+
+    if (isDuplicateFile(targetFolder, targetPath)) {
+      return null
+    }
+
+    try {
+      fs.copyFileSync(sourcePath[0], targetPath)
+    } catch (err) {
+      console.error(err)
+      return null
+    }
+
+    const fileData = { fileName, targetPath, relativePath }
+    return fileData
+  },
+  chooseBGSource(nowPlayListPath = '') {
+    const sourcePath = dialog.showOpenDialogSync({
+      title: 'Choose Media',
+      filters: [
+        { name: 'Images', extensions: ['jpg', 'png', 'gif'] }
+      ],
+      properties: ['openFile']
+    })
+
+    if (!sourcePath) {
+      return null
+    }
+
+    const fileName = path.basename(sourcePath[0])
+    const targetFolder = nowPlayListPath
+    const targetPath = path.join(targetFolder, fileName)
+    const relativePath = path.relative(targetFolder, targetPath)
+
+    if (isDuplicateFile(targetFolder, targetPath)) {
+      return null
+    }
+
+    try {
+      fs.copyFileSync(sourcePath[0], targetPath)
+    } catch (err) {
+      console.error(err)
+      return null
+    }
+
+    const fileData = { fileName, targetPath, relativePath }
+    return fileData
+  },
+  async getSingleFileData(fileData) {
+    try {
+      const stats = await fs.promises.stat(fileData.targetPath)
+      const fileDataWithSize = {
+        _note: '',
+        _type: '',
+        _duration: '10',
+        _videoDuration: '0',
+        _fileSize: stats.size,
+        _src: fileData.fileName,
+        _targetPath: fileData.relativePath
+      }
+
+      // Get file type based on extension
+      if (stats.isFile()) {
+        const extname = path.extname(fileData.targetPath)
+        switch (extname.toLowerCase()) {
+          case '.mp3':
+            fileDataWithSize._type = 'audio'
+            break
+          case '.pdf':
+            fileDataWithSize._type = 'pdf'
+            fileDataWithSize._duration = '10'
+            break
+          case '.jpg':
+          case '.jpeg':
+          case '.png':
+            fileDataWithSize._type = 'image'
+            fileDataWithSize._duration = '10'
+            break
+          case '.mp4':
+          case '.avi':
+          case '.mkv':
+            fileDataWithSize._type = 'video'
+            fileDataWithSize._duration = '0'
+            break
+          default:
+            fileDataWithSize._type = 'unknown'
+        }
+      } else {
+        fileDataWithSize._type = 'unknown'
+      }
+
+      console.log(stats)
+      console.log(fileDataWithSize)
+      return fileDataWithSize
+    } catch (err) {
+      console.error(err)
+      return null
+    }
+  },
   async getFileData(fileDatas) {
     const promises = fileDatas.map((fileData) => {
+      console.log('fileData', fileData)
       return fs.promises.stat(fileData.targetPath)
         .then((stats) => {
           const fileDataWithSize = {
@@ -404,6 +520,9 @@ contextBridge.exposeInMainWorld('myAPI', {
           if (stats.isFile()) {
             const extname = path.extname(fileData.targetPath)
             switch (extname.toLowerCase()) {
+              case '.mp3':
+                fileDataWithSize._type = 'audio'
+                break
               case '.pdf':
                 fileDataWithSize._type = 'pdf'
                 fileDataWithSize._duration = '10'

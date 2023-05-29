@@ -16,9 +16,13 @@
               color="primary" round @click="$refs.BackgroundUpload.pickFiles()">
               <img src="~assets/icon/folder-add.svg" />
             </q-btn>
-            <q-file ref="BackgroundUpload" :disable="BackgroundImageType !== 'BackgroundImage'" clearable
-              label="Upload background file" class="brand-round-m q-mx-lg q-mb-md" v-model="BackgroundImageData" dense
-              outlined />
+            <q-input @click="addBG" ref="BackgroundUpload" :disable="BackgroundImageType !== 'BackgroundImage'"
+              label="Upload background file" class="brand-round-m q-mx-lg q-mb-md" v-model="BackgroundImage" dense
+              outlined>
+              <template v-if="BackgroundImage" v-slot:append>
+                <q-icon name="cancel" @click.stop.prevent="clearBG" class="cursor-pointer" />
+              </template>
+            </q-input>
           </div>
           <div class="col-12">
             <q-radio v-model="BackgroundImageType" val="BackgroundColor" label="Background Color" class="q-mb-sx"
@@ -58,16 +62,21 @@
           <div class="col-12">
             <q-radio @update:model-value="(val) => setAudioSource(val)" v-model="BackgroundMusicType"
               val="BackgroundMusic" label="Background music" class="" color="" />
-            <q-file :disable="BackgroundMusicType !== 'BackgroundMusic'" label="Upload audio file" clearable
-              placeholder="File name" class="brand-round-m q-mx-lg q-mb-md" v-model="BackgroundMusicData" dense
-              outlined />
+            <q-input :disable="BackgroundMusicType !== 'BackgroundMusic'" label="Upload audio file"
+              placeholder="File name" @click="addAudio()" class="brand-round-m q-mx-lg q-mb-md" v-model="BackgroundMusic"
+              dense outlined>
+              <template v-if="BackgroundMusic" v-slot:append>
+                <q-icon name="cancel" @click.stop.prevent="clearAudio" class="cursor-pointer" />
+              </template>
+            </q-input>
           </div>
           <div class="col-12">
             <q-radio @update:model-value="(val) => setAudioSource(val)" v-model="BackgroundMusicType" val="Widget"
               label="Widget" class="" color="" />
-            <q-select class="brand-round-m q-mx-lg q-mb-md" label="Select audio source" bg-color="white" outlined dense
-              v-model="AudioSource" :disable="BackgroundMusicType !== 'Widget'" :options="sectionOptions"
-              option-value="_ID" option-label="_name" emit-value map-options>
+            <q-select v-if="BackgroundMusicType == 'Widget'" class="brand-round-m q-mx-lg q-mb-md"
+              label="Select audio source" bg-color="white" outlined dense v-model="AudioSource"
+              :disable="BackgroundMusicType !== 'Widget'" :options="sectionOptions" option-value="_ID"
+              option-label="_name" emit-value map-options>
             </q-select>
           </div>
         </div>
@@ -96,9 +105,7 @@ export default {
   data() {
     return {
       BackgroundImageType: '',
-      BackgroundMusicType: 'Widget',
-      BackgroundImageData: null,
-      BackgroundMusicData: null
+      BackgroundMusicType: 'Widget'
     }
   },
   computed: {
@@ -149,9 +156,27 @@ export default {
     hide() {
       this.$refs.dialog.hide()
     },
+    async addAudio() {
+      const fileData = await window.myAPI.chooseAudioSource(widgetStore.nowPlayListPath)
+      console.log('fileData', fileData)
+      const fileDatas = await window.myAPI.getSingleFileData(fileData)
+      widgetStore.AddAudioSourceList(fileDatas)
+    },
     setAudioSource(val) {
       console.log('val', val)
       widgetStore.SetAudioSource(val)
+    },
+    clearAudio() {
+      widgetStore.DelAudioSource()
+    },
+    async addBG() {
+      const fileData = await window.myAPI.chooseBGSource(widgetStore.nowPlayListPath)
+      console.log('fileData', fileData)
+      const fileDatas = await window.myAPI.getSingleFileData(fileData)
+      widgetStore.AddBGSourceList(fileDatas)
+    },
+    clearBG() {
+      widgetStore.DelBGSource()
     },
     SetBGC(index) {
       console.log('SetBGC')
