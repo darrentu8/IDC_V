@@ -147,51 +147,52 @@ contextBridge.exposeInMainWorld('myAPI', {
           return reject(err)
         }
 
-        if (!data) { // 如果 data 不存在则直接返回 null
-          console.log('No Json data')
-          return resolve(null)
-        }
-
-        const obj = JSON.parse(data)
-        console.log('Run Watch Json')
-        console.log('obj', obj)
-        const propFocus = obj.Focus
-        const propOpenNew = obj.OpenNew
-        const propFileData = {
-          ...obj
-        }
-
-        if (propFocus === 'signage') {
-          focusWindow()
-          // 開新檔案
-          if (propOpenNew === true) {
-            console.log('propFileData', propFileData)
-            resolve({ openType: 'new', propFileData })
-          } else if (propOpenNew === false && propFileData.PlaylistPath) {
-            const targetFile = path.join(propFileData.PlaylistPath, propFileData.Playlist)
-            const result = transXml(targetFile)
-            console.log('result', result)
-
-            resolve({
-              openType: 'load',
-              propFileData,
-              result
-            })
+        try {
+          if (!data) { // 如果 data 不存在则直接返回 null
+            console.log('No Json data')
+            return resolve(null)
           }
-          console.log('Json資料不完整！')
-          // 例外情況暫不處理
-          resolve(null)
-        } else {
-          console.log('Json資料不完整！')
-          // 例外情況暫不處理
-          resolve(null)
+
+          const obj = JSON.parse(data)
+          console.log('Run Watch Json')
+          console.log('obj', obj)
+          const propFocus = obj.Focus
+          const propOpenNew = obj.OpenNew
+          const propFileData = {
+            ...obj
+          }
+
+          if (propFocus === 'signage') {
+            focusWindow()
+            // 開新檔案
+            if (propOpenNew === true) {
+              console.log('propFileData', propFileData)
+              resolve({ openType: 'new', propFileData })
+            } else if (propOpenNew === false && propFileData.PlaylistPath) {
+              const targetFile = path.join(propFileData.PlaylistPath, propFileData.Playlist)
+              const result = transXml(targetFile)
+              console.log('result', result)
+
+              resolve({
+                openType: 'load',
+                propFileData,
+                result
+              })
+            }
+            console.log('Json資料不完整！')
+            // 例外情況暫不處理
+            resolve(null)
+          } else {
+            console.log('Json資料不完整！')
+            // 例外情況暫不處理
+            resolve(null)
+          }
+        } catch (error) {
+          console.error(error)
+          reject(error)
         }
       })
     })
-      .catch(error => {
-        console.error(error)
-        return Promise.reject(error)
-      })
   },
   writeJson: (Playlist_Name = '') => {
     console.log('Playlist_Name', Playlist_Name)
@@ -241,30 +242,31 @@ contextBridge.exposeInMainWorld('myAPI', {
   async watchSameFileName(_Playlist_Name, nowPlayListPath) {
     const NovoFolder = getNovoFolder()
     const oldPlayListName = path.basename(nowPlayListPath)
-    // console.log('_Playlist_Name', _Playlist_Name)
-    // console.log('oldPlayListName', oldPlayListName)
-    // console.log('NovoFolder', NovoFolder)
-    return new Promise((resolve, reject) => {
-      if (!_Playlist_Name) {
-        resolve(false)
-      }
-      if (_Playlist_Name !== oldPlayListName) {
-        fs.readdir(NovoFolder, (err, files) => {
-          if (err) {
-            // 發生錯誤時回傳 reject
-            resolve(false)
-          } else {
-            // 檢查是否有相同名稱的資料夾
-            const sameFolderExists = files.some((fileName) => {
-              return fileName === _Playlist_Name
-            })
-            resolve(!sameFolderExists) // 回傳 true 或 false
-          }
-        })
-      } else {
-        resolve(true)
-      }
-    })
+    try {
+      return new Promise((resolve, reject) => {
+        if (!_Playlist_Name) {
+          resolve(false)
+        }
+        if (_Playlist_Name !== oldPlayListName) {
+          fs.readdir(NovoFolder, (err, files) => {
+            if (err) {
+              // 發生錯誤時回傳 reject
+              resolve(false)
+            } else {
+              // 檢查是否有相同名稱的資料夾
+              const sameFolderExists = files.some((fileName) => {
+                return fileName === _Playlist_Name
+              })
+              resolve(!sameFolderExists) // 回傳 true 或 false
+            }
+          })
+        } else {
+          resolve(true)
+        }
+      })
+    } catch (error) {
+      console.error(error)
+    }
   },
   watchJson: () => {
     return new Promise((resolve, reject) => {
@@ -281,50 +283,58 @@ contextBridge.exposeInMainWorld('myAPI', {
             if (err) {
               reject(err)
             } else {
-              const obj = JSON.parse(data)
-              console.log('Run Watch Json')
-              console.log('obj', obj)
-              const propReload = obj.Reload // true則重新讀取整份
-              const propFocus = obj.Focus // signage || studio
-              const propOpenNew = obj.OpenNew
-              // const propFileName = obj.Playlist
-              // const propFilePath = obj.PlaylistPath
-              const propFileData = { ...obj }
+              try {
+                const obj = JSON.parse(data)
+                console.log('Run Watch Json')
+                console.log('obj', obj)
+                const propReload = obj.Reload // true則重新讀取整份
+                const propFocus = obj.Focus // signage || studio
+                const propOpenNew = obj.OpenNew
+                // const propFileName = obj.Playlist
+                // const propFilePath = obj.PlaylistPath
+                const propFileData = { ...obj }
 
-              // 如果重load
-              if (propFocus === 'signage' && propReload) {
-                focusWindow()
-                // 開新檔案
-                if (propFocus === 'signage' && propOpenNew === true) {
-                  console.log('propFileData', propFileData)
-                  writeJsonReset()
-                  resolve({ openType: 'new', propFileData })
-                } else if (propOpenNew === false && propFileData.PlaylistPath) {
-                  const targetFile = path.join(propFileData.PlaylistPath, propFileData.Playlist)
-                  const result = transXml(targetFile)
-                  console.log('result', result)
-                  writeJsonReset()
+                // 如果重load
+                if (propFocus === 'signage' && propReload) {
+                  focusWindow()
+                  // 開新檔案
+                  if (propFocus === 'signage' && propOpenNew === true) {
+                    console.log('propFileData', propFileData)
+                    writeJsonReset()
+                    resolve({ openType: 'new', propFileData })
+                  } else if (propOpenNew === false && propFileData.PlaylistPath) {
+                    const targetFile = path.join(propFileData.PlaylistPath, propFileData.Playlist)
+                    const result = transXml(targetFile)
+                    console.log('result', result)
+                    writeJsonReset()
 
-                  resolve({
-                    openType: 'load',
-                    propFileData,
-                    result
-                  })
+                    resolve({
+                      openType: 'load',
+                      propFileData,
+                      result
+                    })
+                  } else {
+                    // 例外情況暫不處理
+                    console.log('Json資料不完整！')
+                    reject(new Error('JSON data is incomplete.'))
+                  }
                 } else {
-                  // 例外情況暫不處理
-                  console.log('Json資料不完整！')
-                  reject()
+                  // 沒重load
+                  // console.log('Json資料不完整！')
+                  reject(new Error('JSON data is incomplete.'))
                 }
-              } else {
-                // 沒重load
-                // console.log('Json資料不完整！')
-                reject()
+              } catch (err) {
+                console.error(err)
+                reject(err)
               }
             }
           })
         }
       })
     })
+      .catch(error => {
+        console.log(error)
+      })
   },
   closeWatchJson: () => {
     if (this.watcher) {
@@ -333,21 +343,22 @@ contextBridge.exposeInMainWorld('myAPI', {
     }
   },
   async storeToXML(playListName, nowPlayListFolder, nowPlayListPath, NovoDsData) {
-    // console.log('playListName', playListName)
-    // console.log('nowPlayListFolder', nowPlayListFolder)
-    // console.log('nowPlayListPath', nowPlayListPath)
-    // console.log('NovoDsData', NovoDsData)
-    const newPlayListPath = path.join(nowPlayListFolder, playListName)
-    const xmlData = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + NovoDsData
-    const { targetFile, xmlData: data } = await writeAndCopyFolder(nowPlayListPath, newPlayListPath, xmlData)
+    try {
+      const newPlayListPath = path.join(nowPlayListFolder, playListName)
+      const xmlData = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + NovoDsData
+      const { targetFile, xmlData: data } = await writeAndCopyFolder(nowPlayListPath, newPlayListPath, xmlData)
 
-    return { targetFile, xmlData: data }
+      return { targetFile, xmlData: data }
+    } catch (error) {
+      console.error(error)
+    }
   },
   openSaveFolder(exportPath) {
     console.log('exportPath', exportPath)
     opn(exportPath)
   },
   chooseSources(nowPlayListPath = '') {
+    console.log('nowPlayListPath', nowPlayListPath)
     const sourcePaths = dialog.showOpenDialogSync({
       title: 'Choose Media',
       filters: [
@@ -555,9 +566,14 @@ contextBridge.exposeInMainWorld('myAPI', {
         })
     })
 
-    const resolvedPromises = await Promise.all(promises)
-    const validFileDatas = resolvedPromises.filter(fileData => fileData !== null)
-    return validFileDatas
+    try {
+      const resolvedPromises = await Promise.all(promises)
+      const validFileDatas = resolvedPromises.filter(fileData => fileData !== null)
+      return validFileDatas
+    } catch (err) {
+      console.error(err)
+      throw err
+    }
   },
   delTempFolder: async (nowPlayListPath) => {
     if (nowPlayListPath && path.basename(nowPlayListPath).includes('@_Temp_Playlist_')) {

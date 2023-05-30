@@ -592,6 +592,9 @@ export const useWidgetListStore = defineStore('widgetList', {
     GetCurrentStateId() {
       return this.currentStateId
     },
+    GetCurrentNowPlayListPath() {
+      return this.nowPlayListPath
+    },
     GetCurrentStateLength() {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
@@ -707,7 +710,8 @@ export const useWidgetListStore = defineStore('widgetList', {
           return ''
       }
     },
-    ResetNewPlaylistName(newPlayListPath) {
+    ResetNewPlaylistName(Playlist_Name, newPlayListPath) {
+      this.nowPlayListName = Playlist_Name
       this.nowPlayListPath = newPlayListPath
     },
     ResetNovoDS() {
@@ -715,31 +719,32 @@ export const useWidgetListStore = defineStore('widgetList', {
     },
     // 開新檔案
     async SetOpenNewFileData(fileData = null) {
-      console.log('fileData', fileData)
-      this.fileData = fileData
+      try {
+        console.log('fileData', fileData)
+        this.fileData = fileData
 
-      if (!fileData.Playlist || !fileData.PlaylistPath) {
-        // 建立 PlayList Temp
-        try {
+        if (!fileData.Playlist || !fileData.PlaylistPath) {
+          // 建立 PlayList Temp
           const NowPlayListFolder = await window.myAPI.setPlayListFolder()
           console.log('NowPlayListFolder', NowPlayListFolder)
           this.nowPlayListName = NowPlayListFolder.nowPlayListName
           this.nowPlayListFolder = NowPlayListFolder.NovoFolder
           this.nowPlayListPath = NowPlayListFolder.NovoFolder + '/' + NowPlayListFolder.nowPlayListName
-        } catch (err) {
-          console.error(`Failed to set PlayList folder: ${err}`)
+        } else {
+          this.nowPlayListName = fileData.Playlist
+          this.nowPlayListFolder = fileData.PlaylistPath
+          this.nowPlayListPath = fileData.PlaylistPath + '/' + fileData.Playlist
         }
-      } else {
-        this.nowPlayListName = fileData.Playlist
-        this.nowPlayListFolder = fileData.PlaylistPath
-        this.nowPlayListPath = fileData.PlaylistPath + '/' + fileData.Playlist
-      }
 
-      this._Layout_Type = fileData.LayoutType
-      this._Model_Type = fileData.ModelType
-      this.NovoDS.Pages.Page._Orientation = fileData.Orientation || '0'
-      this.NovoDS.Pages.Page._FreeDesignerMode = 'false'
-      return 'new'
+        this._Layout_Type = fileData.LayoutType
+        this._Model_Type = fileData.ModelType
+        this.NovoDS.Pages.Page._Orientation = fileData.Orientation || '0'
+        this.NovoDS.Pages.Page._FreeDesignerMode = 'false'
+
+        return 'new'
+      } catch (error) {
+        console.error(`Error in SetOpenNewFileData: ${error}`)
+      }
     },
     // 讀Json內資料
     SetLoadFileData(fileData = null) {

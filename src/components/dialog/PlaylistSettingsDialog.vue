@@ -157,10 +157,14 @@ export default {
       this.$refs.dialog.hide()
     },
     async addAudio() {
-      const fileData = await window.myAPI.chooseAudioSource(widgetStore.nowPlayListPath)
-      console.log('fileData', fileData)
-      const fileDatas = await window.myAPI.getSingleFileData(fileData)
-      widgetStore.AddAudioSourceList(fileDatas)
+      try {
+        const fileData = await window.myAPI.chooseAudioSource(widgetStore.nowPlayListPath)
+        console.log('fileData', fileData)
+        const fileDatas = await window.myAPI.getSingleFileData(fileData)
+        widgetStore.AddAudioSourceList(fileDatas)
+      } catch (error) {
+        console.error(`Error in addAudio: ${error}`)
+      }
     },
     setAudioSource(val) {
       console.log('val', val)
@@ -170,10 +174,14 @@ export default {
       widgetStore.DelAudioSource()
     },
     async addBG() {
-      const fileData = await window.myAPI.chooseBGSource(widgetStore.nowPlayListPath)
-      console.log('fileData', fileData)
-      const fileDatas = await window.myAPI.getSingleFileData(fileData)
-      widgetStore.AddBGSourceList(fileDatas)
+      try {
+        const fileData = await window.myAPI.chooseBGSource(widgetStore.nowPlayListPath)
+        console.log('fileData', fileData)
+        const fileDatas = await window.myAPI.getSingleFileData(fileData)
+        widgetStore.AddBGSourceList(fileDatas)
+      } catch (error) {
+        console.error(`Error in addBG: ${error}`)
+      }
     },
     clearBG() {
       widgetStore.DelBGSource()

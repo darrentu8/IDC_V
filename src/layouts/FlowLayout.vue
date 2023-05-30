@@ -161,21 +161,27 @@ async function exportFile() {
   const x2js = new X2js({ attributePrefix: '_' })
   const novoObj = { NovoDS: widgetStore.NovoDS }
   const xmlData = x2js.js2xml(novoObj)
-  const result = await window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
-  if (result) {
-    widgetStore.ResetNewPlaylistName(result.targetFile)
-    $q.dialog({
-      component: ConfirmDialog,
-      componentProps: {
-        title: 'Saved successfully!',
-        message: 'The playlist has been successfully saved, do you want to view the folder?',
-        okBtn: 'Open',
-        cancelBtn: 'cancel'
-      }
-    }).onOk(() => {
-      console.log('xmlData', xmlData)
-      window.myAPI.openSaveFolder(result.targetFile)
-    })
+  try {
+    const result = await window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
+    if (result) {
+      window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
+      $q.dialog({
+        component: ConfirmDialog,
+        componentProps: {
+          title: 'Saved successfully!',
+          message: 'The playlist has been successfully saved, do you want to view the folder?',
+          okBtn: 'Open',
+          cancelBtn: 'cancel'
+        }
+      }).onOk(() => {
+        console.log('xmlData', xmlData)
+        window.myAPI.openSaveFolder(result.targetFile)
+      })
+      widgetStore.ResetNewPlaylistName(widgetStore.NovoDS._Playlist_Name, result.targetFile)
+    }
+  } catch (error) {
+    console.error(error)
   }
 }
+
 </script>

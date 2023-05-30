@@ -1,6 +1,7 @@
 <template>
   <q-item-label class="border-d q-pb-sm q-pl-sm text-dark text-bold relative-position">Content
-    <q-btn label="" @click="add(currentStateIndex)" flat class="theme-tab-btn add" color="primary" icon="add" />
+    <q-btn label="" @click="add(currentStateIndex, getNowPlayListPath)" flat class="theme-tab-btn add" color="primary"
+      icon="add" />
   </q-item-label>
   <div class="q-mt-md dragBox">
     <div v-if="File">
@@ -56,7 +57,7 @@ const widgetStore = useWidgetListStore()
 // const currentSection = computed(() => layoutStore.GetCurrentSection)
 // const currentState = computed(() => widgetStore.GetCurrentState)
 const widgetListData = widgetStore.widgetListData
-const nowPlayListPath = widgetStore.nowPlayListPath
+const getNowPlayListPath = computed(() => widgetStore.GetCurrentNowPlayListPath)
 const props = defineProps({
   File: {
     type: Array,
@@ -83,15 +84,20 @@ const drag = ref(false)
 //   const i = (size === 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024)))
 //   return ((size / Math.pow(1024, i)).toFixed(2) * 1) + ' ' + (['B', 'kB', 'MB', 'GB', 'TB'][i])
 // }
-const add = async (currentStateIndex) => {
-  console.log('currentStateIndex', currentStateIndex)
-  const fileData = await window.myAPI.chooseSources(nowPlayListPath)
-  if (fileData === null) {
-    return
+const add = async (currentStateIndex, getNowPlayListPath) => {
+  try {
+    console.log('getNowPlayListPath', getNowPlayListPath)
+    console.log('currentStateIndex', currentStateIndex)
+    const fileData = await window.myAPI.chooseSources(getNowPlayListPath)
+    if (fileData === null) {
+      return
+    }
+    console.log('fileData', fileData)
+    const fileDatas = await window.myAPI.getFileData(fileData)
+    widgetStore.AddSourceList(currentStateIndex, fileDatas)
+  } catch (error) {
+    console.error(`Error in add: ${error}`)
   }
-  console.log('fileData', fileData)
-  const fileDatas = await window.myAPI.getFileData(fileData)
-  widgetStore.AddSourceList(currentStateIndex, fileDatas)
 }
 const deleteFile = (currentStateIndex, fileSrc, sourceFile) => {
   widgetStore.DelSourceList(currentStateIndex, fileSrc, sourceFile)

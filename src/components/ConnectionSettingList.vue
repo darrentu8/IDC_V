@@ -147,31 +147,36 @@ const eventTypeOptionsData = ref(null)
 const actionTypeOptionsData = ref(null)
 const loadingFilter = ref(false)
 const addStateEventSame = async (currentState) => {
-  widgetStore.SetLoading(true)
-  widgetStore.AddStateEventSame(currentState)
-  await nextTick()
-  widgetStore.SetLoading(false)
+  try {
+    widgetStore.SetLoading(true)
+    widgetStore.AddStateEventSame(currentState)
+    await nextTick()
+  } catch (error) {
+    console.error(`Error in addStateEventSame: ${error}`)
+  } finally {
+    widgetStore.SetLoading(false)
+  }
 }
 const addAction = (EventId) => {
   widgetStore.AddAction(EventId)
 }
 const setCurentEventID = (_uuid) => {
-  console.log('_uuid', _uuid)
   eventStore.SetCurentEventID(_uuid)
 }
 const setEvent = (EventData, _conId) => {
-  console.log('EventData', EventData)
-  console.log('_conId', _conId)
   widgetStore.SetEvent(EventData, _conId)
 }
-const setAction = (EventId, actionData, _conId) => {
-  console.log('EventId', EventId)
-  console.log('actionData', actionData)
-  console.log('_conId', _conId)
-  loadingFilter.value = true
-  widgetStore.SetAction(EventId, actionData, _conId)
-  loadingFilter.value = false
+const setAction = async (EventId, actionData, _conId) => {
+  try {
+    loadingFilter.value = true
+    await widgetStore.SetAction(EventId, actionData, _conId)
+  } catch (error) {
+    console.error(error)
+  } finally {
+    loadingFilter.value = false
+  }
 }
+
 const delAction = (EventId, ActionId) => {
   $q.dialog({
     component: DelDialog,

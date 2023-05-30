@@ -942,10 +942,15 @@ export default {
       this.$router.push({ path: '/grid' })
     },
     async toFlow() {
-      this.loading = true
-      const result = await this.$router.push({ path: '/flow' })
-      // console.log('result', result)
-      if (result === undefined) {
+      try {
+        this.loading = true
+        const result = await this.$router.push({ path: '/flow' })
+        // console.log('result', result)
+        if (result === undefined) {
+          this.loading = false
+        }
+      } catch (error) {
+        console.error(`Error in toFlow: ${error}`)
         this.loading = false
       }
     },

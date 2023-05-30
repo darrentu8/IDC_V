@@ -19,29 +19,34 @@ export default defineComponent({
     const widgetStore = useWidgetListStore()
 
     async function loadConfigData() {
-      const loadConfigData = await window.myAPI?.loadConfigFile()
-      if (loadConfigData !== null) {
-        if (loadConfigData.openType === 'new') {
-          console.log('new')
-          widgetStore.SetOpenNewFileData(loadConfigData.propFileData)
-          router.push({ path: '/' })
-        } else if (loadConfigData.openType === 'load') {
-          widgetStore.SetNovoDS(loadConfigData.propFileData, loadConfigData.result)
-          router.push({ path: '/flow' })
-        } else {
-          console.log(loadConfigData)
-          $q.dialog({
-            title: 'File format error',
-            okBtn: 'ok'
-          }).onOk(() => {
-          }).onCancel(() => {
-            console.log('Cancel')
-          }).onDismiss(() => {
-            console.log('Called on OK or Cancel')
-          })
+      try {
+        const loadConfigData = await window.myAPI?.loadConfigFile()
+        if (loadConfigData !== null) {
+          if (loadConfigData.openType === 'new') {
+            console.log('new')
+            widgetStore.SetOpenNewFileData(loadConfigData.propFileData)
+            router.push({ path: '/' })
+          } else if (loadConfigData.openType === 'load') {
+            widgetStore.SetNovoDS(loadConfigData.propFileData, loadConfigData.result)
+            router.push({ path: '/flow' })
+          } else {
+            console.log(loadConfigData)
+            $q.dialog({
+              title: 'File format error',
+              okBtn: 'ok'
+            }).onOk(() => {
+            }).onCancel(() => {
+              console.log('Cancel')
+            }).onDismiss(() => {
+              console.log('Called on OK or Cancel')
+            })
+          }
         }
+      } catch (error) {
+        console.error(error)
       }
     }
+
     let watchJsonPromise = null // 定義一個變數來存放 Promise 物件
 
     // 啟動監聽
@@ -85,18 +90,6 @@ export default defineComponent({
         startWatching()
       })
     }
-
-    // function saveFile() {
-    //   const x2js = new X2js({ attributePrefix: '_' })
-    //   const novoObj = { NovoDS: widgetStore.NovoDS }
-    //   const xmlData = x2js.js2xml(novoObj)
-    //   const result = window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
-    //   if (result) {
-    //     $q.dialog({
-    //       title: 'Saved successfully!'
-    //     })
-    //   }
-    // }
 
     // 開始監聽
     startWatching()
