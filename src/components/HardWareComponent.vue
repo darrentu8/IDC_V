@@ -119,8 +119,8 @@
         </div>
       </q-tab-panel>
       <!-- RS232 -->
-      <q-tab-panel :name="1">
-        <div class="row" style="height: 340px;">
+      <q-tab-panel :name="1" style="height: 380px;">
+        <div class="row">
           <q-tabs vertical v-model="subPanel" class="text-grey-8 q-mr-md" active-color="primary">
             <q-tab name="on" label="On-board RS232 port" />
             <q-tab name="usb" label="USB-RS232 dongle" />
@@ -134,60 +134,79 @@
                   <q-toggle v-model="RS232[0]._isEnabled" dense color="primary" />
                 </div>
                 <q-separator class="q-mt-md q-mb-md" />
-                <div class="row q-mt-md">
-                  <div class="col">
-                    <q-select label="BaudRate" class="brand-round-m" bg-color="white" outlined dense
-                      v-model="RS232[0]._baudRate" :disable="!RS232[0]._isEnabled"
-                      :options="[1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]" />
+                <q-form ref="Form" class="q-mt-md" @submit.stop="addRs0">
+                  <div class="row q-mt-md">
+                    <div class="col">
+                      <q-select label="BaudRate" class="brand-round-m" bg-color="white" outlined dense
+                        v-model="RS232[0]._baudRate" :disable="!RS232[0]._isEnabled"
+                        :options="[1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]" lazy-rules :rules="[
+                          (val) =>
+                            (val !== null && val !== '') || 'Need filled']" />
+                    </div>
+                    <div style="width:20px" />
+                    <div class="col">
+                      <q-select label="Parity" class="brand-round-m" bg-color="white" outlined dense
+                        v-model="RS232[0]._parity" :disable="!RS232[0]._isEnabled"
+                        :options="['None', 'Even', 'Odd', 'Mark', 'Space']" lazy-rules :rules="[
+                          (val) =>
+                            (val !== null && val !== '') || 'Need filled']" />
+                    </div>
                   </div>
-                  <div style="width:20px" />
-                  <div class="col">
-                    <q-select label="Parity" class="brand-round-m" bg-color="white" outlined dense
-                      v-model="RS232[0]._parity" :disable="!RS232[0]._isEnabled"
-                      :options="['None', 'Even', 'Odd', 'Mark', 'Space']" />
+                  <div class="row q-mt-md">
+                    <div class="col">
+                      <q-select label="Data Bits" class="brand-round-m" bg-color="white" outlined dense
+                        v-model="RS232[0]._dataBits" :disable="!RS232[0]._isEnabled" :options="[5, 6, 7, 8]" lazy-rules
+                        :rules="[
+                          (val) =>
+                            (val !== null && val !== '') || 'Need filled']" />
+                    </div>
+                    <div style="width:10px" />
+                    <div class="col">
+                      <q-select label="Stop Bits" class="brand-round-m" bg-color="white" outlined dense
+                        v-model="RS232[0]._stopBits" :disable="!RS232[0]._isEnabled" :options="[1, 2]" lazy-rules :rules="[
+                          (val) =>
+                            (val !== null && val !== '') || 'Need filled']" />
+                    </div>
+                    <div style="width:10px" />
+                    <div class="col">
+                      <q-select label="Flow Control" class="brand-round-m" bg-color="white" outlined dense
+                        v-model="RS232[0]._flowControl" :disable="!RS232[0]._isEnabled" :options="['None', 'CTX', 'XOFF']"
+                        lazy-rules :rules="[
+                          (val) =>
+                            (val !== null && val !== '') || 'Need filled']" />
+                    </div>
                   </div>
-                </div>
-                <div class="row q-mt-md">
-                  <div class="col">
-                    <q-select label="Data Bits" class="brand-round-m" bg-color="white" outlined dense
-                      v-model="RS232[0]._dataBits" :disable="!RS232[0]._isEnabled" :options="[5, 6, 7, 8]" />
+                  <q-separator class="q-mb-md" />
+                  <div class="row q-mt-sm">
+                    <div class="col">
+                      <q-input :disable="!RS232[0]._isEnabled" label="Name" class="brand-round-m" bg-color="white" dense
+                        outlined v-model="rs0._name" lazy-rules :rules="[
+                          (val) =>
+                            (val !== null && val !== '') || 'Need filled']" />
+                    </div>
                   </div>
-                  <div style="width:10px" />
-                  <div class="col">
-                    <q-select label="Stop Bits" class="brand-round-m" bg-color="white" outlined dense
-                      v-model="RS232[0]._stopBits" :disable="!RS232[0]._isEnabled" :options="[1, 2]" />
+                  <div class="row q-mt-sm">
+                    <div class="col">
+                      <q-select :disable="!RS232[0]._isEnabled" label="Type" class="brand-round-m" bg-color="white"
+                        outlined dense v-model="rs0._data_type" :options="['hex', 'string']" lazy-rules :rules="[
+                          (val) =>
+                            (val !== null && val !== '') || 'Need filled']" />
+                    </div>
+                    <div style="width:10px" />
+                    <div class="col">
+                      <q-input :disable="!RS232[0]._isEnabled" label="Command" class="brand-round-m" bg-color="white"
+                        dense outlined v-model="rs0._value" lazy-rules :rules="[
+                          (val) =>
+                            (val !== null && val !== '') || 'Need filled']" />
+                    </div>
                   </div>
-                  <div style="width:10px" />
-                  <div class="col">
-                    <q-select label="Flow Control" class="brand-round-m" bg-color="white" outlined dense
-                      v-model="RS232[0]._flowControl" :disable="!RS232[0]._isEnabled"
-                      :options="['None', 'CTX', 'XOFF']" />
+                  <div class="row">
+                    <div style="margin: auto">
+                      <q-btn :disable="!RS232[0]._isEnabled" unelevated rounded color="primary"
+                        class="text-capitalize q-px-lg" @click="addRs0" label="Add" />
+                    </div>
                   </div>
-                </div>
-                <q-separator class="q-mt-md q-mb-md" />
-                <div class="row q-mt-sm">
-                  <div class="col">
-                    <q-input :disable="!RS232[0]._isEnabled" label="Name" class="brand-round-m" bg-color="white" dense
-                      outlined v-model="rs0._name" />
-                  </div>
-                </div>
-                <div class="row q-mt-sm">
-                  <div class="col">
-                    <q-select :disable="!RS232[0]._isEnabled" label="Type" class="brand-round-m" bg-color="white" outlined
-                      dense v-model="rs0._data_type" :options="['hex', 'string']" />
-                  </div>
-                  <div style="width:10px" />
-                  <div class="col">
-                    <q-input :disable="!RS232[0]._isEnabled" label="Command" class="brand-round-m" bg-color="white" dense
-                      outlined v-model="rs0._value" />
-                  </div>
-                </div>
-                <div class="row q-mt-md">
-                  <div style="margin: auto">
-                    <q-btn :disable="!RS232[0]._isEnabled" unelevated rounded color="primary"
-                      class="text-capitalize q-px-lg" @click="addRs0" label="Add" />
-                  </div>
-                </div>
+                </q-form>
               </div>
               <q-separator vertical class="q-ma-lg" />
               <div class="col">
@@ -222,6 +241,11 @@
                     </q-card>
                   </q-expansion-item>
                 </q-list>
+                <div v-else class="flex flex-center q-mt-xl">
+                  <q-chip square class="q-pa-md" text-color="grey-7" color="grey-3">
+                    (No item in the list.)
+                  </q-chip>
+                </div>
               </div>
             </q-tab-panel>
             <q-tab-panel class="flex" name="usb">
@@ -232,60 +256,79 @@
                   <q-toggle v-model="RS232[1]._isEnabled" dense color="primary" />
                 </div>
                 <q-separator class="q-mt-md q-mb-md" />
-                <div class="row q-mt-md">
-                  <div class="col">
-                    <q-select label="BaudRate" class="brand-round-m" bg-color="white" outlined dense
-                      v-model="RS232[1]._baudRate" :disable="!RS232[1]._isEnabled"
-                      :options="[1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]" />
+                <q-form ref="Form" class="" @submit.stop="addRs1">
+                  <div class="row q-mt-md">
+                    <div class="col">
+                      <q-select label="BaudRate" class="brand-round-m" bg-color="white" outlined dense
+                        v-model="RS232[1]._baudRate" :disable="!RS232[1]._isEnabled"
+                        :options="[1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]" lazy-rules :rules="[
+                          (val) =>
+                            (val !== null && val !== '') || 'Need filled']" />
+                    </div>
+                    <div style="width:20px" />
+                    <div class="col">
+                      <q-select label="Parity" class="brand-round-m" bg-color="white" outlined dense
+                        v-model="RS232[1]._parity" :disable="!RS232[1]._isEnabled"
+                        :options="['None', 'Even', 'Odd', 'Mark', 'Space']" lazy-rules :rules="[
+                          (val) =>
+                            (val !== null && val !== '') || 'Need filled']" />
+                    </div>
                   </div>
-                  <div style="width:20px" />
-                  <div class="col">
-                    <q-select label="Parity" class="brand-round-m" bg-color="white" outlined dense
-                      v-model="RS232[1]._parity" :disable="!RS232[1]._isEnabled"
-                      :options="['None', 'Even', 'Odd', 'Mark', 'Space']" />
+                  <div class="row q-mt-md">
+                    <div class="col">
+                      <q-select label="Data Bits" class="brand-round-m" bg-color="white" outlined dense
+                        v-model="RS232[1]._dataBits" :disable="!RS232[1]._isEnabled" :options="[5, 6, 7, 8]" lazy-rules
+                        :rules="[
+                          (val) =>
+                            (val !== null && val !== '') || 'Need filled']" />
+                    </div>
+                    <div style="width:10px" />
+                    <div class="col">
+                      <q-select label="Stop Bits" class="brand-round-m" bg-color="white" outlined dense
+                        v-model="RS232[1]._stopBits" :disable="!RS232[1]._isEnabled" :options="[1, 2]" lazy-rules :rules="[
+                          (val) =>
+                            (val !== null && val !== '') || 'Need filled']" />
+                    </div>
+                    <div style="width:10px" />
+                    <div class="col">
+                      <q-select label="Flow Control" class="brand-round-m" bg-color="white" outlined dense
+                        v-model="RS232[1]._flowControl" :disable="!RS232[1]._isEnabled" :options="['None', 'CTX', 'XOFF']"
+                        lazy-rules :rules="[
+                          (val) =>
+                            (val !== null && val !== '') || 'Need filled']" />
+                    </div>
                   </div>
-                </div>
-                <div class="row q-mt-md">
-                  <div class="col">
-                    <q-select label="Data Bits" class="brand-round-m" bg-color="white" outlined dense
-                      v-model="RS232[1]._dataBits" :disable="!RS232[1]._isEnabled" :options="[5, 6, 7, 8]" />
+                  <q-separator class="q-mb-md" />
+                  <div class="row q-mt-sm">
+                    <div class="col">
+                      <q-input :disable="!RS232[1]._isEnabled" label="Name" class="brand-round-m" bg-color="white" dense
+                        outlined v-model="rs1._name" lazy-rules :rules="[
+                          (val) =>
+                            (val !== null && val !== '') || 'Need filled']" />
+                    </div>
                   </div>
-                  <div style="width:10px" />
-                  <div class="col">
-                    <q-select label="Stop Bits" class="brand-round-m" bg-color="white" outlined dense
-                      v-model="RS232[1]._stopBits" :disable="!RS232[1]._isEnabled" :options="[1, 2]" />
+                  <div class="row q-mt-sm">
+                    <div class="col">
+                      <q-select :disable="!RS232[1]._isEnabled" label="Type" class="brand-round-m" bg-color="white"
+                        outlined dense v-model="rs1._data_type" :options="['hex', 'string']" lazy-rules :rules="[
+                          (val) =>
+                            (val !== null && val !== '') || 'Need filled']" />
+                    </div>
+                    <div style="width:10px" />
+                    <div class="col">
+                      <q-input :disable="!RS232[1]._isEnabled" label="Command" class="brand-round-m" bg-color="white"
+                        dense outlined v-model="rs1._value" lazy-rules :rules="[
+                          (val) =>
+                            (val !== null && val !== '') || 'Need filled']" />
+                    </div>
                   </div>
-                  <div style="width:10px" />
-                  <div class="col">
-                    <q-select label="Flow Control" class="brand-round-m" bg-color="white" outlined dense
-                      v-model="RS232[1]._flowControl" :disable="!RS232[1]._isEnabled"
-                      :options="['None', 'CTX', 'XOFF']" />
+                  <div class="row">
+                    <div style="margin: auto">
+                      <q-btn :disable="!RS232[1]._isEnabled" unelevated rounded color="primary"
+                        class="text-capitalize q-px-lg" @click="addRs1" label="Add" />
+                    </div>
                   </div>
-                </div>
-                <q-separator class="q-mt-md q-mb-md" />
-                <div class="row q-mt-sm">
-                  <div class="col">
-                    <q-input :disable="!RS232[1]._isEnabled" label="Name" class="brand-round-m" bg-color="white" dense
-                      outlined v-model="rs1._name" />
-                  </div>
-                </div>
-                <div class="row q-mt-sm">
-                  <div class="col">
-                    <q-select :disable="!RS232[1]._isEnabled" label="Type" class="brand-round-m" bg-color="white" outlined
-                      dense v-model="rs1._data_type" :options="['hex', 'string']" />
-                  </div>
-                  <div style="width:10px" />
-                  <div class="col">
-                    <q-input :disable="!RS232[1]._isEnabled" label="Command" class="brand-round-m" bg-color="white" dense
-                      outlined v-model="rs1._value" />
-                  </div>
-                </div>
-                <div class="row q-mt-md">
-                  <div style="margin: auto">
-                    <q-btn :disable="!RS232[1]._isEnabled" unelevated rounded color="primary"
-                      class="text-capitalize q-px-lg" @click="addRs1" label="Add" />
-                  </div>
-                </div>
+                </q-form>
               </div>
               <q-separator vertical class="q-ma-lg" />
               <div class="col">
@@ -320,74 +363,98 @@
                     </q-card>
                   </q-expansion-item>
                 </q-list>
+                <div v-else class="flex flex-center q-mt-xl">
+                  <q-chip square class="q-pa-md" text-color="grey-7" color="grey-3">
+                    (No item in the list.)
+                  </q-chip>
+                </div>
               </div>
             </q-tab-panel>
           </q-tab-panels>
         </div>
       </q-tab-panel>
       <!-- TCP/IP -->
-      <q-tab-panel :name="2">
+      <q-tab-panel :name="2" style="height: 380px;">
         <div class="row">
           <div class="col">
             <!-- TCPIP Receive -->
             <div class="text-body1 row">
-              <div>RX ( Receive )</div>
+              <div class="q-mb-sm">RX ( Receive )</div>
               <q-space />
               <q-toggle v-model="TCPIP._isEnabled" dense color="primary" />
             </div>
-            <div class="row q-mt-sm">
-              <div style="margin: auto 2px; width:100px">Port Number : </div>
-              <div class="col" style="margin: auto 10px">
-                <q-input :disable="!TCPIP._isEnabled" class="brand-round-m" bg-color="white" dense outlined type="number"
-                  :min="3000" :max="4000" v-model.number="TCPIP._local_port" />
+            <q-form ref="FormTrx" class="" @submit.stop="addTrx">
+              <div class="row q-mt-sm items-top">
+                <div style="margin-top: 10px; width:100px">Port Number : </div>
+                <div class="col" style="margin: auto 10px">
+                  <q-input :disable="!TCPIP._isEnabled" class="brand-round-m" bg-color="white" dense outlined
+                    type="number" :min="3000" :max="4000" v-model.number="TCPIP._local_port" lazy-rules :rules="[
+                      (val) =>
+                        (val !== null && val >= 3000 && val <= 4000) || 'Please enter 3000 ~ 4000']" />
+                </div>
+                <div class="text-grey" style="margin-top: 10px; width:180px">Range 3000 ~ 4000</div>
               </div>
-              <div class="text-grey" style="margin: auto 2px; width:180px">Range 3000 ~ 4000</div>
-            </div>
-            <div class="row q-mt-sm">
-              <div class="col">
-                <q-input :disable="!TCPIP._isEnabled" label="Name" class="brand-round-m" bg-color="white" dense outlined
-                  type="text" v-model="trx._name" />
+              <div class="row q-mt-sm">
+                <div class="col">
+                  <q-input :disable="!TCPIP._isEnabled" label="Name" class="brand-round-m" bg-color="white" dense outlined
+                    type="text" v-model="trx._name" lazy-rules :rules="[
+                      (val) =>
+                        (val !== null && val !== '') || 'Need filled']" />
+                </div>
+                <div class="" style="width:10px"></div>
+                <div class="col">
+                  <q-input :disable="!TCPIP._isEnabled" label="Command" class="brand-round-m" bg-color="white" dense
+                    outlined type="text" v-model="trx._value" lazy-rules :rules="[
+                      (val) =>
+                        (val !== null && val !== '') || 'Need filled']" />
+                </div>
+                <div class="" style="width:10px"></div>
+                <div>
+                  <q-btn :disable="!TCPIP._isEnabled" unelevated rounded color="primary" class="text-capitalize"
+                    @click="addTrx" label="Add" />
+                </div>
               </div>
-              <div class="" style="width:10px"></div>
-              <div class="col">
-                <q-input :disable="!TCPIP._isEnabled" label="Command" class="brand-round-m" bg-color="white" dense
-                  outlined type="text" v-model="trx._value" />
-              </div>
-              <div class="" style="width:10px"></div>
-              <div style="margin: auto">
-                <q-btn :disable="!TCPIP._isEnabled" unelevated rounded color="primary" class="text-capitalize"
-                  @click="addTrx" label="Add" />
-              </div>
-            </div>
-            <q-separator class="q-mt-md q-mb-md" color="black" />
+            </q-form>
+            <q-separator class="q-mb-md" color="gery-7" />
             <!-- TCPIP Send -->
             <div class="text-body1">tx ( Send )</div>
-            <div class="row q-mt-sm">
-              <div style="margin: auto 2px; width:100px">IP Address : </div>
-              <div class="col">
-                <q-input class="brand-round-m" bg-color="white" dense outlined v-model="tx._destination_ip" />
+            <q-form ref="FormTx" class="" @submit.stop="addTx">
+              <div class="row q-mt-sm">
+                <div class="" style="margin-top: 10px; width:100px">IP Address : </div>
+                <div class="col">
+                  <q-input class="brand-round-m" bg-color="white" dense outlined v-model="tx._destination_ip" lazy-rules
+                    :rules="[checkIP]" />
+                </div>
               </div>
-            </div>
-            <div class="row q-mt-sm">
-              <div style="margin: auto 2px; width:100px">Port Number : </div>
-              <div class="col">
-                <q-input class="brand-round-m" bg-color="white" dense outlined type="number" :min="3000" :max="4000"
-                  v-model.number="tx._destination_port" />
+              <div class="row q-mt-sm">
+                <div class="" style="margin-top: 10px; width:100px">Port Number : </div>
+                <div class="col">
+                  <q-input class="brand-round-m" bg-color="white" dense outlined type="number"
+                    v-model.number="tx._destination_port" :min="1" :max="9999" lazy-rules :rules="[
+                      (val) =>
+                        (val !== null && val !== '') || 'Need filled']" />
+                </div>
               </div>
-            </div>
-            <div class="row q-mt-sm">
-              <div class="col">
-                <q-input label="Name" class="brand-round-m" bg-color="white" dense outlined v-model="tx._name" />
+              <div class="row q-mt-sm">
+                <div class="col">
+                  <q-input label="Name" class="brand-round-m" bg-color="white" dense outlined v-model="tx._name"
+                    lazy-rules :rules="[
+                      (val) =>
+                        (val !== null && val !== '') || 'Need filled']" />
+                </div>
+                <div class="" style="width:10px"></div>
+                <div class="col">
+                  <q-input label="Command" class="brand-round-m" bg-color="white" dense outlined v-model="tx._value"
+                    lazy-rules :rules="[
+                      (val) =>
+                        (val !== null && val !== '') || 'Need filled']" />
+                </div>
+                <div class="" style="width:10px"></div>
+                <div>
+                  <q-btn unelevated rounded color="primary" class="text-capitalize" @click="addTx" label="Add" />
+                </div>
               </div>
-              <div class="" style="width:10px"></div>
-              <div class="col">
-                <q-input label="Command" class="brand-round-m" bg-color="white" dense outlined v-model="tx._value" />
-              </div>
-              <div class="" style="width:10px"></div>
-              <div style="margin: auto">
-                <q-btn unelevated rounded color="primary" class="text-capitalize" @click="addTx" label="Add" />
-              </div>
-            </div>
+            </q-form>
           </div>
           <q-separator vertical class="q-ma-lg" />
           <div class="col">
@@ -429,6 +496,11 @@
                         </q-card>
                       </q-expansion-item>
                     </q-list>
+                    <div v-else class="flex flex-center q-mt-xl">
+                      <q-chip square class="q-pa-md" text-color="grey-7" color="grey-3">
+                        (No item in the list.)
+                      </q-chip>
+                    </div>
                   </div>
                 </q-tab-panel>
                 <!-- TX ( Send ) -->
@@ -469,6 +541,11 @@
                         </q-card>
                       </q-expansion-item>
                     </q-list>
+                    <div v-else class="flex flex-center q-mt-xl">
+                      <q-chip square class="q-pa-md" text-color="grey-7" color="grey-3">
+                        (No item in the list.)
+                      </q-chip>
+                    </div>
                   </div>
 
                 </q-tab-panel>
@@ -484,23 +561,30 @@
             <div class="text-body1 row">
               <div>Software Timer</div>
             </div>
-            <div class="row q-mt-sm">
-              <div class="col">
-                <q-input label="Name" class="brand-round-m" bg-color="white" dense outlined type="text"
-                  v-model="timer._name" />
+            <q-form ref="Form" class="" @submit.stop="addTimer">
+              <div class="row q-mt-sm">
+                <div class="col">
+                  <q-input label="Name" class="brand-round-m" bg-color="white" dense outlined type="text"
+                    v-model="timer._name" lazy-rules :rules="[
+                      (val) =>
+                        (val !== null && val !== '') || 'Need filled']" />
+                </div>
               </div>
-            </div>
-            <div class="row q-mt-sm">
-              <div class="col">
-                <q-input label="Time" class="brand-round-m" bg-color="white" dense outlined type="number" maxlength="4"
-                  min="0" prefix="" suffix="sec" v-model.number="timer._duration" />
+              <div class="row q-mt-sm">
+                <div class="col">
+                  <q-input label="Time" class="brand-round-m" bg-color="white" dense outlined type="number" maxlength="4"
+                    min="0" prefix="" suffix="sec" v-model.number="timer._duration" lazy-rules :rules="[
+                      (val) =>
+                        (val !== null && val !== '') || 'Need filled']" />
+                </div>
               </div>
-            </div>
-            <div class="row q-mt-md">
-              <div style="margin: auto">
-                <q-btn unelevated rounded color="primary" class="text-capitalize q-px-lg" @click="addTimer" label="Add" />
+              <div class="row q-mt-md">
+                <div style="margin: auto">
+                  <q-btn unelevated rounded color="primary" class="text-capitalize q-px-lg" @click="addTimer"
+                    label="Add" />
+                </div>
               </div>
-            </div>
+            </q-form>
           </div>
           <q-separator vertical class="q-ma-lg" />
           <div class="col">
@@ -532,6 +616,11 @@
                 </q-card>
               </q-expansion-item>
             </q-list>
+            <div v-else class="flex flex-center q-mt-xl">
+              <q-chip square class="q-pa-md" text-color="grey-7" color="grey-3">
+                (No item in the list.)
+              </q-chip>
+            </div>
           </div>
         </div>
       </q-tab-panel>
@@ -540,11 +629,14 @@
 </template>
 
 <script>
+import { uid } from 'quasar'
+import inputRules from 'src/mixins/inputRules.js'
 import { useWidgetListStore } from 'src/stores/widget'
 const widgetStore = useWidgetListStore()
 
 export default {
   name: 'HardWareComponent',
+  mixins: [inputRules],
   data() {
     return {
       loading: false,
@@ -677,88 +769,159 @@ export default {
       }
     },
     addRs0() {
-      const rs = {
-        _id: 0,
-        _name: this.rs0._name,
-        _data_type: this.rs0._data_type,
-        _value: this.rs0._value
-      }
+      this.$refs.Form.validate().then(success => {
+        // console.log('this.userData', this.userData)
+        if (success) {
+          const rs = {
+            _id: 0,
+            _uuid: uid(),
+            _name: this.rs0._name,
+            _data_type: this.rs0._data_type,
+            _value: this.rs0._value
+          }
 
-      this.RS232[0].Command.push(rs)
+          this.RS232[0].Command.push(rs)
 
-      rs._id = this.RS232[0].Command.length
-      this.resetData()
+          rs._id = this.RS232[0].Command.length
+          this.resetData()
+          this.$refs.Form.resetValidation()
+        } else {
+          this.$q.notify({
+            color: 'red-5',
+            textColor: 'white',
+            icon: 'warning',
+            message: 'Need filled'
+          })
+        }
+      })
     },
     addRs1() {
-      const rs = {
-        _id: 0,
-        _name: this.rs1._name,
-        _data_type: this.rs1._data_type,
-        _value: this.rs1._value
-      }
+      this.$refs.Form.validate().then(success => {
+        // console.log('this.userData', this.userData)
+        if (success) {
+          const rs = {
+            _id: 0,
+            _uuid: uid(),
+            _name: this.rs1._name,
+            _data_type: this.rs1._data_type,
+            _value: this.rs1._value
+          }
 
-      this.RS232[1].Command.push(rs)
+          this.RS232[1].Command.push(rs)
 
-      rs._id = this.RS232[1].Command.length
-      this.resetData()
+          rs._id = this.RS232[1].Command.length
+          this.resetData()
+          this.$refs.Form.resetValidation()
+        } else {
+          this.$q.notify({
+            color: 'red-5',
+            textColor: 'white',
+            icon: 'warning',
+            message: 'Need filled'
+          })
+        }
+      })
     },
     addTrx() {
-      const trx = {
-        _id: 0,
-        _name: this.trx._name,
-        _value: this.trx._value
-      }
+      this.$refs.FormTrx.validate().then(success => {
+        // console.log('this.userData', this.userData)
+        if (success) {
+          const trx = {
+            _id: 0,
+            _uuid: uid(),
+            _name: this.trx._name,
+            _value: this.trx._value
+          }
 
-      this.TCPIP.ReceivedCommands.Command.push(trx)
+          this.TCPIP.ReceivedCommands.Command.push(trx)
 
-      trx._id = this.TCPIP.ReceivedCommands.Command.length
-      this.resetData()
+          trx._id = this.TCPIP.ReceivedCommands.Command.length
+          this.resetData()
+          this.$refs.FormTrx.resetValidation()
+        } else {
+          this.$q.notify({
+            color: 'red-5',
+            textColor: 'white',
+            icon: 'warning',
+            message: 'Need filled'
+          })
+        }
+      })
     },
     addTx() {
-      let isAlreadyExists = false
-      for (let i = 0; i < this.TCPIP.TcpIp.length; i++) {
-        if (this.TCPIP.TcpIp[i]._destination_ip === this.tx._destination_ip &&
-          this.TCPIP.TcpIp[i]._destination_port === this.tx._destination_port) {
-          const tx = {
-            _id: 0,
-            _name: this.tx._name,
-            _value: this.tx._value
+      this.$refs.FormTx.validate().then(success => {
+        // console.log('this.userData', this.userData)
+        if (success) {
+          let isAlreadyExists = false
+          for (let i = 0; i < this.TCPIP.TcpIp.length; i++) {
+            if (this.TCPIP.TcpIp[i]._destination_ip === this.tx._destination_ip &&
+              this.TCPIP.TcpIp[i]._destination_port === this.tx._destination_port) {
+              const tx = {
+                _id: 0,
+                _uuid: uid(),
+                _name: this.tx._name,
+                _value: this.tx._value
+              }
+              this.TCPIP.TcpIp[i].Command.push(tx)
+              tx._id = this.TCPIP.TcpIp[i].Command.length
+              isAlreadyExists = true
+              break
+            }
           }
-          this.TCPIP.TcpIp[i].Command.push(tx)
-          tx._id = this.TCPIP.TcpIp[i].Command.length
-          isAlreadyExists = true
-          break
-        }
-      }
 
-      if (!isAlreadyExists) {
-        const tx = {
-          _id: 0,
-          _destination_ip: this.tx._destination_ip,
-          _destination_port: this.tx._destination_port,
-          Command: [{
-            _id: 0,
-            _name: this.tx._name,
-            _value: this.tx._value
-          }]
-        }
+          if (!isAlreadyExists) {
+            const tx = {
+              _id: 0,
+              _destination_ip: this.tx._destination_ip,
+              _destination_port: this.tx._destination_port,
+              Command: [{
+                _id: 0,
+                _uuid: uid(),
+                _name: this.tx._name,
+                _value: this.tx._value
+              }]
+            }
 
-        this.TCPIP.TcpIp.push(tx)
-        tx._id = this.TCPIP.TcpIp.length
-      }
-      this.resetData()
+            this.TCPIP.TcpIp.push(tx)
+            tx._id = this.TCPIP.TcpIp.length
+          }
+          this.resetData()
+          this.$refs.FormTx.resetValidation()
+        } else {
+          this.$q.notify({
+            color: 'red-5',
+            textColor: 'white',
+            icon: 'warning',
+            message: 'Need filled'
+          })
+        }
+      })
     },
     addTimer() {
-      const timer = {
-        _id: 0,
-        _name: this.timer._name,
-        _duration: this.timer._duration
-      }
+      this.$refs.Form.validate().then(success => {
+        // console.log('this.userData', this.userData)
+        if (success) {
+          const timer = {
+            _id: 0,
+            _uuid: uid(),
+            _name: this.timer._name,
+            _duration: this.timer._duration
+          }
 
-      this.TimerSettings.Timer.push(timer)
+          this.TimerSettings.Timer.push(timer)
 
-      timer._id = this.TimerSettings.Timer.length
-      this.resetData()
+          timer._id = this.TimerSettings.Timer.length
+          this.resetData()
+          this.$refs.Form.resetValidation()
+        } else {
+          this.$q.notify({
+            color: 'red-5',
+            textColor: 'white',
+            icon: 'warning',
+            message: 'Need filled'
+          })
+        }
+      })
     },
     removeRs0(index) {
       this.RS232[0].Command.splice(index, 1)

@@ -113,7 +113,7 @@ export const useWidgetListStore = defineStore('widgetList', {
           ]
         },
         TcpIpSettings: {
-          _local_port: 1234,
+          _local_port: 3000,
           _isEnabled: false,
           ReceivedCommands: {
             Command: [
@@ -424,7 +424,7 @@ export const useWidgetListStore = defineStore('widgetList', {
           ]
         },
         TcpIpSettings: {
-          _local_port: 1234,
+          _local_port: 3000,
           _isEnabled: false,
           ReceivedCommands: {
             Command: [

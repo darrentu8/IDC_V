@@ -294,7 +294,7 @@ export const useEventListStore = defineStore('eventList', {
       const mapRs232 = widgetStore?.NovoDS?.Hardware?.Rs232Settings?.Rs232
         ?.filter(rs232 => rs232 && rs232.Command)
         ?.map(rs232 => rs232.Command?.map(commandData => ({
-          _uuid: rs232._uuid || uid(),
+          _uuid: commandData._uuid || uid(),
           _name: `RS232-${rs232._interface} ${commandData._name}`,
           _rs232_id: rs232._id,
           _role: 'output',
@@ -308,15 +308,18 @@ export const useEventListStore = defineStore('eventList', {
       const commands = tcpIpSettings.flatMap(tcpip => tcpip.Command ?? [])
       const filteredCommands = commands.filter(command => command !== null && command !== undefined)
 
-      const mapTcpIp = filteredCommands.map(command => ({
-        _uuid: command._uuid || uid(),
-        _name: command._name,
-        _tcpip_id: tcpIpSettings.find(tcpip => tcpip.Command.includes(command))._id,
-        _role: 'output',
-        _command_id: command._id,
-        _isEnabled: true,
-        _type: 'tcp/ip'
-      }))
+      const mapTcpIp = filteredCommands.map(command => {
+        const tcpip = tcpIpSettings.find(tcpip => Array.isArray(tcpip.Command) && tcpip.Command.includes(command))
+        return {
+          _uuid: command._uuid || uid(),
+          _name: command._name,
+          _tcpip_id: tcpip ? tcpip._id : null,
+          _role: 'output',
+          _command_id: command._id,
+          _isEnabled: true,
+          _type: 'tcp/ip'
+        }
+      })
 
       const mapTimer = widgetStore?.NovoDS?.Hardware?.TimerSettings?.Timer
         ?.filter(timer => timer)

@@ -112,7 +112,13 @@ export default {
   computed: {
     PlaylistName: {
       get() {
-        return NovoDS.value._Playlist_Name
+        if (widgetStore.nowPlayListName.startsWith('@_Temp_Playlist_')) {
+          const fileName = widgetStore.nowPlayListName.split('_')[2] + '_' + widgetStore.nowPlayListName.split('_')[3]
+          NovoDS.value._Playlist_Name = fileName
+          return NovoDS.value._Playlist_Name
+        } else {
+          return NovoDS.value._Playlist_Name
+        }
       },
       set(newValue) {
         NovoDS.value._Playlist_Name = newValue

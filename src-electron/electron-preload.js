@@ -62,7 +62,7 @@ contextBridge.exposeInMainWorld('myAPI', {
       process.env.RESOURCES_PATH = NovoFolder
       const strftime = require('strftime')
       const timestamp = strftime('%Y%m%d%H%M%S', new Date())
-      const nowPlayListName = `@_Temp_PlayList_${timestamp}`
+      const nowPlayListName = `@_Temp_Playlist_${timestamp}`
       const PlayListFolder = path.join(NovoFolder, nowPlayListName)
       if (!fs.existsSync(PlayListFolder)) {
         fs.mkdir(PlayListFolder, (err) => {
@@ -560,7 +560,7 @@ contextBridge.exposeInMainWorld('myAPI', {
     return validFileDatas
   },
   delTempFolder: async (nowPlayListPath) => {
-    if (nowPlayListPath && path.basename(nowPlayListPath).includes('@_Temp_PlayList_')) {
+    if (nowPlayListPath && path.basename(nowPlayListPath).includes('@_Temp_Playlist_')) {
       try {
         await fs.rmdirSync(nowPlayListPath, { recursive: true })
         console.log(`${nowPlayListPath} 已被刪除`)
@@ -570,7 +570,7 @@ contextBridge.exposeInMainWorld('myAPI', {
     }
   },
   delTempFolderWithClose: async (nowPlayListPath) => {
-    if (nowPlayListPath && path.basename(nowPlayListPath).includes('@_Temp_PlayList_')) {
+    if (nowPlayListPath && path.basename(nowPlayListPath).includes('@_Temp_Playlist_')) {
       try {
         await fs.rmdirSync(nowPlayListPath, { recursive: true })
         console.log(`${nowPlayListPath} 已被刪除`)
