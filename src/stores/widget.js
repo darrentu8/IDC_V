@@ -929,13 +929,19 @@ export const useWidgetListStore = defineStore('widgetList', {
       const currentSection = layoutStore.currentSection
       const selectOptionDataIndex = eventOpionData.findIndex(eventOption => eventOption._uuid === _conId)
       const eventArr = this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState].Event
-      // console.log('selectOptionDataIndex', selectOptionDataIndex)
       if (selectOptionDataIndex === undefined) {
         return
       }
 
       for (let i = 0; i < eventArr.length; i++) {
         if (eventArr[i]._id === EventData._id) {
+          // Clear all key-value pairs in eventArr[i] except for '_id', '_next_state_id', and '_conId'
+          for (const [key] of Object.entries(eventArr[i])) {
+            if (!['_id', '_next_state_id', '_conId', 'Action'].includes(key)) {
+              delete eventArr[i][key]
+            }
+          }
+          // Assign values from eventOpionData[selectOptionDataIndex] to eventArr[i]
           for (const [key, value] of Object.entries(eventOpionData[selectOptionDataIndex])) { // iterate over key-value pairs in eventOpionData
             if (!['disable', '_conId', '_uuid', '_isEnabled', '_name', '_id'].includes(key)) { // check if key is not excluded
               eventArr[i][key] = value // update corresponding value in eventArr
@@ -962,6 +968,13 @@ export const useWidgetListStore = defineStore('widgetList', {
       for (let i = 0; i < actionArr.length; i++) {
         if (actionArr[i]._id === actionData._id) {
           const selectedActionOption = actionOptions.find(actionOption => actionOption._uuid === _conId)
+          // Clear all key-value pairs in actionArr[i] except for '_id' and '_conId'
+          for (const [key] of Object.entries(actionArr[i])) {
+            if (!['_id', '_conId'].includes(key)) {
+              delete actionArr[i][key]
+            }
+          }
+          // Assign values from selectedActionOption to actionArr[i]
           for (const [key, value] of Object.entries(selectedActionOption)) { // iterate over key-value pairs in eventOpionData
             if (!['disable', '_conId', '_uuid', '_isEnabled', '_name', '_id'].includes(key)) { // check if key is not excluded
               actionArr[i][key] = value // update corresponding value in actionArr

@@ -158,87 +158,83 @@ export default {
         layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }]
       },
       isChooseCustom: false,
-      grids: [{
-        rowCount: 1,
-        colCount: 1,
-        layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }]
-      }, {
-        rowCount: 1,
-        colCount: 2,
-        layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }]
-      }, {
-        rowCount: 1,
-        colCount: 3,
-        layout: [{ x: 0, y: 0, w: 2, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }]
-      }, {
-        rowCount: 1,
-        colCount: 3,
-        layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 2, h: 1, i: uid() }]
-      }, {
-        rowCount: 2,
-        colCount: 1,
-        layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }]
-      }, {
-        rowCount: 1,
-        colCount: 3,
-        layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }]
-      }, {
-        rowCount: 2,
-        colCount: 6,
-        layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 5, h: 2, i: uid() }]
-      }, {
-        rowCount: 4,
-        colCount: 4,
-        layout: [{ x: 0, y: 0, w: 1, h: 3, i: uid() }, { x: 1, y: 0, w: 3, h: 3, i: uid() }, { x: 0, y: 2, w: 4, h: 1, i: uid() }]
-      }, {
-        rowCount: 4,
-        colCount: 4,
-        layout: [{ x: 0, y: 0, w: 3, h: 3, i: uid() }, { x: 3, y: 0, w: 1, h: 3, i: uid() }, { x: 0, y: 2, w: 4, h: 1, i: uid() }]
-      }, {
-        rowCount: 3,
-        colCount: 3,
-        layout: [{ x: 0, y: 0, w: 1, h: 2, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 2, h: 3, i: uid() }]
-      }, {
-        rowCount: 3,
-        colCount: 4,
-        layout: [{ x: 0, y: 0, w: 3, h: 3, i: uid() }, { x: 3, y: 0, w: 1, h: 1, i: uid() }, { x: 3, y: 1, w: 1, h: 1, i: uid() }, { x: 3, y: 2, w: 1, h: 1, i: uid() }]
-      }, {
-        rowCount: 2,
-        colCount: 2,
-        layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 1, w: 1, h: 1, i: uid() }]
-      }, {
-        rowCount: 4,
-        colCount: 4,
-        layout: [{ x: 0, y: 0, w: 4, h: 3, i: uid() }, { x: 0, y: 3, w: 1, h: 1, i: uid() }, { x: 1, y: 3, w: 1, h: 1, i: uid() }, { x: 2, y: 3, w: 1, h: 1, i: uid() }, { x: 3, y: 3, w: 1, h: 1, i: uid() }]
-      }, {
-        rowCount: 4,
-        colCount: 4,
-        layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 3, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 4, h: 3, i: uid() }]
-      }, {
-        rowCount: 2,
-        colCount: 3,
-        layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 1, w: 1, h: 1, i: uid() }, { x: 2, y: 1, w: 1, h: 1, i: uid() }]
-      }, {
-        rowCount: 3,
-        colCount: 4,
-        layout: [{ x: 0, y: 0, w: 3, h: 2, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }, { x: 1, y: 2, w: 1, h: 1, i: uid() }, { x: 2, y: 2, w: 1, h: 1, i: uid() }, { x: 3, y: 0, w: 1, h: 1, i: uid() }, { x: 3, y: 1, w: 1, h: 2, i: uid() }]
-      }, {
-        rowCount: 3,
-        colCount: 4,
-        layout: [{ x: 0, y: 0, w: 2, h: 2, i: uid() }, { x: 2, y: 0, w: 2, h: 2, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }, { x: 1, y: 2, w: 1, h: 1, i: uid() }, { x: 2, y: 2, w: 1, h: 1, i: uid() }, { x: 3, y: 2, w: 1, h: 1, i: uid() }]
-      }, {
-        rowCount: 4,
-        colCount: 4,
-        layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 3, h: 3, i: uid() }, { x: 0, y: 3, w: 1, h: 1, i: uid() }, { x: 1, y: 3, w: 1, h: 1, i: uid() }, { x: 2, y: 3, w: 1, h: 1, i: uid() }, { x: 3, y: 3, w: 1, h: 1, i: uid() }]
-      }, {
-        rowCount: 4,
-        colCount: 4,
-        layout: [{ x: 0, y: 0, w: 3, h: 3, i: uid() }, { x: 3, y: 0, w: 1, h: 1, i: uid() }, { x: 3, y: 1, w: 1, h: 1, i: uid() }, { x: 3, y: 2, w: 1, h: 1, i: uid() }, { x: 0, y: 3, w: 1, h: 1, i: uid() }, { x: 1, y: 3, w: 1, h: 1, i: uid() }, { x: 2, y: 3, w: 1, h: 1, i: uid() }, { x: 3, y: 3, w: 1, h: 1, i: uid() }]
-      }, {
-        rowCount: 3,
-        colCount: 3,
-        layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 1, w: 1, h: 1, i: uid() }, { x: 2, y: 1, w: 1, h: 1, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }, { x: 1, y: 2, w: 1, h: 1, i: uid() }, { x: 2, y: 2, w: 1, h: 1, i: uid() }]
-      }],
+      grids: [
+        {
+          rowCount: 1,
+          colCount: 1,
+          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }]
+        },
+        {
+          rowCount: 1,
+          colCount: 2,
+          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }]
+        },
+        {
+          rowCount: 2,
+          colCount: 2,
+          layout: [{ x: 0, y: 0, w: 1, h: 2, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 1, w: 1, h: 1, i: uid() }]
+        },
+        {
+          rowCount: 2,
+          colCount: 3,
+          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 3, h: 1, i: uid() }]
+        },
+        {
+          rowCount: 1,
+          colCount: 4,
+          layout: [{ x: 0, y: 0, w: 3, h: 1, i: uid() }, { x: 3, y: 0, w: 1, h: 1, i: uid() }]
+        },
+        {
+          rowCount: 2,
+          colCount: 2,
+          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 2, i: uid() }]
+        },
+        {
+          rowCount: 2,
+          colCount: 3,
+          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 2, h: 1, i: uid() }, { x: 1, y: 1, w: 3, h: 1, i: uid() }]
+        },
+        {
+          rowCount: 4,
+          colCount: 4,
+          layout: [{ x: 0, y: 0, w: 3, h: 2, i: uid() }, { x: 0, y: 2, w: 3, h: 2, i: uid() }, { x: 3, y: 0, w: 1, h: 4, i: uid() }]
+        },
+        {
+          rowCount: 2,
+          colCount: 2,
+          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 1, w: 1, h: 1, i: uid() }]
+        },
+        {
+          rowCount: 2,
+          colCount: 3,
+          layout: [{ x: 0, y: 0, w: 1, h: 2, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 1, w: 1, h: 1, i: uid() }, { x: 2, y: 1, w: 1, h: 1, i: uid() }]
+        },
+        {
+          rowCount: 2,
+          colCount: 7,
+          layout: [{ x: 0, y: 0, w: 7, h: 1, i: uid() }, { x: 0, y: 1, w: 2, h: 1, i: uid() }, { x: 2, y: 1, w: 3, h: 1, i: uid() }, { x: 5, y: 1, w: 2, h: 1, i: uid() }]
+        },
+        {
+          rowCount: 3,
+          colCount: 4,
+          layout: [{ x: 0, y: 0, w: 1, h: 2, i: uid() }, { x: 1, y: 0, w: 3, h: 2, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 3, h: 1, i: uid() }]
+        },
+        {
+          rowCount: 2,
+          colCount: 3,
+          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 1, w: 1, h: 1, i: uid() }, { x: 2, y: 1, w: 1, h: 1, i: uid() }]
+        },
+        {
+          rowCount: 10,
+          colCount: 10,
+          layout: [{ x: 0, y: 0, w: 10, h: 3, i: uid() }, { x: 0, y: 3, w: 6, h: 7, i: uid() }, { x: 6, y: 3, w: 2, h: 2, i: uid() }, { x: 8, y: 3, w: 2, h: 2, i: uid() }, { x: 6, y: 5, w: 4, h: 3, i: uid() }, { x: 6, y: 8, w: 4, h: 2, i: uid() }]
+        },
+        {
+          rowCount: 3,
+          colCount: 4,
+          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 3, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 4, h: 2, i: uid() }]
+        }
+      ],
       gridWidth: 160,
       currentGrid: null,
       layoutNumber: '',
