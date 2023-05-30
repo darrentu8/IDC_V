@@ -1186,7 +1186,7 @@ export const useWidgetListStore = defineStore('widgetList', {
         this.NovoDS.Pages.Page.Section[currentSection].Content.MediaItem =
           this.NovoDS.Pages.Page.Section[currentSection].Content.MediaItem.filter(e => e._src !== fileSrc)
         // Remove file from folder
-        window.myAPI.deleteFile(this.nowPlayListFolder, sourceFile)
+        window.myAPI.deleteFile(this.nowPlayListPath, sourceFile)
       }
     },
     CheckDelStateObj(ID) {

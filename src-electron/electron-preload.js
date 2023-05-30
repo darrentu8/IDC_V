@@ -598,13 +598,9 @@ contextBridge.exposeInMainWorld('myAPI', {
     closeWindow()
   },
   deleteFile(nowPlayListPath = '', sourceFile) {
-    const sourceFolder = getSourceFolder()
     if (nowPlayListPath) {
       const targetPath = path.join(nowPlayListPath, sourceFile)
       console.log('targetPath', targetPath)
-      fs.unlinkSync(targetPath)
-    } else {
-      const targetPath = path.join(sourceFolder, sourceFile)
       fs.unlinkSync(targetPath)
     }
   }
@@ -742,18 +738,18 @@ const getDirFolder = () => {
   return appPath
 }
 // 取得USER資料夾並創建PlayList_yyyyMMddhhmmss
-const getSourceFolder = () => {
-  const NovoFolder = getNovoFolder()
-  const strftime = require('strftime')
-  const timestamp = strftime('%Y%m%d%H%M%S', new Date())
-  const newPlayListName = `PlayList_${timestamp}`
-  const SourceFolder = path.join(NovoFolder, newPlayListName)
-  if (!fs.existsSync(SourceFolder)) {
-    fs.mkdirSync(SourceFolder)
-  }
+// const getSourceFolder = () => {
+//   const NovoFolder = getNovoFolder()
+//   const strftime = require('strftime')
+//   const timestamp = strftime('%Y%m%d%H%M%S', new Date())
+//   const newPlayListName = `PlayList_${timestamp}`
+//   const SourceFolder = path.join(NovoFolder, newPlayListName)
+//   if (!fs.existsSync(SourceFolder)) {
+//     fs.mkdirSync(SourceFolder)
+//   }
 
-  return SourceFolder
-}
+//   return SourceFolder
+// }
 // 取得USER資料夾
 const getNovoFolder = () => {
   const osType = require('os').type()
