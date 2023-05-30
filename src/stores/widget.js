@@ -945,20 +945,24 @@ export const useWidgetListStore = defineStore('widgetList', {
         }
       }
     },
-    SetAction(EventIndex, actionData, _conId) {
+    SetAction(EventId, actionData, _conId) {
+      console.log('EventId', EventId)
+      console.log('actionData', actionData)
+      console.log('_conId', _conId)
       const layoutStore = useLayoutStore()
       const eventStore = useEventListStore()
       const actionOptions = eventStore.GetActionTypeOptions
       const currentSection = layoutStore.currentSection
-      const selectOptionDataIndex = actionOptions.findIndex(actionOption => actionOption._uuid === _conId)
-      const actionArr = this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState].Event[EventIndex].Action
-      if (EventIndex === undefined || selectOptionDataIndex === undefined || actionArr === undefined || actionArr.length === 0) {
+      const eventsArray = this.NovoDS.Pages.Page.Section[currentSection].Content.State[this.currentState].Event
+      const eventIndex = eventsArray.findIndex(event => event._id === EventId)
+      if (eventIndex === undefined) {
         return
       }
-
+      const actionArr = eventsArray[eventIndex].Action
       for (let i = 0; i < actionArr.length; i++) {
         if (actionArr[i]._id === actionData._id) {
-          for (const [key, value] of Object.entries(actionOptions[selectOptionDataIndex])) { // iterate over key-value pairs in eventOpionData
+          const selectedActionOption = actionOptions.find(actionOption => actionOption._uuid === _conId)
+          for (const [key, value] of Object.entries(selectedActionOption)) { // iterate over key-value pairs in eventOpionData
             if (!['disable', '_conId', '_uuid', '_isEnabled', '_name', '_id'].includes(key)) { // check if key is not excluded
               actionArr[i][key] = value // update corresponding value in actionArr
             }

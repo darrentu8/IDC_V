@@ -68,7 +68,7 @@
                     <div class="col-12">
                       <!-- Action 選單 -->
                       <q-select @click="setCurentEventID(EventData._id)" :loading="loadingFilter"
-                        @update:model-value="(val) => setAction(EventIndex, actionData, val)"
+                        @update:model-value="(val) => setAction(EventData._id, actionData, val)"
                         @filter="filterActionTypeOptions" emit-value map-options class="theme brand-round-m"
                         options-selected-class="text-black" :disable="EventData._next_state_id === ''" bg-color="white"
                         rounded outlined dense options-dense v-model="actionData._conId"
@@ -164,12 +164,12 @@ const setEvent = (EventData, _conId) => {
   console.log('_conId', _conId)
   widgetStore.SetEvent(EventData, _conId)
 }
-const setAction = (EventIndex, actionData, _conId) => {
-  console.log('EventIndex', EventIndex)
+const setAction = (EventId, actionData, _conId) => {
+  console.log('EventId', EventId)
   console.log('actionData', actionData)
   console.log('_conId', _conId)
   loadingFilter.value = true
-  widgetStore.SetAction(EventIndex, actionData, _conId)
+  widgetStore.SetAction(EventId, actionData, _conId)
   loadingFilter.value = false
 }
 const delAction = (EventId, ActionId) => {

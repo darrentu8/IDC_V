@@ -556,7 +556,7 @@
       </q-tab-panel>
       <!-- Timer -->
       <q-tab-panel :name="3">
-        <div class="row" style="height: 340px;">
+        <div class="row" style="height: 350px;">
           <div class="col q-pa-xs">
             <div class="text-body1 row">
               <div>Software Timer</div>
