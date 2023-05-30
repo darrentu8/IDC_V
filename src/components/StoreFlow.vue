@@ -3,7 +3,7 @@
     <div v-if="widgetListData[currentSection].Content.State">
       <div v-for="(stateData, Index) in calcDiff(widgetListData[currentSection].Content.State)" :key="stateData._uuid"
         class="flowBoxWrap border-w">
-        <div class="row justify-center items-top q-pt-md">
+        <div class="row justify-center items-top q-py-md">
           <!-- Flow Labels -->
           <div class="flex text-center" style="min-height: 139px;">
             <q-chip v-if="Index == 0" class="q-mr-md" text-color="white" color="grey-5"

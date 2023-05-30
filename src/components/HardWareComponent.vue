@@ -178,7 +178,7 @@
                   </div>
                   <div style="width:10px" />
                   <div class="col">
-                    <q-input :disable="!RS232[0]._isEnabled" label="Commend" class="brand-round-m" bg-color="white" dense
+                    <q-input :disable="!RS232[0]._isEnabled" label="Command" class="brand-round-m" bg-color="white" dense
                       outlined v-model="rs0._value" />
                   </div>
                 </div>
@@ -209,7 +209,7 @@
                               Type : {{ rs0._data_type }}
                             </div>
                             <div class="text-body1 text-grey-7">
-                              Commend : {{ rs0._value }}
+                              Command : {{ rs0._value }}
                             </div>
                           </div>
                           <div class="col-2 flex flex-center">
@@ -276,7 +276,7 @@
                   </div>
                   <div style="width:10px" />
                   <div class="col">
-                    <q-input :disable="!RS232[1]._isEnabled" label="Commend" class="brand-round-m" bg-color="white" dense
+                    <q-input :disable="!RS232[1]._isEnabled" label="Command" class="brand-round-m" bg-color="white" dense
                       outlined v-model="rs1._value" />
                   </div>
                 </div>
@@ -307,7 +307,7 @@
                               Type : {{ rs1._data_type }}
                             </div>
                             <div class="text-body1 text-grey-7">
-                              Commend : {{ rs1._value }}
+                              Command : {{ rs1._value }}
                             </div>
                           </div>
                           <div class="col-2 flex flex-center">
@@ -350,7 +350,7 @@
               </div>
               <div class="" style="width:10px"></div>
               <div class="col">
-                <q-input :disable="!TCPIP._isEnabled" label="Commend" class="brand-round-m" bg-color="white" dense
+                <q-input :disable="!TCPIP._isEnabled" label="Command" class="brand-round-m" bg-color="white" dense
                   outlined type="text" v-model="trx._value" />
               </div>
               <div class="" style="width:10px"></div>
@@ -381,7 +381,7 @@
               </div>
               <div class="" style="width:10px"></div>
               <div class="col">
-                <q-input label="Commend" class="brand-round-m" bg-color="white" dense outlined v-model="tx._value" />
+                <q-input label="Command" class="brand-round-m" bg-color="white" dense outlined v-model="tx._value" />
               </div>
               <div class="" style="width:10px"></div>
               <div style="margin: auto">

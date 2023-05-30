@@ -585,6 +585,7 @@ contextBridge.exposeInMainWorld('myAPI', {
     const sourceFolder = getSourceFolder()
     if (nowPlayListPath) {
       const targetPath = path.join(nowPlayListPath, sourceFile)
+      console.log('targetPath', targetPath)
       fs.unlinkSync(targetPath)
     } else {
       const targetPath = path.join(sourceFolder, sourceFile)

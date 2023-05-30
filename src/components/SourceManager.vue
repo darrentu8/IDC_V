@@ -86,7 +86,9 @@ const drag = ref(false)
 const add = async (currentStateIndex) => {
   console.log('currentStateIndex', currentStateIndex)
   const fileData = await window.myAPI.chooseSources(nowPlayListPath)
-
+  if (fileData === null) {
+    return
+  }
   console.log('fileData', fileData)
   const fileDatas = await window.myAPI.getFileData(fileData)
   widgetStore.AddSourceList(currentStateIndex, fileDatas)

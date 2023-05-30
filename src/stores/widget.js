@@ -1131,6 +1131,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       this.NovoDS.Pages.Page._BackgroundImageSize = fileDatas._fileSize
     },
     DelBGSource() {
+      window.myAPI.deleteFile(this.nowPlayListPath, this.NovoDS.Pages.Page._BackgroundMusic)
       this.NovoDS.Pages.Page._BackgroundImage = ''
       this.NovoDS.Pages.Page._BackgroundImageSize = 0
     },
@@ -1141,6 +1142,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       this.NovoDS.Pages.Page._BackgroundMusicSize = fileDatas._fileSize
     },
     DelAudioSource() {
+      window.myAPI.deleteFile(this.nowPlayListPath, this.NovoDS.Pages.Page._BackgroundMusic)
       this.NovoDS.Pages.Page._AudioSource = ''
       this.NovoDS.Pages.Page._BackgroundMusic = ''
       this.NovoDS.Pages.Page._BackgroundMusicSize = 0
