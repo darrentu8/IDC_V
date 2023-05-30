@@ -1,5 +1,5 @@
 <template>
-  <q-dialog ref="dialog" persistent>
+  <q-dialog ref="dialog" persistent @before-show="initSettings">
     <q-card class="bg-white text-black brand-round-l q-pa-lg" style="min-width: 600px;height:700px;">
       <q-bar class="row bg-white text-bold" style="font-size:24px;height:30px">
         Playlist Settings
@@ -32,19 +32,8 @@
               <img src="~assets/icon/edit-o.svg" />
             </q-btn>
             <div class="col-12 q-mx-lg q-mt-sm">
-              <div :disable="BackgroundImageType !== 'BackgroundColor'" class="flex theme-bg-select cursor-pointer"
-                @click="SetBGC(index)">
-                <img class="" src="~assets/icon/bg/bg-01.svg" />
-                <img class="" src="~assets/icon/bg/bg-02.svg" />
-                <img class="" src="~assets/icon/bg/bg-03.svg" />
-                <img class="" src="~assets/icon/bg/bg-04.svg" />
-                <img class="" src="~assets/icon/bg/bg-05.svg" />
-                <img class="" src="~assets/icon/bg/bg-06.svg" />
-                <img class="" src="~assets/icon/bg/bg-07.svg" />
-                <img class="" src="~assets/icon/bg/bg-08.svg" />
-                <img class="" src="~assets/icon/bg/bg-09.svg" />
-                <img class="" src="~assets/icon/bg/bg-10.svg" />
-              </div>
+              <ColorPicker @changeColor="changeBackgroundColor" v-model:selectedColor="background.color.selectedColor"
+                v-model:colors="background.color.options" />
             </div>
           </div>
         </div>
@@ -90,98 +79,193 @@
   </q-dialog>
 </template>
 
-<script>
-import { computed } from 'vue'
+<script setup>
+import { colors } from 'quasar'
+import { ref, reactive, computed } from 'vue'
 import { useWidgetListStore } from 'src/stores/widget'
+import ColorPicker from 'src/components/ColorPicker.vue'
+const sectionOptions = computed(() => widgetStore.GetSectionOptions)
+const BackgroundImageType = ref('')
+const BackgroundMusicType = ref('Widget')
 const widgetStore = useWidgetListStore()
-export default {
-  name: 'PlaylistSettingsDialog',
-  setup() {
-    const sectionOptions = computed(() => widgetStore.GetSectionOptions)
-    return { sectionOptions }
+
+const BackgroundImage = computed(() => widgetStore.NovoDS.Pages.Page._BackgroundImage)
+const BackgroundImageSize = computed(() => widgetStore.NovoDS.Pages.Page._BackgroundImageSize)
+const BackgroundMusic = computed(() => widgetStore.NovoDS.Pages.Page._BackgroundMusic)
+// const dialogRef = ref(null)
+
+// const show = () => {
+//   dialogRef.value.show()
+// }
+
+// const hide = () => {
+//   dialogRef.value.hide()
+// }
+const backgroundType = {
+  Image: 0,
+  Color: 1
+}
+const background = reactive({
+  type: backgroundType.Image,
+  image: {
+    file: null,
+    name: '',
+    size: 0
   },
-  created() {
-  },
-  data() {
-    return {
-      BackgroundImageType: '',
-      BackgroundMusicType: 'Widget'
-    }
-  },
-  computed: {
-    BackgroundImage: {
-      get() {
-        return widgetStore.NovoDS.Pages.Page._BackgroundImage
-      },
-      set(newValue) {
-        widgetStore.NovoDS.Pages.Page._BackgroundImage = newValue
-      }
-    },
-    BackgroundMusic: {
-      get() {
-        return widgetStore.NovoDS.Pages.Page._BackgroundMusic
-      },
-      set(newValue) {
-        widgetStore.NovoDS.Pages.Page._BackgroundMusic = newValue
-      }
-    },
-    BackgroundMusicUrl: {
-      get() {
-        return widgetStore.NovoDS.Pages.Page._BackgroundMusicUrl
-      },
-      set(newValue) {
-        widgetStore.NovoDS.Pages.Page._BackgroundMusicUrl = newValue
-      }
-    },
-    AudioSource: {
-      get() {
-        let val = widgetStore.NovoDS.Pages.Page._AudioSource
-        if (typeof val === 'string' && val !== 'mute' && val !== 'background_music' && val !== 'background_design') {
-          val = parseInt(val)
-          val = this.sectionOptions.find(
-            (o) => o._ID === val
-          )
-        }
-        return val
-      },
-      set(newValue) {
-        widgetStore.NovoDS.Pages.Page._AudioSource = newValue
-      }
-    }
-  },
-  methods: {
-    show() {
-      this.$refs.dialog.show()
-    },
-    hide() {
-      this.$refs.dialog.hide()
-    },
-    async addAudio() {
-      const fileData = await window.myAPI.chooseAudioSource(widgetStore.nowPlayListPath)
-      console.log('fileData', fileData)
-      const fileDatas = await window.myAPI.getSingleFileData(fileData)
-      widgetStore.AddAudioSourceList(fileDatas)
-    },
-    setAudioSource(val) {
-      console.log('val', val)
-      widgetStore.SetAudioSource(val)
-    },
-    clearAudio() {
-      widgetStore.DelAudioSource()
-    },
-    async addBG() {
-      const fileData = await window.myAPI.chooseBGSource(widgetStore.nowPlayListPath)
-      console.log('fileData', fileData)
-      const fileDatas = await window.myAPI.getSingleFileData(fileData)
-      widgetStore.AddBGSourceList(fileDatas)
-    },
-    clearBG() {
-      widgetStore.DelBGSource()
-    },
-    SetBGC(index) {
-      console.log('SetBGC')
-    }
+  color: {
+    selectedColor: '#00000000',
+    options: ['#00000000', '#FFFFFFFF', '#2A303DFF', '#27393FFF', '#185945FF', '#514E4CFF',
+      '#5C636DFF', '#51748EFF', '#C99797FF', '#9E9893FF', '#86AEB7FF'],
+    file: null,
+    name: '',
+    size: 0
   }
+})
+// const audioType = {
+//   Mute: 'mute',
+//   BackgroundMusic: 'background_music',
+//   Widget: 'widget'
+// }
+// const audio = reactive({
+//   type: audioType.Mute,
+//   bgm: {
+//     file: null,
+//     name: '',
+//     size: 0
+//   },
+//   widget: {
+//     selected: '',
+//     options: []
+//   }
+// })
+
+const initSettings = () => {
+  initBackgroundSettings()
+  // initAudioSettings()
+}
+const initBackgroundSettings = () => {
+  if (BackgroundImage.value.startsWith('background_color')) {
+    background.type = backgroundType.Color
+
+    const fileName = `#${BackgroundImage.value.split('_')[2]}`
+    const colorHex = fileName.split('.')[0].toUpperCase()
+    background.color.selectedColor = colorHex
+
+    background.color.name = BackgroundImage
+    background.color.size = BackgroundImageSize
+  } else {
+    background.type = backgroundType.Image
+    console.log('backgroundType.Image', backgroundType.Image)
+    background.image.name = BackgroundImage
+    background.image.size = BackgroundImageSize
+  }
+}
+
+// const initAudioSettings = () => {
+//     if (AudioSource === '') {
+//         audio.type = audioType.BackgroundMusic
+//     } else if (+AudioSource >= 0) { // section index
+//         audio.type = audioType.Widget
+//         audio.widget.selected = +AudioSource
+//     } else {
+//         audio.type = AudioSource
+//     }
+
+//     audio.bgm.name = BackgroundMusic
+//     audio.bgm.size = BackgroundMusicSize
+//     audio.bgm.file = null
+// }
+const getColorFile = colorHex => {
+  const canvas = document.createElement('canvas')
+  canvas.width = 800
+  canvas.height = 600
+  const ctx = canvas.getContext('2d')
+  ctx.fillStyle = colorHex
+  ctx.fillRect(0, 0, 800, 800)
+  const dataurl = canvas.toDataURL()
+
+  const colorString = colorHex.slice(1).toLowerCase()
+  const fileName = `background_color_${colorString}.png`
+
+  const file = dataURLtoFile(dataurl, fileName)
+
+  return file
+}
+
+const dataURLtoFile = (dataUrl, fileName) => {
+  const arr = dataUrl.split(',')
+  const mime = arr[0].match(/:(.*?);/)[1]
+  const bstr = atob(arr[1])
+  let n = bstr.length
+  const u8arr = new Uint8Array(n)
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n)
+  }
+  return new File([u8arr], fileName, { type: mime })
+}
+const isColorTransparent = (colorHex) => {
+  const { hexToRgb } = colors
+  const colorRgb = hexToRgb(colorHex)
+
+  return colorRgb.a === 0
+}
+
+const addBG = async () => {
+  const fileData = await window.myAPI.chooseBGSource(widgetStore.nowPlayListPath)
+  if (fileData === null) {
+    return
+  }
+  console.log('fileData', fileData)
+  const fileDatas = await window.myAPI.getSingleFileData(fileData)
+  widgetStore.AddBGSourceList(fileDatas)
+}
+const changeBackgroundColor = (color) => {
+  if (isColorTransparent(color)) {
+    background.color.file = null
+    background.color.name = 'null'
+    background.color.size = 0
+  } else {
+    const file = getColorFile(color)
+    background.color.file = file
+    background.color.name = file.name
+    background.color.size = file.size
+  }
+}
+const clearBG = () => {
+  widgetStore.DelBGSource()
+}
+
+const AudioSource = computed({
+  get() {
+    let val = widgetStore.NovoDS.Pages.Page._AudioSource
+    if (typeof val === 'string' && val !== 'mute' && val !== 'background_music' && val !== 'background_design') {
+      val = parseInt(val)
+      val = this.sectionOptions.find((o) => o._ID === val)
+    }
+    return val
+  },
+  set(newValue) {
+    widgetStore.NovoDS.Pages.Page._AudioSource = newValue
+  }
+})
+
+const addAudio = async () => {
+  const fileData = await window.myAPI.chooseAudioSource(widgetStore.nowPlayListPath)
+  if (fileData === null) {
+    return
+  }
+  console.log('fileData', fileData)
+  const fileDatas = await window.myAPI.getSingleFileData(fileData)
+  widgetStore.AddAudioSourceList(fileDatas)
+}
+
+const setAudioSource = (val) => {
+  console.log('val', val)
+  widgetStore.SetAudioSource(val)
+}
+
+const clearAudio = () => {
+  widgetStore.DelAudioSource()
 }
 </script>
 <style lang="scss"></style>
