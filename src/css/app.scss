@@ -1,4 +1,27 @@
 // app global css in SCSS form
+.q-menu.pop-edit {
+  min-width: 300px !important;
+  min-height: 80px !important;
+  width: 300px !important;
+  height: 80px !important;
+}
+.theme-chip {
+  max-width: 100px;
+  height: fit-content;
+  word-break: break-all !important;
+  word-wrap: break-word !important;
+  text-overflow:ellipsis;
+  white-space: break-spaces;
+  line-clamp: 2;
+  .q-chip__content{
+    word-break: break-all !important;
+    word-wrap: break-word !important;
+    text-overflow:ellipsis;
+    white-space: break-spaces;
+    line-clamp: 2;
+  }
+}
+
 .fileNameBox.ellipsis {
   max-width: 345px;
   overflow: hidden;

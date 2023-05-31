@@ -102,20 +102,7 @@ export const useWidgetListStore = defineStore('widgetList', {
           ReceivedCommands: {
             Command: []
           },
-          TcpIp: [
-            {
-              _id: 1,
-              _destination_ip: '10.136.7.7',
-              _destination_port: 1234,
-              Command: []
-            },
-            {
-              _id: 2,
-              _destination_ip: '10.136.7.7',
-              _destination_port: 5678,
-              Command: []
-            }
-          ]
+          TcpIp: []
         },
         TimerSettings: {
           Timer: [
@@ -187,6 +174,7 @@ export const useWidgetListStore = defineStore('widgetList', {
                   {
                     _id: uid(),
                     _name: '',
+                    _flowName: '',
                     File: [],
                     Event: []
                   }
@@ -358,20 +346,7 @@ export const useWidgetListStore = defineStore('widgetList', {
           ReceivedCommands: {
             Command: []
           },
-          TcpIp: [
-            {
-              _id: 1,
-              _destination_ip: '10.136.7.7',
-              _destination_port: 1234,
-              Command: []
-            },
-            {
-              _id: 2,
-              _destination_ip: '10.136.7.7',
-              _destination_port: 5678,
-              Command: []
-            }
-          ]
+          TcpIp: []
         },
         TimerSettings: {
           Timer: [
@@ -443,6 +418,7 @@ export const useWidgetListStore = defineStore('widgetList', {
                   {
                     _id: uid(),
                     _name: '',
+                    _flowName: '',
                     File: [],
                     Event: []
                   }
@@ -771,6 +747,11 @@ export const useWidgetListStore = defineStore('widgetList', {
       // console.log('ContentType', ContentType)
       this.NovoDS.Pages.Page.Section[Index]._ContentType = ContentType
     },
+    SetStateFlowName(stateIndex, val) {
+      const layoutStore = useLayoutStore()
+      const currentSection = layoutStore.currentSection
+      this.NovoDS.Pages.Page.Section[currentSection].Content.State[stateIndex]._flowName = val
+    },
     SetCurrentState(Index) {
       this.currentState = Index
     },
@@ -880,7 +861,8 @@ export const useWidgetListStore = defineStore('widgetList', {
       const newState = {
         _id: maxId + 1,
         _uuid: uid(),
-        _name: 'State' + ' ' + (maxId + 1)
+        _name: 'State' + ' ' + (maxId + 1),
+        _flowName: 'Flow' + ' ' + (maxId + 1)
       }
 
       stateArray.push(newState)

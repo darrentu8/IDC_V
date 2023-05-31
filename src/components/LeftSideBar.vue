@@ -17,8 +17,8 @@
         </template>
       </q-input>
       <div>
-        <q-input v-on:focus="dfocus = true" v-on:blur="dfocus = false" label="Playlist Description" type="textarea"
-          rows="2" class="border-d" borderless v-model="NovoDS._Description">
+        <q-input v-on:focus="dfocus = true" v-on:blur="dfocus = false" label="Description" type="textarea" rows="2"
+          class="border-d" borderless v-model="NovoDS._Description">
           <template v-slot:append>
             <img v-if="!dfocus && !NovoDS._Description" src="~assets/icon/pencil.svg" />
           </template>

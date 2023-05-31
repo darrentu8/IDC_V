@@ -18,7 +18,7 @@
                 <div class="text-h5 text-bold">New playlist</div>
               </div>
               <div class="col q-mt-sm">
-                <div class="text-body1">Play List Name</div>
+                <div class="text-body1">Playlist Name</div>
                 <q-input v-on:focus="focus = true" v-on:blur="focus = false" v-model="PlaylistName"
                   placeholder="Enter playlist name" class="brand-round-s input-border" bg-color="grey-2" dense outlined>
                   <template v-slot:append>
@@ -33,7 +33,7 @@
                 </q-input>
               </div>
               <div class="col q-mt-sm">
-                <div class="text-body1">Playlist Description (Optional)</div>
+                <div class="text-body1">Description (Optional)</div>
                 <q-input v-model="_Description" type="textarea" placeholder="Enter playlist description"
                   class="brand-round-s input-border" bg-color="grey-2" dense outlined>
                 </q-input>

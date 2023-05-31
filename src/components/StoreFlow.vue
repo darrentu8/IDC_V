@@ -6,11 +6,18 @@
         <div class="row justify-center items-top q-py-md">
           <!-- Flow Labels -->
           <div class="flex text-center" style="min-height: 139px;">
-            <q-chip v-if="Index == 0" class="q-mr-md" text-color="white" color="grey-5"
-              style="margin-top:35px;margin-left: -20px;">Default</q-chip>
-            <q-chip v-else class="q-mr-md" text-color="white" color="grey-5"
-              style="margin-top:35px;margin-left: -20px;">Flow {{ Index
-              }}</q-chip>
+            <q-chip class="q-mr-md theme-chip" text-color="white" color="grey-5" style="margin-left: -20px;">{{
+              stateData._flowName }}</q-chip>
+            <q-popup-edit ref="popFlowEdit" v-model="stateData._flowName" v-slot="scope"
+              class="theme-border q-pt-none pop-edit">
+              <q-input class="" rows="2" type="textarea" v-model="scope.value" autofocus>
+                <template v-slot:after>
+                  <q-btn class="q-mt-md" flat dense color="primary" icon="check_circle"
+                    @click.stop.prevent="setVal(Index, scope.value)"
+                    :disable="scope.validate(scope.value) === false || scope.initialValue === scope.value" />
+                </template>
+              </q-input>
+            </q-popup-edit>
             <q-card bordered class="flowBox">
               <img src="~assets/icon/mark.svg" class="q-mt-xs flag" />
               <q-card-section v-if="stateData._name !== ''" class="q-pa-xs">
@@ -117,7 +124,7 @@ import DelDialog from './dialog/DelDialog.vue'
 import useQuasar from 'quasar/src/composables/use-quasar.js'
 const $q = useQuasar()
 
-const popEdit = ref(true)
+const popEdit = ref(null)
 // const sectionData = ref([
 //   { x: 0, y: 0, w: 1, h: 2, i: '1' }, { x: 1, y: 0, w: 1, h: 1, i: '2' }, { x: 1, y: 1, w: 1, h: 1, i: '3' }
 // ])
@@ -125,14 +132,12 @@ const layoutStore = useLayoutStore()
 const widgetStore = useWidgetListStore()
 const eventStore = useEventListStore()
 const currentSection = computed(() => layoutStore.GetCurrentSection)
-// const currentState = computed(() => widgetStore.GetCurrentState)
 const currentStateLength = computed(() => widgetStore.GetCurrentStateLength)
 const currentStateOptions = computed(() => widgetStore.GetCurrentStateOptions)
 const currentEvent = computed(() => eventStore.GetCurrentEvent)
 const widgetListData = computed(() => widgetStore.GetWidgetListData)
-// const setCurrentState = (Index) => {
-//   widgetStore.SetCurrentState(Index)
-// }
+
+const popFlowEdit = ref(false)
 const setFlowState = (Index, EventIndex = 0, selectStateData) => {
   widgetStore.SetFlowState(Index, EventIndex, selectStateData)
   popEdit.value = false
@@ -162,6 +167,11 @@ const delState = (UUID, _id) => {
   }).onDismiss(() => {
     console.log('Called on OK or Cancel')
   })
+}
+const setVal = (stateIndex, val) => {
+  console.log('val', val)
+  widgetStore.SetStateFlowName(stateIndex, val)
+  console.log('popFlowEdit.value', popFlowEdit.value)
 }
 const delAllStateEvent = (next_state_id, Index, EventIndex) => {
   $q.dialog({
