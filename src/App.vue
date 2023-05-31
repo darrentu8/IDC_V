@@ -118,7 +118,7 @@ export default defineComponent({
 })
 </script>
 <style>
-#q-app {
+body {
   overflow: hidden;
 }
 </style>

@@ -815,14 +815,6 @@ export const useWidgetListStore = defineStore('widgetList', {
                 } else if (!event.Action) {
                   event.Action = []
                 }
-
-                event.Action.forEach(action => {
-                  if (action.Data && !Array.isArray(action.Data)) {
-                    action.Data = [action.Data]
-                  } else if (!action.Data) {
-                    action.Data = []
-                  }
-                })
               })
             } else {
               state.Event = []
