@@ -81,15 +81,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _parity: 'None',
               _interface: 'on_board',
               _isEnabled: false,
-              Command: [
-                {
-                  _id: 0,
-                  _uuid: uid(),
-                  _name: 'Default',
-                  _data_type: 'hex',
-                  _value: '1A 3B 4D'
-                }
-              ]
+              Command: []
             },
             {
               _id: 2,
@@ -100,15 +92,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _parity: 'None',
               _interface: 'usb',
               _isEnabled: false,
-              Command: [
-                {
-                  _id: 0,
-                  _uuid: uid(),
-                  _name: 'Default',
-                  _data_type: 'string',
-                  _value: 'ccaaa'
-                }
-              ]
+              Command: []
             }
           ]
         },
@@ -116,59 +100,20 @@ export const useWidgetListStore = defineStore('widgetList', {
           _local_port: 3000,
           _isEnabled: false,
           ReceivedCommands: {
-            Command: [
-              {
-                _id: 11,
-                _uuid: uid(),
-                _name: 'play video',
-                _value: 'play video'
-              },
-              {
-                _id: 12,
-                _uuid: uid(),
-                _name: 'play image',
-                _value: 'play image'
-              }
-            ]
+            Command: []
           },
           TcpIp: [
             {
               _id: 1,
               _destination_ip: '10.136.7.7',
               _destination_port: 1234,
-              Command: [
-                {
-                  _id: 21,
-                  _uuid: uid(),
-                  _name: 'door open',
-                  _value: 'door open'
-                },
-                {
-                  _id: 22,
-                  _uuid: uid(),
-                  _name: 'door close',
-                  _value: 'door close'
-                }
-              ]
+              Command: []
             },
             {
               _id: 2,
               _destination_ip: '10.136.7.7',
               _destination_port: 5678,
-              Command: [
-                {
-                  _id: 23,
-                  _uuid: uid(),
-                  _name: 'Add 1',
-                  _value: '+1'
-                },
-                {
-                  _id: 24,
-                  _uuid: uid(),
-                  _name: 'Add 2',
-                  _value: '+2'
-                }
-              ]
+              Command: []
             }
           ]
         },
@@ -392,15 +337,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _parity: 'None',
               _interface: 'on_board',
               _isEnabled: false,
-              Command: [
-                {
-                  _id: 0,
-                  _uuid: uid(),
-                  _name: 'Default',
-                  _data_type: 'hex',
-                  _value: '1A 3B 4D'
-                }
-              ]
+              Command: []
             },
             {
               _id: 2,
@@ -411,15 +348,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _parity: 'None',
               _interface: 'usb',
               _isEnabled: false,
-              Command: [
-                {
-                  _id: 0,
-                  _uuid: uid(),
-                  _name: 'Default',
-                  _data_type: 'string',
-                  _value: 'ccaaa'
-                }
-              ]
+              Command: []
             }
           ]
         },
@@ -427,59 +356,20 @@ export const useWidgetListStore = defineStore('widgetList', {
           _local_port: 3000,
           _isEnabled: false,
           ReceivedCommands: {
-            Command: [
-              {
-                _id: 11,
-                _uuid: uid(),
-                _name: 'play video',
-                _value: 'play video'
-              },
-              {
-                _id: 12,
-                _uuid: uid(),
-                _name: 'play image',
-                _value: 'play image'
-              }
-            ]
+            Command: []
           },
           TcpIp: [
             {
               _id: 1,
               _destination_ip: '10.136.7.7',
               _destination_port: 1234,
-              Command: [
-                {
-                  _id: 21,
-                  _uuid: uid(),
-                  _name: 'door open',
-                  _value: 'door open'
-                },
-                {
-                  _id: 22,
-                  _uuid: uid(),
-                  _name: 'door close',
-                  _value: 'door close'
-                }
-              ]
+              Command: []
             },
             {
               _id: 2,
               _destination_ip: '10.136.7.7',
               _destination_port: 5678,
-              Command: [
-                {
-                  _id: 23,
-                  _uuid: uid(),
-                  _name: 'Add 1',
-                  _value: '+1'
-                },
-                {
-                  _id: 24,
-                  _uuid: uid(),
-                  _name: 'Add 2',
-                  _value: '+2'
-                }
-              ]
+              Command: []
             }
           ]
         },
