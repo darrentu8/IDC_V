@@ -747,6 +747,29 @@ export const useWidgetListStore = defineStore('widgetList', {
       // console.log('ContentType', ContentType)
       this.NovoDS.Pages.Page.Section[Index]._ContentType = ContentType
     },
+    SetStateMoved(evt) {
+      return new Promise((resolve, reject) => {
+        try {
+          const layoutStore = useLayoutStore()
+          const currentSection = layoutStore.currentSection
+          const uuid = evt.moved.element._uuid
+
+          const index = this.NovoDS.Pages.Page.Section[currentSection].Content.State.findIndex(
+            item => item._uuid === uuid
+          )
+
+          if (index !== -1) {
+            const [removed] = this.NovoDS.Pages.Page.Section[currentSection].Content.State.splice(index, 1)
+            this.NovoDS.Pages.Page.Section[currentSection].Content.State.splice(evt.moved.newIndex, 0, removed)
+            resolve(true) // 如果成功移动元素，则返回true
+          } else {
+            reject(new Error()) // 如果找不到需要移动的元素，则返回错误信息
+          }
+        } catch (error) {
+          reject(error) // 如果发生任何错误，则返回错误信息
+        }
+      }).catch(error => console.error(error))
+    },
     SetStateFlowName(stateIndex, val) {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
@@ -862,7 +885,7 @@ export const useWidgetListStore = defineStore('widgetList', {
         _id: maxId + 1,
         _uuid: uid(),
         _name: 'State' + ' ' + (maxId + 1),
-        _flowName: 'Flow' + ' ' + (maxId + 1)
+        _flowName: ''
       }
 
       stateArray.push(newState)

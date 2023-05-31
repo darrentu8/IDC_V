@@ -1,11 +1,12 @@
 // app global css in SCSS form
 .q-menu.pop-edit {
   min-width: 300px !important;
-  min-height: 80px !important;
+  min-height: 100px !important;
   width: 300px !important;
-  height: 80px !important;
+  height: 100px !important;
 }
 .theme-chip {
+  margin: 0 16px 0 0;
   max-width: 100px;
   height: fit-content;
   word-break: break-all !important;
