@@ -747,6 +747,44 @@ export const useWidgetListStore = defineStore('widgetList', {
       // console.log('ContentType', ContentType)
       this.NovoDS.Pages.Page.Section[Index]._ContentType = ContentType
     },
+    SetStateFirstIndex() {
+      if (this.NovoDS?.Pages?.Page?.Section) {
+        for (const section of this.NovoDS.Pages.Page.Section) {
+          const states = section.Content?.State || []
+          if (states.length && states.some(state => state._id === 0)) {
+            for (const state of states) {
+              state._id++
+              const events = state.Event || []
+              for (const event of events) {
+                event._next_state_id++
+              }
+            }
+            const originalStateId = states[0]._id
+            states[0]._id = 0
+            for (const state of states) {
+              const events = state.Event || []
+              for (const event of events) {
+                if (event._next_state_id === originalStateId) {
+                  event._next_state_id = 0
+                }
+              }
+            }
+          } else if (states.length) {
+            const originalStateId = states[0]._id
+            states[0]._id = 0
+            for (const state of states) {
+              const events = state.Event || []
+              for (const event of events) {
+                if (event._next_state_id === originalStateId) {
+                  event._next_state_id = 0
+                }
+              }
+            }
+          }
+        }
+      }
+      this.ResetWidgetListData()
+    },
     SetStateMoved(evt) {
       return new Promise((resolve, reject) => {
         try {
@@ -835,9 +873,9 @@ export const useWidgetListStore = defineStore('widgetList', {
       }
     },
     SetAction(EventId, actionData, _conId) {
-      console.log('EventId', EventId)
-      console.log('actionData', actionData)
-      console.log('_conId', _conId)
+      // console.log('EventId', EventId)
+      // console.log('actionData', actionData)
+      // console.log('_conId', _conId)
       const layoutStore = useLayoutStore()
       const eventStore = useEventListStore()
       const actionOptions = eventStore.GetActionTypeOptions

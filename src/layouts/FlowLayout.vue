@@ -127,57 +127,78 @@ function saveAlert() {
   }).onDismiss(() => {
   })
 }
-function preview() {
-  const x2js = new X2js({ attributePrefix: '_' })
-  const novoObj = { NovoDS: widgetStore.NovoDS }
-  const xmlData = x2js.js2xml(novoObj)
-  const result = window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
-  if (result) {
-    window.myAPI?.writeJson(widgetStore.NovoDS._Playlist_Name).then(() => {
-      $q.dialog({
-        title: 'Preview' + ' ' + widgetStore.NovoDS._Playlist_Name + ' ' + 'now !'
-      }).onOk(() => {
-      }).onCancel(() => {
-      }).onDismiss(() => {
-      })
-    })
+async function preview() {
+  try {
+    const setIndexResult = await widgetStore.SetStateFirstIndex()
+    if (setIndexResult) {
+      const x2js = new X2js({ attributePrefix: '_' })
+      const novoObj = { NovoDS: widgetStore.NovoDS }
+      const xmlData = x2js.js2xml(novoObj)
+      const result = window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
+      if (result) {
+        window.myAPI?.writeJson(widgetStore.NovoDS._Playlist_Name).then(() => {
+          $q.dialog({
+            title: 'Preview' + ' ' + widgetStore.NovoDS._Playlist_Name + ' ' + 'now !'
+          }).onOk(() => {
+          }).onCancel(() => {
+          }).onDismiss(() => {
+          })
+        })
+      }
+    }
+  } catch (error) {
+    console.error(error)
   }
 }
-function leaveSaveFileClose() {
-  const x2js = new X2js({ attributePrefix: '_' })
-  const novoObj = { NovoDS: widgetStore.NovoDS }
-  const xmlData = x2js.js2xml(novoObj)
-  const result = window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
-  if (result) {
-    $q.dialog({
-      title: 'Saved successfully!'
-    }).onDismiss(() => {
-      window.myAPI?.closeWatchJson()
-      window.myAPI.delTempFolderWithClose(widgetStore.nowPlayListPath)
-    })
+async function leaveSaveFileClose() {
+  try {
+    const setIndexResult = await widgetStore.SetStateFirstIndex()
+    if (setIndexResult) {
+      const x2js = new X2js({ attributePrefix: '_' })
+      const novoObj = { NovoDS: widgetStore.NovoDS }
+      const xmlData = x2js.js2xml(novoObj)
+      const result = window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
+      if (result) {
+        $q.dialog({
+          title: 'Saved successfully!'
+        }).onDismiss(() => {
+          window.myAPI?.closeWatchJson()
+          window.myAPI.delTempFolderWithClose(widgetStore.nowPlayListPath)
+        })
+      }
+    }
+  } catch (error) {
+    console.error(error)
   }
 }
 async function exportFile() {
-  const x2js = new X2js({ attributePrefix: '_' })
-  const novoObj = { NovoDS: widgetStore.NovoDS }
-  const xmlData = x2js.js2xml(novoObj)
   try {
-    const result = await window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
-    if (result) {
-      window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
-      $q.dialog({
-        component: ConfirmDialog,
-        componentProps: {
-          title: 'Saved successfully!',
-          message: 'The playlist has been successfully saved, do you want to view the folder?',
-          okBtn: 'Open',
-          cancelBtn: 'cancel'
+    const setIndexResult = await widgetStore.SetStateFirstIndex()
+    if (setIndexResult) {
+      const x2js = new X2js({ attributePrefix: '_' })
+      const novoObj = { NovoDS: widgetStore.NovoDS }
+      const xmlData = x2js.js2xml(novoObj)
+      try {
+        const result = await window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
+        if (result) {
+          window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
+          $q.dialog({
+            component: ConfirmDialog,
+            componentProps: {
+              title: 'Saved successfully!',
+              message: 'The playlist has been successfully saved, do you want to view the folder?',
+              okBtn: 'Open',
+              cancelBtn: 'cancel'
+            }
+          }).onOk(() => {
+            console.log('xmlData', xmlData)
+            window.myAPI.openSaveFolder(result.targetFile)
+          })
+          widgetStore.ResetNewPlaylistName(widgetStore.NovoDS._Playlist_Name, result.targetFile)
         }
-      }).onOk(() => {
-        console.log('xmlData', xmlData)
-        window.myAPI.openSaveFolder(result.targetFile)
-      })
-      widgetStore.ResetNewPlaylistName(widgetStore.NovoDS._Playlist_Name, result.targetFile)
+      } catch (error) {
+        console.error(error)
+      }
     }
   } catch (error) {
     console.error(error)
