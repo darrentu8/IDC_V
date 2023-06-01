@@ -8,18 +8,25 @@
 .theme-chip {
   margin: 0 16px 0 0;
   max-width: 100px;
+  text-align: center;
   height: fit-content;
-  word-break: break-all !important;
-  word-wrap: break-word !important;
-  text-overflow:ellipsis;
-  white-space: break-spaces;
   line-clamp: 2;
   .q-chip__content{
-    word-break: break-all !important;
+    word-break: break-word !important;
     word-wrap: break-word !important;
     text-overflow:ellipsis;
     white-space: break-spaces;
     line-clamp: 2;
+  }
+  .q-badge {
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: 1px solid #E18D24 !important;
+    background-color: transparent;
+    border-radius: 6px;
+    margin-top: -22px;
+    margin-left: -20px;
   }
 }
 

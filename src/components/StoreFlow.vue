@@ -14,8 +14,11 @@
                 </div>
                 <div class="flex justify-end items-center" style="width:220px; height: 100px;">
                   <div>
-                    <q-chip v-if="index === 0" class="q-mr-md theme-chip" text-color="white"
+                    <q-chip v-if="index === 0 && !element._flowName" class="q-mr-md theme-chip" text-color="white"
                       color="grey-5">Default</q-chip>
+                    <q-chip v-else-if="index === 0 && element._flowName" class="q-mr-md theme-chip" text-color="white"
+                      color="grey-5">
+                      <q-badge color="" text-color="primary">Default</q-badge>{{ element._flowName }}</q-chip>
                     <q-chip v-else-if="element._flowName" class="q-mr-md theme-chip" text-color="white" color="grey-5">{{
                       element._flowName }}</q-chip>
                     <q-chip v-else class="q-mr-md theme-chip" text-color="white" color="grey-5">Flow {{
