@@ -1,4 +1,13 @@
 // app global css in SCSS form
+.ver {
+  color: #E18D24;
+  font-size: 12px;
+  border: 1px solid #E18D24 !important;
+  border-radius: 6px;
+  padding: 0px 7px;
+  margin-top: 5px;
+  margin-left: 10px;
+}
 .q-menu.pop-edit {
   min-width: 300px !important;
   min-height: 100px !important;

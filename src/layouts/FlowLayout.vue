@@ -9,6 +9,7 @@
       </q-bar>
       <q-toolbar class="q-px-lg q-py-md" style="background-color: #fff;">
         <img class="cursor-pointer" :src="logo" style="height:30px" @click="$router.push({ path: '/new' })" />
+        <span class="ver">{{ appVersion }}</span>
         <q-space />
         <q-btn class="" unelevated rounded color="" text-color="grey-9" size="md" @click="showPageSettings()">
           <img class="q-mr-xs" src="~assets/icon/settings.svg" color="" size="xs" />
@@ -50,6 +51,8 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useWidgetListStore } from 'src/stores/widget'
+import { version } from '../../package.json'
+
 const widgetStore = useWidgetListStore()
 // import { useRouter } from 'vue-router'
 import X2js from 'x2js'
@@ -62,6 +65,7 @@ import logoSVG from '../assets/logo.svg'
 import useQuasar from 'quasar/src/composables/use-quasar.js'
 const $q = useQuasar()
 
+const appVersion = ref(version)
 const logo = ref(logoSVG)
 // const router = useRouter()
 const leftDrawerOpen = ref(false)

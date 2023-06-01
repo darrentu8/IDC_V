@@ -13,7 +13,10 @@
             <q-radio v-model="background.type" label="Background Image" class="q-mb-sx" :val="0" />
             <q-input @click="addBG" ref="BackgroundUpload" label="Upload background file"
               class="brand-round-m q-mx-lg q-mb-md" v-model="background.image.name" dense outlined>
-              <template v-if="background.image.name" v-slot:append>
+              <template v-if="!background.image.name" v-slot:append>
+                <img src="~assets/icon/folder-add.svg" />
+              </template>
+              <template v-else v-slot:append>
                 <q-icon name="cancel" @click.stop.prevent="clearBG" class="cursor-pointer" />
               </template>
             </q-input>
@@ -27,7 +30,7 @@
           </div>
         </div>
       </q-card-section>
-      <q-separator class="q-mb-sx q-mt-md" />
+      <q-separator class="q-mb-md q-mt-md" />
       <q-card-section>
         <div class="row ">
           <div class="col-12 q-mb-md">
@@ -40,7 +43,10 @@
             <q-radio v-model="audio.type" :val="audioType.BackgroundMusic" label="Background music" class="" color="" />
             <q-input label="Upload audio file" placeholder="File name" @click="addAudio()"
               class="brand-round-m q-mx-lg q-mb-md" v-model="audio.bgm.name" dense outlined>
-              <template v-if="audio.bgm.name" v-slot:append>
+              <template v-if="!audio.bgm.name" v-slot:append>
+                <img src="~assets/icon/folder-add.svg" />
+              </template>
+              <template v-else v-slot:append>
                 <q-icon name="cancel" @click.stop.prevent="clearAudio" class="cursor-pointer" />
               </template>
             </q-input>
