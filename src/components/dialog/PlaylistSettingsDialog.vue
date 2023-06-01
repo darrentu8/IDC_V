@@ -11,9 +11,9 @@
         <div class="row q-mt-md">
           <div class="col-12">
             <q-radio v-model="background.type" label="Background Image" class="q-mb-sx" :val="0" />
-            <q-input :disable="background.type !== 0" @click="addBG" ref="BackgroundUpload" label="Upload background file"
-              class="brand-round-m q-mx-lg q-mb-md" v-model="BackgroundImage" dense outlined>
-              <template v-if="BackgroundImage" v-slot:append>
+            <q-input @click="addBG" ref="BackgroundUpload" label="Upload background file"
+              class="brand-round-m q-mx-lg q-mb-md" v-model="background.image.name" dense outlined>
+              <template v-if="background.image.name" v-slot:append>
                 <q-icon name="cancel" @click.stop.prevent="clearBG" class="cursor-pointer" />
               </template>
             </q-input>
@@ -21,8 +21,8 @@
           <div class="col-12">
             <q-radio v-model="background.type" label="Background Color" class="q-mb-sx" :val="1" />
             <div class="col-12 q-mx-lg q-mt-sm">
-              <ColorPicker v-if="background.type === 1" @changeColor="changeBackgroundColor"
-                v-model:selectedColor="background.color.selectedColor" v-model:colors="background.color.options" />
+              <ColorPicker @changeColor="changeBackgroundColor" v-model:selectedColor="background.color.selectedColor"
+                v-model:colors="background.color.options" />
             </div>
           </div>
         </div>
@@ -38,9 +38,9 @@
           </div>
           <div class="col-12">
             <q-radio v-model="audio.type" :val="audioType.BackgroundMusic" label="Background music" class="" color="" />
-            <q-input :disable="audio.type !== audioType.BackgroundMusic" label="Upload audio file" placeholder="File name"
-              @click="addAudio()" class="brand-round-m q-mx-lg q-mb-md" v-model="BackgroundMusic" dense outlined>
-              <template v-if="BackgroundMusic" v-slot:append>
+            <q-input label="Upload audio file" placeholder="File name" @click="addAudio()"
+              class="brand-round-m q-mx-lg q-mb-md" v-model="audio.bgm.name" dense outlined>
+              <template v-if="audio.bgm.name" v-slot:append>
                 <q-icon name="cancel" @click.stop.prevent="clearAudio" class="cursor-pointer" />
               </template>
             </q-input>
@@ -63,7 +63,7 @@
 </template>
 
 <script setup>
-import { toRef, reactive, computed } from 'vue'
+import { reactive } from 'vue'
 import { useWidgetListStore } from 'src/stores/widget'
 import { getColorFile, isColorTransparent } from 'src/js/helper'
 import ColorPicker from 'src/components/ColorPicker.vue'
@@ -75,12 +75,6 @@ const hideDialog = () => {
   emit('update:isShow', false)
 }
 const widgetStore = useWidgetListStore()
-
-const BackgroundImage = computed(() => widgetStore.NovoDS.Pages.Page._BackgroundImage)
-const BackgroundImageSize = computed(() => widgetStore.NovoDS.Pages.Page._BackgroundImageSize)
-const BackgroundMusic = computed(() => widgetStore.NovoDS.Pages.Page._BackgroundMusic)
-const AudioSource = computed(() => widgetStore.NovoDS.Pages.Page._AudioSource)
-const BackgroundMusicSize = computed(() => widgetStore.NovoDS.Pages.Page._BackgroundMusicSize)
 
 const backgroundType = {
   Image: 0,
@@ -124,35 +118,35 @@ const initSettings = () => {
   initAudioSettings()
 }
 const initBackgroundSettings = () => {
-  if (BackgroundImage.value.startsWith('background_color')) {
+  if (widgetStore.NovoDS.Pages.Page._BackgroundImage.startsWith('background_color')) {
     background.type = backgroundType.Color
 
-    const fileName = `#${BackgroundImage.value.split('_')[2]}`
+    const fileName = `#${widgetStore.NovoDS.Pages.Page._BackgroundImage.split('_')[2]}`
     const colorHex = fileName.split('.')[0].toUpperCase()
     background.color.selectedColor = colorHex
 
-    background.color.name = BackgroundImage
-    background.color.size = BackgroundImageSize
+    background.color.name = widgetStore.NovoDS.Pages.Page._BackgroundImage
+    background.color.size = widgetStore.NovoDS.Pages.Page._BackgroundImageSize
   } else {
     background.type = backgroundType.Image
     console.log('backgroundType.Image', backgroundType.Image)
-    background.image.name = BackgroundImage
-    background.image.size = BackgroundImageSize
+    background.image.name = widgetStore.NovoDS.Pages.Page._BackgroundImage
+    background.image.size = widgetStore.NovoDS.Pages.Page._BackgroundImageSize
   }
 }
 
 const initAudioSettings = () => {
-  if (AudioSource.value === '') {
+  if (widgetStore.NovoDS.Pages.Page._AudioSource === '') {
     audio.type = audioType.BackgroundMusic
-  } else if (+AudioSource.value >= 0) { // section index
+  } else if (+widgetStore.NovoDS.Pages.Page._AudioSource >= 0) { // section index
     audio.type = audioType.Widget
-    audio.widget.selected = +AudioSource.value
+    audio.widget.selected = +widgetStore.NovoDS.Pages.Page._AudioSource
   } else {
-    audio.type = AudioSource.value
+    audio.type = widgetStore.NovoDS.Pages.Page._AudioSource
   }
 
-  audio.bgm.name = BackgroundMusic
-  audio.bgm.size = BackgroundMusicSize.value
+  audio.bgm.name = widgetStore.NovoDS.Pages.Page._BackgroundMusic
+  audio.bgm.size = widgetStore.NovoDS.Pages.Page._BackgroundMusicSize
   audio.bgm.file = null
 
   audio.widget.options = []
@@ -166,7 +160,7 @@ const initAudioSettings = () => {
   })
 
   if (audio.type === audioType.widget) {
-    audio.widget.selected = +AudioSource.value
+    audio.widget.selected = +widgetStore.NovoDS.Pages.Page._AudioSource
   } else {
     if (audio.widget.options.length > 0) {
       audio.widget.selected = audio.widget.options[0].value
@@ -184,9 +178,9 @@ const addBG = async () => {
   console.log('fileData', fileData)
   const fileDatas = await window.myAPI.getSingleFileData(fileData)
   if (fileDatas) {
-    background.image.file = toRef(fileDatas._src)
-    background.image.name = toRef(fileDatas._src)
-    background.image.size = toRef(fileDatas._fileSize)
+    background.image.file = fileDatas._src
+    background.image.name = fileDatas._src
+    background.image.size = fileDatas._fileSize
     widgetStore.AddBGSourceList(fileDatas)
   }
 }
@@ -216,9 +210,9 @@ const changeBackgroundColor = async (color) => {
 }
 
 const clearBG = () => {
-  background.image.file = toRef(null)
-  background.image.name = toRef('')
-  background.image.size = toRef(0)
+  background.image.file = null
+  background.image.name = ''
+  background.image.size = 0
   widgetStore.DelBGSource()
 }
 const addAudio = async () => {
@@ -231,9 +225,10 @@ const addAudio = async () => {
     const fileDatas = await window.myAPI.getSingleFileData(fileData)
     if (fileDatas) {
       console.log('fileDatas', fileDatas)
-      audio.bgm.file = toRef(fileDatas._src)
-      audio.bgm.name = toRef(fileDatas._src)
-      audio.bgm.size = toRef(fileDatas._fileSize)
+      audio.bgm.file = fileDatas._src
+      audio.bgm.name = fileDatas._src
+      audio.bgm.size = fileDatas._fileSize
+      console.log('audio.bgm', audio.bgm)
       widgetStore.AddAudioSourceList(fileDatas)
     }
   } catch (error) {
@@ -247,13 +242,17 @@ const addAudio = async () => {
 // }
 
 const clearAudio = () => {
-  audio.bgm.file = toRef(null)
-  audio.bgm.name = toRef('')
-  audio.bgm.size = toRef(0)
+  // audio.bgm.file = null
+  // audio.bgm.name = ''
+  // audio.bgm.size = 0
   widgetStore.DelAudioSource()
 }
 
 const save = () => {
+  console.log('backgroundType', backgroundType)
+  console.log('background', background)
+  console.log('audioType', audioType)
+  console.log('audio', audio)
   if (background.type === backgroundType.Image) {
     widgetStore.NovoDS.Pages.Page._BackgroundImage = background.image.name
     widgetStore.NovoDS.Pages.Page._BackgroundImageSize = background.image.size

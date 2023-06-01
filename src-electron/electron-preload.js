@@ -416,8 +416,14 @@ contextBridge.exposeInMainWorld('myAPI', {
     const targetPath = path.join(targetFolder, fileName)
     const relativePath = path.relative(targetFolder, targetPath)
 
+    // 如果存在同名文件，删除它
     if (isDuplicateFile(targetFolder, targetPath)) {
-      return null
+      try {
+        fs.unlinkSync(targetPath)
+      } catch (err) {
+        console.error(err)
+        return null
+      }
     }
 
     try {
@@ -448,8 +454,14 @@ contextBridge.exposeInMainWorld('myAPI', {
     const targetPath = path.join(targetFolder, fileName)
     const relativePath = path.relative(targetFolder, targetPath)
 
+    // 如果存在同名文件，删除它
     if (isDuplicateFile(targetFolder, targetPath)) {
-      return null
+      try {
+        fs.unlinkSync(targetPath)
+      } catch (err) {
+        console.error(err)
+        return null
+      }
     }
 
     try {
