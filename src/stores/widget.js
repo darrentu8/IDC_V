@@ -471,20 +471,6 @@ export const useWidgetListStore = defineStore('widgetList', {
         return 0
       }
     },
-    GetSectionOptions() {
-      if (!Array.isArray(this.NovoDS.Pages.Page.Section) || this.NovoDS.Pages.Page.Section.length === 0) {
-        return []
-      }
-
-      const sectionOptionData = this.NovoDS.Pages.Page.Section.map((e, i) => {
-        return {
-          _ID: e._ID,
-          _name: 'Section' + ' ' + (i + 1)
-        }
-      })
-      this.sectionOptionData = sectionOptionData
-      return sectionOptionData
-    },
     GetCurrentStateOptions() {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
@@ -747,43 +733,48 @@ export const useWidgetListStore = defineStore('widgetList', {
       // console.log('ContentType', ContentType)
       this.NovoDS.Pages.Page.Section[Index]._ContentType = ContentType
     },
-    SetStateFirstIndex() {
-      if (this.NovoDS?.Pages?.Page?.Section) {
-        for (const section of this.NovoDS.Pages.Page.Section) {
-          const states = section.Content?.State || []
-          if (states.length && states.some(state => state._id === 0)) {
-            for (const state of states) {
-              state._id++
-              const events = state.Event || []
-              for (const event of events) {
-                event._next_state_id++
-              }
-            }
-            const originalStateId = states[0]._id
-            states[0]._id = 0
-            for (const state of states) {
-              const events = state.Event || []
-              for (const event of events) {
-                if (event._next_state_id === originalStateId) {
-                  event._next_state_id = 0
+    async SetStateFirstIndex() {
+      try {
+        if (this.NovoDS?.Pages?.Page?.Section) {
+          for (const section of this.NovoDS.Pages.Page.Section) {
+            const states = section.Content?.State || []
+            if (states.length && states.some(state => state._id === 0)) {
+              for (const state of states) {
+                state._id++
+                const events = state.Event || []
+                for (const event of events) {
+                  event._next_state_id++
                 }
               }
-            }
-          } else if (states.length) {
-            const originalStateId = states[0]._id
-            states[0]._id = 0
-            for (const state of states) {
-              const events = state.Event || []
-              for (const event of events) {
-                if (event._next_state_id === originalStateId) {
-                  event._next_state_id = 0
+              const originalStateId = states[0]._id
+              states[0]._id = 0
+              for (const state of states) {
+                const events = state.Event || []
+                for (const event of events) {
+                  if (event._next_state_id === originalStateId) {
+                    event._next_state_id = 0
+                  }
+                }
+              }
+            } else if (states.length) {
+              const originalStateId = states[0]._id
+              states[0]._id = 0
+              for (const state of states) {
+                const events = state.Event || []
+                for (const event of events) {
+                  if (event._next_state_id === originalStateId) {
+                    event._next_state_id = 0
+                  }
                 }
               }
             }
           }
         }
+        await this.ResetWidgetListData() // using await to wait for ResetWidgetListData() function to complete before the promise resolves
+        return true
+      } catch (error) {
+        throw new Error(`An error occurred in SetStateFirstIndex: ${error.message}`)
       }
-      this.ResetWidgetListData()
     },
     SetStateMoved(evt) {
       return new Promise((resolve, reject) => {
@@ -1070,7 +1061,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       this.NovoDS.Pages.Page._BackgroundImageSize = fileDatas._fileSize
     },
     DelBGSource() {
-      window.myAPI.deleteFile(this.nowPlayListPath, this.NovoDS.Pages.Page._BackgroundMusic)
+      window.myAPI.deleteFile(this.nowPlayListPath, this.NovoDS.Pages.Page._BackgroundImage)
       this.NovoDS.Pages.Page._BackgroundImage = ''
       this.NovoDS.Pages.Page._BackgroundImageSize = 0
     },

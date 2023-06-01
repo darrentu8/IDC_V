@@ -434,7 +434,7 @@ contextBridge.exposeInMainWorld('myAPI', {
     const sourcePath = dialog.showOpenDialogSync({
       title: 'Choose Media',
       filters: [
-        { name: 'Images', extensions: ['jpg', 'png', 'gif'] }
+        { name: 'Images', extensions: ['jpg', 'jpeg', 'bmp', 'png'] }
       ],
       properties: ['openFile']
     })
@@ -574,6 +574,42 @@ contextBridge.exposeInMainWorld('myAPI', {
       console.error(err)
       throw err
     }
+  },
+  writeBGFile: (nowPlayListPath, file) => {
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve, reject) => {
+      if (!nowPlayListPath || !file) {
+        return reject('Invalid arguments')
+      }
+
+      try {
+        // Add this line to delete existing files starting with 'background_color_'
+        fs.readdirSync(nowPlayListPath)
+          .filter(f => f.startsWith('background_color_'))
+          .forEach(f => fs.unlinkSync(path.join(nowPlayListPath, f)))
+
+        const targetPath = path.join(nowPlayListPath, file.name)
+        const buffer = await file.arrayBuffer()
+
+        // Use a Promise to wrap the fs.writeFile() function
+        await new Promise((resolve, reject) => {
+          fs.writeFile(targetPath, Buffer.from(buffer), (err) => {
+            if (err) {
+              reject(err)
+            } else {
+              console.log('The file has been saved!')
+              resolve(true)
+            }
+          })
+        })
+
+        // If everything succeeded, resolve the outer promise
+        resolve(true)
+      } catch (error) {
+        console.error(`Error writing file to ${nowPlayListPath}: ${error}`)
+        reject(error)
+      }
+    })
   },
   delTempFolder: async (nowPlayListPath) => {
     if (nowPlayListPath && path.basename(nowPlayListPath).includes('@_Temp_Playlist_')) {

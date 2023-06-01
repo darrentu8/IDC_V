@@ -42,7 +42,7 @@
       <RightSideBar />
     </q-drawer>
     <ConfirmDialog />
-    <PlaylistSettingsDialog />
+    <PlaylistSettingsDialog v-model:isShow="isShowPlaylistSettingsDialog" />
     <ConfigureHardwareDialog />
   </q-layout>
 </template>
@@ -67,7 +67,7 @@ const logo = ref(logoSVG)
 const leftDrawerOpen = ref(false)
 const rightDrawerOpen = ref(false)
 const checkVali = computed(() => widgetStore.checkVali)
-
+const isShowPlaylistSettingsDialog = ref(false)
 // function toggleLeftDrawer() {
 //   leftDrawerOpen.value = !leftDrawerOpen.value
 // }
