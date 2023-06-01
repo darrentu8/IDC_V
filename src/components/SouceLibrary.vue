@@ -8,14 +8,30 @@
             <img size="lg" src="~assets/icon/mark.svg" class="q-mt-xs flag" />
             <q-card-section v-if="state._name !== ''" class="q-pa-xs">
               <div class="text-subtitle2 ellipsis-2-lines maxW">{{ state._name }}</div>
-              <q-popup-edit v-model="state._name" v-slot="scope" class="theme-border q-pt-none" buttons>
-                <q-input class="" rows="2" type="textarea" v-model="scope.value" autofocus @keyup.enter="scope.set" />
+              <q-popup-edit v-model="state._name" v-slot="scope" class="theme-border q-pt-none pop-edit">
+                <q-input class="" counter maxlength="20" rows="2" type="textarea" v-model="scope.value" autofocus>
+                  <template v-slot:append>
+                    <q-icon v-if="scope.value !== ''" name="close" @click="scope.value = ''" class="cursor-pointer" />
+                  </template>
+                  <template v-slot:after>
+                    <q-btn class="q-mt-md" flat dense color="primary" icon="check_circle" @click="scope.set"
+                      :disable="scope.validate(scope.value) === false || scope.initialValue === scope.value" />
+                  </template>
+                </q-input>
               </q-popup-edit>
             </q-card-section>
             <q-card-section v-else class="q-pa-xs">
               <div class="text-subtitle2 ellipsis-2-lines maxW">State {{ Number(Index + 1) }}</div>
-              <q-popup-edit v-model="state._name" v-slot="scope" class="theme-border q-pt-none" buttons>
-                <q-input class="" rows="2" type="textarea" v-model="scope.value" autofocus @keyup.enter="scope.set" />
+              <q-popup-edit v-model="state._name" v-slot="scope" class="theme-border q-pt-none pop-edit">
+                <q-input class="" counter maxlength="20" rows="2" type="textarea" v-model="scope.value" autofocus>
+                  <template v-slot:append>
+                    <q-icon v-if="scope.value !== ''" name="close" @click="scope.value = ''" class="cursor-pointer" />
+                  </template>
+                  <template v-slot:after>
+                    <q-btn class="q-mt-md" flat dense color="primary" icon="check_circle" @click="scope.set"
+                      :disable="scope.validate(scope.value) === false || scope.initialValue === scope.value" />
+                  </template>
+                </q-input>
               </q-popup-edit>
             </q-card-section>
             <!-- 刪除 -->

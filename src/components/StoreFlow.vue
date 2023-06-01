@@ -25,6 +25,10 @@
                       index }}</q-chip>
                     <q-popup-edit v-model="element._flowName" v-slot="scope" class="theme-border q-pt-none pop-edit">
                       <q-input class="" counter maxlength="35" rows="2" type="textarea" v-model="scope.value" autofocus>
+                        <template v-slot:append>
+                          <q-icon v-if="scope.value !== ''" name="close" @click="scope.value = ''"
+                            class="cursor-pointer" />
+                        </template>
                         <template v-slot:after>
                           <q-btn class="q-mt-md" flat dense color="primary" icon="check_circle"
                             @click="setVal(index, scope)"
