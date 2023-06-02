@@ -618,7 +618,7 @@ export const useWidgetListStore = defineStore('widgetList', {
         }
         if (RawData.NovoDS.Hardware && RawData.NovoDS.Hardware.Rs232Settings && Array.isArray(RawData.NovoDS.Hardware.Rs232Settings.Rs232)) {
           RawData.NovoDS.Hardware.Rs232Settings.Rs232.forEach(rs232 => {
-            if (rs232.Command && !Array.isArray(rs232.Command)) {
+            if (rs232.Command !== undefined && !Array.isArray(rs232.Command)) {
               rs232.Command = [rs232.Command]
             }
           })
@@ -628,8 +628,8 @@ export const useWidgetListStore = defineStore('widgetList', {
           if (tcpip.ReceivedCommands && tcpip.ReceivedCommands.Command && !Array.isArray(tcpip.ReceivedCommands.Command)) {
             tcpip.ReceivedCommands.Command = [tcpip.ReceivedCommands.Command]
           }
-          if (tcpip.Command && !Array.isArray(tcpip.Command)) {
-            tcpip.Command = [tcpip.Command]
+          if (tcpip.TcpIp.Command !== undefined && !Array.isArray(tcpip.TcpIp.Command)) {
+            tcpip.TcpIp.Command = [tcpip.TcpIp.Command]
           }
         }
 

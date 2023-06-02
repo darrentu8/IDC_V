@@ -164,7 +164,7 @@ async function preview() {
               clearInterval(interval)
               setTimeout(() => {
                 dialog.hide()
-              }, 350)
+              }, 200)
             }
           }, 100)
         })
