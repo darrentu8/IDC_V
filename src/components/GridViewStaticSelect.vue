@@ -24,7 +24,7 @@
 import { computed, toRefs } from 'vue'
 import { useLayoutStore } from 'src/stores/layout'
 import { useWidgetListStore } from 'src/stores/widget'
-import layoutDialog from './dialog/layoutDialog.vue'
+import layoutDialog from './dialog/LayoutDialog.vue'
 import useQuasar from 'quasar/src/composables/use-quasar.js'
 const $q = useQuasar()
 const layoutStore = useLayoutStore()

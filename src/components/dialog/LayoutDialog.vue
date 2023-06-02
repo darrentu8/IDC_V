@@ -1,33 +1,73 @@
 <template>
   <q-dialog ref="dialog" persistent>
-    <q-card class="bg-white text-black brand-round-l q-pa-lg" style="min-width: 1200px;height:80vh;min-height:600px;">
-      <q-bar class="row bg-white text-bold" style="font-size:24px;height:30px">
+    <q-card class="bg-white text-black brand-round-l q-pa-lg" style="min-width: 1200px;height:60vh;min-height:580px;">
+      <q-bar class="row bg-white text-bold q-mb-md" style="font-size:20px;">
+        Select layout
         <q-space />
         <q-btn dense flat icon="close" v-close-popup />
       </q-bar>
-      <HardWareComponent />
-      <q-card-actions class="q-pb-lg absolute-bottom">
+      <div class="col">
+        <q-tab-panels v-model="panel" keep-alive animated>
+          <q-tab-panel name="pickGrid" class="q-pa-none">
+            <PickGridComponent ref="pickGrid" :customGrid="customGrid" :isChooseCustom="isChooseCustom"
+              :currentGrid="currentGrid" :layoutNumber="layoutNumber" :currentCubeId="currentCubeId" @toPanel="toPanel"
+              @setCustom="setCustom" @setCurrentCubeId="setCurrentCubeId" />
+          </q-tab-panel>
+          <q-tab-panel name="customGrid" class="q-pa-none">
+            <CustomizeGridComponent ref="customGrid" />
+          </q-tab-panel>
+        </q-tab-panels>
+
+        <q-card-actions v-show="panel === 'customGrid'" class="q-pb-lg absolute-bottom">
+          <q-btn class="brand-round-l text-capitalize" @click="toPickGrid" style="width:116px;margin:auto 20px"
+            color="grey" label="Back" outline="" icon="arrow_back" />
+          <q-space />
+          <q-btn class="brand-round-l text-capitalize" @click="saveCustom" style="width:116px;margin:auto 20px"
+            color="primary" label="Save" icon="check" />
+        </q-card-actions>
+      </div>
+      <q-card-actions v-show="panel !== 'customGrid'" class="q-pb-lg absolute-bottom">
         <q-space />
-        <q-btn v-close-popup color="primary" label="close" class="brand-round-l text-capitalize"
-          style="width:116px;margin:auto 20px" />
+        <q-btn :disable="lock" color="primary" label="Apply" class="brand-round-l text-capitalize"
+          style="width:116px;margin:auto 20px" icon="check" @click="apply" />
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
 <script>
-import HardWareComponent from '../HardWareComponent.vue'
+import { uid } from 'quasar'
+import PickGridComponent from 'src/components/PickGridComponent.vue'
+import CustomizeGridComponent from 'src/components/CustomizeGridComponent.vue'
+import { useLayoutStore } from 'src/stores/layout'
+import { getMaxCommonDivisor } from 'src/js/math'
 
 export default {
-  name: 'LayoutDialog',
+  name: 'PickGrid',
   components: {
-    HardWareComponent
+    PickGridComponent,
+    CustomizeGridComponent
   },
   data() {
     return {
+      panel: 'pickGrid',
+      customGrid: {
+        rowCount: 1,
+        colCount: 1,
+        layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }]
+      },
+      isChooseCustom: false,
+      currentGrid: null,
+      layoutNumber: '',
+      currentCubeId: null,
+      lock: true
     }
   },
-  computed: {},
+  computed: {
+    currentCube() {
+      return this.currentGrid.layout.find(o => o.i === this.currentCubeId)
+    }
+  },
   methods: {
     show() {
       this.$refs.dialog.show()
@@ -40,30 +80,57 @@ export default {
     },
     toFlow() {
       this.$router.push({ path: '/flow' })
+    },
+    toNew() {
+      this.$router.push({ path: '/new' })
+    },
+    apply() {
+      const layoutStore = useLayoutStore()
+      if (this.isChooseCustom) {
+        layoutStore.SetLayout('@Frame Designer@', this.currentGrid)
+      } else {
+        layoutStore.SetLayout('Landscape' + ' ' + this.layoutNumber, this.currentGrid)
+      }
+      this.hide()
+    },
+    toPickGrid() {
+      this.panel = 'pickGrid'
+    },
+    toPanel(val) {
+      this.panel = val
+    },
+    setCustom(customData) {
+      this.layoutNumber = customData.layoutNumber
+      this.currentGrid = customData.currentGrid
+      this.currentCubeId = customData.currentCubeId
+      this.isChooseCustom = customData.isChooseCustom
+      this.lock = customData.lock
+    },
+    setCurrentCubeId(val) {
+      this.currentCubeId = val
+    },
+    saveCustom() {
+      const customGrid = this.$refs.customGrid.grid
+
+      this.customGrid = customGrid
+      this.currentGrid = customGrid
+      this.currentCubeId = customGrid.layout[0].i
+      this.isChooseCustom = true
+      this.lock = false
+      this.toPickGrid()
+    },
+    getMaxCommonDivisor(n1, n2) {
+      return getMaxCommonDivisor(n1, n2)
     }
   }
 }
 </script>
-<style lang="scss">
-.pin-rect {
-  height: 50px;
-  width: 50px;
-  border: 1px solid #C0C0C0;
-  margin: 0 -1px -1px 0;
-  cursor: pointer;
-  background-color: #F1F1F1;
+<style lang="scss" scoped>
+.grid-cube:hover {
+  filter: brightness(0.9)
 }
 
-.pin-in-use {
-  border-radius: 50%;
-  background-color: $primary;
-  width: 5px;
-  height: 5px;
-}
-
-.is-pin-selected {
-  z-index: 1;
-  border: 1px solid $primary;
-  background-color: white;
+.selected-cube {
+  outline: 2px solid $primary;
 }
 </style>

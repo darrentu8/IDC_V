@@ -1,7 +1,8 @@
 <template>
   <q-dialog ref="dialog" persistent>
-    <q-card class="bg-white text-black brand-round-l q-pa-lg" style="min-width: 1200px;height:80vh;min-height:600px;">
-      <q-bar class="row bg-white text-bold" style="font-size:24px;height:30px">
+    <q-card class="bg-white text-black brand-round-l q-pa-lg" style="min-width: 1200px;height:80vh;min-height:650px;">
+      <q-bar class="row bg-white text-bold q-mb-sm" style="font-size:20px;">
+        Configure Event/Action
         <q-space />
         <q-btn dense flat icon="close" v-close-popup />
       </q-bar>

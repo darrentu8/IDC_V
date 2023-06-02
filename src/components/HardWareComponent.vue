@@ -1,6 +1,5 @@
 <template>
-  <div class="row" style="height:30px">
-    <div class="text-bold" style="margin:auto 20px">Configure Event/Action</div>
+  <div class="row">
     <q-space />
     <div class="text-caption" style="margin:auto 20px">
       Help & resources
@@ -20,7 +19,7 @@
       <!-- GPIO -->
       <q-tab-panel :name="0">
         <div class="">
-          <div class="row" style="height: 320px;">
+          <div class="row" style="min-height: 320px;">
             <div class="column q-ma-md flex flex-center">
               <div class="row">
                 <div @click="changeCurrentPIN(5)" class="pin-rect flex flex-center relative-position"
@@ -119,7 +118,7 @@
         </div>
       </q-tab-panel>
       <!-- RS232 -->
-      <q-tab-panel :name="1" style="height: 380px;">
+      <q-tab-panel :name="1" style="min-height: 380px;">
         <div class="row">
           <q-tabs vertical v-model="subPanel" class="text-grey-8 q-mr-md" active-color="primary">
             <q-tab name="on" label="On-board RS232 port" />
@@ -374,7 +373,7 @@
         </div>
       </q-tab-panel>
       <!-- TCP/IP -->
-      <q-tab-panel :name="2" style="height: 380px;">
+      <q-tab-panel :name="2" style="min-height: 380px;">
         <div class="row">
           <div class="col">
             <!-- TCPIP Receive -->
@@ -556,7 +555,7 @@
       </q-tab-panel>
       <!-- Timer -->
       <q-tab-panel :name="3">
-        <div class="row" style="height: 350px;">
+        <div class="row" style="min-height: 350px;">
           <div class="col q-pa-xs">
             <div class="text-body1 row">
               <div>Software Timer</div>
