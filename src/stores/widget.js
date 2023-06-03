@@ -628,6 +628,9 @@ export const useWidgetListStore = defineStore('widgetList', {
           if (tcpip.ReceivedCommands && tcpip.ReceivedCommands.Command && !Array.isArray(tcpip.ReceivedCommands.Command)) {
             tcpip.ReceivedCommands.Command = [tcpip.ReceivedCommands.Command]
           }
+          if (tcpip.TcpIp && !Array.isArray(tcpip.TcpIp)) {
+            tcpip.TcpIp = [tcpip.TcpIp]
+          }
           if (tcpip.TcpIp.Command !== undefined && !Array.isArray(tcpip.TcpIp.Command)) {
             tcpip.TcpIp.Command = [tcpip.TcpIp.Command]
           }

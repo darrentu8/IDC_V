@@ -8,7 +8,8 @@
         <q-btn dense flat icon="close" @click="saveAlert" />
       </q-bar>
       <q-toolbar class="q-px-lg q-py-md" style="background-color: #fff;">
-        <img class="cursor-pointer" :src="logo" style="height:30px" @click="$router.push({ path: '/new' })" />
+        <!-- <img class="cursor-pointer" :src="logo" style="height:30px" @click="$router.push({ path: '/new' })" /> -->
+        <img class="cursor-pointer" :src="logo" style="height:30px" />
         <span class="ver">{{ appVersion }}</span>
         <q-space />
         <q-btn class="" unelevated rounded color="" text-color="grey-9" size="md" @click="showPageSettings()">
@@ -118,7 +119,7 @@ function saveAlert() {
       title: 'Do you want to save before leaving?',
       message: '',
       okBtn: 'Yes, save',
-      cancelBtn: 'No, just leave'
+      cancelBtn: 'No, close'
     }
   }).onOk(() => {
     const result = leaveSaveFileClose()
@@ -164,7 +165,7 @@ async function preview() {
               clearInterval(interval)
               setTimeout(() => {
                 dialog.hide()
-              }, 200)
+              }, 150)
             }
           }, 100)
         })

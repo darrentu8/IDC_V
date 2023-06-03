@@ -22,7 +22,7 @@
                 <q-input v-on:focus="focus = true" v-on:blur="focus = false" v-model="PlaylistName"
                   placeholder="Enter playlist name" class="brand-round-s input-border" bg-color="grey-2" dense outlined>
                   <template v-slot:append>
-                    <img v-if="focus || !PlaylistName" src="~assets/icon/pencil.svg" />
+                    <img v-if="focus || !PlaylistName" src="~assets/icon/edit.svg" />
                   </template>
                   <template v-if="focus && checkVali && PlaylistName" v-slot:after>
                     <q-btn round dense flat color="primary" icon="check_circle" />
