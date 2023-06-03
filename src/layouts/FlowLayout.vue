@@ -118,8 +118,8 @@ function saveAlert() {
     componentProps: {
       title: 'Do you want to save before leaving?',
       message: '',
-      okBtn: 'Yes, save',
-      cancelBtn: 'No, close'
+      okBtn: 'Save',
+      cancelBtn: "Don't Save"
     }
   }).onOk(() => {
     const result = leaveSaveFileClose()
