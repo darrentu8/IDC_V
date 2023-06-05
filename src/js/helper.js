@@ -50,11 +50,11 @@ export const getIconPathWithContentType = (contentType, widgetType) => {
 
 export const getColorFile = colorHex => {
   const canvas = document.createElement('canvas')
-  canvas.width = 800
-  canvas.height = 600
+  canvas.width = 3840
+  canvas.height = 2160
   const ctx = canvas.getContext('2d')
   ctx.fillStyle = colorHex
-  ctx.fillRect(0, 0, 800, 800)
+  ctx.fillRect(0, 0, 3840, 2160)
   const dataUrl = canvas.toDataURL('image/png')
 
   const colorString = colorHex.slice(1).toLowerCase()

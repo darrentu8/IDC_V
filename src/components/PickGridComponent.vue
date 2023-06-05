@@ -206,13 +206,12 @@ export default {
           rowCount: 4,
           colCount: 4,
           layout: [{ x: 0, y: 0, w: 3, h: 3, i: uid() }, { x: 3, y: 0, w: 1, h: 1, i: uid() }, { x: 3, y: 1, w: 1, h: 1, i: uid() }, { x: 3, y: 2, w: 1, h: 1, i: uid() }, { x: 3, y: 3, w: 1, h: 1, i: uid() }, { x: 0, y: 3, w: 1, h: 1, i: uid() }, { x: 1, y: 3, w: 1, h: 1, i: uid() }, { x: 2, y: 3, w: 1, h: 1, i: uid() }]
+        },
+        {
+          rowCount: 3,
+          colCount: 3,
+          layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 2, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 1, w: 1, h: 1, i: uid() }, { x: 2, y: 2, w: 1, h: 1, i: uid() }]
         }
-        // ,
-        // {
-        //   rowCount: 3,
-        //   colCount: 3,
-        //   layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 2, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 1, w: 1, h: 1, i: uid() }, { x: 2, y: 2, w: 1, h: 1, i: uid() }]
-        // }
       ],
       gridWidth: 160
     }
