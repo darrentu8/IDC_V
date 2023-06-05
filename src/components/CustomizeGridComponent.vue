@@ -55,6 +55,8 @@
 <script>
 import { uid } from 'quasar'
 
+// const isPortrait = computed(() => widgetStore.GetIsPortrait)
+
 const isCubeInGrid = (row, col, layout) => {
   let isCubeInGrid = false
   layout.forEach(grid => {

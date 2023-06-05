@@ -72,7 +72,7 @@ export default {
       return this.currentGrid.layout.find(o => o.i === this.currentCubeId)
     },
     isLandscape() {
-      return widgetStore.GetisLandscape
+      return widgetStore.GetIsLandscape
     }
   },
   methods: {

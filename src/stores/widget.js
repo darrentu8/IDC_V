@@ -449,13 +449,13 @@ export const useWidgetListStore = defineStore('widgetList', {
     }
   }),
   getters: {
-    GetisLandscape() {
-      return this.fileData.orientation === DeviceScreenOrientationEnum.landscape ||
-        this.fileData.orientation === DeviceScreenOrientationEnum.landscape_flipped
+    GetIsLandscape() {
+      return this.fileData.Orientation === DeviceScreenOrientationEnum.landscape ||
+        this.fileData.Orientation === DeviceScreenOrientationEnum.landscape_flipped
     },
     GetIsPortrait() {
-      return this.fileData.orientation === DeviceScreenOrientationEnum.portrait ||
-        this.fileData.orientation === DeviceScreenOrientationEnum.portrait_flipped
+      return this.fileData.Orientation === DeviceScreenOrientationEnum.portrait ||
+        this.fileData.Orientation === DeviceScreenOrientationEnum.portrait_flipped
     },
     GetLoading() {
       return this.loading
@@ -609,7 +609,7 @@ export const useWidgetListStore = defineStore('widgetList', {
 
         this._Layout_Type = fileData.LayoutType
         this._Model_Type = fileData.ModelType
-        this.NovoDS.Pages.Page._Orientation = fileData.Orientation || '0'
+        this.NovoDS.Pages.Page._Orientation = fileData.Orientation || 0
         this.NovoDS.Pages.Page._FreeDesignerMode = 'false'
 
         return 'new'
