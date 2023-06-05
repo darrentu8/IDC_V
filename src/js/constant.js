@@ -1,5 +1,12 @@
 import { uid } from 'quasar'
 
+export const DeviceScreenOrientationEnum = {
+  landscape: 0,
+  portrait: 1,
+  landscape_flipped: 2,
+  portrait_flipped: 3
+}
+
 export const ContentTypeEnum = {
   Media: 'Media',
   Text: 'Text',
@@ -13,84 +20,160 @@ export const ContentTypeEnum = {
 
 export const layoutTemplates = [{
   rowCount: 1,
-  colCount: 1,
+  columnCount: 1,
   layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }]
 }, {
   rowCount: 1,
-  colCount: 2,
+  columnCount: 2,
   layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }]
 }, {
   rowCount: 1,
-  colCount: 3,
+  columnCount: 3,
   layout: [{ x: 0, y: 0, w: 2, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }]
 }, {
   rowCount: 1,
-  colCount: 3,
+  columnCount: 3,
   layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 2, h: 1, i: uid() }]
 }, {
   rowCount: 2,
-  colCount: 1,
+  columnCount: 1,
   layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }]
 }, {
   rowCount: 1,
-  colCount: 3,
+  columnCount: 3,
   layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }]
 }, {
   rowCount: 2,
-  colCount: 6,
+  columnCount: 6,
   layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 5, h: 2, i: uid() }]
 }, {
   rowCount: 4,
-  colCount: 4,
+  columnCount: 4,
   layout: [{ x: 0, y: 0, w: 1, h: 3, i: uid() }, { x: 1, y: 0, w: 3, h: 3, i: uid() }, { x: 0, y: 2, w: 4, h: 1, i: uid() }]
 }, {
   rowCount: 4,
-  colCount: 4,
+  columnCount: 4,
   layout: [{ x: 0, y: 0, w: 3, h: 3, i: uid() }, { x: 3, y: 0, w: 1, h: 3, i: uid() }, { x: 0, y: 2, w: 4, h: 1, i: uid() }]
 }, {
   rowCount: 3,
-  colCount: 3,
+  columnCount: 3,
   layout: [{ x: 0, y: 0, w: 1, h: 2, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 2, h: 3, i: uid() }]
 }, {
   rowCount: 3,
-  colCount: 4,
+  columnCount: 4,
   layout: [{ x: 0, y: 0, w: 3, h: 3, i: uid() }, { x: 3, y: 0, w: 1, h: 1, i: uid() }, { x: 3, y: 1, w: 1, h: 1, i: uid() }, { x: 3, y: 2, w: 1, h: 1, i: uid() }]
 }, {
   rowCount: 2,
-  colCount: 2,
+  columnCount: 2,
   layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 1, w: 1, h: 1, i: uid() }]
 }, {
   rowCount: 4,
-  colCount: 4,
+  columnCount: 4,
   layout: [{ x: 0, y: 0, w: 4, h: 3, i: uid() }, { x: 0, y: 3, w: 1, h: 1, i: uid() }, { x: 1, y: 3, w: 1, h: 1, i: uid() }, { x: 2, y: 3, w: 1, h: 1, i: uid() }, { x: 3, y: 3, w: 1, h: 1, i: uid() }]
 }, {
   rowCount: 4,
-  colCount: 4,
+  columnCount: 4,
   layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 3, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 4, h: 3, i: uid() }]
 }, {
   rowCount: 2,
-  colCount: 3,
+  columnCount: 3,
   layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 1, w: 1, h: 1, i: uid() }, { x: 2, y: 1, w: 1, h: 1, i: uid() }]
 }, {
   rowCount: 3,
-  colCount: 4,
+  columnCount: 4,
   layout: [{ x: 0, y: 0, w: 3, h: 2, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }, { x: 1, y: 2, w: 1, h: 1, i: uid() }, { x: 2, y: 2, w: 1, h: 1, i: uid() }, { x: 3, y: 0, w: 1, h: 1, i: uid() }, { x: 3, y: 1, w: 1, h: 2, i: uid() }]
 }, {
   rowCount: 3,
-  colCount: 4,
+  columnCount: 4,
   layout: [{ x: 0, y: 0, w: 2, h: 2, i: uid() }, { x: 2, y: 0, w: 2, h: 2, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }, { x: 1, y: 2, w: 1, h: 1, i: uid() }, { x: 2, y: 2, w: 1, h: 1, i: uid() }, { x: 3, y: 2, w: 1, h: 1, i: uid() }]
 }, {
   rowCount: 4,
-  colCount: 4,
+  columnCount: 4,
   layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 3, h: 3, i: uid() }, { x: 0, y: 3, w: 1, h: 1, i: uid() }, { x: 1, y: 3, w: 1, h: 1, i: uid() }, { x: 2, y: 3, w: 1, h: 1, i: uid() }, { x: 3, y: 3, w: 1, h: 1, i: uid() }]
 }, {
   rowCount: 4,
-  colCount: 4,
+  columnCount: 4,
   layout: [{ x: 0, y: 0, w: 3, h: 3, i: uid() }, { x: 3, y: 0, w: 1, h: 1, i: uid() }, { x: 3, y: 1, w: 1, h: 1, i: uid() }, { x: 3, y: 2, w: 1, h: 1, i: uid() }, { x: 0, y: 3, w: 1, h: 1, i: uid() }, { x: 1, y: 3, w: 1, h: 1, i: uid() }, { x: 2, y: 3, w: 1, h: 1, i: uid() }, { x: 3, y: 3, w: 1, h: 1, i: uid() }]
+}
+  // , {
+  //   rowCount: 3,
+  //   columnCount: 3,
+  //   layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 1, w: 1, h: 1, i: uid() }, { x: 2, y: 1, w: 1, h: 1, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }, { x: 1, y: 2, w: 1, h: 1, i: uid() }, { x: 2, y: 2, w: 1, h: 1, i: uid() }]
+  // }
+]
+
+export const layoutTemplatesPortrait = [{
+  rowCount: 1,
+  columnCount: 1,
+  layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }]
+}, {
+  rowCount: 2,
+  columnCount: 1,
+  layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }]
 }, {
   rowCount: 3,
-  colCount: 3,
-  layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 1, w: 1, h: 1, i: uid() }, { x: 2, y: 1, w: 1, h: 1, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }, { x: 1, y: 2, w: 1, h: 1, i: uid() }, { x: 2, y: 2, w: 1, h: 1, i: uid() }]
+  columnCount: 1,
+  layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 2, i: uid() }]
+}, {
+  rowCount: 3,
+  columnCount: 1,
+  layout: [{ x: 0, y: 0, w: 1, h: 2, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }]
+}, {
+  rowCount: 3,
+  columnCount: 1,
+  layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }]
+}, {
+  rowCount: 3,
+  columnCount: 2,
+  layout: [{ x: 0, y: 0, w: 2, h: 2, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }, { x: 1, y: 2, w: 1, h: 1, i: uid() }]
+}, {
+  rowCount: 3,
+  columnCount: 2,
+  layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 2, h: 2, i: uid() }]
+}, {
+  rowCount: 6,
+  columnCount: 2,
+  layout: [{ x: 0, y: 0, w: 2, h: 5, i: uid() }, { x: 0, y: 5, w: 1, h: 1, i: uid() }, { x: 1, y: 5, w: 1, h: 1, i: uid() }]
+}, {
+  rowCount: 6,
+  columnCount: 2,
+  layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 2, h: 5, i: uid() }]
+}, {
+  rowCount: 4,
+  columnCount: 4,
+  layout: [{ x: 0, y: 0, w: 1, h: 4, i: uid() }, { x: 1, y: 0, w: 3, h: 1, i: uid() }, { x: 1, y: 1, w: 3, h: 3, i: uid() }]
+}, {
+  rowCount: 3,
+  columnCount: 3,
+  layout: [{ x: 0, y: 0, w: 2, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 3, h: 2, i: uid() }]
+}, {
+  rowCount: 3,
+  columnCount: 3,
+  layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 2, h: 1, i: uid() }, { x: 0, y: 1, w: 3, h: 2, i: uid() }]
+}, {
+  rowCount: 4,
+  columnCount: 3,
+  layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 3, h: 3, i: uid() }]
+}, {
+  rowCount: 6,
+  columnCount: 2,
+  layout: [{ x: 0, y: 0, w: 2, h: 4, i: uid() }, { x: 0, y: 4, w: 1, h: 1, i: uid() }, { x: 1, y: 4, w: 1, h: 1, i: uid() }, { x: 0, y: 5, w: 1, h: 1, i: uid() }, { x: 1, y: 5, w: 1, h: 1, i: uid() }]
+}, {
+  rowCount: 6,
+  columnCount: 2,
+  layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }, { x: 1, y: 0, w: 1, h: 1, i: uid() }, { x: 0, y: 1, w: 1, h: 1, i: uid() }, { x: 1, y: 1, w: 1, h: 1, i: uid() }, { x: 0, y: 2, w: 2, h: 4, i: uid() }]
+}, {
+  rowCount: 4,
+  columnCount: 3,
+  layout: [{ x: 0, y: 0, w: 2, h: 3, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 1, w: 1, h: 1, i: uid() }, { x: 2, y: 2, w: 1, h: 1, i: uid() }, { x: 0, y: 3, w: 1, h: 1, i: uid() }, { x: 1, y: 3, w: 2, h: 1, i: uid() }]
+}, {
+  rowCount: 4,
+  columnCount: 3,
+  layout: [{ x: 0, y: 0, w: 2, h: 2, i: uid() }, { x: 2, y: 0, w: 1, h: 1, i: uid() }, { x: 2, y: 1, w: 1, h: 1, i: uid() }, { x: 0, y: 2, w: 2, h: 2, i: uid() }, { x: 2, y: 2, w: 1, h: 1, i: uid() }, { x: 2, y: 3, w: 1, h: 1, i: uid() }]
+}, {
+  rowCount: 4,
+  columnCount: 4,
+  layout: [{ x: 0, y: 0, w: 3, h: 3, i: uid() }, { x: 3, y: 0, w: 1, h: 1, i: uid() }, { x: 3, y: 0, w: 1, h: 1, i: uid() }, { x: 3, y: 1, w: 1, h: 1, i: uid() }, { x: 0, y: 2, w: 1, h: 1, i: uid() }, { x: 1, y: 3, w: 1, h: 1, i: uid() }, { x: 2, y: 3, w: 1, h: 1, i: uid() }, { x: 3, y: 3, w: 1, h: 1, i: uid() }]
 }]
 
 export const playListTemplate = {
@@ -101,6 +184,32 @@ export const playListTemplate = {
     Timeline: {
       Item: [],
       _Looping: true
+    },
+    BottomPage: {
+      Section: {
+        Content: {
+          MediaItem: {
+            _duration: 10,
+            _src: '',
+            _fileSize: 0,
+            _videoDuration: 0,
+            _note: ''
+          },
+          _duration: 10,
+          _isVideoFillArea: true,
+          _showType: 'Default',
+          _scaleType: 'FIT_CENTER'
+        },
+        _X: 0,
+        _Height: 1,
+        _ContentType: 'Media',
+        _Width: 1,
+        _Y: 0,
+        _Index: 0
+      },
+      _Row: 1,
+      _Orientation: 0,
+      _Column: 1
     },
     _Model_Type: 'x700',
     _Description: '',

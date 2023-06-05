@@ -2,10 +2,21 @@ import { defineStore } from 'pinia'
 import { useLayoutStore } from './layout'
 import { useEventListStore } from './event'
 import { uid } from 'quasar'
+import { DeviceScreenOrientationEnum } from 'src/js/constant'
 
 export const useWidgetListStore = defineStore('widgetList', {
   state: () => ({
-    fileData: null,
+    fileData: {
+      Focus: 'signage',
+      LayoutType: 0,
+      ModelType: '',
+      OpenNew: true,
+      Reload: false,
+      Orientation: 0,
+      Playlist: '',
+      PlaylistPath: '',
+      Preview: null
+    },
     checkVali: true,
     nowPlayListName: '',
     nowPlayListFolder: '',
@@ -15,7 +26,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       _Description: '',
       _Layout_Type: '0', // 0 -> Grid, 1 -> Flexible
       _Playlist_Name: '',
-      _Model_Type: 'DS310',
+      _Model_Type: '',
       _Interactive: true,
       Hardware: {
         GPIOSettings: {
@@ -129,7 +140,7 @@ export const useWidgetListStore = defineStore('widgetList', {
           _Layout: '',
           _Column: '',
           _Row: '',
-          _Orientation: '0', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
+          _Orientation: '', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
           _FreeDesignerMode: false, // Grid -> false, Flexi -> true
           _AudioSource: '0',
           _BackgroundImage: '',
@@ -259,7 +270,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       _Description: '',
       _Layout_Type: '0', // 0 -> Grid, 1 -> Flexible
       _Playlist_Name: '',
-      _Model_Type: 'DS310',
+      _Model_Type: '',
       _Interactive: true,
       Hardware: {
         GPIOSettings: {
@@ -373,7 +384,7 @@ export const useWidgetListStore = defineStore('widgetList', {
           _Layout: '',
           _Column: '',
           _Row: '',
-          _Orientation: '0', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
+          _Orientation: '', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
           _FreeDesignerMode: false, // Grid -> false, Flexi -> true
           _AudioSource: '0',
           _BackgroundImage: '',
@@ -438,6 +449,14 @@ export const useWidgetListStore = defineStore('widgetList', {
     }
   }),
   getters: {
+    GetisLandscape() {
+      return this.fileData.orientation === DeviceScreenOrientationEnum.landscape ||
+        this.fileData.orientation === DeviceScreenOrientationEnum.landscape_flipped
+    },
+    GetIsPortrait() {
+      return this.fileData.orientation === DeviceScreenOrientationEnum.portrait ||
+        this.fileData.orientation === DeviceScreenOrientationEnum.portrait_flipped
+    },
     GetLoading() {
       return this.loading
     },
@@ -570,7 +589,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       Object.assign(this.NovoDS, this.defaultNovoDS)
     },
     // 開新檔案
-    async SetOpenNewFileData(fileData = null) {
+    async SetOpenNewFileData(fileData) {
       try {
         console.log('fileData', fileData)
         this.fileData = fileData
