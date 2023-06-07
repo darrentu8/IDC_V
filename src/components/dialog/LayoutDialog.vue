@@ -119,7 +119,7 @@ export default {
     },
     saveCustom() {
       const customGrid = this.$refs.customGrid.grid
-
+      console.log('customGrid', customGrid)
       this.customGrid = customGrid
       this.currentGrid = customGrid
       this.currentCubeId = customGrid.layout[0].i

@@ -26,7 +26,7 @@
       <q-separator vertical class="q-ma-md" />
       <div class="col">
         <div class="row relative-position overflow-hidden"
-          :style="{ width: `${width}px`, height: `${width * 1080 / 1920}px` }">
+          :style="{ width: isPortrait ? '40%' : '100%', height: `${width * 1080 / 1920}px` }">
           <div class="absolute fit column">
             <div class="col row" v-for="i in grid.rowCount" :key="i">
               <div class="col" style="border: 1px solid lightgray;padding: 5px;" v-for="k in grid.colCount" :key="k" />
@@ -53,41 +53,50 @@
 </template>
 
 <script>
+import { computed } from 'vue'
 import { uid } from 'quasar'
-
-// const isPortrait = computed(() => widgetStore.GetIsPortrait)
-
-const isCubeInGrid = (row, col, layout) => {
-  let isCubeInGrid = false
-  layout.forEach(grid => {
-    if (col >= grid.x && col < (grid.x + grid.w) && row >= grid.y && row < (grid.y + grid.h)) {
-      isCubeInGrid = true
-    }
-  })
-
-  return isCubeInGrid
-}
-
-const fixOutsideGrid = (row, col, layout) => {
-  const deleteArray = []
-  layout.forEach(grid => {
-    if (grid.x >= col || grid.y >= row) {
-      deleteArray.push(grid)
-    } else if (grid.x + grid.w > col) {
-      grid.w = col - grid.x
-    } else if (grid.y + grid.h > row) {
-      grid.h = row - grid.y
-    }
-  })
-
-  deleteArray.forEach(grid => {
-    const index = layout.findIndex(o => o.i === grid.i)
-    layout.splice(index, 1)
-  })
-}
+import { useWidgetListStore } from 'src/stores/widget'
 
 export default {
   name: 'CustomizeGrid',
+  setup() {
+    const widgetStore = useWidgetListStore()
+    const isPortrait = computed(() => widgetStore.GetIsPortrait)
+
+    const isCubeInGrid = (row, col, layout) => {
+      let isCubeInGrid = false
+      layout.forEach(grid => {
+        if (col >= grid.x && col < (grid.x + grid.w) && row >= grid.y && row < (grid.y + grid.h)) {
+          isCubeInGrid = true
+        }
+      })
+
+      return isCubeInGrid
+    }
+
+    const fixOutsideGrid = (row, col, layout) => {
+      const deleteArray = []
+      layout.forEach(grid => {
+        if (grid.x >= col || grid.y >= row) {
+          deleteArray.push(grid)
+        } else if (grid.x + grid.w > col) {
+          grid.w = col - grid.x
+        } else if (grid.y + grid.h > row) {
+          grid.h = row - grid.y
+        }
+      })
+
+      deleteArray.forEach(grid => {
+        const index = layout.findIndex(o => o.i === grid.i)
+        layout.splice(index, 1)
+      })
+    }
+    return {
+      isPortrait,
+      isCubeInGrid,
+      fixOutsideGrid
+    }
+  },
   data() {
     return {
       grid: {
@@ -100,15 +109,15 @@ export default {
   },
   methods: {
     changeRowCount(val) {
-      fixOutsideGrid(val, this.grid.colCount, this.grid.layout)
+      this.fixOutsideGrid(val, this.grid.colCount, this.grid.layout)
     },
     changeColCount(val) {
-      fixOutsideGrid(this.grid.rowCount, val, this.grid.layout)
+      this.fixOutsideGrid(this.grid.rowCount, val, this.grid.layout)
     },
     addGrid() {
       for (let row = 0; row < this.grid.rowCount; ++row) {
         for (let col = 0; col < this.grid.colCount; ++col) {
-          if (!isCubeInGrid(row, col, this.grid.layout)) {
+          if (!this.isCubeInGrid(row, col, this.grid.layout)) {
             this.grid.layout.push({
               x: col,
               y: row,
