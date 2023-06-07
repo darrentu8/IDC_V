@@ -600,11 +600,16 @@ export const useWidgetListStore = defineStore('widgetList', {
         }
         if (RawData.NovoDS.Hardware && RawData.NovoDS.Hardware.Rs232Settings && Array.isArray(RawData.NovoDS.Hardware.Rs232Settings.Rs232)) {
           RawData.NovoDS.Hardware.Rs232Settings.Rs232.forEach(rs232 => {
-            if (rs232.Command !== undefined && !Array.isArray(rs232.Command)) {
+            if (rs232.Command === undefined || rs232.Command === null || rs232.Command === '') { // add this condition
+              rs232.Command = []
+            } else if (!Array.isArray(rs232.Command)) {
               rs232.Command = [rs232.Command]
+            } else if (rs232.Command.length === 1 && rs232.Command[0] === '') {
+              rs232.Command = []
             }
           })
         }
+
         if (RawData.NovoDS.Hardware && RawData.NovoDS.Hardware.TcpIpSettings) {
           const tcpip = RawData.NovoDS.Hardware.TcpIpSettings
           if (tcpip.ReceivedCommands && tcpip.ReceivedCommands.Command && !Array.isArray(tcpip.ReceivedCommands.Command)) {
@@ -613,8 +618,19 @@ export const useWidgetListStore = defineStore('widgetList', {
           if (tcpip.TcpIp && !Array.isArray(tcpip.TcpIp)) {
             tcpip.TcpIp = [tcpip.TcpIp]
           }
-          if (tcpip.TcpIp.Command !== undefined && !Array.isArray(tcpip.TcpIp.Command)) {
+          if (tcpip.TcpIp.Command === undefined || tcpip.TcpIp.Command === null) {
+            tcpip.TcpIp.Command = []
+          } else if (!Array.isArray(tcpip.TcpIp.Command)) {
             tcpip.TcpIp.Command = [tcpip.TcpIp.Command]
+          }
+          if (Array.isArray(tcpip.TcpIp)) {
+            tcpip.TcpIp.forEach(tcp => {
+              if (!tcp.Command) {
+                tcp.Command = []
+              } else if (!Array.isArray(tcp.Command)) {
+                tcp.Command = [tcp.Command]
+              }
+            })
           }
         }
 

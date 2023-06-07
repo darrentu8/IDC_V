@@ -12,16 +12,12 @@
                 <div class="flex justify-end items-center">
                   <q-icon size="sm" round flat class="q-pr-xs cursor-pointer" color="grey-4" name="drag_indicator" />
                 </div>
-                <div class="flex justify-end items-center" style="width:190px; height: 100px;">
+                <div class="flex justify-end items-center" style="width:220px; height: 100px;">
                   <div>
-                    <q-chip v-if="index === 0 && !element._flowName" class="q-mr-md theme-chip" text-color="white"
-                      color="grey-5">Default</q-chip>
-                    <q-chip v-else-if="index === 0 && element._flowName" class="q-mr-md theme-chip" text-color="white"
-                      color="grey-5">{{ element._flowName }}</q-chip>
-                    <q-chip v-else-if="element._flowName" class="q-mr-md theme-chip" text-color="white" color="grey-5">{{
+                    <q-chip v-if="element._flowName" class="q-mr-md theme-chip" text-color="white" color="grey-5">{{
                       element._flowName }}</q-chip>
                     <q-chip v-else class="q-mr-md theme-chip" text-color="white" color="grey-5">Flow {{
-                      index }}</q-chip>
+                      index + 1 }}</q-chip>
                     <q-popup-edit v-model="element._flowName" v-slot="scope" class="theme-border q-pt-none pop-edit">
                       <q-input class="" counter maxlength="35" rows="2" type="textarea" v-model="scope.value" autofocus>
                         <template v-slot:append>
