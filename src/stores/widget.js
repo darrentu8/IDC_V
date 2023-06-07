@@ -544,27 +544,6 @@ export const useWidgetListStore = defineStore('widgetList', {
 
   },
   actions: {
-    SetPlaylistName(val) {
-      this.NovoDS._Playlist_Name = val
-    },
-    SetCheckVali(val) {
-      this.checkVali = val
-    },
-    SetAudioSource(val) {
-      switch (val) {
-        case 'Widget':
-          this.NovoDS.Pages.Page._AudioSource = this.sectionOptionData[0]._ID ?? ''
-          break
-        case 'Mute':
-          this.NovoDS.Pages.Page._AudioSource = 'mute'
-          break
-        case 'BackgroundMusic':
-          this.NovoDS.Pages.Page._AudioSource = 'background_music'
-          break
-        default:
-          return ''
-      }
-    },
     ResetNewPlaylistName(Playlist_Name, newPlayListPath) {
       this.nowPlayListName = Playlist_Name
       this.nowPlayListPath = newPlayListPath
@@ -739,6 +718,27 @@ export const useWidgetListStore = defineStore('widgetList', {
       // console.log('ContentType', ContentType)
       this.NovoDS.Pages.Page.Section[Index]._ContentType = ContentType
     },
+    SetPlaylistName(val) {
+      this.NovoDS._Playlist_Name = val
+    },
+    SetCheckVali(val) {
+      this.checkVali = val
+    },
+    SetAudioSource(val) {
+      switch (val) {
+        case 'Widget':
+          this.NovoDS.Pages.Page._AudioSource = this.sectionOptionData[0]._ID ?? ''
+          break
+        case 'Mute':
+          this.NovoDS.Pages.Page._AudioSource = 'mute'
+          break
+        case 'BackgroundMusic':
+          this.NovoDS.Pages.Page._AudioSource = 'background_music'
+          break
+        default:
+          return ''
+      }
+    },
     async SetStateFirstIndex() {
       try {
         if (this.NovoDS?.Pages?.Page?.Section) {
@@ -781,6 +781,29 @@ export const useWidgetListStore = defineStore('widgetList', {
       } catch (error) {
         throw new Error(`An error occurred in SetStateFirstIndex: ${error.message}`)
       }
+    },
+    SetStateDefault(stateID) {
+      return new Promise((resolve, reject) => {
+        try {
+          const layoutStore = useLayoutStore()
+          const currentSection = layoutStore.currentSection
+          const uuid = stateID
+
+          const index = this.NovoDS.Pages.Page.Section[currentSection].Content.State.findIndex(
+            item => item._uuid === uuid
+          )
+
+          if (index !== -1) {
+            const [removed] = this.NovoDS.Pages.Page.Section[currentSection].Content.State.splice(index, 1)
+            this.NovoDS.Pages.Page.Section[currentSection].Content.State.splice(0, 0, removed)
+            resolve(true) // 如果成功移动元素，则返回true
+          } else {
+            reject(new Error()) // 如果找不到需要移动的元素，则返回错误信息
+          }
+        } catch (error) {
+          reject(error) // 如果发生任何错误，则返回错误信息
+        }
+      }).catch(error => console.error(error))
     },
     SetStateMoved(evt) {
       return new Promise((resolve, reject) => {

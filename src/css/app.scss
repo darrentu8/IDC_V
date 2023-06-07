@@ -14,6 +14,20 @@
   width: 300px !important;
   height: 100px !important;
 }
+.q-menu.pop-edit.toggle {
+  min-width: 330px !important;
+  min-height: 130px !important;
+  width: 330px !important;
+  height: 130px !important;
+}
+.theme-badge {
+  &.q-badge {
+    border: 2px solid #E18D24 !important;
+    background-color: transparent;
+    border-radius: 6px;
+    font-weight: bold;
+  }
+}
 .theme-chip {
   margin: 0 16px 0 0;
   max-width: 100px;

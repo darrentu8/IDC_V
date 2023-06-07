@@ -13,7 +13,7 @@
       style="border-right: 1px solid rgba(0, 0, 0, 0.12);background-color: #F8F8F8;width:300px;height: 100vh;">
       <SettingList />
     </div>
-    <div :class="[tab === 'source' ? 'offSetL q-pa-md' : 'offSetR q-pa-md']">
+    <div :class="[tab === 'source' ? 'offSetL q-pa-md' : 'offSetR q-pt-md']">
       <q-tabs v-model="tab" inline-label class="text-grey" active-color="primary" indicator-color="primary" align="left"
         narrow-indicator>
         <q-tab name="source" label="State Definition" style="text-transform: capitalize;">
