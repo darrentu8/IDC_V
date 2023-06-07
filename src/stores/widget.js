@@ -544,6 +544,9 @@ export const useWidgetListStore = defineStore('widgetList', {
 
   },
   actions: {
+    SetPlaylistName(val) {
+      this.NovoDS._Playlist_Name = val
+    },
     SetCheckVali(val) {
       this.checkVali = val
     },

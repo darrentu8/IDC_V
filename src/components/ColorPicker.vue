@@ -2,7 +2,7 @@
   <div class="row q-gutter-md">
     <div class="color-rect cursor-pointer" v-for="(color, index) in colors" :key="index"
       @click="changeSelectedColor(color)" :class="{ 'selected': selectedColor.toUpperCase() === color.toUpperCase() }"
-      :style="{ 'background-color': color, 'background-image': isColorTransparent(color) ? `url('src/assets/icon/bg/transparent.png')` : '' }" />
+      :style="{ 'background-color': color, 'background-image': isColorTransparent(color) ? `url(${tranIcon})` : '' }" />
     <q-icon class="cursor-pointer" name="edit" color="primary" size="25px">
       <q-popup-proxy>
         <q-color @update:model-value="changePickColor" :model-value="selectedColor" no-footer style="width: 200px;" />
@@ -14,6 +14,7 @@
 <script setup>
 import { isColorTransparent } from 'src/js/helper'
 import { onMounted, ref } from 'vue'
+import tranIcon from '../assets/icon/bg/transparent.png'
 
 const props = defineProps(['colors', 'selectedColor'])
 

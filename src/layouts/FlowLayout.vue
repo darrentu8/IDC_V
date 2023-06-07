@@ -10,7 +10,7 @@
       <q-toolbar class="q-px-lg q-py-md" style="background-color: #fff;">
         <!-- <img class="cursor-pointer" :src="logo" style="height:30px" @click="$router.push({ path: '/new' })" /> -->
         <img class="cursor-pointer" :src="logo" style="height:30px" />
-        <span class="ver">{{ appVersion }}</span>
+        <span class="ver">v {{ appVersion }}</span>
         <q-space />
         <q-btn class="" unelevated rounded color="" text-color="grey-9" size="md" @click="showPageSettings()">
           <img class="q-mr-xs" src="~assets/icon/settings.svg" color="" size="xs" />
@@ -18,7 +18,7 @@
         </q-btn>
         <q-btn class="" unelevated rounded color="" text-color="grey-9" size="md" @click="showHardware()">
           <img class="q-mr-xs" src="~assets/icon/adjustments.svg" color="white" size="xs" />
-          Configure Event/Action
+          Configure Events / Actions
         </q-btn>
         <q-separator vertical class="q-mx-md" />
         <q-btn :disable="!checkVali" class="" unelevated color="primary" rounded size="md" @click="preview()">

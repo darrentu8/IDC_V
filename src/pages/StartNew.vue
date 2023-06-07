@@ -6,7 +6,7 @@
           style="background-color: transparent;width: 800px">
           <q-step :name="1" prefix="1" title="Enter playlist name" />
           <q-step :name="2" prefix="2" title="Select layout" />
-          <q-step :name="3" prefix="3" title="Configure Event/Action" />
+          <q-step :name="3" prefix="3" title="Configure Events / Actions" />
         </q-stepper>
       </div>
       <div class="col flex flex-center">
@@ -112,16 +112,10 @@ export default {
   computed: {
     PlaylistName: {
       get() {
-        if (widgetStore.nowPlayListName.startsWith('@_Temp_Playlist_')) {
-          const fileName = widgetStore.nowPlayListName.split('_')[2] + '_' + widgetStore.nowPlayListName.split('_')[3]
-          NovoDS.value._Playlist_Name = fileName
-          return NovoDS.value._Playlist_Name
-        } else {
-          return NovoDS.value._Playlist_Name
-        }
+        return NovoDS.value._Playlist_Name
       },
       set(newValue) {
-        NovoDS.value._Playlist_Name = newValue
+        widgetStore.SetPlaylistName(newValue)
         window.myAPI.watchSameFileName(newValue, widgetStore.nowPlayListPath).then(isUnique => {
           widgetStore.SetCheckVali(isUnique)
         }).catch(error => {
@@ -131,14 +125,6 @@ export default {
     },
     checkVali() {
       return widgetStore.checkVali
-    },
-    _Playlist_Name: {
-      get() {
-        return widgetStore.NovoDS._Playlist_Name
-      },
-      set(val) {
-        widgetStore.NovoDS._Playlist_Name = val
-      }
     },
     _Description: {
       get() {
@@ -158,9 +144,16 @@ export default {
     }
   },
   mounted() {
+    this.getFileName()
     // this.getFilePath()
   },
   methods: {
+    getFileName() {
+      if (widgetStore.nowPlayListName.startsWith('@_Temp_Playlist_')) {
+        const fileName = widgetStore.nowPlayListName.split('_')[2] + '_' + widgetStore.nowPlayListName.split('_')[3]
+        widgetStore.SetPlaylistName(fileName)
+      }
+    },
     getFilePath() {
       widgetStore.SetFilePath()
     },
