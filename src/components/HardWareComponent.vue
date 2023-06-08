@@ -373,7 +373,7 @@
         </div>
       </q-tab-panel>
       <!-- TCP/IP -->
-      <q-tab-panel :name="2" style="min-height: 380px;">
+      <q-tab-panel :name="2" style="height: 380px;">
         <div class="row">
           <div class="col">
             <!-- TCPIP Receive -->

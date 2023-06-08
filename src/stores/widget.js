@@ -613,12 +613,10 @@ export const useWidgetListStore = defineStore('widgetList', {
         if (RawData.NovoDS.Hardware && RawData.NovoDS.Hardware.TcpIpSettings) {
           const tcpip = RawData.NovoDS.Hardware.TcpIpSettings
 
-          if (tcpip.ReceivedCommands.Command === undefined || tcpip.ReceivedCommands.Command === null || tcpip.ReceivedCommands.Command === '') { // add this condition
+          if (tcpip.ReceivedCommands && tcpip.ReceivedCommands.Command === '') {
             tcpip.ReceivedCommands.Command = []
-          } else if (!Array.isArray(tcpip.ReceivedCommands)) {
+          } else if (tcpip.ReceivedCommands && tcpip.ReceivedCommands.Command && !Array.isArray(tcpip.ReceivedCommands.Command)) {
             tcpip.ReceivedCommands.Command = [tcpip.ReceivedCommands.Command]
-          } else if (tcpip.ReceivedCommands.length === 1 && tcpip.ReceivedCommands[0] === '') {
-            tcpip.ReceivedCommands.Command = []
           }
           if (tcpip.TcpIp === undefined || tcpip.TcpIp === null || tcpip.TcpIp === '') { // add this condition
             tcpip.TcpIp = []
