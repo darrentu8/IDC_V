@@ -16,6 +16,7 @@
           <img class="q-mr-xs" src="~assets/icon/settings.svg" color="" size="xs" />
           Page Settings
         </q-btn>
+        <q-separator vertical class="" />
         <q-btn class="" unelevated rounded color="" text-color="grey-9" size="md" @click="showHardware()">
           <img class="q-mr-xs" src="~assets/icon/adjustments.svg" color="white" size="xs" />
           Configure Events / Actions
