@@ -737,7 +737,7 @@ export const useWidgetListStore = defineStore('widgetList', {
     },
     SetRowCol(chooseLayout, data) {
       this.NovoDS.Pages.Page._Row = data.rowCount
-      this.NovoDS.Pages.Page._Column = data.colCount
+      this.NovoDS.Pages.Page._Column = data.columnCount
       this.NovoDS.Pages.Page._Layout = chooseLayout
     },
     // Section

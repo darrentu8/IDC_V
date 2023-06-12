@@ -26,8 +26,11 @@
       </div>
     </q-item-label>
   </q-toolbar>
-  <GridViewStaticSelect :view-layout="_layout" :view-row-count="_Row" :view-col-count="_Column" :view-width="280" />
-  <q-separator class="q-ma-md" />
+  <div class="q-pb-md">
+    <GridViewStaticSelect :view-layout="_layout" :view-row-count="_Row" :view-col-count="_Column"
+      :view-width="isPortrait ? 130 : 280" :isPortrait="isPortrait" />
+  </div>
+  <q-separator class="q-mx-md q-mt-md" />
   <q-item-label header class="q-pb-xs text-dark text-bold">Widget</q-item-label>
   <q-scroll-area style="height: calc(100% - 250px);">
     <q-list padding>
@@ -51,7 +54,7 @@ const layouts = computed(() => layoutStore.layout)
 const NovoDS = computed(() => widgetStore.NovoDS)
 const widgetLists = computed(() => widgetStore.GetWidgetListData)
 const widgetOptions = computed(() => widgetStore.widgetOption)
-
+const isPortrait = computed(() => widgetStore.GetIsPortrait)
 const focus = ref(false)
 const dfocus = ref(false)
 const PlaylistName = computed({

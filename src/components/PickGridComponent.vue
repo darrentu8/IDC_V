@@ -19,7 +19,11 @@
         <div class="q-pt-sm" v-if="currentGrid">
           <div class="row">
             <div class="col-6">
-              <div class="text-body2 q-pa-sm">
+              <div v-if="isPortrait" class="text-body2 q-pa-sm">
+                Grids :
+                {{ `(${currentGrid.columnCount} x ${currentGrid.rowCount})` }}
+              </div>
+              <div v-if="!isPortrait" class="text-body2 q-pa-sm">
                 Grids :
                 {{ `(${currentGrid.rowCount} x ${currentGrid.columnCount})` }}
               </div>
@@ -42,7 +46,13 @@
             </div>
             <div class="col-6">
               <div class="text-body2 q-pa-sm">Dimension :
-                <span v-if="currentCube">
+                <span v-if="currentCube && isPortrait">
+                  {{ `(${(currentCube.w / currentGrid.columnCount *
+                    1080).toFixed(0)}` }} x
+                  {{ `${(currentCube.h / currentGrid.rowCount *
+                    1920).toFixed(0)})` }}
+                </span>
+                <span v-if="currentCube && !isPortrait">
                   {{ `(${(currentCube.w / currentGrid.columnCount *
                     1920).toFixed(0)}` }} x
                   {{ `${(currentCube.h / currentGrid.rowCount *
@@ -52,7 +62,22 @@
             </div>
             <div class="col-6">
               <div class="text-body2 q-pa-sm">Ratio :
-                <span v-if="currentCube">
+                <span v-if="currentCube && isPortrait">
+                  {{ `(${(currentCube.w / currentGrid.columnCount * 1080).toFixed(0)
+                    /
+                    getMaxCommonDivisorData((currentCube.w / currentGrid.columnCount *
+                      1080).toFixed(0),
+                      (currentCube.h
+                        /
+                        currentGrid.rowCount * 1920).toFixed(0))}` }} /
+                  {{ `${(currentCube.h / currentGrid.rowCount * 1920).toFixed(0) /
+                    getMaxCommonDivisorData((currentCube.w / currentGrid.columnCount *
+                      1080).toFixed(0),
+                      (currentCube.h
+                        /
+                        currentGrid.rowCount * 1920).toFixed(0))})` }}
+                </span>
+                <span v-if="currentCube && !isPortrait">
                   {{ `(${(currentCube.w / currentGrid.columnCount * 1920).toFixed(0)
                     /
                     getMaxCommonDivisorData((currentCube.w / currentGrid.columnCount *
@@ -72,7 +97,7 @@
           </div>
         </div>
         <div v-if="currentGrid" class="q-pt-md flex flex-center">
-          <div style="width:100%">
+          <div :style="{ width: isPortrait ? '164px' : '100%' }">
             <grid-layout :layout="currentGrid.layout" :col-num="currentGrid.columnCount" :maxRows="currentGrid.rowCount"
               :row-height="265 / currentGrid.rowCount" :is-draggable="false" :is-resizable="false"
               :vertical-compact="true" :margin="[0, 0]">

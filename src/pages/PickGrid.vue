@@ -66,7 +66,7 @@ export default {
       panel: 'pickGrid',
       customGrid: {
         rowCount: 1,
-        colCount: 1,
+        columnCount: 1,
         layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }]
       },
       isChooseCustom: false,

@@ -6,7 +6,7 @@ export const useLayoutStore = defineStore('layout', {
   state: () => ({
     layout: {
       rowCount: '',
-      colCount: '',
+      columnCount: '',
       layout: []
     },
     currentSection: 0
