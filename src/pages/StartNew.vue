@@ -45,7 +45,7 @@
                 </div>
                 <div class="col">
                   <div class="text-body2 text-bold">Screen Orientation</div>
-                  <div class="text-body2 q-mt-sm">Landscape</div>
+                  <div class="text-body2 q-mt-sm">{{ layoutType }}</div>
                 </div>
               </div>
               <div class="col" v-show="false">
@@ -134,12 +134,22 @@ export default {
         widgetStore.NovoDS._Description = val
       }
     },
-    deviceType: {
-      get() {
-        return widgetStore.NovoDS._Model_Type
-      },
-      set(val) {
-        widgetStore.NovoDS._Model_Type = val
+    deviceType() {
+      return widgetStore.NovoDS._Model_Type ? widgetStore.NovoDS._Model_Type : widgetStore.fileData.ModelType
+    },
+    layoutType() {
+      const type = widgetStore.NovoDS.Pages.Page._Orientation ? widgetStore.NovoDS.Pages.Page._Orientation : widgetStore.fileData.Orientation
+      switch (type) {
+        case 0:
+          return 'Landscape'
+        case 1:
+          return 'Portrait'
+        case 2:
+          return 'Landscape(flipped)'
+        case 3:
+          return 'Portrait(flipped)'
+        default:
+          return ''
       }
     }
   },

@@ -1,4 +1,4 @@
-import { ContentTypeEnum } from './constant'
+import { ContentTypeEnum, DeviceScreenOrientationEnum } from './constant'
 import iconMedia from 'src/assets/icons/Media.svg'
 import iconText from 'src/assets/icons/Text.svg'
 import iconWebpage from 'src/assets/icons/Webpage.svg'
@@ -8,7 +8,7 @@ import iconTwitter from 'src/assets/icons/Twitter.svg'
 import iconClock from 'src/assets/icons/Clock.svg'
 import iconSocialMedia from 'src/assets/icons/Social Media.svg'
 import iconNA from 'src/assets/icons/NA.svg'
-import { Notify, colors } from 'quasar'
+import { Dialog, colors } from 'quasar'
 
 export const isXmlValTrue = val => {
   if (typeof val === 'string') {
@@ -80,13 +80,20 @@ const dataURLtoFile = (dataUrl, fileName) => {
 export const generatePlaylistName = () => {
   const data = new Date()
   const yyyy = data.getFullYear()
-  const mm = data.getMonth() + 1
-  const dd = data.getDate() + 1
-  const hh = data.getHours()
-  const min = data.getMinutes()
-  const ss = data.getSeconds()
+  const mm = formatZero(data.getMonth() + 1, 2)
+  const dd = formatZero(data.getDate(), 2)
+  const hh = formatZero(data.getHours(), 2)
+  const min = formatZero(data.getMinutes(), 2)
+  const ss = formatZero(data.getSeconds(), 2)
 
   return `Playlist_${yyyy}${mm}${dd}${hh}${min}${ss}`
+}
+
+const formatZero = (num, len) => {
+  if (String(num).length > len) {
+    return num
+  }
+  return (Array(len).join(0) + num).slice(-len)
 }
 
 export const isVideoFile = filename => {
@@ -116,48 +123,84 @@ export const isColorTransparent = (colorHex) => {
   return colorRgb.a === 0
 }
 
-export const deleteNotify = (text = 'Are you sure to delete?') => {
+export const showActionDialog = (title = 'Confirm', message = 'Are you sure to delete?') => {
   return new Promise((resolve, reject) => {
-    Notify.create({
-      message: text,
-      color: 'red',
-      position: 'center',
-      multiLine: true,
+    Dialog.create({
+      class: 'brand-round q-pa-md',
+      message,
+      title,
       icon: 'warning',
-      actions: [{
-        label: 'Dismiss',
-        color: 'white'
-      }, {
-        label: 'Yes',
-        color: 'white',
-        handler: () => {
-          resolve()
-        }
-      }]
+      ok: {
+        unelevated: true,
+        color: 'primary',
+        rounded: true
+      },
+      cancel: {
+        flat: true,
+        color: 'grey',
+        rounded: true
+      },
+      persistent: true
+    }).onOk(() => {
+      resolve()
     })
   })
 }
 
-export const getMarginCssByPositionArg = (arg) => {
+export const getMarginCssByPositionArg = (arg, fontSize, textColor) => {
+  let marginTop = ''
+  let marginBottom = ''
+  let textAlign = ''
+
   if (arg === 'Left-Top') {
-    return '0 auto auto 0'
+    textAlign = 'left'
+    marginBottom = 'auto'
   } else if (arg === 'Left-Center') {
-    return 'auto auto auto 0'
+    textAlign = 'left'
   } else if (arg === 'Left-Bottom') {
-    return 'auto auto 0 0'
+    textAlign = 'left'
+    marginTop = 'auto'
   } else if (arg === 'Center-Top') {
-    return '0 auto auto auto'
+    textAlign = 'center'
+    marginBottom = 'auto'
   } else if (arg === 'Center-Center') {
-    return 'auto'
+    textAlign = 'center'
   } else if (arg === 'Center-Bottom') {
-    return 'auto auto 0 auto'
+    textAlign = 'center'
+    marginTop = 'auto'
   } else if (arg === 'Right-Top') {
-    return '0 0 auto auto'
+    textAlign = 'right'
+    marginBottom = 'auto'
   } else if (arg === 'Right-Center') {
-    return 'auto 0 auto auto'
+    textAlign = 'right'
   } else if (arg === 'Right-Bottom') {
-    return 'auto 0 0 auto'
+    textAlign = 'right'
+    marginTop = 'auto'
   }
 
-  return 'auto'
+  return {
+    'margin-top': marginTop,
+    'margin-bottom': marginBottom,
+    'text-align': textAlign,
+    'font-size': `${fontSize}px`,
+    'line-height': `${fontSize}px`,
+    color: `${textColor}`
+  }
+}
+
+export const saveFile = (data, fileName) => {
+  const blob = new Blob([data], {
+    type: 'application/zip'
+  })
+  const objectURL = URL.createObjectURL(blob)
+  const aTag = document.createElement('a')
+  aTag.href = objectURL
+  aTag.download = fileName
+  aTag.click()
+  URL.revokeObjectURL(objectURL)
+}
+
+export const isPortrait = orientation => {
+  return orientation === DeviceScreenOrientationEnum.portrait ||
+    orientation === DeviceScreenOrientationEnum.portrait_flipped
 }

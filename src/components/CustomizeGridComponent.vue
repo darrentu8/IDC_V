@@ -16,7 +16,7 @@
           <div class="q-pa-sm" style="width:120px"> Column Count:</div>
           <div class="col">
             <q-input class="brand-round-m" @update:model-value="changeColCount" dense outlined type="number" :min="1"
-              :max="20" v-model.number="grid.colCount" />
+              :max="20" v-model.number="grid.columnCount" />
           </div>
         </div>
         <div class="row q-pa-sm">
@@ -24,15 +24,15 @@
         </div>
       </div>
       <q-separator vertical class="q-ma-md" />
-      <div class="col">
+      <div class="col flex flex-center">
         <div class="row relative-position overflow-hidden"
-          :style="{ width: `${width}px`, height: `${width * 1080 / 1920}px` }">
+          :style="{ width: isPortrait ? '40%' : '100%', height: `${width * 1080 / 1920}px` }">
           <div class="absolute fit column">
             <div class="col row" v-for="i in grid.rowCount" :key="i">
-              <div class="col" style="border: 1px solid lightgray;padding: 5px;" v-for="k in grid.colCount" :key="k" />
+              <div class="col" style="border: 1px solid lightgray;padding: 5px;" v-for="k in grid.columnCount" :key="k" />
             </div>
           </div>
-          <grid-layout class="fit" v-model:layout="grid.layout" :col-num="grid.colCount" :maxRows="grid.rowCount"
+          <grid-layout class="fit" v-model:layout="grid.layout" :col-num="grid.columnCount" :maxRows="grid.rowCount"
             :prevent-collision="true" :responsive="false" :vertical-compact="false"
             :row-height="((width * 1080 / 1920) / grid.rowCount)" :margin="[0, 0]">
             <grid-item v-for="(item, index) in grid.layout" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i"
@@ -53,44 +53,55 @@
 </template>
 
 <script>
+import { computed } from 'vue'
 import { uid } from 'quasar'
-
-const isCubeInGrid = (row, col, layout) => {
-  let isCubeInGrid = false
-  layout.forEach(grid => {
-    if (col >= grid.x && col < (grid.x + grid.w) && row >= grid.y && row < (grid.y + grid.h)) {
-      isCubeInGrid = true
-    }
-  })
-
-  return isCubeInGrid
-}
-
-const fixOutsideGrid = (row, col, layout) => {
-  const deleteArray = []
-  layout.forEach(grid => {
-    if (grid.x >= col || grid.y >= row) {
-      deleteArray.push(grid)
-    } else if (grid.x + grid.w > col) {
-      grid.w = col - grid.x
-    } else if (grid.y + grid.h > row) {
-      grid.h = row - grid.y
-    }
-  })
-
-  deleteArray.forEach(grid => {
-    const index = layout.findIndex(o => o.i === grid.i)
-    layout.splice(index, 1)
-  })
-}
+import { useWidgetListStore } from 'src/stores/widget'
 
 export default {
   name: 'CustomizeGrid',
+  setup() {
+    const widgetStore = useWidgetListStore()
+    const isPortrait = computed(() => widgetStore.GetIsPortrait)
+
+    const isCubeInGrid = (row, col, layout) => {
+      let isCubeInGrid = false
+      layout.forEach(grid => {
+        if (col >= grid.x && col < (grid.x + grid.w) && row >= grid.y && row < (grid.y + grid.h)) {
+          isCubeInGrid = true
+        }
+      })
+
+      return isCubeInGrid
+    }
+
+    const fixOutsideGrid = (row, col, layout) => {
+      const deleteArray = []
+      layout.forEach(grid => {
+        if (grid.x >= col || grid.y >= row) {
+          deleteArray.push(grid)
+        } else if (grid.x + grid.w > col) {
+          grid.w = col - grid.x
+        } else if (grid.y + grid.h > row) {
+          grid.h = row - grid.y
+        }
+      })
+
+      deleteArray.forEach(grid => {
+        const index = layout.findIndex(o => o.i === grid.i)
+        layout.splice(index, 1)
+      })
+    }
+    return {
+      isPortrait,
+      isCubeInGrid,
+      fixOutsideGrid
+    }
+  },
   data() {
     return {
       grid: {
         rowCount: 4,
-        colCount: 10,
+        columnCount: 10,
         layout: [{ x: 0, y: 0, w: 5, h: 2, i: uid() }, { x: 0, y: 2, w: 5, h: 2, i: uid() }, { x: 5, y: 0, w: 5, h: 4, i: uid() }]
       },
       width: 700
@@ -98,15 +109,15 @@ export default {
   },
   methods: {
     changeRowCount(val) {
-      fixOutsideGrid(val, this.grid.colCount, this.grid.layout)
+      this.fixOutsideGrid(val, this.grid.columnCount, this.grid.layout)
     },
     changeColCount(val) {
-      fixOutsideGrid(this.grid.rowCount, val, this.grid.layout)
+      this.fixOutsideGrid(this.grid.rowCount, val, this.grid.layout)
     },
     addGrid() {
       for (let row = 0; row < this.grid.rowCount; ++row) {
-        for (let col = 0; col < this.grid.colCount; ++col) {
-          if (!isCubeInGrid(row, col, this.grid.layout)) {
+        for (let col = 0; col < this.grid.columnCount; ++col) {
+          if (!this.isCubeInGrid(row, col, this.grid.layout)) {
             this.grid.layout.push({
               x: col,
               y: row,

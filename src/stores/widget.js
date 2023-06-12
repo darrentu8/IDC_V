@@ -2,10 +2,21 @@ import { defineStore } from 'pinia'
 import { useLayoutStore } from './layout'
 import { useEventListStore } from './event'
 import { uid } from 'quasar'
+import { DeviceScreenOrientationEnum } from 'src/js/constant'
 
 export const useWidgetListStore = defineStore('widgetList', {
   state: () => ({
-    fileData: null,
+    fileData: {
+      Focus: 'signage',
+      LayoutType: 0,
+      ModelType: '',
+      OpenNew: true,
+      Reload: false,
+      Orientation: 0,
+      Playlist: '',
+      PlaylistPath: '',
+      Preview: null
+    },
     checkVali: true,
     nowPlayListName: '',
     nowPlayListFolder: '',
@@ -15,7 +26,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       _Description: '',
       _Layout_Type: '0', // 0 -> Grid, 1 -> Flexible
       _Playlist_Name: '',
-      _Model_Type: 'DS310',
+      _Model_Type: '',
       _Interactive: true,
       Hardware: {
         GPIOSettings: {
@@ -129,7 +140,7 @@ export const useWidgetListStore = defineStore('widgetList', {
           _Layout: '',
           _Column: '',
           _Row: '',
-          _Orientation: '0', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
+          _Orientation: '', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
           _FreeDesignerMode: false, // Grid -> false, Flexi -> true
           _AudioSource: '0',
           _BackgroundImage: '',
@@ -259,7 +270,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       _Description: '',
       _Layout_Type: '0', // 0 -> Grid, 1 -> Flexible
       _Playlist_Name: '',
-      _Model_Type: 'DS310',
+      _Model_Type: '',
       _Interactive: true,
       Hardware: {
         GPIOSettings: {
@@ -373,7 +384,7 @@ export const useWidgetListStore = defineStore('widgetList', {
           _Layout: '',
           _Column: '',
           _Row: '',
-          _Orientation: '0', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
+          _Orientation: '', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
           _FreeDesignerMode: false, // Grid -> false, Flexi -> true
           _AudioSource: '0',
           _BackgroundImage: '',
@@ -438,6 +449,14 @@ export const useWidgetListStore = defineStore('widgetList', {
     }
   }),
   getters: {
+    GetIsLandscape() {
+      return this.fileData.Orientation === DeviceScreenOrientationEnum.landscape ||
+        this.fileData.Orientation === DeviceScreenOrientationEnum.landscape_flipped
+    },
+    GetIsPortrait() {
+      return this.fileData.Orientation === DeviceScreenOrientationEnum.portrait ||
+        this.fileData.Orientation === DeviceScreenOrientationEnum.portrait_flipped
+    },
     GetLoading() {
       return this.loading
     },
@@ -552,7 +571,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       Object.assign(this.NovoDS, this.defaultNovoDS)
     },
     // 開新檔案
-    async SetOpenNewFileData(fileData = null) {
+    async SetOpenNewFileData(fileData) {
       try {
         console.log('fileData', fileData)
         this.fileData = fileData
@@ -572,7 +591,7 @@ export const useWidgetListStore = defineStore('widgetList', {
 
         this._Layout_Type = fileData.LayoutType
         this._Model_Type = fileData.ModelType
-        this.NovoDS.Pages.Page._Orientation = fileData.Orientation || '0'
+        this.NovoDS.Pages.Page._Orientation = fileData.Orientation || 0
         this.NovoDS.Pages.Page._FreeDesignerMode = 'false'
 
         return 'new'
@@ -718,7 +737,7 @@ export const useWidgetListStore = defineStore('widgetList', {
     },
     SetRowCol(chooseLayout, data) {
       this.NovoDS.Pages.Page._Row = data.rowCount
-      this.NovoDS.Pages.Page._Column = data.colCount
+      this.NovoDS.Pages.Page._Column = data.columnCount
       this.NovoDS.Pages.Page._Layout = chooseLayout
     },
     // Section

@@ -18,8 +18,9 @@
                 <div class="text-body1 text-bold" style="margin:auto 20px">Select layout </div>
               </div>
               <PickGridComponent ref="pickGrid" :customGrid="customGrid" :isChooseCustom="isChooseCustom"
-                :currentGrid="currentGrid" :layoutNumber="layoutNumber" :currentCubeId="currentCubeId" @toPanel="toPanel"
-                @setCustom="setCustom" @setCurrentCubeId="setCurrentCubeId" />
+                :currentGrid="currentGrid" :layoutNumber="layoutNumber" :currentGridIndex="currentGridIndex"
+                :currentCubeId="currentCubeId" @toPanel="toPanel" @setCustom="setCustom"
+                @setCurrentCubeId="setCurrentCubeId" />
             </q-tab-panel>
             <q-tab-panel name="customGrid" class="q-pa-none">
               <CustomizeGridComponent ref="customGrid" />
@@ -65,12 +66,13 @@ export default {
       panel: 'pickGrid',
       customGrid: {
         rowCount: 1,
-        colCount: 1,
+        columnCount: 1,
         layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }]
       },
       isChooseCustom: false,
       currentGrid: null,
-      layoutNumber: '',
+      currentGridIndex: null,
+      layoutNumber: 0,
       currentCubeId: null,
       lock: true
     }
@@ -104,6 +106,7 @@ export default {
       this.layoutNumber = customData.layoutNumber
       this.currentGrid = customData.currentGrid
       this.currentCubeId = customData.currentCubeId
+      this.currentGridIndex = customData.currentGridIndex
       this.isChooseCustom = customData.isChooseCustom
       this.lock = customData.lock
     },
@@ -112,7 +115,7 @@ export default {
     },
     saveCustom() {
       const customGrid = this.$refs.customGrid.grid
-
+      console.log('customGrid', customGrid)
       this.customGrid = customGrid
       this.currentGrid = customGrid
       this.currentCubeId = customGrid.layout[0].i

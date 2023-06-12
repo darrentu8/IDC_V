@@ -10,8 +10,9 @@
         <q-tab-panels v-model="panel" keep-alive animated>
           <q-tab-panel name="pickGrid" class="q-pa-none">
             <PickGridComponent ref="pickGrid" :customGrid="customGrid" :isChooseCustom="isChooseCustom"
-              :currentGrid="currentGrid" :layoutNumber="layoutNumber" :currentCubeId="currentCubeId" @toPanel="toPanel"
-              @setCustom="setCustom" @setCurrentCubeId="setCurrentCubeId" />
+              :currentGrid="currentGrid" :currentGridIndex='currentGridIndex' :layoutNumber="layoutNumber"
+              :currentCubeId="currentCubeId" @toPanel="toPanel" @setCustom="setCustom"
+              @setCurrentCubeId="setCurrentCubeId" />
           </q-tab-panel>
           <q-tab-panel name="customGrid" class="q-pa-none">
             <CustomizeGridComponent ref="customGrid" />
@@ -37,10 +38,12 @@
 
 <script>
 import { uid } from 'quasar'
+import { useWidgetListStore } from 'src/stores/widget'
 import PickGridComponent from 'src/components/PickGridComponent.vue'
 import CustomizeGridComponent from 'src/components/CustomizeGridComponent.vue'
 import { useLayoutStore } from 'src/stores/layout'
 import { getMaxCommonDivisor } from 'src/js/math'
+const widgetStore = useWidgetListStore()
 
 export default {
   name: 'PickGrid',
@@ -53,12 +56,13 @@ export default {
       panel: 'pickGrid',
       customGrid: {
         rowCount: 1,
-        colCount: 1,
+        columnCount: 1,
         layout: [{ x: 0, y: 0, w: 1, h: 1, i: uid() }]
       },
       isChooseCustom: false,
       currentGrid: null,
-      layoutNumber: '',
+      layoutNumber: 0,
+      currentGridIndex: null,
       currentCubeId: null,
       lock: true
     }
@@ -66,6 +70,9 @@ export default {
   computed: {
     currentCube() {
       return this.currentGrid.layout.find(o => o.i === this.currentCubeId)
+    },
+    isLandscape() {
+      return widgetStore.GetIsLandscape
     }
   },
   methods: {
@@ -89,7 +96,7 @@ export default {
       if (this.isChooseCustom) {
         layoutStore.SetLayout('@Frame Designer@', this.currentGrid)
       } else {
-        layoutStore.SetLayout('Landscape' + ' ' + this.layoutNumber, this.currentGrid)
+        layoutStore.SetLayout((this.isLandscape ? 'Landscape' : 'Portrait') + ' ' + this.layoutNumber, this.currentGrid)
       }
       this.hide()
     },
@@ -103,6 +110,7 @@ export default {
       this.layoutNumber = customData.layoutNumber
       this.currentGrid = customData.currentGrid
       this.currentCubeId = customData.currentCubeId
+      this.currentGridIndex = customData.currentGridIndex
       this.isChooseCustom = customData.isChooseCustom
       this.lock = customData.lock
     },
@@ -111,7 +119,7 @@ export default {
     },
     saveCustom() {
       const customGrid = this.$refs.customGrid.grid
-
+      console.log('customGrid', customGrid)
       this.customGrid = customGrid
       this.currentGrid = customGrid
       this.currentCubeId = customGrid.layout[0].i
