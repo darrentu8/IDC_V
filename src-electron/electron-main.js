@@ -3,6 +3,25 @@ import { initialize, enable } from '@electron/remote/main'
 import path from 'path'
 import os from 'os'
 
+const socket = require('express')()
+const http = require('http').Server(socket)
+const io = require('socket.io')(http)
+const port = process.env.PORT || 3002
+
+// socket.get('/', function (req, res) {
+//   res.sendFile(__dirname + '/index.html')
+// })
+
+socket.get('/texto/:text', (req, res) => {
+  const params = req.params.text
+  io.emit('texto', params)
+  res.send({ mensagem: `Texto: ${params}` })
+})
+
+http.listen(port, function () {
+  console.log('WEBSOCKET listening on *:' + port)
+})
+
 initialize()
 
 // needed in case process is undefined under Linux

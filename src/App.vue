@@ -7,8 +7,9 @@
 <script>
 // import X2js from 'x2js'
 // import ConfirmDialog from 'src/components/dialog/ConfirmDialog.vue'
+import io from 'socket.io-client'
 import useQuasar from 'quasar/src/composables/use-quasar.js'
-import { defineComponent } from 'vue'
+import { ref, defineComponent } from 'vue'
 import { useWidgetListStore } from 'src/stores/widget'
 import { useRouter } from 'vue-router'
 export default defineComponent({
@@ -17,6 +18,8 @@ export default defineComponent({
     const $q = useQuasar()
     const router = useRouter()
     const widgetStore = useWidgetListStore()
+    const message = ref('')
+    const socket = ref({})
 
     async function loadConfigData() {
       try {
@@ -116,7 +119,19 @@ export default defineComponent({
 
     // 開始監聽
     startWatching()
-    return { loadConfigData, startWatching }
+    return {
+      message,
+      socket,
+      loadConfigData,
+      startWatching
+    }
+  },
+  created() {
+    this.socket = io('http://192.168.0.14:3000')
+    this.sendMessage()
+    this.socket.on('message', message => {
+      this.message = message.text
+    })
   },
   async mounted() {
     try {
@@ -136,7 +151,12 @@ export default defineComponent({
     }
   },
   methods: {
-
+    sendMessage() {
+      this.socket.emit('message', {
+        autor: 'quasar-framework',
+        text: 'Socket.io on quasar!'
+      })
+    }
   }
 })
 </script>
