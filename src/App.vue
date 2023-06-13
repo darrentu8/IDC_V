@@ -127,7 +127,7 @@ export default defineComponent({
     }
   },
   created() {
-    this.socket = io('http://192.168.0.14:3000')
+    this.socket = io('http://localhost:6001')
     this.sendMessage()
     this.socket.on('message', message => {
       this.message = message.text
@@ -153,8 +153,7 @@ export default defineComponent({
   methods: {
     sendMessage() {
       this.socket.emit('message', {
-        autor: 'quasar-framework',
-        text: 'Socket.io on quasar!'
+        text: 'Interactive Playlist Editor Connected!'
       })
     }
   }
