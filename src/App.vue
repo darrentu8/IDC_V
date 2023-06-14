@@ -8,141 +8,22 @@
 // import X2js from 'x2js'
 // import ConfirmDialog from 'src/components/dialog/ConfirmDialog.vue'
 import io from 'socket.io-client'
-import useQuasar from 'quasar/src/composables/use-quasar.js'
 import { ref, defineComponent } from 'vue'
 import { useWidgetListStore } from 'src/stores/widget'
-import { useRouter } from 'vue-router'
 export default defineComponent({
   name: 'App',
   setup() {
-    const $q = useQuasar()
-    const router = useRouter()
     const widgetStore = useWidgetListStore()
     const socket = ref({})
 
-    // async function loadConfigData() {
-    //   try {
-    //     const loadConfigData = await window.myAPI?.loadConfigFile()
-    //     if (loadConfigData !== null) {
-    //       if (loadConfigData.openType === 'new') {
-    //         console.log('new')
-    //         widgetStore.SetOpenNewFileData(loadConfigData.propFileData)
-    //         router.push({ path: '/' })
-    //       } else if (loadConfigData.openType === 'load') {
-    //         widgetStore.SetNovoDS(loadConfigData.propFileData, loadConfigData.result)
-    //         router.push({ path: '/flow' })
-    //       } else {
-    //         console.log(loadConfigData)
-    //         $q.dialog({
-    //           title: 'File format error',
-    //           okBtn: 'ok'
-    //         }).onOk(() => {
-    //         }).onCancel(() => {
-    //           console.log('Cancel')
-    //         }).onDismiss(() => {
-    //           console.log('Called on OK or Cancel')
-    //         })
-    //       }
-    //     }
-    //   } catch (error) {
-    //     console.error(error)
-    //   }
-    // }
-
-    let watchJsonPromise = null // 定義一個變數來存放 Promise 物件
-
-    // 啟動監聽
-    function startWatching() {
-      if (watchJsonPromise) {
-        console.log('Watch is already running')
-        return
-      }
-      watchJsonPromise = window.myAPI.watchJson().then((loadConfigData) => {
-        console.log('Received data:', loadConfigData)
-        if (loadConfigData !== null) {
-          if (loadConfigData.openType === 'new') {
-            console.log('Reopen new')
-            window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
-            widgetStore.ResetNovoDS()
-            widgetStore.SetOpenNewFileData(loadConfigData.propFileData).then((result) => {
-              console.log('SetOpenNewFileData', result)
-              router.push({ path: '/' })
-            })
-          } else if (loadConfigData.openType === 'load') {
-            console.log('Reopen load')
-            window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
-            widgetStore.SetNovoDS(loadConfigData.propFileData, loadConfigData.result).then((result) => {
-              console.log('SetNovoDS', result)
-              router.push({ path: '/flow' })
-              const dialog = $q.dialog({
-                title: widgetStore.NovoDS._Playlist_Name + ' ' + 'opening...',
-                message: 'Processing... 0%',
-                progress: true, // we enable default settings
-                persistent: false, // we want the user to not be able to close it
-                ok: false // we want the user to not be able to close it
-              })
-
-              // we simulate some progress here...
-              let percentage = 0
-              const interval = setInterval(() => {
-                percentage = Math.min(100, percentage + Math.floor(Math.random() * 22))
-
-                // we update the dialog
-                dialog.update({
-                  message: `Processing... ${percentage}%`
-                })
-
-                // if we are done, we're gonna close it
-                if (percentage === 100) {
-                  clearInterval(interval)
-                  setTimeout(() => {
-                    dialog.hide()
-                  }, 150)
-                }
-              }, 100)
-            })
-          }
-        }
-
-        // 然後重新啟動監聽
-        watchJsonPromise = null // 清除 Promise 物件
-        startWatching()
-      }).catch((error) => {
-        console.log('Error:', error)
-
-        // 然後重新啟動監聽
-        watchJsonPromise = null // 清除 Promise 物件
-        startWatching()
-      })
-    }
-
-    // 開始監聽
-    startWatching()
     return {
       socket,
-      widgetStore,
-      startWatching
+      widgetStore
     }
   },
   created() {
   },
   async mounted() {
-    // try {
-    //   await new Promise((resolve, reject) => {
-    //     window.myAPI?.checkJson().then(() => {
-    //       console.log('interactive.json is ready')
-    //       resolve()
-    //     }).catch((err) => {
-    //       console.error(`Failed to create interactive.json: ${err}`)
-    //       reject(err)
-    //     })
-    //   })
-    //   await this.loadConfigData()
-    //   await this.startWatching()
-    // } catch (err) {
-    //   console.error(err)
-    // }
-
     this.socket = io('ws://localhost:6001')
     this.sendMessage()
     this.socket.on('connect', function () {
@@ -155,6 +36,10 @@ export default defineComponent({
       // }
       if (msg.Command === 'OpenNew') {
         console.log('msg', msg)
+        if (this.widgetStore.nowPlayListPath) {
+          window.myAPI.delTempFolder(this.widgetStore.nowPlayListPath)
+          this.widgetStore.ResetNovoDS()
+        }
         this.widgetStore.SetOpenNewFileData(msg)
         this.$router.push({ path: '/' })
       } else if (msg.Command === 'Reload' && msg.Playlist && msg.PlaylistPath) {
