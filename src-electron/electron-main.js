@@ -3,23 +3,38 @@ import { initialize, enable } from '@electron/remote/main'
 import path from 'path'
 import os from 'os'
 
-const socket = require('express')()
-const http = require('http').Server(socket)
-const io = require('socket.io')(http)
-const port = process.env.PORT || 3002
-
-// socket.get('/', function (req, res) {
-//   res.sendFile(__dirname + '/index.html')
-// })
-
-socket.get('/texto/:text', (req, res) => {
-  const params = req.params.text
-  io.emit('texto', params)
-  res.send({ mensagem: `Texto: ${params}` })
+const express = require('express')
+const ex = express()
+const http = require('http').createServer(ex)
+const io = require('socket.io')(http, {
+  cors: {
+    origin: '*'
+  }
+})
+const port = process.env.PORT || 6001
+const Data = {
+  Command: 'Reload',
+  LayoutType: 0,
+  ModelType: 'DS310',
+  Orientation: 0,
+  Playlist: 'Playlist_20230614164611aaa',
+  PlaylistPath: '/Users/darren/NovoDS.PlayLists/',
+  Preview: {
+    Path: '',
+    Ready: false
+  }
+}
+// 在客戶端中發送事件
+io.on('connection', (socket) => {
+  socket.emit('message', 'Hello, server!')
+  socket.on('message', (data) => {
+    console.log(`Received message: ${data.text}`)
+  })
+  socket.emit('message', Data)
 })
 
-http.listen(port, function () {
-  console.log('WEBSOCKET listening on *:' + port)
+http.listen(port, () => {
+  console.log(`WebSocket listening on *:${port}`)
 })
 
 initialize()

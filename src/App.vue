@@ -18,37 +18,36 @@ export default defineComponent({
     const $q = useQuasar()
     const router = useRouter()
     const widgetStore = useWidgetListStore()
-    const message = ref('')
     const socket = ref({})
 
-    async function loadConfigData() {
-      try {
-        const loadConfigData = await window.myAPI?.loadConfigFile()
-        if (loadConfigData !== null) {
-          if (loadConfigData.openType === 'new') {
-            console.log('new')
-            widgetStore.SetOpenNewFileData(loadConfigData.propFileData)
-            router.push({ path: '/' })
-          } else if (loadConfigData.openType === 'load') {
-            widgetStore.SetNovoDS(loadConfigData.propFileData, loadConfigData.result)
-            router.push({ path: '/flow' })
-          } else {
-            console.log(loadConfigData)
-            $q.dialog({
-              title: 'File format error',
-              okBtn: 'ok'
-            }).onOk(() => {
-            }).onCancel(() => {
-              console.log('Cancel')
-            }).onDismiss(() => {
-              console.log('Called on OK or Cancel')
-            })
-          }
-        }
-      } catch (error) {
-        console.error(error)
-      }
-    }
+    // async function loadConfigData() {
+    //   try {
+    //     const loadConfigData = await window.myAPI?.loadConfigFile()
+    //     if (loadConfigData !== null) {
+    //       if (loadConfigData.openType === 'new') {
+    //         console.log('new')
+    //         widgetStore.SetOpenNewFileData(loadConfigData.propFileData)
+    //         router.push({ path: '/' })
+    //       } else if (loadConfigData.openType === 'load') {
+    //         widgetStore.SetNovoDS(loadConfigData.propFileData, loadConfigData.result)
+    //         router.push({ path: '/flow' })
+    //       } else {
+    //         console.log(loadConfigData)
+    //         $q.dialog({
+    //           title: 'File format error',
+    //           okBtn: 'ok'
+    //         }).onOk(() => {
+    //         }).onCancel(() => {
+    //           console.log('Cancel')
+    //         }).onDismiss(() => {
+    //           console.log('Called on OK or Cancel')
+    //         })
+    //       }
+    //     }
+    //   } catch (error) {
+    //     console.error(error)
+    //   }
+    // }
 
     let watchJsonPromise = null // 定義一個變數來存放 Promise 物件
 
@@ -120,35 +119,87 @@ export default defineComponent({
     // 開始監聽
     startWatching()
     return {
-      message,
       socket,
-      loadConfigData,
+      widgetStore,
       startWatching
     }
   },
   created() {
-    this.socket = io('http://localhost:6001')
-    this.sendMessage()
-    this.socket.on('message', message => {
-      this.message = message.text
-    })
   },
   async mounted() {
-    try {
-      await new Promise((resolve, reject) => {
-        window.myAPI?.checkJson().then(() => {
-          console.log('interactive.json is ready')
-          resolve()
-        }).catch((err) => {
-          console.error(`Failed to create interactive.json: ${err}`)
-          reject(err)
-        })
-      })
-      await this.loadConfigData()
-      await this.startWatching()
-    } catch (err) {
-      console.error(err)
-    }
+    // try {
+    //   await new Promise((resolve, reject) => {
+    //     window.myAPI?.checkJson().then(() => {
+    //       console.log('interactive.json is ready')
+    //       resolve()
+    //     }).catch((err) => {
+    //       console.error(`Failed to create interactive.json: ${err}`)
+    //       reject(err)
+    //     })
+    //   })
+    //   await this.loadConfigData()
+    //   await this.startWatching()
+    // } catch (err) {
+    //   console.error(err)
+    // }
+
+    this.socket = io('ws://localhost:6001')
+    this.sendMessage()
+    this.socket.on('connect', function () {
+      console.log('Your socket is connected!')
+    })
+    this.socket.on('message', (message) => {
+      const msg = message
+      // if (typeof message === 'string') {
+      //   msg = JSON.parse(message)
+      // }
+      if (msg.Command === 'OpenNew') {
+        console.log('msg', msg)
+        this.widgetStore.SetOpenNewFileData(msg)
+        this.$router.push({ path: '/' })
+      } else if (msg.Command === 'Reload' && msg.Playlist && msg.PlaylistPath) {
+        console.log('msg', msg)
+        const targetFile = msg.PlaylistPath + msg.Playlist
+        const result = window.myAPI?.transXml(targetFile)
+        if (result) {
+          console.log('result', result)
+          if (this.widgetStore.nowPlayListPath) {
+            window.myAPI.delTempFolder(this.widgetStore.nowPlayListPath)
+          }
+          this.widgetStore.SetNovoDS(msg, result).then((result) => {
+            console.log('SetNovoDS', result)
+            this.$router.push({ path: '/flow' })
+            const dialog = this.$q.dialog({
+              title: this.widgetStore.NovoDS._Playlist_Name + ' ' + 'opening...',
+              message: 'Processing... 0%',
+              progress: true, // we enable default settings
+              persistent: false, // we want the user to not be able to close it
+              ok: false // we want the user to not be able to close it
+            })
+
+            // we simulate some progress here...
+            let percentage = 0
+            const interval = setInterval(() => {
+              percentage = Math.min(100, percentage + Math.floor(Math.random() * 22))
+
+              // we update the dialog
+              dialog.update({
+                message: `Processing... ${percentage}%`
+              })
+
+              // if we are done, we're gonna close it
+              if (percentage === 100) {
+                clearInterval(interval)
+                setTimeout(() => {
+                  dialog.hide()
+                }, 150)
+              }
+            }, 100)
+          })
+        }
+      }
+      console.log('msg', msg)
+    })
   },
   methods: {
     sendMessage() {

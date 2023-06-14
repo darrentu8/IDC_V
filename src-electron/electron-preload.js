@@ -81,6 +81,29 @@ contextBridge.exposeInMainWorld('myAPI', {
         return Promise.reject(error)
       })
   },
+  transXml(propFilePath) {
+    console.log('propFilePath', propFilePath)
+
+    const targetFile = path.join(propFilePath, xmlFileName)
+    try {
+      if (!fs.existsSync(targetFile)) {
+        throw new Error(`XML file read error: ${xmlFileName}`)
+      }
+
+      console.log('targetFile', targetFile)
+      const x2js = new X2js({
+        attributePrefix: '_'
+      })
+
+      const xml = fs.readFileSync(targetFile, 'utf-8')
+      const parser = x2js.xml2js(xml)
+
+      return parser
+    } catch (error) {
+      console.error(error)
+      // Handle the error here or re-throw it.
+    }
+  },
   // 檢查建立Json
   checkJson: () => {
     const appPath = getDirFolder()
