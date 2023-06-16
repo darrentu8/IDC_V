@@ -125,10 +125,13 @@
 
 <script setup>
 import { computed, reactive } from 'vue'
+import { useLayoutStore } from 'src/stores/layout'
 import ColorPicker from 'src/components/ColorPicker.vue'
 import { useWidgetListStore } from 'src/stores/widget'
 import { ARGB2RGBA, RGBA2ARGB } from 'src/js/helper'
 
+const layoutStore = useLayoutStore()
+const currentSection = computed(() => layoutStore.GetCurrentSection)
 const widgetStore = useWidgetListStore()
 
 const widgetListData = computed(() => widgetStore.GetWidgetListData)

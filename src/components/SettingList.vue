@@ -28,7 +28,7 @@ import { useWidgetListStore } from 'src/stores/widget'
 import { ContentTypeEnum } from 'src/js/constant'
 
 import MediaSettings from './slots/MediaSettings.vue'
-// import TextSettings from './slots/TextSettings.vue'
+import TextSettings from './slots/TextSettings.vue'
 // import WebpageSettings from './slots/WebpageSettings.vue'
 // import YoutubeSettings from './slots/YoutubeSettings.vue'
 // import TwitterSettings from './slots/TwitterSettings.vue'
