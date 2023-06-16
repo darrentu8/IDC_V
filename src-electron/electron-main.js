@@ -13,11 +13,11 @@ const io = require('socket.io')(http, {
 })
 const port = process.env.PORT || 6001
 const Data = {
-  Command: 'Reload',
+  Command: 'OpenNew',
   LayoutType: 0,
   ModelType: 'DS310',
-  Orientation: 0,
-  Playlist: 'Playlist_20230614164611aaa',
+  Orientation: 3,
+  Playlist: '',
   PlaylistPath: '/Users/darren/NovoDS.PlayLists/',
   Preview: {
     Path: '',

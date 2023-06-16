@@ -22,8 +22,6 @@ export default defineComponent({
     }
   },
   created() {
-  },
-  async mounted() {
     this.socket = io('ws://localhost:6001')
     this.sendMessage()
     this.socket.on('connect', function () {
@@ -85,6 +83,8 @@ export default defineComponent({
       }
       console.log('msg', msg)
     })
+  },
+  async mounted() {
   },
   methods: {
     sendMessage() {
