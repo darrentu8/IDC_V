@@ -207,27 +207,27 @@ export const useWidgetListStore = defineStore('widgetList', {
       {
         label: 'MEDIA',
         value: 'GPIO_Media',
-        icon: '~assets/icon/photograph.svg',
+        icon: '~assets/icons/GPIO_Media.svg',
+        disable: false
+      },
+      {
+        label: 'TEXT',
+        value: 'TEXT',
+        icon: '~assets/icons/TEXT.svg',
+        disable: false
+      },
+      {
+        label: 'TWITTER',
+        value: 'TWITTER',
+        icon: '~assets/icons/TWITTER.svg',
+        disable: false
+      },
+      {
+        label: 'WEBPAGE',
+        value: 'WEBPAGE',
+        icon: '~assets/icons/WEBPAGE.svg',
         disable: false
       }
-      // {
-      //   label: 'TEXT',
-      //   value: 'TEXT',
-      //   icon: '~assets/icon/text.png',
-      // disable: false
-      // },
-      // {
-      //   label: 'TWITTER',
-      //   value: 'TWITTER',
-      //   icon: '~assets/icon/twitter.png',
-      // disable: false
-      // },
-      // {
-      //   label: 'WEBPAGE',
-      //   value: 'WEBPAGE',
-      //   icon: '~assets/icon/webpage.png',
-      // disable: false
-      // }
     ],
     gpioRoleOption: [
       {

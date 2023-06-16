@@ -11,10 +11,10 @@
         option-value="value" option-label="label" emit-value
         @update:model-value="(val) => $emit('updateContentType', { Index, val })">
         <template v-slot:append>
-          <img v-if="ContentType == 'TEXT'" src="~assets/icon/text.png" />
-          <img v-if="ContentType == 'GPIO_Media'" src="~assets/icon/photograph.svg" />
-          <img v-if="ContentType == 'TWITTER'" src="~assets/icon/twitter.png" />
-          <img v-if="ContentType == 'WEBPAGE'" src="~assets/icon/webpage.png" />
+          <img v-if="ContentType == 'GPIO_Media'" src="~assets/icons/GPIO_Media.svg" style="max-height: 30px;" />
+          <img v-if="ContentType == 'TEXT'" src="~assets/icons/TEXT.svg" style="max-height: 30px;" />
+          <img v-if="ContentType == 'TWITTER'" src="~assets/icons/TWITTER.svg" style="max-height: 30px;" />
+          <img v-if="ContentType == 'WEBPAGE'" src="~assets/icons/WEBPAGE.svg" style="max-height: 30px;" />
         </template>
         <template v-slot:no-option>
           <q-item>
@@ -29,7 +29,10 @@
               <q-item-label>{{ scope.opt.label }}</q-item-label>
             </q-item-section>
             <q-item-section avatar>
-              <img src="~assets/icon/photograph.svg" />
+              <img v-if="scope.opt.value == 'GPIO_Media'" src="~assets/icons/GPIO_Media.svg" style="max-height: 30px;" />
+              <img v-if="scope.opt.value == 'TEXT'" src="~assets/icons/TEXT.svg" style="max-height: 30px;" />
+              <img v-if="scope.opt.value == 'TWITTER'" src="~assets/icons/TWITTER.svg" style="max-height: 30px;" />
+              <img v-if="scope.opt.value == 'WEBPAGE'" src="~assets/icons/WEBPAGE.svg" style="max-height: 30px;" />
             </q-item-section>
           </q-item>
         </template>

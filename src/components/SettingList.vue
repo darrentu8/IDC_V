@@ -1,24 +1,19 @@
 <template>
   <div class="q-pa-md">
-    <q-item-label header class="border-b q-mb-lg text-dark text-bold">Media settings</q-item-label>
-    <!-- <q-item-label class="q-mx-md">
-      <q-input v-model="widgetListData[currentSection].name" label="Standard" />
-    </q-item-label> -->
-    <div v-if="widgetListData[currentSection]._ContentType" class="q-px-md"><!-- <q-select label="Select Hardware" class="theme sub q-mt-sm" bg-color="white"
-        rounded :disable="EventData._next_state_id === ''" emit-value map-options outlined dense
-        v-model="EventData._gpio_number" :options="eventTypeOptions[EventData._type].hardwareOptions" option-value="value"
-        option-label="text">
-      </q-select> -->
-      <q-item-label header class="q-pa-none q-mb-sm">View Type</q-item-label>
-      <q-select bg-color="white" emit-value map-options outlined rounded dense
-        v-model="widgetListData[currentSection].Content._showType" :options="WidgetOptions.showTypeChoice"
-        option-value="value" option-label="text" class="q-mb-md" />
-      <q-item-label header class="q-pa-none q-mb-sm">Scale type</q-item-label>
-      <q-select bg-color="white" emit-value map-options outlined rounded dense
-        v-model="widgetListData[currentSection].Content._scaleType" :options="WidgetOptions.scaleTypeChoice"
-        option-value="value" option-label="text" class="q-mb-md" />
-      <q-checkbox v-model="Dpo" label="Detect picture orientatioin" color="" />
-      <q-checkbox v-model="Ifa" label="Stretch video to fill region" color="" />
+    <div v-if="widgetListData[currentSection]._ContentType">
+      <MediaSettings v-if="widgetListData[currentSection]._ContentType === ContentType.Media" />
+      <TextSettings v-if="widgetListData[currentSection]._ContentType === ContentType.Text" />
+      <!-- <WebpageSettings v-if="widgetListData[currentSection]._ContentType === ContentType.Web_Page" />
+      <YoutubeSettings v-if="widgetListData[currentSection]._ContentType === ContentType.Youtube" />
+      <TwitterSettings v-if="widgetListData[currentSection]._ContentType === 'Misc' &&
+        widgetListData[currentSection].Content._widgetType === ContentType.Twitter" />
+      <WeatherSettings v-if="widgetListData[currentSection]._ContentType === 'Misc' &&
+        widgetListData[currentSection].Content._widgetType === ContentType.Weather" />
+      <ClockSettings v-if="widgetListData[currentSection]._ContentType === 'Misc' &&
+        widgetListData[currentSection].Content._widgetType === ContentType.Clock" />
+      <SocialMediaSettings v-if="widgetListData[currentSection]._ContentType === 'Misc 2' &&
+        (widgetListData[currentSection].Content._widgetType === 'Instagram' ||
+          widgetListData[currentSection].Content._widgetType === 'Facebook')" /> -->
     </div>
     <div v-else class="justify-center flex items-center" style="height: 200px;">
       <!-- <div class="text-grey">
@@ -28,57 +23,24 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, computed } from 'vue'
+<script setup>
+import { computed } from 'vue'
 import { useLayoutStore } from 'src/stores/layout'
 import { useWidgetListStore } from 'src/stores/widget'
-import WidgetOptions from './widget/WidgetOptions'
+import { ContentTypeEnum } from 'src/js/constant'
+
+import MediaSettings from './slots/MediaSettings.vue'
+// import TextSettings from './slots/TextSettings.vue'
+// import WebpageSettings from './slots/WebpageSettings.vue'
+// import YoutubeSettings from './slots/YoutubeSettings.vue'
+// import TwitterSettings from './slots/TwitterSettings.vue'
+// import ClockSettings from './slots/ClockSettings.vue'
+// import WeatherSettings from './slots/WeatherSettings.vue'
+// import SocialMediaSettings from './slots/SocialMediaSettings.vue'
+const ContentType = ContentTypeEnum
+
 const layoutStore = useLayoutStore()
 const currentSection = computed(() => layoutStore.GetCurrentSection)
 const widgetStore = useWidgetListStore()
 const widgetListData = computed(() => widgetStore.GetWidgetListData)
-// const currentState = computed(() => widgetStore.GetCurrentState)
-export default defineComponent({
-  name: 'SettingList',
-  components: {
-  },
-  computed: {
-    Dpo: {
-      get() {
-        const layoutStore = useLayoutStore()
-        const currentSection = layoutStore.currentSection
-        return JSON.parse(widgetStore.NovoDS.Pages.Page.Section[currentSection].Content._Detect_Picture_Orientation)
-      },
-      set(newValue) {
-        const layoutStore = useLayoutStore()
-        const currentSection = layoutStore.currentSection
-        widgetStore.NovoDS.Pages.Page.Section[currentSection].Content._Detect_Picture_Orientation = newValue
-      }
-    },
-    Ifa: {
-      get() {
-        const layoutStore = useLayoutStore()
-        const currentSection = layoutStore.currentSection
-        return JSON.parse(widgetStore.NovoDS.Pages.Page.Section[currentSection].Content._isVideoFillArea)
-      },
-      set(newValue) {
-        const layoutStore = useLayoutStore()
-        const currentSection = layoutStore.currentSection
-        widgetStore.NovoDS.Pages.Page.Section[currentSection].Content._isVideoFillArea = newValue
-      }
-    }
-  },
-  setup() {
-    return {
-      widgetListData,
-      currentSection,
-      WidgetOptions,
-      data: {
-        name: '',
-        showType: '',
-        scaleType: ''
-      }
-    }
-  }
-})
 </script>
