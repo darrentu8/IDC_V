@@ -8,7 +8,7 @@ export const DeviceScreenOrientationEnum = {
 }
 
 export const ContentTypeEnum = {
-  Media: 'Media',
+  Media: 'GPIO_Media',
   Text: 'Text',
   Web_Page: 'Web Page',
   Youtube: 'Youtube',

@@ -212,20 +212,20 @@ export const useWidgetListStore = defineStore('widgetList', {
       },
       {
         label: 'TEXT',
-        value: 'TEXT',
-        icon: '~assets/icons/TEXT.svg',
+        value: 'Text',
+        icon: '~assets/icons/Text.svg',
         disable: false
       },
       {
         label: 'TWITTER',
-        value: 'TWITTER',
-        icon: '~assets/icons/TWITTER.svg',
+        value: 'Twitter',
+        icon: '~assets/icons/Twitter.svg',
         disable: false
       },
       {
         label: 'WEBPAGE',
-        value: 'WEBPAGE',
-        icon: '~assets/icons/WEBPAGE.svg',
+        value: 'Web Page',
+        icon: '~assets/icons/Web Page.svg',
         disable: false
       }
     ],

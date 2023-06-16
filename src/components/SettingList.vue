@@ -1,9 +1,8 @@
 <template>
-  <div class="q-pa-md">
-    <div v-if="widgetListData[currentSection]._ContentType">
-      <MediaSettings v-if="widgetListData[currentSection]._ContentType === ContentType.Media" />
-      <TextSettings v-if="widgetListData[currentSection]._ContentType === ContentType.Text" />
-      <!-- <WebpageSettings v-if="widgetListData[currentSection]._ContentType === ContentType.Web_Page" />
+  <div v-if="widgetListData[currentSection]._ContentType">
+    <MediaSettings v-if="widgetListData[currentSection]._ContentType === ContentType.Media" />
+    <TextSettings v-if="widgetListData[currentSection]._ContentType === ContentType.Text" />
+    <!-- <WebpageSettings v-if="widgetListData[currentSection]._ContentType === ContentType.Web_Page" />
       <YoutubeSettings v-if="widgetListData[currentSection]._ContentType === ContentType.Youtube" />
       <TwitterSettings v-if="widgetListData[currentSection]._ContentType === 'Misc' &&
         widgetListData[currentSection].Content._widgetType === ContentType.Twitter" />
@@ -14,12 +13,11 @@
       <SocialMediaSettings v-if="widgetListData[currentSection]._ContentType === 'Misc 2' &&
         (widgetListData[currentSection].Content._widgetType === 'Instagram' ||
           widgetListData[currentSection].Content._widgetType === 'Facebook')" /> -->
-    </div>
-    <div v-else class="justify-center flex items-center" style="height: 200px;">
-      <!-- <div class="text-grey">
+  </div>
+  <div v-else class="justify-center flex items-center" style="height: 200px;">
+    <!-- <div class="text-grey">
         Please select a widget first
       </div> -->
-    </div>
   </div>
 </template>
 

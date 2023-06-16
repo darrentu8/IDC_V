@@ -7,17 +7,18 @@
     <div class="col-6">
       <div class="q-pa-sm">Visual effect</div>
       <div class="col">
-        <q-select dense outlined bg-color="white" v-model="widgetListData.Content._showType"
+        <q-select dense outlined bg-color="white" v-model="widgetListData[currentSection].Content._showType"
           :options="['Static', 'Horizontal Scrolling', 'Vertical Scrolling', 'QR Code']" />
       </div>
     </div>
   </div>
   <div class="row q-pa-sm">
-    <template v-if="widgetListData.Content._showType !== 'QR Code' && widgetListData.Content._showType !== 'Rich Text'">
+    <template
+      v-if="widgetListData[currentSection].Content._showType !== 'QR Code' && widgetListData[currentSection].Content._showType !== 'Rich Text'">
       <div class="q-mr-md" style="width:200px">
         <div class="q-pa-sm">Font name</div>
         <div class="col">
-          <q-select dense outlined bg-color="white" v-model="widgetListData.Content._font"
+          <q-select dense outlined bg-color="white" v-model="widgetListData[currentSection].Content._font"
             :options="['Roboto-Light', 'Roboto-Bold', 'Roboto-Italic', 'Roboto-BoldItalic', 'Roboto-LightItalic',
               'Roboto-Thin', 'Roboto-ThinItalic', 'RobotoCondensed-Regular', 'RobotoCondensed-Bold', 'RobotoCondensed-Italic', 'RobotoCondensed-BoldItalic',
               'DroidSerif-Regular', 'DroidSerif-Bold', 'DroidSerif-Italic', 'DroidSerif-BoldItalic', 'DroidSans', 'DroidSans-Bold', 'DroidSansMono']" />
@@ -26,12 +27,12 @@
       <div class="q-mr-md" style="width:80px">
         <div class="q-pa-sm">Size</div>
         <div class="col">
-          <q-input dense outlined v-model="widgetListData.Content._fontSize" type="number" bg-color="white" :min="1"
-            :max="1024" />
+          <q-input dense outlined v-model="widgetListData[currentSection].Content._fontSize" type="number"
+            bg-color="white" :min="1" :max="1024" />
         </div>
       </div>
     </template>
-    <template v-if="widgetListData.Content._showType === 'Static'">
+    <template v-if="widgetListData[currentSection].Content._showType === 'Static'">
       <div class="q-mr-md" style="width:140px">
         <div class="q-pa-sm">&nbsp;</div>
         <div class="row botton-group  flex flex-center">
@@ -68,26 +69,29 @@
   </div>
   <div class="row q-pa-sm">
     <template
-      v-if="widgetListData.Content._showType === 'Horizontal Scrolling' || widgetListData.Content._showType === 'Vertical Scrolling'">
+      v-if="widgetListData[currentSection].Content._showType === 'Horizontal Scrolling' || widgetListData[currentSection].Content._showType === 'Vertical Scrolling'">
       <div class="col-3">
         <div class="q-pa-sm">Speed</div>
         <div class="col">
-          <q-select emit-value map-options dense outlined bg-color="white" v-model="widgetListData.Content._speed"
+          <q-select emit-value map-options dense outlined bg-color="white"
+            v-model="widgetListData[currentSection].Content._speed"
             :options="[{ value: 'Low', label: 'Low' }, { value: 'Medium', label: 'Medium' }, { value: 'High', label: 'High' }]" />
         </div>
       </div>
     </template>
-    <template v-if="widgetListData.Content._showType === 'Horizontal Scrolling'">
+    <template v-if="widgetListData[currentSection].Content._showType === 'Horizontal Scrolling'">
       <div class="col-3 q-pl-md">
         <div class="q-pa-sm">Direction</div>
         <div class="col">
-          <q-select emit-value map-options dense outlined bg-color="white" v-model="widgetListData.Content._direction"
+          <q-select emit-value map-options dense outlined bg-color="white"
+            v-model="widgetListData[currentSection].Content._direction"
             :options="[{ value: 'Right to Left', label: 'Right to Left' }, { value: 'Left to Right', label: 'Left to Right' }]" />
         </div>
       </div>
     </template>
   </div>
-  <template v-if="widgetListData.Content._showType !== 'QR Code' && widgetListData.Content._showType !== 'Rich Text'">
+  <template
+    v-if="widgetListData[currentSection].Content._showType !== 'QR Code' && widgetListData[currentSection].Content._showType !== 'Rich Text'">
     <div class="row q-pa-sm">
       <div class="col">
         <div class="q-pa-sm">Text color</div>
@@ -97,7 +101,7 @@
       </div>
     </div>
   </template>
-  <template v-if="widgetListData.Content._showType !== 'Rich Text'">
+  <template v-if="widgetListData[currentSection].Content._showType !== 'Rich Text'">
     <div class="row q-pa-sm">
       <div class="col">
         <div class="q-pa-sm">Background color</div>
@@ -114,7 +118,7 @@
   <q-separator />
   <div class="flex">
     <div class="q-pa-md full-width">
-      <q-input v-model="widgetListData.Content._Text" outlined="" bg-color="white" type="textarea" />
+      <q-input v-model="widgetListData[currentSection].Content._Text" outlined="" bg-color="white" type="textarea" />
     </div>
   </div>
 </template>
