@@ -24,7 +24,7 @@
           <div class="col-12">
             <q-radio v-model="background.type" label="Background Color" class="q-mb-sx" :val="1" />
             <div class="col-12 q-mx-lg q-mt-sm">
-              <ColorPicker @changeColor="changeBackgroundColor" v-model:selectedColor="background.color.selectedColor"
+              <ColorPicker @changeColor="changeBackgroundColor" v-model:selectedColor="backgroundColor"
                 v-model:colors="background.color.options" />
             </div>
           </div>
@@ -71,7 +71,7 @@
 <script setup>
 import { computed, reactive } from 'vue'
 import { useWidgetListStore } from 'src/stores/widget'
-import { getColorFile, isColorTransparent } from 'src/js/helper'
+import { ARGB2RGBA, RGBA2ARGB, getColorFile, isColorTransparent } from 'src/js/helper'
 import ColorPicker from 'src/components/ColorPicker.vue'
 
 const widgetStore = useWidgetListStore()
@@ -102,6 +102,14 @@ const background = reactive({
     file: null,
     name: '',
     size: 0
+  }
+})
+const backgroundColor = computed({
+  get() {
+    return ARGB2RGBA(background.color.selectedColor)
+  },
+  set(val) {
+    background.color.selectedColor = RGBA2ARGB(val)
   }
 })
 const audioType = {
@@ -193,6 +201,7 @@ const addBG = async () => {
   }
 }
 const changeBackgroundColor = async (color) => {
+  background.type = 1
   console.log('color', color)
   try {
     if (isColorTransparent(color)) {
