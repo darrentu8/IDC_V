@@ -48,14 +48,18 @@ export const getIconPathWithContentType = (contentType, widgetType) => {
   return iconNA
 }
 
-export const getColorFile = colorHex => {
+export const getColorFile = (colorHex, isARGB, width = 3840, height = 2160) => {
   const canvas = document.createElement('canvas')
-  canvas.width = 3840
-  canvas.height = 2160
+  canvas.width = width
+  canvas.height = height
   const ctx = canvas.getContext('2d')
   ctx.fillStyle = colorHex
-  ctx.fillRect(0, 0, 3840, 2160)
+  ctx.fillRect(0, 0, width, height)
   const dataUrl = canvas.toDataURL('image/png')
+
+  if (isARGB) {
+    colorHex = RGBA2ARGB(colorHex)
+  }
 
   const colorString = colorHex.slice(1).toLowerCase()
   const fileName = `background_color_${colorString}.png`
@@ -121,6 +125,26 @@ export const isColorTransparent = (colorHex) => {
   const colorRgb = hexToRgb(colorHex)
 
   return colorRgb.a === 0
+}
+
+export const ARGB2RGBA = (colorHex) => {
+  if (colorHex.length <= 7) { // standard
+    return colorHex
+  } else if (colorHex.length === 9) { // include a
+    const aString = colorHex.substring(1, 3)
+    const hexString = colorHex.substring(3, 9)
+    return `#${hexString}${aString}`.toUpperCase()
+  }
+}
+
+export const RGBA2ARGB = (colorHex) => {
+  if (colorHex.length <= 7) { // standard
+    return colorHex
+  } else if (colorHex.length === 9) { // include a
+    const aString = colorHex.substring(7, 9)
+    const hexString = colorHex.substring(1, 7)
+    return `#${aString}${hexString}`.toUpperCase()
+  }
 }
 
 export const showActionDialog = (title = 'Confirm', message = 'Are you sure to delete?') => {

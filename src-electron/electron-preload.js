@@ -646,6 +646,21 @@ contextBridge.exposeInMainWorld('myAPI', {
       }
     })
   },
+  removeBGFile: (nowPlayListPath) => {
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve, reject) => {
+      try {
+        // Add this line to delete existing files starting with 'background_color_'
+        fs.readdirSync(nowPlayListPath)
+          .filter(f => f.startsWith('background_color_'))
+          .forEach(f => fs.unlinkSync(path.join(nowPlayListPath, f)))
+        resolve(true)
+      } catch (error) {
+        console.error(`Error writing file to ${nowPlayListPath}: ${error}`)
+        reject(error)
+      }
+    })
+  },
   delTempFolder: async (nowPlayListPath) => {
     if (nowPlayListPath && path.basename(nowPlayListPath).includes('@_Temp_Playlist_')) {
       try {

@@ -23,8 +23,8 @@ const emit = defineEmits(['update:selectedColor', 'update:colors', 'changeColor'
 const colorOptions = ref(props.colors)
 
 onMounted(() => {
-  if (!props.colors.includes(props.selectedColor.toUpperCase())) {
-    colorOptions.value.push(props.selectedColor)
+  if (!props.colors.map(o => o.toUpperCase()).includes(props.selectedColor.toUpperCase())) {
+    colorOptions.value.push(props.selectedColor.toUpperCase())
   }
 })
 

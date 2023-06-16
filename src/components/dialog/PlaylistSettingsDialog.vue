@@ -69,10 +69,13 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { computed, reactive } from 'vue'
 import { useWidgetListStore } from 'src/stores/widget'
 import { getColorFile, isColorTransparent } from 'src/js/helper'
 import ColorPicker from 'src/components/ColorPicker.vue'
+
+const widgetStore = useWidgetListStore()
+const isPortrait = computed(() => widgetStore.GetIsPortrait)
 
 defineProps(['isShow'])
 const emit = defineEmits(['update:isShow'])
@@ -80,7 +83,6 @@ const emit = defineEmits(['update:isShow'])
 const hideDialog = () => {
   emit('update:isShow', false)
 }
-const widgetStore = useWidgetListStore()
 
 const backgroundType = {
   Image: 0,
@@ -194,11 +196,15 @@ const changeBackgroundColor = async (color) => {
   console.log('color', color)
   try {
     if (isColorTransparent(color)) {
-      background.color.file = ''
-      background.color.name = ''
-      background.color.size = 0
+      const result = await window.myAPI.removeBGFile(widgetStore.nowPlayListPath)
+      if (result) {
+        console.log('result', result)
+        background.color.file = ''
+        background.color.name = ''
+        background.color.size = ''
+      }
     } else {
-      const file = getColorFile(color)
+      const file = getColorFile(color, true, isPortrait.value ? 2160 : 3840, isPortrait.value ? 3840 : 2160)
       if (file) {
         console.log('file', file)
         const result = await window.myAPI.writeBGFile(widgetStore.nowPlayListPath, file)
