@@ -3,39 +3,39 @@ import { initialize, enable } from '@electron/remote/main'
 import path from 'path'
 import os from 'os'
 
-const express = require('express')
-const ex = express()
-const http = require('http').createServer(ex)
-const io = require('socket.io')(http, {
-  cors: {
-    origin: '*'
-  }
-})
-const port = process.env.PORT || 6001
-const Data = {
-  Command: 'OpenNew',
-  LayoutType: 0,
-  ModelType: 'DS310',
-  Orientation: 3,
-  Playlist: '',
-  PlaylistPath: '/Users/darren/NovoDS.PlayLists/',
-  Preview: {
-    Path: '',
-    Ready: false
-  }
-}
-// 在客戶端中發送事件
-io.on('connection', (socket) => {
-  socket.emit('message', 'Hello, server!')
-  socket.on('message', (data) => {
-    console.log(`Received message: ${data.text}`)
-  })
-  socket.emit('message', Data)
-})
+// const express = require('express')
+// const ex = express()
+// const http = require('http').createServer(ex)
+// const io = require('socket.io')(http, {
+//   cors: {
+//     origin: '*'
+//   }
+// })
+// const port = process.env.PORT || 6001
+// const Data = {
+//   Command: 'OpenNew',
+//   LayoutType: 0,
+//   ModelType: 'DS310',
+//   Orientation: 3,
+//   Playlist: '',
+//   PlaylistPath: '/Users/darren/NovoDS.PlayLists/',
+//   Preview: {
+//     Path: '',
+//     Ready: false
+//   }
+// }
+// // 在客戶端中發送事件
+// io.on('connection', (socket) => {
+//   socket.emit('message', 'Hello, server!')
+//   socket.on('message', (data) => {
+//     console.log(`Received message: ${data.text}`)
+//   })
+//   socket.emit('message', Data)
+// })
 
-http.listen(port, () => {
-  console.log(`WebSocket listening on *:${port}`)
-})
+// http.listen(port, () => {
+//   console.log(`WebSocket listening on *:${port}`)
+// })
 
 initialize()
 

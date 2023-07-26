@@ -53,7 +53,6 @@
 import { ref, computed } from 'vue'
 import { useWidgetListStore } from 'src/stores/widget'
 import { version } from '../../package.json'
-
 const widgetStore = useWidgetListStore()
 // import { useRouter } from 'vue-router'
 import X2js from 'x2js'
@@ -73,6 +72,7 @@ const leftDrawerOpen = ref(false)
 const rightDrawerOpen = ref(false)
 const checkVali = computed(() => widgetStore.checkVali)
 const isShowPlaylistSettingsDialog = ref(false)
+const emit = defineEmits(['getText'])
 // function toggleLeftDrawer() {
 //   leftDrawerOpen.value = !leftDrawerOpen.value
 // }
@@ -127,7 +127,6 @@ function saveAlert() {
       console.log('result', result)
     }
   }).onCancel(() => {
-    window.myAPI?.closeWatchJson()
     window.myAPI.delTempFolderWithClose(widgetStore.nowPlayListPath)
   }).onDismiss(() => {
   })
@@ -141,34 +140,33 @@ async function preview() {
       const xmlData = x2js.js2xml(novoObj)
       const result = window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
       if (result) {
-        window.myAPI?.writeJson(widgetStore.NovoDS._Playlist_Name).then(() => {
-          const dialog = $q.dialog({
-            title: 'Preview' + ' ' + widgetStore.NovoDS._Playlist_Name + '...',
-            message: 'Processing... 0%',
-            progress: true, // we enable default settings
-            persistent: false, // we want the user to not be able to close it
-            ok: false // we want the user to not be able to close it
+        emit('getText', widgetStore.NovoDS._Playlist_Name)
+        const dialog = $q.dialog({
+          title: 'Preview' + ' ' + widgetStore.NovoDS._Playlist_Name + '...',
+          message: 'Processing... 0%',
+          progress: true, // we enable default settings
+          persistent: false, // we want the user to not be able to close it
+          ok: false // we want the user to not be able to close it
+        })
+
+        // we simulate some progress here...
+        let percentage = 0
+        const interval = setInterval(() => {
+          percentage = Math.min(100, percentage + Math.floor(Math.random() * 22))
+
+          // we update the dialog
+          dialog.update({
+            message: `Processing... ${percentage}%`
           })
 
-          // we simulate some progress here...
-          let percentage = 0
-          const interval = setInterval(() => {
-            percentage = Math.min(100, percentage + Math.floor(Math.random() * 22))
-
-            // we update the dialog
-            dialog.update({
-              message: `Processing... ${percentage}%`
-            })
-
-            // if we are done, we're gonna close it
-            if (percentage === 100) {
-              clearInterval(interval)
-              setTimeout(() => {
-                dialog.hide()
-              }, 150)
-            }
-          }, 100)
-        })
+          // if we are done, we're gonna close it
+          if (percentage === 100) {
+            clearInterval(interval)
+            setTimeout(() => {
+              dialog.hide()
+            }, 150)
+          }
+        }, 100)
       }
     }
   } catch (error) {
@@ -187,7 +185,6 @@ async function leaveSaveFileClose() {
         $q.dialog({
           title: 'Saved successfully!'
         }).onDismiss(() => {
-          window.myAPI?.closeWatchJson()
           window.myAPI.delTempFolderWithClose(widgetStore.nowPlayListPath)
         })
       }
