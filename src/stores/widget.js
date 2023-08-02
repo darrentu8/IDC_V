@@ -580,6 +580,12 @@ export const useWidgetListStore = defineStore('widgetList', {
           // 建立 PlayList Temp
           const NowPlayListFolder = await window.myAPI.setPlayListFolder()
           console.log('NowPlayListFolder', NowPlayListFolder)
+          if (NowPlayListFolder.nowPlayListName.startsWith('@_Temp_Playlist_')) {
+            const fileName = NowPlayListFolder.nowPlayListName.split('_')[2] + '_' + NowPlayListFolder.nowPlayListName.split('_')[3]
+            this.SetPlaylistName(fileName)
+          } else {
+            this.SetPlaylistName(NowPlayListFolder.nowPlayListName)
+          }
           this.nowPlayListName = NowPlayListFolder.nowPlayListName
           this.nowPlayListFolder = NowPlayListFolder.NovoFolder
           this.nowPlayListPath = NowPlayListFolder.NovoFolder + '/' + NowPlayListFolder.nowPlayListName
@@ -756,6 +762,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       this.NovoDS.Pages.Page.Section[Index]._ContentType = ContentType
     },
     SetPlaylistName(val) {
+      console.log('this.NovoDS._Playlist_Name', val)
       this.NovoDS._Playlist_Name = val
     },
     SetCheckVali(val) {

@@ -1,6 +1,9 @@
 <template>
   <q-ajax-bar position="top" color="primary" size="7px" />
   <router-view @getText="sendText" />
+  <!-- <div v-else class="flex flex-center" style="height: 100vh;">
+    <q-spinner color="primary" size="3em" />
+  </div> -->
   <!-- <ConfirmDialog /> -->
 </template>
 
@@ -15,12 +18,21 @@ export default defineComponent({
   mixins: [mixinWebsocket],
   setup() {
     return {
+      hasData: false
     }
   },
   created() {
-    this.initWebsocket()
   },
   async mounted() {
+    this.initWebsocket()
+    // const result = await this.websocketonmessage()
+    // if (result !== undefined) {
+    //   console.log('result', result)
+    //   this.hasData = true
+    //   console.log('this.hasData', this.hasData)
+    // }
+    // console.log('this.hasData', this.hasData)
+    // console.log('result', result)
   },
   methods: {
     sendText(val) {
