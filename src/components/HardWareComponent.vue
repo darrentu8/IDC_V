@@ -70,17 +70,19 @@
                 :key="index" expand-icon-toggle>
                 <template v-slot:header>
                   <q-item-section>
-                    <div class="text-body1">
+                    <div v-if="pin._role === 'keyevent'" class="text-body1">
                       {{ `${index + 1} . ${pin._name || 'No Name'}` }}
-                      {{ `(${pin._role || `Not Set`}` }}
-                      <span v-if="pin._output_value">
-                        /{{ computedGPIOVal(pin._output_value) }}
-                      </span>
-                      <span v-if="pin._key_action">
-                        /{{ computedGPIOVal(pin._key_action) }}
-                      </span>
-                      <span>)
-                      </span>
+                      {{ `(${pin._role || `Not Set`})` }}
+                      <!-- <span v-if="pin._key_action">
+                        ({{ computedGPIOVal(pin._key_action) }})
+                      </span> -->
+                    </div>
+                    <div v-if="pin._role === 'output'" class="text-body1">
+                      {{ `${index + 1} . ${pin.Output[0]._name + '/' + pin.Output[1]._name || 'No Name'}` }}
+                      {{ `(${pin._role || `Not Set`})` }}
+                      <!-- <span v-if="pin._output_value">
+                        ({{ computedGPIOVal(pin.Output[0]._output_value)}} {{ computedGPIOVal(pin.Output[1]._output_value)}})
+                      </span> -->
                     </div>
                   </q-item-section>
                   <q-item-section side>
@@ -91,25 +93,33 @@
                 </template>
                 <q-card class="brand-round-l">
                   <q-card-section>
-                    <q-input clearable placeholder="name" class="brand-round-m" v-model="pin._name" dense outlined />
-                    <q-select clearable class="q-mt-sm brand-round-m" emit-value option-value="value" option-label="text"
-                      placeholder="input" v-model="pin._role" dense outlined :options="gpioRoleOption">
-
-                      <template v-slot:option="scope">
-                        <q-expansion-item dense expand-separator group="somegroup" :default-opened="hasChild(scope)"
-                          header-class="text-weight-bold" :label="scope.opt.title" @click="model = scope.opt.value">
-                          <template v-for="child in scope.opt.children" :key="child.value">
-                            <q-item dense clickable v-ripple v-close-popup
-                              @click="SetPin(index, scope.opt.value, child.value)"
-                              :class="{ 'bg-light-blue-1': pin._role === child.value }">
-                              <q-item-section>
-                                <q-item-label>{{ child.text }}</q-item-label>
-                              </q-item-section>
-                            </q-item>
-                          </template>
-                        </q-expansion-item>
-                      </template>
-                    </q-select>
+                    <q-select class="q-mt-sm brand-round-m" emit-value map-options option-value="value"
+                      option-label="text" placeholder="input" v-model="pin._role" dense outlined :options="gpioRoleOption"
+                      @update:model-value="(val) => SetPin(index, val)" />
+                    <div v-if="pin._role === 'output' && pin.Output" class="row q-mt-md">
+                      <div class="col-3 flex items-center">
+                        <div class="">Output 0</div>
+                      </div>
+                      <div class="col-9">
+                        <q-input placeholder="name" class="brand-round-m" v-model="pin.Output[0]._name" dense outlined />
+                      </div>
+                      <div class="col-3 q-mt-md flex items-center">
+                        <div class="">Output 1</div>
+                      </div>
+                      <div class="col-9 q-mt-md">
+                        <q-input placeholder="name" class="brand-round-m" v-model="pin.Output[1]._name" dense outlined />
+                      </div>
+                    </div>
+                    <div v-if="pin._role === 'keyevent'" class="row q-mt-md">
+                      <div class="col-4">
+                        <q-select class="brand-round-m q-pr-md" emit-value map-options option-value="value"
+                          option-label="text" placeholder="input" v-model="pin._key_action" dense outlined
+                          :options="gpioKeyeventOption" />
+                      </div>
+                      <div class="col-8">
+                        <q-input placeholder="name" class="brand-round-m" v-model="pin._name" dense outlined />
+                      </div>
+                    </div>
                   </q-card-section>
                 </q-card>
               </q-expansion-item>
@@ -697,6 +707,9 @@ export default {
     gpioRoleOption() {
       return widgetStore.gpioRoleOption
     },
+    gpioKeyeventOption() {
+      return widgetStore.gpioKeyeventOption
+    },
     computedGPIOVal() {
       return function (state) {
         switch (state) {
@@ -953,17 +966,35 @@ export default {
         this.loading = false
       }
     },
-    SetPin(index, role, childValue) {
+    SetPin(index, role) {
       this.GPIO[index]._role = role
       if (role === 'output') {
-        this.GPIO[index]._output_value = childValue
         if (this.GPIO[index]._key_action) {
+          const OutputData = [
+            {
+              _name: 'output01',
+              _uuid: uid(),
+              _output_value: 1
+            },
+            {
+              _name: 'output02',
+              _uuid: uid(),
+              _output_value: 0
+            }
+          ]
+          this.GPIO[index].Output = OutputData
+          delete this.GPIO[index]._name // 刪除_output_value屬性
           delete this.GPIO[index]._key_action // 刪除_output_value屬性
+          delete this.GPIO[index]._uuid // 刪除_output_value屬性
         }
       } else {
-        this.GPIO[index]._key_action = childValue
+        this.GPIO[index]._name = 'GPIO' + (index + 1)
+        this.GPIO[index]._key_action = 'down'
         if (this.GPIO[index]._output_value) {
           delete this.GPIO[index]._output_value // 刪除_output_value屬性
+        }
+        if (this.GPIO[index].Output) {
+          delete this.GPIO[index].Output // 刪除Output屬性
         }
       }
     }

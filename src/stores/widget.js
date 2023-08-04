@@ -50,34 +50,78 @@ export const useWidgetListStore = defineStore('widgetList', {
             {
               _gpio_number: 3,
               _uuid: uid(),
-              _name: 'GPIO3',
               _isEnabled: false,
               _role: 'output',
-              _output_value: '0'
+              _output_value: '0',
+              Output: [
+                {
+                  _name: 'output01',
+                  _uuid: uid(),
+                  _output_value: 1
+                },
+                {
+                  _name: 'output02',
+                  _uuid: uid(),
+                  _output_value: 0
+                }
+              ]
             },
             {
               _gpio_number: 4,
               _uuid: uid(),
-              _name: 'GPIO4',
               _isEnabled: false,
               _role: 'output',
-              _output_value: '0'
+              _output_value: '0',
+              Output: [
+                {
+                  _name: 'output01',
+                  _uuid: uid(),
+                  _output_value: 1
+                },
+                {
+                  _name: 'output02',
+                  _uuid: uid(),
+                  _output_value: 0
+                }
+              ]
             },
             {
               _gpio_number: 5,
               _uuid: uid(),
-              _name: 'GPIO5',
               _isEnabled: false,
               _role: 'output',
-              _output_value: '0'
+              _output_value: '0',
+              Output: [
+                {
+                  _name: 'output01',
+                  _uuid: uid(),
+                  _output_value: 1
+                },
+                {
+                  _name: 'output02',
+                  _uuid: uid(),
+                  _output_value: 0
+                }
+              ]
             },
             {
               _gpio_number: 6,
               _uuid: uid(),
-              _name: 'GPIO6',
               _isEnabled: false,
               _role: 'output',
-              _output_value: '0'
+              _output_value: '0',
+              Output: [
+                {
+                  _name: 'output01',
+                  _uuid: uid(),
+                  _output_value: 1
+                },
+                {
+                  _name: 'output02',
+                  _uuid: uid(),
+                  _output_value: 0
+                }
+              ]
             }
           ]
         },
@@ -231,32 +275,22 @@ export const useWidgetListStore = defineStore('widgetList', {
     ],
     gpioRoleOption: [
       {
-        title: 'Output',
-        value: 'output',
-        children: [
-          {
-            text: '0',
-            value: '0'
-          },
-          {
-            text: '1',
-            value: '1'
-          }
-        ]
+        text: 'Output',
+        value: 'output'
       },
       {
-        title: 'Key event',
-        value: 'keyevent',
-        children: [
-          {
-            text: 'Low',
-            value: 'down'
-          },
-          {
-            text: 'High',
-            value: 'up'
-          }
-        ]
+        text: 'Key event',
+        value: 'keyevent'
+      }
+    ],
+    gpioKeyeventOption: [
+      {
+        text: 'Low',
+        value: 'down'
+      },
+      {
+        text: 'High',
+        value: 'up'
       }
     ],
     currentState: 0,

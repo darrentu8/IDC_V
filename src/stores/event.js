@@ -281,17 +281,17 @@ export const useEventListStore = defineStore('eventList', {
       const widgetStore = useWidgetListStore()
       const mapGPIO = widgetStore?.NovoDS?.Hardware?.GPIOSettings?.GPIO
         ?.filter(gpio => gpio && gpio._role === 'output')
-        ?.map(gpio => ({
-          _uuid: gpio._uuid || uid(),
-          _name: gpio._gpio_number + ' ' + gpio._name + ' ' + gpio._role + ' ' + gpio._output_value,
+        ?.map(gpio => gpio.Output?.map(outputData => ({
+          _uuid: outputData._uuid || uid(),
+          _name: outputData._name,
           _id: gpio._gpio_number,
           _role: 'output',
           _isEnabled: gpio._isEnabled,
           _gpio_number: gpio._gpio_number,
           _type: 'gpio',
-          ...(gpio._key_action && { _key_action: gpio._key_action }), // add key_action if it exists
-          ...(gpio._output_value && { _output_value: gpio._output_value }) // add output_value if it exists
-        })) || []
+          ...(outputData._output_value && { _output_value: outputData._output_value }) // add output_value if it exists
+        })))
+        .flat() || []
 
       const mapRs232 = widgetStore?.NovoDS?.Hardware?.Rs232Settings?.Rs232
         ?.filter(rs232 => rs232 && rs232.Command)
