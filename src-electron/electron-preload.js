@@ -367,6 +367,9 @@ contextBridge.exposeInMainWorld('myAPI', {
   },
   async storeToXML(playListName, nowPlayListFolder, nowPlayListPath, NovoDsData) {
     try {
+      if (typeof playListName === 'number') {
+        playListName = playListName.toString()
+      }
       const newPlayListPath = path.join(nowPlayListFolder, playListName)
       const xmlData = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + NovoDsData
       const { targetFile, xmlData: data } = await writeAndCopyFolder(nowPlayListPath, newPlayListPath, xmlData)

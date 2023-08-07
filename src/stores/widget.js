@@ -49,18 +49,16 @@ export const useWidgetListStore = defineStore('widgetList', {
             },
             {
               _gpio_number: 3,
-              _uuid: uid(),
               _isEnabled: false,
               _role: 'output',
-              _output_value: '0',
               Output: [
                 {
-                  _name: 'output01',
+                  _name: 'GPIO3 Output 1',
                   _uuid: uid(),
                   _output_value: 1
                 },
                 {
-                  _name: 'output02',
+                  _name: 'GPIO3 Output 0',
                   _uuid: uid(),
                   _output_value: 0
                 }
@@ -68,18 +66,16 @@ export const useWidgetListStore = defineStore('widgetList', {
             },
             {
               _gpio_number: 4,
-              _uuid: uid(),
               _isEnabled: false,
               _role: 'output',
-              _output_value: '0',
               Output: [
                 {
-                  _name: 'output01',
+                  _name: 'GPIO4 Output 1',
                   _uuid: uid(),
                   _output_value: 1
                 },
                 {
-                  _name: 'output02',
+                  _name: 'GPIO4 Output 0',
                   _uuid: uid(),
                   _output_value: 0
                 }
@@ -87,18 +83,16 @@ export const useWidgetListStore = defineStore('widgetList', {
             },
             {
               _gpio_number: 5,
-              _uuid: uid(),
               _isEnabled: false,
               _role: 'output',
-              _output_value: '0',
               Output: [
                 {
-                  _name: 'output01',
+                  _name: 'GPIO5 Output 1',
                   _uuid: uid(),
                   _output_value: 1
                 },
                 {
-                  _name: 'output02',
+                  _name: 'GPIO5 Output 0',
                   _uuid: uid(),
                   _output_value: 0
                 }
@@ -109,15 +103,14 @@ export const useWidgetListStore = defineStore('widgetList', {
               _uuid: uid(),
               _isEnabled: false,
               _role: 'output',
-              _output_value: '0',
               Output: [
                 {
-                  _name: 'output01',
+                  _name: 'GPIO6 Output 1',
                   _uuid: uid(),
                   _output_value: 1
                 },
                 {
-                  _name: 'output02',
+                  _name: 'GPIO6 Output 0',
                   _uuid: uid(),
                   _output_value: 0
                 }
@@ -327,35 +320,72 @@ export const useWidgetListStore = defineStore('widgetList', {
             },
             {
               _gpio_number: 3,
-              _uuid: uid(),
-              _name: 'GPIO3',
               _isEnabled: false,
               _role: 'output',
-              _output_value: '0'
+              Output: [
+                {
+                  _name: 'GPIO3 Output 1',
+                  _uuid: uid(),
+                  _output_value: 1
+                },
+                {
+                  _name: 'GPIO3 Output 0',
+                  _uuid: uid(),
+                  _output_value: 0
+                }
+              ]
             },
             {
               _gpio_number: 4,
-              _uuid: uid(),
-              _name: 'GPIO4',
               _isEnabled: false,
               _role: 'output',
-              _output_value: '0'
+              Output: [
+                {
+                  _name: 'GPIO4 Output 1',
+                  _uuid: uid(),
+                  _output_value: 1
+                },
+                {
+                  _name: 'GPIO4 Output 0',
+                  _uuid: uid(),
+                  _output_value: 0
+                }
+              ]
             },
             {
               _gpio_number: 5,
-              _uuid: uid(),
-              _name: 'GPIO5',
               _isEnabled: false,
               _role: 'output',
-              _output_value: '0'
+              Output: [
+                {
+                  _name: 'GPIO5 Output 1',
+                  _uuid: uid(),
+                  _output_value: 1
+                },
+                {
+                  _name: 'GPIO5 Output 0',
+                  _uuid: uid(),
+                  _output_value: 0
+                }
+              ]
             },
             {
               _gpio_number: 6,
               _uuid: uid(),
-              _name: 'GPIO6',
               _isEnabled: false,
               _role: 'output',
-              _output_value: '0'
+              Output: [
+                {
+                  _name: 'GPIO6 Output 1',
+                  _uuid: uid(),
+                  _output_value: 1
+                },
+                {
+                  _name: 'GPIO6 Output 0',
+                  _uuid: uid(),
+                  _output_value: 0
+                }
+              ]
             }
           ]
         },
@@ -597,6 +627,304 @@ export const useWidgetListStore = defineStore('widgetList', {
 
   },
   actions: {
+    clearEventAction(Data) {
+      console.log('Data', Data)
+      if (Data.Output && Array.isArray(Data.Output)) {
+        for (const output of Data.Output) {
+          const UUID = output._uuid
+          console.log('UUID', UUID)
+          for (const section of this.NovoDS.Pages.Page.Section) {
+            // 迭代 Content.State 陣列
+            if (Array.isArray(section.Content.State)) {
+              for (let i = 0; i < section.Content.State.length; i++) {
+                const state = section.Content.State[i]
+                // console.log('section.Content.State', section.Content.State)
+                if (state.Event) {
+                  // 迭代 Event 陣列
+                  for (const event of state.Event) {
+                    if (event._conId && event._conId === UUID) {
+                      event._conId = ''
+                      event._type = ''
+                      if (event._gpio_number) {
+                        delete event._gpio_number
+                      }
+                      if (event._rs232_id) {
+                        delete event._rs232_id
+                      }
+                      if (event._command_id) {
+                        delete event._command_id
+                      }
+                      if (event._timer_id) {
+                        delete event._timer_id
+                      }
+                      if (event._key_action) {
+                        delete event._key_action
+                      }
+                    }
+                    if (event.Action) {
+                      // 迭代 Action 陣列
+                      for (const action of event.Action) {
+                        if (action._conId && action._conId === UUID) {
+                          action._conId = ''
+                          action._type = ''
+                          action._role = ''
+                          if (event._gpio_number) {
+                            delete event._gpio_number
+                          }
+                          if (event._rs232_id) {
+                            delete event._rs232_id
+                          }
+                          if (event._command_id) {
+                            delete event._command_id
+                          }
+                          if (event._timer_id) {
+                            delete event._timer_id
+                          }
+                          if (event._tcpip_id) {
+                            delete event._tcpip_id
+                          }
+                          if (event._key_action) {
+                            delete event._key_action
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      } else if (Data.Command && Array.isArray(Data.Command)) {
+        for (const command of Data.Command) {
+          const UUID = command._uuid
+          console.log('UUID', UUID)
+          for (const section of this.NovoDS.Pages.Page.Section) {
+            // 迭代 Content.State 陣列
+            if (Array.isArray(section.Content.State)) {
+              for (let i = 0; i < section.Content.State.length; i++) {
+                const state = section.Content.State[i]
+                // console.log('section.Content.State', section.Content.State)
+                if (state.Event) {
+                  // 迭代 Event 陣列
+                  for (const event of state.Event) {
+                    if (event._conId && event._conId === UUID) {
+                      event._conId = ''
+                      event._type = ''
+                      if (event._gpio_number) {
+                        delete event._gpio_number
+                      }
+                      if (event._rs232_id) {
+                        delete event._rs232_id
+                      }
+                      if (event._command_id) {
+                        delete event._command_id
+                      }
+                      if (event._timer_id) {
+                        delete event._timer_id
+                      }
+                      if (event._key_action) {
+                        delete event._key_action
+                      }
+                    }
+                    if (event.Action) {
+                      // 迭代 Action 陣列
+                      for (const action of event.Action) {
+                        if (action._conId && action._conId === UUID) {
+                          action._conId = ''
+                          action._type = ''
+                          action._role = ''
+                          if (event._gpio_number) {
+                            delete event._gpio_number
+                          }
+                          if (event._rs232_id) {
+                            delete event._rs232_id
+                          }
+                          if (event._command_id) {
+                            delete event._command_id
+                          }
+                          if (event._timer_id) {
+                            delete event._timer_id
+                          }
+                          if (event._tcpip_id) {
+                            delete event._tcpip_id
+                          }
+                          if (event._key_action) {
+                            delete event._key_action
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      } else {
+        const UUID = Data._uuid
+        console.log('UUID', UUID)
+        for (const section of this.NovoDS.Pages.Page.Section) {
+          // 迭代 Content.State 陣列
+          if (Array.isArray(section.Content.State)) {
+            for (let i = 0; i < section.Content.State.length; i++) {
+              const state = section.Content.State[i]
+              // console.log('section.Content.State', section.Content.State)
+              if (state.Event) {
+                // 迭代 Event 陣列
+                for (const event of state.Event) {
+                  if (event._conId && event._conId === UUID) {
+                    event._conId = ''
+                    event._type = ''
+                    if (event._gpio_number) {
+                      delete event._gpio_number
+                    }
+                    if (event._rs232_id) {
+                      delete event._rs232_id
+                    }
+                    if (event._command_id) {
+                      delete event._command_id
+                    }
+                    if (event._timer_id) {
+                      delete event._timer_id
+                    }
+                    if (event._key_action) {
+                      delete event._key_action
+                    }
+                  }
+                  if (event.Action) {
+                    // 迭代 Action 陣列
+                    for (const action of event.Action) {
+                      if (action._conId && action._conId === UUID) {
+                        action._conId = ''
+                        action._type = ''
+                        action._role = ''
+                        if (event._gpio_number) {
+                          delete event._gpio_number
+                        }
+                        if (event._rs232_id) {
+                          delete event._rs232_id
+                        }
+                        if (event._command_id) {
+                          delete event._command_id
+                        }
+                        if (event._timer_id) {
+                          delete event._timer_id
+                        }
+                        if (event._tcpip_id) {
+                          delete event._tcpip_id
+                        }
+                        if (event._key_action) {
+                          delete event._key_action
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    checkEvent(Data) {
+      console.log('Data', Data)
+      if (Array.isArray(Data.Output)) {
+        for (const output of Data.Output) {
+          const UUID = output._uuid
+
+          for (const section of this.NovoDS.Pages.Page.Section) {
+            // 迭代 Content.State 陣列
+            if (Array.isArray(section.Content.State)) {
+              for (let i = 0; i < section.Content.State.length; i++) {
+                const state = section.Content.State[i]
+                // console.log('section.Content.State', section.Content.State)
+                if (state.Event) {
+                  // 迭代 Event 陣列
+                  for (const event of state.Event) {
+                    if (event._conId && event._conId === UUID) {
+                      return i + 1 // 如果相同，返回索引
+                    }
+                    if (event.Action) {
+                      // 迭代 Action 陣列
+                      for (const action of event.Action) {
+                        if (action._conId && action._conId === UUID) {
+                          return i + 1 // 如果相同，返回索引
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        return false // 如果沒有找到匹配的UUID，則返回 false
+      } else if (Array.isArray(Data.Command)) {
+        for (const command of Data.Command) {
+          const UUID = command._uuid
+
+          for (const section of this.NovoDS.Pages.Page.Section) {
+            // 迭代 Content.State 陣列
+            if (Array.isArray(section.Content.State)) {
+              for (let i = 0; i < section.Content.State.length; i++) {
+                const state = section.Content.State[i]
+                // console.log('section.Content.State', section.Content.State)
+                if (state.Event) {
+                  // 迭代 Event 陣列
+                  for (const event of state.Event) {
+                    if (event._conId && event._conId === UUID) {
+                      return i + 1 // 如果相同，返回索引
+                    }
+                    if (event.Action) {
+                      // 迭代 Action 陣列
+                      for (const action of event.Action) {
+                        if (action._conId && action._conId === UUID) {
+                          return i + 1 // 如果相同，返回索引
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        return false // 如果沒有找到匹配的UUID，則返回 false
+      } else {
+        const UUID = Data._uuid
+        for (const section of this.NovoDS.Pages.Page.Section) {
+          // 遍歷 Content.State 陣列
+          if (Array.isArray(section.Content.State)) {
+            for (let i = 0; i < section.Content.State.length; i++) {
+              const state = section.Content.State[i]
+              console.log('section.Content.State', section.Content.State)
+              if (state.Event) {
+                // 遍歷 Event 陣列
+                for (const event of state.Event) {
+                  if (event._conId && event._conId === UUID) {
+                    return i + 1 // 如果相同，返回索引
+                  }
+                  if (event.Action) {
+                    // 遍歷 Action 陣列
+                    for (const action of event.Action) {
+                      if (action._conId && action._conId === UUID) {
+                        return i + 1 // 如果相同，返回索引
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        return false // 如果沒有找到匹配的UUID，則返回 false
+      }
+    },
+
     ResetNewPlaylistName(Playlist_Name, newPlayListPath) {
       this.nowPlayListName = Playlist_Name
       this.nowPlayListPath = newPlayListPath
@@ -657,6 +985,18 @@ export const useWidgetListStore = defineStore('widgetList', {
         if (!RawData.NovoDS) {
           return false
         }
+        if (RawData.NovoDS.Hardware && RawData.NovoDS.Hardware.GPIOSettings && Array.isArray(RawData.NovoDS.Hardware.GPIOSettings.GPIO)) {
+          RawData.NovoDS.Hardware.GPIOSettings.GPIO.forEach(GPIO => {
+            if (GPIO.Output === undefined || GPIO.Output === null || GPIO.Output === '') { // add this condition
+              // GPIO.Output = []
+            } else if (!Array.isArray(GPIO.Output)) {
+              GPIO.Output = [GPIO.Output]
+            } else if (GPIO.Output.length === 1 && GPIO.Output[0] === '') {
+              GPIO.Output = []
+            }
+          })
+        }
+
         if (RawData.NovoDS.Hardware && RawData.NovoDS.Hardware.Rs232Settings && Array.isArray(RawData.NovoDS.Hardware.Rs232Settings.Rs232)) {
           RawData.NovoDS.Hardware.Rs232Settings.Rs232.forEach(rs232 => {
             if (rs232.Command === undefined || rs232.Command === null || rs232.Command === '') { // add this condition

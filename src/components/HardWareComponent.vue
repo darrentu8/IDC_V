@@ -24,17 +24,17 @@
               <div class="row">
                 <div @click="changeCurrentPIN(5)" class="pin-rect flex flex-center relative-position"
                   :class="{ 'is-pin-selected': currentPIN === 5 }">
-                  <div class="absolute-top-right q-ma-sm" :class="{ 'pin-in-use': !!GPIO[5]._role }"></div>
+                  <div class="absolute-top-right q-ma-sm" :class="{ 'pin-in-use': GPIO[5]._isEnabled }"></div>
                   6
                 </div>
                 <div @click="changeCurrentPIN(4)" class="pin-rect flex flex-center relative-position"
                   :class="{ 'is-pin-selected': currentPIN === 4 }">
-                  <div class="absolute-top-right q-ma-sm" :class="{ 'pin-in-use': !!GPIO[4]._role }"></div>
+                  <div class="absolute-top-right q-ma-sm" :class="{ 'pin-in-use': GPIO[4]._isEnabled }"></div>
                   5
                 </div>
                 <div @click="changeCurrentPIN(3)" class="pin-rect flex flex-center relative-position"
                   :class="{ 'is-pin-selected': currentPIN === 3 }">
-                  <div class="absolute-top-right q-ma-sm" :class="{ 'pin-in-use': !!GPIO[3]._role }"></div>
+                  <div class="absolute-top-right q-ma-sm" :class="{ 'pin-in-use': GPIO[3]._isEnabled }"></div>
                   4
                 </div>
                 <div class="pin-rect flex flex-center text-grey-5 cursor-not-allowed">
@@ -44,17 +44,17 @@
               <div class="row">
                 <div @click="changeCurrentPIN(0)" class="pin-rect flex flex-center relative-position"
                   :class="{ 'is-pin-selected': currentPIN === 0 }">
-                  <div class="absolute-top-right q-ma-sm" :class="{ 'pin-in-use': !!GPIO[0]._role }"></div>
+                  <div class="absolute-top-right q-ma-sm" :class="{ 'pin-in-use': GPIO[0]._isEnabled }"></div>
                   1
                 </div>
                 <div @click="changeCurrentPIN(1)" class="pin-rect flex flex-center relative-position"
                   :class="{ 'is-pin-selected': currentPIN === 1 }">
-                  <div class="absolute-top-right q-ma-sm" :class="{ 'pin-in-use': !!GPIO[1]._role }"></div>
+                  <div class="absolute-top-right q-ma-sm" :class="{ 'pin-in-use': GPIO[1]._isEnabled }"></div>
                   2
                 </div>
                 <div @click="changeCurrentPIN(2)" class="pin-rect flex flex-center relative-position"
                   :class="{ 'is-pin-selected': currentPIN === 2 }">
-                  <div class="absolute-top-right q-ma-sm" :class="{ 'pin-in-use': !!GPIO[2]._role }"></div>
+                  <div class="absolute-top-right q-ma-sm" :class="{ 'pin-in-use': GPIO[2]._isEnabled }"></div>
                   3
                 </div>
                 <div class="pin-rect flex flex-center text-grey-5 cursor-not-allowed">
@@ -87,24 +87,25 @@
                   </q-item-section>
                   <q-item-section side>
                     <div class="row items-center">
-                      <q-toggle v-model="pin._isEnabled" dense color="primary" />
+                      <q-toggle @click="disableAlert(index, pin)" v-model="pin._isEnabled" dense color="primary" />
                     </div>
                   </q-item-section>
                 </template>
                 <q-card class="brand-round-l">
                   <q-card-section>
-                    <q-select class="q-mt-sm brand-round-m" emit-value map-options option-value="value"
-                      option-label="text" placeholder="input" v-model="pin._role" dense outlined :options="gpioRoleOption"
+                    <q-select ref="selectGPIO" class="q-mt-sm brand-round-m" emit-value map-options option-value="value"
+                      option-label="text" placeholder="input" v-model="pin._role" dense outlined
+                      @popup-show="changeAlert(index, pin)" :options="gpioRoleOption"
                       @update:model-value="(val) => SetPin(index, val)" />
                     <div v-if="pin._role === 'output' && pin.Output" class="row q-mt-md">
                       <div class="col-3 flex items-center">
-                        <div class="">Output 0</div>
+                        <div class="">Output 1</div>
                       </div>
                       <div class="col-9">
                         <q-input placeholder="name" class="brand-round-m" v-model="pin.Output[0]._name" dense outlined />
                       </div>
                       <div class="col-3 q-mt-md flex items-center">
-                        <div class="">Output 1</div>
+                        <div class="">Output 0</div>
                       </div>
                       <div class="col-9 q-mt-md">
                         <q-input placeholder="name" class="brand-round-m" v-model="pin.Output[1]._name" dense outlined />
@@ -634,11 +635,15 @@
         </div>
       </q-tab-panel>
     </q-tab-panels>
+    <ConfirmDialog />
+    <AlertDialog />
   </div>
 </template>
 
 <script>
 import { uid } from 'quasar'
+import ConfirmDialog from './dialog/ConfirmDialog.vue'
+import AlertDialog from './dialog/AlertDialog.vue'
 import inputRules from 'src/mixins/inputRules.js'
 import { useWidgetListStore } from 'src/stores/widget'
 const widgetStore = useWidgetListStore()
@@ -646,6 +651,10 @@ const widgetStore = useWidgetListStore()
 export default {
   name: 'HardWareComponent',
   mixins: [inputRules],
+  components: {
+    ConfirmDialog,
+    AlertDialog
+  },
   data() {
     return {
       loading: false,
@@ -935,20 +944,125 @@ export default {
         }
       })
     },
-    removeRs0(index) {
-      this.RS232[0].Command.splice(index, 1)
+    async removeRs0(index) {
+      const result = await widgetStore.checkEvent(this.RS232[0].Command[index])
+      console.log('result', result)
+      if (result) {
+        this.$q.dialog({
+          component: ConfirmDialog,
+          componentProps: {
+            title: 'Are you sure you want to delete this configure event/action',
+            message: 'The configure event/action is being used by “Flow ' + result + '” .',
+            okBtn: 'Delete',
+            cancelBtn: 'cancel'
+          }
+        }).onOk(() => {
+          widgetStore.clearEventAction(this.RS232[0].Command[index])
+          this.RS232[0].Command.splice(index, 1)
+        }).onCancel(() => {
+          console.log('Cancel')
+        }).onDismiss(() => {
+          console.log('Called on OK or Cancel')
+        })
+      } else {
+        widgetStore.clearEventAction(this.RS232[0].Command[index])
+      }
     },
-    removeRs1(index) {
-      this.RS232[1].Command.splice(index, 1)
+    async removeRs1(index) {
+      const result = await widgetStore.checkEvent(this.RS232[1].Command[index])
+      console.log('result', result)
+      if (result) {
+        this.$q.dialog({
+          component: ConfirmDialog,
+          componentProps: {
+            title: 'Are you sure you want to delete this configure event/action',
+            message: 'The configure event/action is being used by “Flow ' + result + '” .',
+            okBtn: 'Delete',
+            cancelBtn: 'cancel'
+          }
+        }).onOk(() => {
+          widgetStore.clearEventAction(this.RS232[1].Command[index])
+          this.RS232[1].Command.splice(index, 1)
+        }).onCancel(() => {
+          console.log('Cancel')
+        }).onDismiss(() => {
+          console.log('Called on OK or Cancel')
+        })
+      } else {
+        widgetStore.clearEventAction(this.RS232[1].Command[index])
+      }
     },
-    removeTrx(index) {
-      this.TCPIP.ReceivedCommands.Command.splice(index, 1)
+    async removeTrx(index) {
+      const result = await widgetStore.checkEvent(this.TCPIP.ReceivedCommands.Command[index])
+      console.log('result', result)
+      if (result) {
+        this.$q.dialog({
+          component: ConfirmDialog,
+          componentProps: {
+            title: 'Are you sure you want to delete this configure event/action',
+            message: 'The configure event/action is being used by “Flow ' + result + '” .',
+            okBtn: 'Delete',
+            cancelBtn: 'cancel'
+          }
+        }).onOk(() => {
+          widgetStore.clearEventAction(this.TCPIP.ReceivedCommands.Command[index])
+          this.TCPIP.ReceivedCommands.Command.splice(index, 1)
+        }).onCancel(() => {
+          console.log('Cancel')
+        }).onDismiss(() => {
+          console.log('Called on OK or Cancel')
+        })
+      } else {
+        widgetStore.clearEventAction(this.TCPIP.ReceivedCommands.Command[index])
+      }
     },
-    removeTx(Index) {
-      this.TCPIP.TcpIp.splice(Index, 1)
+    async removeTx(index) {
+      const result = await widgetStore.checkEvent(this.TCPIP.TcpIp[index])
+      console.log('result', result)
+      if (result) {
+        this.$q.dialog({
+          component: ConfirmDialog,
+          componentProps: {
+            title: 'Are you sure you want to delete this configure event/action',
+            message: 'The configure event/action is being used by “Flow ' + result + '” .',
+            okBtn: 'Delete',
+            cancelBtn: 'cancel'
+          }
+        }).onOk(() => {
+          widgetStore.clearEventAction(this.TCPIP.TcpIp[index])
+          this.TCPIP.TcpIp.splice(index, 1)
+        }).onCancel(() => {
+          console.log('Cancel')
+        }).onDismiss(() => {
+          console.log('Called on OK or Cancel')
+        })
+      } else {
+        widgetStore.clearEventAction(this.TCPIP.TcpIp[index])
+      }
     },
-    removeTimer(Index) {
-      this.TimerSettings.Timer.splice(Index, 1)
+    async removeTimer(index) {
+      const result = await widgetStore.checkEvent(this.TimerSettings.Timer[index])
+      console.log('result', result)
+      if (result) {
+        this.$q.dialog({
+          component: ConfirmDialog,
+          componentProps: {
+            title: 'Are you sure you want to delete this configure event/action',
+            message: 'The configure event/action is being used by “Flow ' + result + '” .',
+            okBtn: 'Delete',
+            cancelBtn: 'cancel'
+          }
+        }).onOk(() => {
+          widgetStore.clearEventAction(this.TimerSettings.Timer[index])
+          this.TimerSettings.Timer.splice(index, 1)
+        }).onCancel(() => {
+          console.log('Cancel')
+        }).onDismiss(() => {
+          console.log('Called on OK or Cancel')
+        })
+      } else {
+        widgetStore.clearEventAction(this.TimerSettings.Timer[index])
+      }
     },
     toGrid() {
       this.$router.push({ path: '/grid' })
@@ -966,18 +1080,59 @@ export default {
         this.loading = false
       }
     },
+    async disableAlert(index, pin) {
+      console.log('pin ', pin)
+      if (pin._isEnabled === false) {
+        const result = await widgetStore.checkEvent(pin)
+        console.log('result', result)
+        if (result) {
+          this.$q.dialog({
+            component: ConfirmDialog,
+            componentProps: {
+              title: 'Are you sure you want to disable this configure event/action?',
+              message: 'The configure event/action is being used by “Flow ' + result + '” .',
+              okBtn: 'Disable',
+              cancelBtn: 'cancel'
+            }
+          }).onOk(() => {
+            console.log('OK')
+          }).onCancel(() => {
+            this.GPIO[index]._isEnabled = true
+            console.log('Cancel')
+          })
+        }
+      }
+    },
+    async changeAlert(index, pin) {
+      console.log('pin ', pin)
+      if (pin._isEnabled === true || pin) {
+        const result = await widgetStore.checkEvent(pin)
+        console.log('result', result)
+        if (result) {
+          this.$q.dialog({
+            component: AlertDialog,
+            componentProps: {
+              title: 'Are you sure you want to change this configure event/action?',
+              message: 'The configure event/action is being used by “Flow ' + result + '” .',
+              okBtn: 'Continue'
+            }
+          })
+        }
+      }
+    },
     SetPin(index, role) {
       this.GPIO[index]._role = role
+      widgetStore.clearEventAction(this.GPIO[index])
       if (role === 'output') {
         if (this.GPIO[index]._key_action) {
           const OutputData = [
             {
-              _name: 'output01',
+              _name: 'GPIO' + (index + 1) + ' ' + 'Output 1',
               _uuid: uid(),
               _output_value: 1
             },
             {
-              _name: 'output02',
+              _name: 'GPIO' + (index + 1) + ' ' + 'Output 0',
               _uuid: uid(),
               _output_value: 0
             }

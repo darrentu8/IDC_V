@@ -10,12 +10,12 @@ const wss = new WebSocketServer({
 })
 
 const Data = {
-  Command: 'OpenNew',
+  Command: 'Reload',
   LayoutType: 0,
   ModelType: 'DS310',
   Orientation: 3,
-  Playlist: '',
-  PlaylistPath: '/Users/darren/NovoDS.PlayLists/',
+  Playlist: 'pppp',
+  PlaylistPath: '/Users/darren/NovoDS.PlayLists',
   Preview: {
     Path: '',
     Ready: false
