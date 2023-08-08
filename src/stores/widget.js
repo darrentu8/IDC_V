@@ -36,6 +36,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _uuid: uid(),
               _name: 'GPIO1',
               _isEnabled: false,
+              _canEdit: false,
               _role: 'keyevent',
               _key_action: 'up'
             },
@@ -44,12 +45,14 @@ export const useWidgetListStore = defineStore('widgetList', {
               _uuid: uid(),
               _name: 'GPIO2',
               _isEnabled: false,
+              _canEdit: false,
               _role: 'keyevent',
               _key_action: 'down'
             },
             {
               _gpio_number: 3,
               _isEnabled: false,
+              _canEdit: false,
               _role: 'output',
               Output: [
                 {
@@ -67,6 +70,7 @@ export const useWidgetListStore = defineStore('widgetList', {
             {
               _gpio_number: 4,
               _isEnabled: false,
+              _canEdit: false,
               _role: 'output',
               Output: [
                 {
@@ -84,6 +88,7 @@ export const useWidgetListStore = defineStore('widgetList', {
             {
               _gpio_number: 5,
               _isEnabled: false,
+              _canEdit: false,
               _role: 'output',
               Output: [
                 {
@@ -102,6 +107,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _gpio_number: 6,
               _uuid: uid(),
               _isEnabled: false,
+              _canEdit: false,
               _role: 'output',
               Output: [
                 {
@@ -307,6 +313,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _uuid: uid(),
               _name: 'GPIO1',
               _isEnabled: false,
+              _canEdit: false,
               _role: 'keyevent',
               _key_action: 'up'
             },
@@ -315,12 +322,14 @@ export const useWidgetListStore = defineStore('widgetList', {
               _uuid: uid(),
               _name: 'GPIO2',
               _isEnabled: false,
+              _canEdit: false,
               _role: 'keyevent',
               _key_action: 'down'
             },
             {
               _gpio_number: 3,
               _isEnabled: false,
+              _canEdit: false,
               _role: 'output',
               Output: [
                 {
@@ -338,6 +347,7 @@ export const useWidgetListStore = defineStore('widgetList', {
             {
               _gpio_number: 4,
               _isEnabled: false,
+              _canEdit: false,
               _role: 'output',
               Output: [
                 {
@@ -355,6 +365,7 @@ export const useWidgetListStore = defineStore('widgetList', {
             {
               _gpio_number: 5,
               _isEnabled: false,
+              _canEdit: false,
               _role: 'output',
               Output: [
                 {
@@ -373,6 +384,7 @@ export const useWidgetListStore = defineStore('widgetList', {
               _gpio_number: 6,
               _uuid: uid(),
               _isEnabled: false,
+              _canEdit: false,
               _role: 'output',
               Output: [
                 {
@@ -832,6 +844,38 @@ export const useWidgetListStore = defineStore('widgetList', {
       if (Array.isArray(Data.Output)) {
         for (const output of Data.Output) {
           const UUID = output._uuid
+
+          for (const section of this.NovoDS.Pages.Page.Section) {
+            // 迭代 Content.State 陣列
+            if (Array.isArray(section.Content.State)) {
+              for (let i = 0; i < section.Content.State.length; i++) {
+                const state = section.Content.State[i]
+                // console.log('section.Content.State', section.Content.State)
+                if (state.Event) {
+                  // 迭代 Event 陣列
+                  for (const event of state.Event) {
+                    if (event._conId && event._conId === UUID) {
+                      return i + 1 // 如果相同，返回索引
+                    }
+                    if (event.Action) {
+                      // 迭代 Action 陣列
+                      for (const action of event.Action) {
+                        if (action._conId && action._conId === UUID) {
+                          return i + 1 // 如果相同，返回索引
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        return false // 如果沒有找到匹配的UUID，則返回 false
+      } else if (Data.ReceivedCommands) {
+        for (const command of Data.ReceivedCommands.Command) {
+          const UUID = command._uuid
 
           for (const section of this.NovoDS.Pages.Page.Section) {
             // 迭代 Content.State 陣列

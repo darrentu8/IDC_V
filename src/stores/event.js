@@ -196,6 +196,44 @@ export const useEventListStore = defineStore('eventList', {
         _name: 'Playback end',
         _type: 'playend'
       }
+    ],
+    extraActionOption: [
+      {
+        _uuid: 'volume_mute',
+        _name: 'Device mute',
+        _type: 'volume_mute',
+        _output_value: '1'
+      },
+      {
+        _uuid: 'volume_unmute',
+        _name: 'Device unmute',
+        _type: 'volume_mute',
+        _output_value: '0'
+      },
+      {
+        _uuid: 'volume_up',
+        _name: 'Volume up',
+        _type: 'volume_control',
+        _output_value: '1'
+      },
+      {
+        _uuid: 'volume_down',
+        _name: 'Volume down',
+        _type: 'volume_control',
+        _output_value: '0'
+      },
+      {
+        _uuid: 'hdmi_on',
+        _name: 'HDMI On',
+        _type: 'hdmi_control',
+        _output_value: '1'
+      },
+      {
+        _uuid: 'hdmi_off',
+        _name: 'HDMI Off',
+        _type: 'hdmi_control',
+        _output_value: '0'
+      }
     ]
   }),
   getters: {
@@ -333,11 +371,22 @@ export const useEventListStore = defineStore('eventList', {
           _type: 'timer'
         })) || []
 
+      const mapExtra = this.extraActionOption
+        ?.filter(extra => extra)
+        ?.map(extra => ({
+          _uuid: extra._uuid || uid(),
+          _name: extra._name,
+          _isEnabled: true,
+          _type: extra._type,
+          _output_value: extra._output_value
+        })) ?? []
+
       const combinedOptions = [
         ...mapGPIO,
         ...mapRs232,
         ...mapTcpIp,
-        ...mapTimer
+        ...mapTimer,
+        ...mapExtra
       ]
 
       return combinedOptions

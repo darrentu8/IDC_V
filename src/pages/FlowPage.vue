@@ -30,7 +30,7 @@
       <q-tab-panels v-model="tab" style="background-color: #F1F1F1;" animated @update:model-value="loadComponent"
         keep-alive>
         <q-tab-panel name="source" class="">
-          <Suspense v-if="isLoading">
+          <Suspense v-if="!loading">
             <SouceLibrary />
             <template #fallback>
               <div class="my-3 d-flex align-items-center">
@@ -41,7 +41,7 @@
         </q-tab-panel>
 
         <q-tab-panel name="flow" class="">
-          <Suspense v-if="isLoading">
+          <Suspense v-if="!loading">
             <StoreFlow />
             <template #fallback>
               <div class="my-3 d-flex align-items-center">
@@ -54,7 +54,7 @@
 
     </div>
     <div v-if="tab === 'flow'" class="fixed" style="background-color: #F8F8F8;width:500px;height: 100vh;right:0;">
-      <Suspense v-if="isLoading">
+      <Suspense v-if="!loading">
         <ConnectionSettingList />
         <template #fallback>
           <div class="my-3 d-flex align-items-center">
@@ -75,6 +75,7 @@ import StoreFlow from 'src/components/StoreFlow.vue'
 import { useWidgetListStore } from 'src/stores/widget'
 const widgetStore = useWidgetListStore()
 
+const loading = computed(() => widgetStore.loading)
 const lockState = computed(() => widgetStore.GetLockState)
 
 const addState = () => {
@@ -82,10 +83,11 @@ const addState = () => {
 }
 
 const tab = ref('source')
-const isLoading = ref('false')
 function loadComponent(val) {
   console.log('loadComponent;:', val)
-  if (val) { isLoading.value = true }
+  if (val) {
+    widgetStore.SetLoading(false)
+  }
 }
 watch(tab, (val) => {
   console.log('watch:', val)

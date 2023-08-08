@@ -75,14 +75,6 @@ export default {
     }
   },
   methods: {
-    changeCurrentPIN(index) {
-      this.currentPIN = index
-      const refName = `GPIOItem${index}`
-      this.$refs[refName][0].show()
-    },
-    showGPIOItem(index) {
-      this.currentPIN = index
-    },
     toGrid() {
       this.$router.push({ path: '/grid' })
     },
@@ -96,20 +88,6 @@ export default {
         }
       } catch (error) {
         console.error(`Error in toFlow: ${error}`)
-      }
-    },
-    SetPin(index, role, childValue) {
-      this.GPIO[index]._role = role
-      if (role === 'output') {
-        this.GPIO[index]._output_value = childValue
-        if (this.GPIO[index]._key_action) {
-          delete this.GPIO[index]._key_action // 刪除_output_value屬性
-        }
-      } else {
-        this.GPIO[index]._key_action = childValue
-        if (this.GPIO[index]._output_value) {
-          delete this.GPIO[index]._output_value // 刪除_output_value屬性
-        }
       }
     }
   }

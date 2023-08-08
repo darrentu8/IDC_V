@@ -9,7 +9,7 @@
       <HardWareComponent />
       <q-card-actions class="q-pb-lg absolute-bottom">
         <q-space />
-        <q-btn v-close-popup color="primary" label="close" class="brand-round-l text-capitalize"
+        <q-btn v-close-popup @click='reloadFlow' color="primary" label="close" class="brand-round-l text-capitalize"
           style="width:116px;margin:auto 20px" />
       </q-card-actions>
     </q-card>
@@ -18,6 +18,8 @@
 
 <script>
 import HardWareComponent from '../HardWareComponent.vue'
+import { useWidgetListStore } from 'src/stores/widget'
+const widgetStore = useWidgetListStore()
 
 export default {
   name: 'ConfigureHardwareDialog',
@@ -41,6 +43,12 @@ export default {
     },
     toFlow() {
       this.$router.push({ path: '/flow' })
+    },
+    reloadFlow() {
+      widgetStore.SetLoading(true)
+      setTimeout(() => {
+        widgetStore.SetLoading(false)
+      }, 20)
     }
   }
 }

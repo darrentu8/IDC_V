@@ -73,16 +73,10 @@
                     <div v-if="pin._role === 'keyevent'" class="text-body1">
                       {{ `${index + 1} . ${pin._name || 'No Name'}` }}
                       {{ `(${pin._role || `Not Set`})` }}
-                      <!-- <span v-if="pin._key_action">
-                        ({{ computedGPIOVal(pin._key_action) }})
-                      </span> -->
                     </div>
                     <div v-if="pin._role === 'output'" class="text-body1">
                       {{ `${index + 1} . ${pin.Output[0]._name + '/' + pin.Output[1]._name || 'No Name'}` }}
                       {{ `(${pin._role || `Not Set`})` }}
-                      <!-- <span v-if="pin._output_value">
-                        ({{ computedGPIOVal(pin.Output[0]._output_value)}} {{ computedGPIOVal(pin.Output[1]._output_value)}})
-                      </span> -->
                     </div>
                   </q-item-section>
                   <q-item-section side>
@@ -95,7 +89,7 @@
                   <q-card-section>
                     <q-select ref="selectGPIO" class="q-mt-sm brand-round-m" emit-value map-options option-value="value"
                       option-label="text" placeholder="input" v-model="pin._role" dense outlined
-                      @popup-show="changeAlert(index, pin)" :options="gpioRoleOption"
+                      @click="changeAlert(index, pin)" :readonly="pin._canEdit" :options="gpioRoleOption"
                       @update:model-value="(val) => SetPin(index, val)" />
                     <div v-if="pin._role === 'output' && pin.Output" class="row q-mt-md">
                       <div class="col-3 flex items-center">
@@ -141,7 +135,7 @@
                 <div class="text-body1 text-bold row">
                   <div>On-board RS232 port</div>
                   <q-space />
-                  <q-toggle v-model="RS232[0]._isEnabled" dense color="primary" />
+                  <q-toggle @click="disableAlert(index, RS232[0])" v-model="RS232[0]._isEnabled" dense color="primary" />
                 </div>
                 <q-separator class="q-mt-md q-mb-md" />
                 <q-form ref="Form" class="q-mt-md" @submit.stop="addRs0">
@@ -263,7 +257,7 @@
                 <div class="text-body1 text-bold row">
                   <div>USB-RS232 dongle</div>
                   <q-space />
-                  <q-toggle v-model="RS232[1]._isEnabled" dense color="primary" />
+                  <q-toggle @click="disableAlert(index, RS232[1])" v-model="RS232[1]._isEnabled" dense color="primary" />
                 </div>
                 <q-separator class="q-mt-md q-mb-md" />
                 <q-form ref="Form" class="" @submit.stop="addRs1">
@@ -391,7 +385,7 @@
             <div class="text-body1 row">
               <div class="q-mb-sm">RX ( Receive )</div>
               <q-space />
-              <q-toggle v-model="TCPIP._isEnabled" dense color="primary" />
+              <q-toggle @click="disableAlert(index, TCPIP)" v-model="TCPIP._isEnabled" dense color="primary" />
             </div>
             <q-form ref="FormTrx" class="" @submit.stop="addTrx">
               <div class="row q-mt-sm items-top">
@@ -635,14 +629,14 @@
         </div>
       </q-tab-panel>
     </q-tab-panels>
-    <ConfirmDialog />
+    <!-- <ConfirmDialog /> -->
     <AlertDialog />
   </div>
 </template>
 
 <script>
 import { uid } from 'quasar'
-import ConfirmDialog from './dialog/ConfirmDialog.vue'
+// import ConfirmDialog from './dialog/ConfirmDialog.vue'
 import AlertDialog from './dialog/AlertDialog.vue'
 import inputRules from 'src/mixins/inputRules.js'
 import { useWidgetListStore } from 'src/stores/widget'
@@ -652,7 +646,7 @@ export default {
   name: 'HardWareComponent',
   mixins: [inputRules],
   components: {
-    ConfirmDialog,
+    // ConfirmDialog,
     AlertDialog
   },
   data() {
@@ -949,23 +943,21 @@ export default {
       console.log('result', result)
       if (result) {
         this.$q.dialog({
-          component: ConfirmDialog,
+          component: AlertDialog,
           componentProps: {
-            title: 'Are you sure you want to delete this configure event/action',
+            title: 'Can not disable this configure event/action',
             message: 'The configure event/action is being used by “Flow ' + result + '” .',
-            okBtn: 'Delete',
-            cancelBtn: 'cancel'
+            okBtn: 'OK'
           }
         }).onOk(() => {
-          widgetStore.clearEventAction(this.RS232[0].Command[index])
-          this.RS232[0].Command.splice(index, 1)
+          console.log('OK')
         }).onCancel(() => {
           console.log('Cancel')
         }).onDismiss(() => {
           console.log('Called on OK or Cancel')
         })
       } else {
-        widgetStore.clearEventAction(this.RS232[0].Command[index])
+        this.RS232[0].Command.splice(index, 1)
       }
     },
     async removeRs1(index) {
@@ -973,23 +965,21 @@ export default {
       console.log('result', result)
       if (result) {
         this.$q.dialog({
-          component: ConfirmDialog,
+          component: AlertDialog,
           componentProps: {
-            title: 'Are you sure you want to delete this configure event/action',
+            title: 'Can not disable this configure event/action',
             message: 'The configure event/action is being used by “Flow ' + result + '” .',
-            okBtn: 'Delete',
-            cancelBtn: 'cancel'
+            okBtn: 'OK'
           }
         }).onOk(() => {
-          widgetStore.clearEventAction(this.RS232[1].Command[index])
-          this.RS232[1].Command.splice(index, 1)
+          console.log('OK')
         }).onCancel(() => {
           console.log('Cancel')
         }).onDismiss(() => {
           console.log('Called on OK or Cancel')
         })
       } else {
-        widgetStore.clearEventAction(this.RS232[1].Command[index])
+        this.RS232[1].Command.splice(index, 1)
       }
     },
     async removeTrx(index) {
@@ -997,23 +987,21 @@ export default {
       console.log('result', result)
       if (result) {
         this.$q.dialog({
-          component: ConfirmDialog,
+          component: AlertDialog,
           componentProps: {
-            title: 'Are you sure you want to delete this configure event/action',
+            title: 'Can not disable this configure event/action',
             message: 'The configure event/action is being used by “Flow ' + result + '” .',
-            okBtn: 'Delete',
-            cancelBtn: 'cancel'
+            okBtn: 'OK'
           }
         }).onOk(() => {
-          widgetStore.clearEventAction(this.TCPIP.ReceivedCommands.Command[index])
-          this.TCPIP.ReceivedCommands.Command.splice(index, 1)
+          console.log('OK')
         }).onCancel(() => {
           console.log('Cancel')
         }).onDismiss(() => {
           console.log('Called on OK or Cancel')
         })
       } else {
-        widgetStore.clearEventAction(this.TCPIP.ReceivedCommands.Command[index])
+        this.TCPIP.ReceivedCommands.Command.splice(index, 1)
       }
     },
     async removeTx(index) {
@@ -1021,23 +1009,21 @@ export default {
       console.log('result', result)
       if (result) {
         this.$q.dialog({
-          component: ConfirmDialog,
+          component: AlertDialog,
           componentProps: {
-            title: 'Are you sure you want to delete this configure event/action',
+            title: 'Can not disable this configure event/action',
             message: 'The configure event/action is being used by “Flow ' + result + '” .',
-            okBtn: 'Delete',
-            cancelBtn: 'cancel'
+            okBtn: 'OK'
           }
         }).onOk(() => {
-          widgetStore.clearEventAction(this.TCPIP.TcpIp[index])
-          this.TCPIP.TcpIp.splice(index, 1)
+          console.log('OK')
         }).onCancel(() => {
           console.log('Cancel')
         }).onDismiss(() => {
           console.log('Called on OK or Cancel')
         })
       } else {
-        widgetStore.clearEventAction(this.TCPIP.TcpIp[index])
+        this.TCPIP.TcpIp.splice(index, 1)
       }
     },
     async removeTimer(index) {
@@ -1045,23 +1031,21 @@ export default {
       console.log('result', result)
       if (result) {
         this.$q.dialog({
-          component: ConfirmDialog,
+          component: AlertDialog,
           componentProps: {
-            title: 'Are you sure you want to delete this configure event/action',
+            title: 'Can not disable this configure event/action',
             message: 'The configure event/action is being used by “Flow ' + result + '” .',
-            okBtn: 'Delete',
-            cancelBtn: 'cancel'
+            okBtn: 'OK'
           }
         }).onOk(() => {
-          widgetStore.clearEventAction(this.TimerSettings.Timer[index])
-          this.TimerSettings.Timer.splice(index, 1)
+          console.log('OK')
         }).onCancel(() => {
           console.log('Cancel')
         }).onDismiss(() => {
           console.log('Called on OK or Cancel')
         })
       } else {
-        widgetStore.clearEventAction(this.TimerSettings.Timer[index])
+        this.TimerSettings.Timer.splice(index, 1)
       }
     },
     toGrid() {
@@ -1080,25 +1064,29 @@ export default {
         this.loading = false
       }
     },
-    async disableAlert(index, pin) {
-      console.log('pin ', pin)
-      if (pin._isEnabled === false) {
-        const result = await widgetStore.checkEvent(pin)
+    async disableAlert(index, Data) {
+      console.log('Data ', Data)
+      if (Data._isEnabled === false) {
+        const result = await widgetStore.checkEvent(Data)
         console.log('result', result)
         if (result) {
           this.$q.dialog({
-            component: ConfirmDialog,
+            component: AlertDialog,
             componentProps: {
-              title: 'Are you sure you want to disable this configure event/action?',
+              title: 'Can not disable this configure event/action',
               message: 'The configure event/action is being used by “Flow ' + result + '” .',
-              okBtn: 'Disable',
-              cancelBtn: 'cancel'
+              okBtn: 'OK'
             }
           }).onOk(() => {
-            console.log('OK')
-          }).onCancel(() => {
-            this.GPIO[index]._isEnabled = true
-            console.log('Cancel')
+            if (Data._gpio_number) {
+              this.GPIO[index]._isEnabled = true
+            } else if (Data._interface === 'on_board') {
+              this.RS232[0]._isEnabled = true
+            } else if (Data._interface === 'usb') {
+              this.RS232[1]._isEnabled = true
+            } else if (Data.ReceivedCommands) {
+              this.TCPIP._isEnabled = true
+            }
           })
         }
       }
@@ -1109,14 +1097,17 @@ export default {
         const result = await widgetStore.checkEvent(pin)
         console.log('result', result)
         if (result) {
+          this.GPIO[index]._canEdit = true
           this.$q.dialog({
             component: AlertDialog,
             componentProps: {
-              title: 'Are you sure you want to change this configure event/action?',
+              title: 'Can not edit this configure event/action',
               message: 'The configure event/action is being used by “Flow ' + result + '” .',
-              okBtn: 'Continue'
+              okBtn: 'OK'
             }
           })
+        } else {
+          this.GPIO[index]._canEdit = false
         }
       }
     },
