@@ -945,7 +945,7 @@ export default {
         this.$q.dialog({
           component: AlertDialog,
           componentProps: {
-            title: 'Can not disable this configure event/action',
+            title: 'Can not delete this configure event/action',
             message: 'The configure event/action is being used by “Flow ' + result + '” .',
             okBtn: 'OK'
           }
@@ -967,7 +967,7 @@ export default {
         this.$q.dialog({
           component: AlertDialog,
           componentProps: {
-            title: 'Can not disable this configure event/action',
+            title: 'Can not delete this configure event/action',
             message: 'The configure event/action is being used by “Flow ' + result + '” .',
             okBtn: 'OK'
           }
@@ -989,7 +989,7 @@ export default {
         this.$q.dialog({
           component: AlertDialog,
           componentProps: {
-            title: 'Can not disable this configure event/action',
+            title: 'Can not delete this configure event/action',
             message: 'The configure event/action is being used by “Flow ' + result + '” .',
             okBtn: 'OK'
           }
@@ -1011,7 +1011,7 @@ export default {
         this.$q.dialog({
           component: AlertDialog,
           componentProps: {
-            title: 'Can not disable this configure event/action',
+            title: 'Can not delete this configure event/action',
             message: 'The configure event/action is being used by “Flow ' + result + '” .',
             okBtn: 'OK'
           }
@@ -1033,7 +1033,7 @@ export default {
         this.$q.dialog({
           component: AlertDialog,
           componentProps: {
-            title: 'Can not disable this configure event/action',
+            title: 'Can not delete this configure event/action',
             message: 'The configure event/action is being used by “Flow ' + result + '” .',
             okBtn: 'OK'
           }

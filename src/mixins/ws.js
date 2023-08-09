@@ -27,6 +27,7 @@ export const mixinWebsocket = {
     },
     websocketonmessage(e) {
       const widgetStore = useWidgetListStore()
+      console.log('Websocket msg', e.data)
       if (e !== undefined && e.data) {
         let msg = null
         try {
