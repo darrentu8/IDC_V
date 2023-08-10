@@ -113,12 +113,19 @@ const delState = (stateUUID, stateID) => {
   })
 }
 
-const setDefaultState = (stateID) => {
+const setDefaultState = async (stateID) => {
   console.log('stateID', stateID)
   if (stateID !== null && stateID !== undefined) {
     const result = widgetStore.SetStateDefault(stateID)
     if (result) {
-      defaultStateModel.value = false
+      try {
+        const setIndexResult = await widgetStore.SetStateFirstIndex()
+        if (setIndexResult) {
+          defaultStateModel.value = false
+        }
+      } catch (error) {
+        console.error('setDefaultState', error)
+      }
     }
   }
 }

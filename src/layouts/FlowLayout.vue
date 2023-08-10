@@ -133,41 +133,38 @@ function saveAlert() {
 }
 async function preview() {
   try {
-    const setIndexResult = await widgetStore.SetStateFirstIndex()
-    if (setIndexResult) {
-      const x2js = new X2js({ attributePrefix: '_' })
-      const novoObj = { NovoDS: widgetStore.NovoDS }
-      const xmlData = x2js.js2xml(novoObj)
-      const result = window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
-      if (result) {
-        emit('getText', widgetStore.NovoDS._Playlist_Name)
-        const dialog = $q.dialog({
-          title: 'Preview' + ' ' + widgetStore.NovoDS._Playlist_Name + '...',
-          message: 'Processing... 0%',
-          progress: true, // we enable default settings
-          persistent: false, // we want the user to not be able to close it
-          ok: false // we want the user to not be able to close it
+    const x2js = new X2js({ attributePrefix: '_' })
+    const novoObj = { NovoDS: widgetStore.NovoDS }
+    const xmlData = x2js.js2xml(novoObj)
+    const result = window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
+    if (result) {
+      emit('getText', widgetStore.NovoDS._Playlist_Name)
+      const dialog = $q.dialog({
+        title: 'Preview' + ' ' + widgetStore.NovoDS._Playlist_Name + '...',
+        message: 'Processing... 0%',
+        progress: true, // we enable default settings
+        persistent: false, // we want the user to not be able to close it
+        ok: false // we want the user to not be able to close it
+      })
+
+      // we simulate some progress here...
+      let percentage = 0
+      const interval = setInterval(() => {
+        percentage = Math.min(100, percentage + Math.floor(Math.random() * 22))
+
+        // we update the dialog
+        dialog.update({
+          message: `Processing... ${percentage}%`
         })
 
-        // we simulate some progress here...
-        let percentage = 0
-        const interval = setInterval(() => {
-          percentage = Math.min(100, percentage + Math.floor(Math.random() * 22))
-
-          // we update the dialog
-          dialog.update({
-            message: `Processing... ${percentage}%`
-          })
-
-          // if we are done, we're gonna close it
-          if (percentage === 100) {
-            clearInterval(interval)
-            setTimeout(() => {
-              dialog.hide()
-            }, 150)
-          }
-        }, 100)
-      }
+        // if we are done, we're gonna close it
+        if (percentage === 100) {
+          clearInterval(interval)
+          setTimeout(() => {
+            dialog.hide()
+          }, 150)
+        }
+      }, 100)
     }
   } catch (error) {
     console.error(error)
@@ -175,19 +172,16 @@ async function preview() {
 }
 async function leaveSaveFileClose() {
   try {
-    const setIndexResult = await widgetStore.SetStateFirstIndex()
-    if (setIndexResult) {
-      const x2js = new X2js({ attributePrefix: '_' })
-      const novoObj = { NovoDS: widgetStore.NovoDS }
-      const xmlData = x2js.js2xml(novoObj)
-      const result = window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
-      if (result) {
-        $q.dialog({
-          title: 'Saved successfully!'
-        }).onDismiss(() => {
-          window.myAPI.delTempFolderWithClose(widgetStore.nowPlayListPath)
-        })
-      }
+    const x2js = new X2js({ attributePrefix: '_' })
+    const novoObj = { NovoDS: widgetStore.NovoDS }
+    const xmlData = x2js.js2xml(novoObj)
+    const result = window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
+    if (result) {
+      $q.dialog({
+        title: 'Saved successfully!'
+      }).onDismiss(() => {
+        window.myAPI.delTempFolderWithClose(widgetStore.nowPlayListPath)
+      })
     }
   } catch (error) {
     console.error(error)
@@ -195,32 +189,29 @@ async function leaveSaveFileClose() {
 }
 async function exportFile() {
   try {
-    const setIndexResult = await widgetStore.SetStateFirstIndex()
-    if (setIndexResult) {
-      const x2js = new X2js({ attributePrefix: '_' })
-      const novoObj = { NovoDS: widgetStore.NovoDS }
-      const xmlData = x2js.js2xml(novoObj)
-      try {
-        const result = await window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
-        if (result) {
-          window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
-          $q.dialog({
-            component: ConfirmDialog,
-            componentProps: {
-              title: 'Saved successfully!',
-              message: 'The playlist has been successfully saved, do you want to view the folder?',
-              okBtn: 'Open',
-              cancelBtn: 'cancel'
-            }
-          }).onOk(() => {
-            console.log('xmlData', xmlData)
-            window.myAPI.openSaveFolder(result.targetFile)
-          })
-          widgetStore.ResetNewPlaylistName(widgetStore.NovoDS._Playlist_Name, result.targetFile)
-        }
-      } catch (error) {
-        console.error(error)
+    const x2js = new X2js({ attributePrefix: '_' })
+    const novoObj = { NovoDS: widgetStore.NovoDS }
+    const xmlData = x2js.js2xml(novoObj)
+    try {
+      const result = await window.myAPI.storeToXML(widgetStore.NovoDS._Playlist_Name, widgetStore.nowPlayListFolder, widgetStore.nowPlayListPath, xmlData)
+      if (result) {
+        window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
+        $q.dialog({
+          component: ConfirmDialog,
+          componentProps: {
+            title: 'Saved successfully!',
+            message: 'The playlist has been successfully saved, do you want to view the folder?',
+            okBtn: 'Open',
+            cancelBtn: 'cancel'
+          }
+        }).onOk(() => {
+          console.log('xmlData', xmlData)
+          window.myAPI.openSaveFolder(result.targetFile)
+        })
+        widgetStore.ResetNewPlaylistName(widgetStore.NovoDS._Playlist_Name, result.targetFile)
       }
+    } catch (error) {
+      console.error(error)
     }
   } catch (error) {
     console.error(error)

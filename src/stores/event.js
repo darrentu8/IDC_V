@@ -199,6 +199,18 @@ export const useEventListStore = defineStore('eventList', {
     ],
     extraActionOption: [
       {
+        _uuid: 'volume_muteunmute',
+        _name: 'Device (Mute/Unmute)',
+        _type: 'volume_mute',
+        _output_value: '-1'
+      },
+      {
+        _uuid: 'hdmi_onoff',
+        _name: 'HDMI (On/Off)',
+        _type: 'hdmi_control',
+        _output_value: '-1'
+      },
+      {
         _uuid: 'volume_mute',
         _name: 'Device mute',
         _type: 'volume_mute',
@@ -253,27 +265,15 @@ export const useEventListStore = defineStore('eventList', {
         ?.filter(gpio => gpio && gpio._role !== 'output')
         ?.map(gpio => ({
           _uuid: gpio._uuid || uid(),
-          _name: gpio._gpio_number + ' ' + gpio._name + ' ' + gpio._role + ' ' + gpio._key_action,
           _id: gpio._gpio_number,
           _isEnabled: gpio._isEnabled,
           _gpio_number: gpio._gpio_number,
           _type: 'gpio',
+          ...(gpio._key_action === 'down' && { _name: gpio._gpio_number + ' ' + gpio._name + ' ' + gpio._role + ' ' + 'Low' }),
+          ...(gpio._key_action === 'up' && { _name: gpio._gpio_number + ' ' + gpio._name + ' ' + gpio._role + ' ' + 'High' }),
           ...(gpio._key_action && { _key_action: gpio._key_action }), // add key_action if it exists
           ...(gpio._output_value && { _output_value: gpio._output_value }) // add output_value if it exists
-        }))?.map(gpio => {
-          if (gpio._key_action === 'down') {
-            return {
-              ...gpio,
-              returnValue: 'Low'
-            }
-          } else if (gpio._key_action === 'up') {
-            return {
-              ...gpio,
-              returnValue: 'High'
-            }
-          }
-          return gpio
-        }) || []
+        })) || []
 
       const mapRs232 = widgetStore?.NovoDS?.Hardware?.Rs232Settings?.Rs232
         ?.filter(rs232 => rs232 && rs232.Command)

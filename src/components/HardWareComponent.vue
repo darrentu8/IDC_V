@@ -91,6 +91,7 @@
                       option-label="text" placeholder="input" v-model="pin._role" dense outlined
                       @click="changeAlert(index, pin)" :readonly="pin._canEdit" :options="gpioRoleOption"
                       @update:model-value="(val) => SetPin(index, val)" />
+                    <!-- Output -->
                     <div v-if="pin._role === 'output' && pin.Output" class="row q-mt-md">
                       <div class="col-3 flex items-center">
                         <div class="">Output 1</div>
@@ -105,11 +106,12 @@
                         <q-input placeholder="name" class="brand-round-m" v-model="pin.Output[1]._name" dense outlined />
                       </div>
                     </div>
+                    <!-- Keyevent -->
                     <div v-if="pin._role === 'keyevent'" class="row q-mt-md">
                       <div class="col-4">
                         <q-select class="brand-round-m q-pr-md" emit-value map-options option-value="value"
-                          option-label="text" placeholder="input" v-model="pin._key_action" dense outlined
-                          :options="gpioKeyeventOption" />
+                          @update:model-value="(val) => SetKeyAction(index, val)" option-label="text" placeholder="input"
+                          v-model="pin._key_action" dense outlined :options="gpioKeyeventOption" />
                       </div>
                       <div class="col-8">
                         <q-input placeholder="name" class="brand-round-m" v-model="pin._name" dense outlined />
@@ -1110,6 +1112,9 @@ export default {
           this.GPIO[index]._canEdit = false
         }
       }
+    },
+    SetKeyAction(index, val) {
+      widgetStore.setKeyAction(this.GPIO[index], val)
     },
     SetPin(index, role) {
       this.GPIO[index]._role = role

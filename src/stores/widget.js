@@ -20,7 +20,7 @@ export const useWidgetListStore = defineStore('widgetList', {
     NovoDS: {
       _Version: '1.1',
       _Description: '',
-      _Layout_Type: '0', // 0 -> Grid, 1 -> Flexible
+      _Layout_Type: 0, // 0 -> Grid, 1 -> Flexible
       _Playlist_Name: '',
       _Model_Type: '',
       _Interactive: true,
@@ -179,7 +179,7 @@ export const useWidgetListStore = defineStore('widgetList', {
           _Layout: '',
           _Column: '',
           _Row: '',
-          _Orientation: '', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
+          _Orientation: 0, // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
           _FreeDesignerMode: false, // Grid -> false, Flexi -> true
           _AudioSource: '0',
           _BackgroundImage: '',
@@ -297,7 +297,7 @@ export const useWidgetListStore = defineStore('widgetList', {
     defaultNovoDS: {
       _Version: '1.1',
       _Description: '',
-      _Layout_Type: '0', // 0 -> Grid, 1 -> Flexible
+      _Layout_Type: 0, // 0 -> Grid, 1 -> Flexible
       _Playlist_Name: '',
       _Model_Type: '',
       _Interactive: true,
@@ -456,7 +456,7 @@ export const useWidgetListStore = defineStore('widgetList', {
           _Layout: '',
           _Column: '',
           _Row: '',
-          _Orientation: '', // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
+          _Orientation: 0, // 0 -> Landscape 1-> Portrait 2-> Landscape (flipped), 3-> Portrait(flipped)
           _FreeDesignerMode: false, // Grid -> false, Flexi -> true
           _AudioSource: '0',
           _BackgroundImage: '',
@@ -1016,6 +1016,7 @@ export const useWidgetListStore = defineStore('widgetList', {
         this.fileData = SocketFileData
         // 建立 PlayList Temp
         if (SocketFileData.Command === 'OpenNew') {
+          this.SetLoadFileData(SocketFileData)
           const NowPlayListFolder = await window.myAPI.setPlayListFolder()
           console.log('NowPlayListFolder', NowPlayListFolder)
           if (NowPlayListFolder.nowPlayListName.startsWith('@_Temp_Playlist_')) {
@@ -1139,18 +1140,14 @@ export const useWidgetListStore = defineStore('widgetList', {
         this.NovoDS = this.parseObject(RawData.NovoDS)
         console.log('this.NovoDS', this.NovoDS)
 
-        if (SocketFileData.Command !== 'Reload') {
-          this.SetLoadFileData(SocketFileData)
-        } else {
-          const ReloadFileData = {
-            LayoutType: this.NovoDS._Layout_Type || 0,
-            ModelType: this.NovoDS._Model_Type || 'DS310',
-            Orientation: this.NovoDS.Pages.Page._Orientation || 0,
-            Playlist: SocketFileData.Playlist,
-            PlaylistPath: SocketFileData.PlaylistPath
-          }
-          this.SetLoadFileData(ReloadFileData)
+        const ReloadFileData = {
+          LayoutType: this.NovoDS._Layout_Type || 0,
+          ModelType: this.NovoDS._Model_Type || 'DS310',
+          Orientation: this.NovoDS.Pages.Page._Orientation || 0,
+          Playlist: SocketFileData.Playlist,
+          PlaylistPath: SocketFileData.PlaylistPath
         }
+        this.SetLoadFileData(ReloadFileData)
 
         // 使用 Promise.resolve() 返回解析後的數據
         return Promise.resolve(this.NovoDS)
@@ -1179,6 +1176,8 @@ export const useWidgetListStore = defineStore('widgetList', {
     SetLoadFileData(ReloadFileData = null) {
       console.log('ReloadFileData', ReloadFileData)
       this.fileData = ReloadFileData
+      this.NovoDS._Layout_Type = ReloadFileData.LayoutType || 0
+      this.NovoDS._Model_Type = ReloadFileData.ModelType || 'DS310'
       this.NovoDS.Pages.Page._Orientation = ReloadFileData.Orientation || 0
       this.NovoDS.Pages.Page._FreeDesignerMode = 'false'
       this.nowPlayListName = ReloadFileData.Playlist
@@ -1419,6 +1418,35 @@ export const useWidgetListStore = defineStore('widgetList', {
             }
           }
           break
+        }
+      }
+    },
+    setKeyAction(Data, val) {
+      console.log('Data', Data)
+      const UUID = Data._uuid
+      for (const section of this.NovoDS.Pages.Page.Section) {
+        // 迭代 Content.State 陣列
+        if (Array.isArray(section.Content.State)) {
+          for (let i = 0; i < section.Content.State.length; i++) {
+            const state = section.Content.State[i]
+            // console.log('section.Content.State', section.Content.State)
+            if (state.Event) {
+              // 迭代 Event 陣列
+              for (const event of state.Event) {
+                if (event._conId && event._conId === UUID) {
+                  event._key_action = val
+                }
+                if (event.Action) {
+                  // 迭代 Action 陣列
+                  for (const action of event.Action) {
+                    if (action._conId && action._conId === UUID) {
+                      action._key_action = val
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
