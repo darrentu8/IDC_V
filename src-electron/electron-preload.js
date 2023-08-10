@@ -36,10 +36,27 @@ import fs from 'fs'
 import X2js from 'x2js'
 
 const novoDirName = 'NovoDS.PlayLists'
-const interactiveFileName = 'interactive.json'
 const xmlFileName = 'index.xml'
 
 contextBridge.exposeInMainWorld('myAPI', {
+  focusWindow() {
+    // 取得當前的視窗對象
+    let window = BrowserWindow.getFocusedWindow()
+
+    // 如果目前沒有任何視窗被聚焦，則選擇第一個視窗
+    if (!window) {
+      window = BrowserWindow.getAllWindows()[0]
+    }
+
+    // 聚焦到該視窗
+    if (window) {
+      window.focus()
+    }
+    return window
+  },
+  closeWindow() {
+    BrowserWindow.getFocusedWindow().close()
+  },
   minimize() {
     BrowserWindow.getFocusedWindow().minimize()
   },
@@ -104,164 +121,6 @@ contextBridge.exposeInMainWorld('myAPI', {
       // Handle the error here or re-throw it.
     }
   },
-  // 檢查建立Json
-  checkJson: () => {
-    const appPath = getDirFolder()
-    console.log('appPath', appPath)
-    const data = {
-      Focus: 'signage',
-      LayoutType: 0,
-      ModelType: '',
-      OpenNew: true,
-      Reload: false,
-      Orientation: 0,
-      Playlist: '',
-      PlaylistPath: '',
-      Preview: {
-        Path: '',
-        Ready: false
-      }
-    }
-    const targetFile = path.join(appPath, interactiveFileName)
-    console.log('targetFile', targetFile)
-
-    return new Promise((resolve, reject) => {
-      try {
-        if (!fs.existsSync(targetFile)) {
-          fs.writeFileSync(targetFile, JSON.stringify(data))
-          console.log('interactive.json has been created!')
-        } else {
-          console.log('interactive.json already exists.')
-        }
-        resolve()
-      } catch (error) {
-        console.error(error)
-        reject(error)
-      }
-    })
-  },
-  // 讀取Json檔
-  loadConfigFile: () => {
-    const appPath = getDirFolder()
-    const targetFile = path.join(appPath, interactiveFileName)
-    // 未建立或建立失敗
-    if (!fs.existsSync(targetFile)) {
-      // alert('The interactive file could not be found!')
-      const defaultFileData = {
-        Focus: 'signage',
-        LayoutType: 0,
-        ModelType: '',
-        OpenNew: true,
-        Reload: false,
-        Orientation: 0,
-        Playlist: '',
-        PlaylistPath: '',
-        Preview: {
-          Path: '',
-          Ready: false
-        }
-      }
-      return Promise.resolve({ openType: 'new', defaultFileData })
-    }
-    // 已建立
-    return new Promise((resolve, reject) => {
-      fs.readFile(targetFile, 'utf8', (err, data) => {
-        if (err) {
-          return reject(err)
-        }
-
-        try {
-          if (!data) { // 如果 data 不存在则直接返回 null
-            console.log('No Json data')
-            return resolve(null)
-          }
-
-          const obj = JSON.parse(data)
-          console.log('Run Watch Json')
-          console.log('obj', obj)
-          const propFocus = obj.Focus
-          const propOpenNew = obj.OpenNew
-          const propFileData = {
-            ...obj
-          }
-
-          if (propFocus === 'signage') {
-            focusWindow()
-            // 開新檔案
-            if (propOpenNew === true) {
-              console.log('propFileData', propFileData)
-              resolve({ openType: 'new', propFileData })
-            } else if (propOpenNew === false && propFileData.PlaylistPath) {
-              const targetFile = path.join(propFileData.PlaylistPath, propFileData.Playlist)
-              const result = transXml(targetFile)
-              console.log('result', result)
-
-              resolve({
-                openType: 'load',
-                propFileData,
-                result
-              })
-            }
-            console.log('Json資料不完整！')
-            // 例外情況暫不處理
-            resolve(null)
-          } else {
-            console.log('Json資料不完整！')
-            // 例外情況暫不處理
-            resolve(null)
-          }
-        } catch (error) {
-          console.error(error)
-          reject(error)
-        }
-      })
-    })
-  },
-  writeJson: (Playlist_Name = '') => {
-    console.log('Playlist_Name', Playlist_Name)
-    return new Promise((resolve, reject) => {
-      if (!Playlist_Name) {
-        reject()
-      }
-      const appPath = getDirFolder()
-      const targetFile = path.join(appPath, interactiveFileName)
-
-      if (!fs.existsSync(targetFile)) {
-        reject(new Error(`File ${targetFile} does not exist`))
-      }
-
-      // Read the existing file contents
-      fs.readFile(targetFile, 'utf-8', (error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          try {
-            // Parse the contents as a JSON object
-            const json = JSON.parse(data)
-
-            // Update the playlist object with the new name
-            const JsonData = {
-              ...json
-            }
-            JsonData.Focus = 'studio'
-            JsonData.Reload = false
-            JsonData.Playlist = Playlist_Name
-            JsonData.Preview = {
-              Path: Playlist_Name,
-              Ready: true
-            }
-            // Write the updated object back to the file
-            fs.writeFile(targetFile, JSON.stringify(JsonData), 'utf-8', (error) => {
-              if (error) reject(error)
-              else resolve()
-            })
-          } catch (error) {
-            reject(error)
-          }
-        }
-      })
-    })
-  },
   async watchSameFileName(_Playlist_Name, nowPlayListPath) {
     const NovoFolder = getNovoFolder()
     const oldPlayListName = path.basename(nowPlayListPath)
@@ -289,80 +148,6 @@ contextBridge.exposeInMainWorld('myAPI', {
       })
     } catch (error) {
       console.error(error)
-    }
-  },
-  watchJson: () => {
-    return new Promise((resolve, reject) => {
-      const appPath = getDirFolder()
-      const targetFile = path.join(appPath, interactiveFileName)
-
-      if (!fs.existsSync(targetFile)) {
-        reject(new Error(`File ${targetFile} does not exist`))
-      }
-
-      fs.watch(targetFile, (eventType, filename) => {
-        if (filename && eventType === 'change') {
-          fs.readFile(targetFile, 'utf8', (err, data) => {
-            if (err) {
-              reject(err)
-            } else {
-              try {
-                const obj = JSON.parse(data)
-                console.log('Run Watch Json')
-                console.log('obj', obj)
-                const propReload = obj.Reload // true則重新讀取整份
-                const propFocus = obj.Focus // signage || studio
-                const propOpenNew = obj.OpenNew
-                // const propFileName = obj.Playlist
-                // const propFilePath = obj.PlaylistPath
-                const propFileData = { ...obj }
-
-                // 如果重load
-                if (propFocus === 'signage' && propReload) {
-                  focusWindow()
-                  // 開新檔案
-                  if (propFocus === 'signage' && propOpenNew === true) {
-                    console.log('propFileData', propFileData)
-                    writeJsonReset()
-                    resolve({ openType: 'new', propFileData })
-                  } else if (propOpenNew === false && propFileData.PlaylistPath) {
-                    const targetFile = path.join(propFileData.PlaylistPath, propFileData.Playlist)
-                    const result = transXml(targetFile)
-                    console.log('result', result)
-                    writeJsonReset()
-
-                    resolve({
-                      openType: 'load',
-                      propFileData,
-                      result
-                    })
-                  } else {
-                    // 例外情況暫不處理
-                    console.log('Json資料不完整！')
-                    reject(new Error('JSON data is incomplete.'))
-                  }
-                } else {
-                  // 沒重load
-                  // console.log('Json資料不完整！')
-                  reject(new Error('JSON data is incomplete.'))
-                }
-              } catch (err) {
-                console.error(err)
-                reject(err)
-              }
-            }
-          })
-        }
-      })
-    })
-      .catch(error => {
-        console.log(error)
-      })
-  },
-  closeWatchJson: () => {
-    if (this.watcher) {
-      this.watcher.close()
-      console.log('Close watch Json')
     }
   },
   async storeToXML(playListName, nowPlayListFolder, nowPlayListPath, NovoDsData) {
@@ -740,67 +525,6 @@ const writeAndCopyFolder = async (nowPlayListPath, newPlayListPath, xmlData) => 
     throw err
   }
 }
-
-// 轉XML檔案成物件
-const transXml = (propFilePath) => {
-  console.log('propFilePath', propFilePath)
-
-  const targetFile = path.join(propFilePath, xmlFileName)
-  try {
-    if (!fs.existsSync(targetFile)) {
-      throw new Error(`XML file read error: ${xmlFileName}`)
-    }
-
-    console.log('targetFile', targetFile)
-    const x2js = new X2js({
-      attributePrefix: '_'
-    })
-
-    const xml = fs.readFileSync(targetFile, 'utf-8')
-    const parser = x2js.xml2js(xml)
-
-    return parser
-  } catch (error) {
-    console.error(error)
-    // Handle the error here or re-throw it.
-  }
-}
-
-const writeJsonReset = () => {
-  return new Promise((resolve, reject) => {
-    const appPath = getDirFolder()
-    const targetFile = path.join(appPath, interactiveFileName)
-
-    if (!fs.existsSync(targetFile)) {
-      reject(new Error(`File ${targetFile} does not exist`))
-    }
-
-    // Read the existing file contents
-    fs.readFile(targetFile, 'utf-8', (error, data) => {
-      if (error) {
-        reject(error)
-      } else {
-        try {
-          // Parse the contents as a JSON object
-          const json = JSON.parse(data)
-
-          // Update the playlist object with the new name
-          const JsonData = {
-            ...json
-          }
-          JsonData.Reload = false
-          // Write the updated object back to the file
-          fs.writeFile(targetFile, JSON.stringify(JsonData), 'utf-8', (error) => {
-            if (error) reject(error)
-            else resolve()
-          })
-        } catch (error) {
-          reject(error)
-        }
-      }
-    })
-  })
-}
 // 檢查目標重複上傳檔案1
 const isDuplicateFile = (targetFolder, targetPath) => {
   const existingFiles = fs.readdirSync(checkSourceFolder(targetFolder))
@@ -813,18 +537,6 @@ const checkSourceFolder = (targetFolder) => {
   }
 
   return targetFolder
-}
-// 取得APP安裝資料夾
-const getDirFolder = () => {
-  const osType = require('os').type()
-  let appPath
-  if (osType === 'Windows_NT') {
-    // Windows 操作系统
-    appPath = path.dirname(__dirname)
-  } else {
-    appPath = __dirname
-  }
-  return appPath
 }
 // 取得USER資料夾並創建PlayList_yyyyMMddhhmmss
 // const getSourceFolder = () => {
@@ -859,21 +571,21 @@ const getNovoFolder = () => {
   // console.log('folder', folder)
   return folder
 }
-const focusWindow = () => {
-  // 取得當前的視窗對象
-  let window = BrowserWindow.getFocusedWindow()
+// const focusWindow = () => {
+//   // 取得當前的視窗對象
+//   let window = BrowserWindow.getFocusedWindow()
 
-  // 如果目前沒有任何視窗被聚焦，則選擇第一個視窗
-  if (!window) {
-    window = BrowserWindow.getAllWindows()[0]
-  }
+//   // 如果目前沒有任何視窗被聚焦，則選擇第一個視窗
+//   if (!window) {
+//     window = BrowserWindow.getAllWindows()[0]
+//   }
 
-  // 聚焦到該視窗
-  if (window) {
-    window.focus()
-  }
-  return window
-}
+//   // 聚焦到該視窗
+//   if (window) {
+//     window.focus()
+//   }
+//   return window
+// }
 const closeWindow = () => {
   BrowserWindow.getFocusedWindow().close()
 }

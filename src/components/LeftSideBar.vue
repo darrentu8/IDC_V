@@ -95,7 +95,7 @@ const _layout = computed({
         const { _Index: i, _X: x, _Y: y, _Z: z, _Height: h, _Width: w } = section
         return { i, x, y, z, h, w }
       })
-      console.log(sectionPropsArr)
+      // console.log(sectionPropsArr)
       return sectionPropsArr
     } else {
       return layouts.value.layout

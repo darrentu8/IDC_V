@@ -3,32 +3,25 @@ import { initialize, enable } from '@electron/remote/main'
 import path from 'path'
 import os from 'os'
 
-// const WebSocket = require('ws')
-// const WebSocketServer = WebSocket.Server
-// const wss = new WebSocketServer({
-//   port: 6001
-// })
+const WebSocket = require('ws')
+const WebSocketServer = WebSocket.Server
+const wss = new WebSocketServer({
+  port: 6001
+})
 
-// const Data = {
-//   Command: 'Reload',
-//   LayoutType: 0,
-//   ModelType: 'DS310',
-//   Orientation: 3,
-//   Playlist: 'pppp',
-//   PlaylistPath: '/Users/darren/NovoDS.PlayLists',
-//   Preview: {
-//     Path: '',
-//     Ready: false
-//   }
-// }
+const Data = {
+  Command: 'Reload', // OpenNew || Reload
+  Playlist: 'pppp',
+  PlaylistPath: '/Users/darren/NovoDS.PlayLists'
+}
 
-// wss.on('connection', function (ws) {
-//   console.log('[SERVER] connection()')
-//   ws.send(JSON.stringify(Data))
-//   ws.on('message', function (message) {
-//     console.log('[SERVER] Received:' + message)
-//   })
-// })
+wss.on('connection', function (ws) {
+  console.log('[SERVER] connection()')
+  ws.send(JSON.stringify(Data))
+  ws.on('message', function (message) {
+    console.log('[SERVER] Received:' + message)
+  })
+})
 
 // socket.io
 // const express = require('express')

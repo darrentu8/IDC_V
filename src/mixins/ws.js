@@ -48,6 +48,7 @@ export const mixinWebsocket = {
           const result = window.myAPI?.transXml(targetFile)
           console.log('Reload', msg)
           if (result) {
+            window.myAPI?.focusWindow()
             // console.log('result', result)
             if (widgetStore.nowPlayListPath) {
               window.myAPI.delTempFolder(widgetStore.nowPlayListPath)

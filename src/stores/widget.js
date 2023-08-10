@@ -7,15 +7,11 @@ import { DeviceScreenOrientationEnum } from 'src/js/constant'
 export const useWidgetListStore = defineStore('widgetList', {
   state: () => ({
     fileData: {
-      Focus: 'signage',
       LayoutType: 0,
       ModelType: '',
-      OpenNew: true,
-      Reload: false,
       Orientation: 0,
       Playlist: '',
-      PlaylistPath: '',
-      Preview: null
+      PlaylistPath: ''
     },
     checkVali: true,
     nowPlayListName: '',
@@ -639,6 +635,7 @@ export const useWidgetListStore = defineStore('widgetList', {
 
   },
   actions: {
+    // 清除Flow已選的EventAction
     clearEventAction(Data) {
       console.log('Data', Data)
       if (Data.Output && Array.isArray(Data.Output)) {
@@ -839,6 +836,7 @@ export const useWidgetListStore = defineStore('widgetList', {
         }
       }
     },
+    // 比對Configure EventsActions中是否有被選取的EventAction
     checkEvent(Data) {
       console.log('Data', Data)
       if (Array.isArray(Data.Output)) {
@@ -894,6 +892,42 @@ export const useWidgetListStore = defineStore('widgetList', {
                       for (const action of event.Action) {
                         if (action._conId && action._conId === UUID) {
                           return i + 1 // 如果相同，返回索引
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        if (Array.isArray(Data.TcpIp)) {
+          for (const tcpIp of Data.TcpIp) {
+            if (Array.isArray(tcpIp.Command)) {
+              for (const command of tcpIp.Command) {
+                const UUID = command._uuid
+
+                for (const section of this.NovoDS.Pages.Page.Section) {
+                  // 迭代 Content.State 陣列
+                  if (Array.isArray(section.Content.State)) {
+                    for (let i = 0; i < section.Content.State.length; i++) {
+                      const state = section.Content.State[i]
+                      // console.log('section.Content.State', section.Content.State)
+                      if (state.Event) {
+                        // 迭代 Event 陣列
+                        for (const event of state.Event) {
+                          if (event._conId && event._conId === UUID) {
+                            return i + 1 // 如果相同，返回索引
+                          }
+                          if (event.Action) {
+                            // 迭代 Action 陣列
+                            for (const action of event.Action) {
+                              if (action._conId && action._conId === UUID) {
+                                return i + 1 // 如果相同，返回索引
+                              }
+                            }
+                          }
                         }
                       }
                     }
@@ -968,7 +1002,6 @@ export const useWidgetListStore = defineStore('widgetList', {
         return false // 如果沒有找到匹配的UUID，則返回 false
       }
     },
-
     ResetNewPlaylistName(Playlist_Name, newPlayListPath) {
       this.nowPlayListName = Playlist_Name
       this.nowPlayListPath = newPlayListPath
@@ -977,13 +1010,12 @@ export const useWidgetListStore = defineStore('widgetList', {
       Object.assign(this.NovoDS, this.defaultNovoDS)
     },
     // 開新檔案
-    async SetOpenNewFileData(fileData) {
+    async SetOpenNewFileData(SocketFileData) {
       try {
-        console.log('fileData', fileData)
-        this.fileData = fileData
-
-        if (!fileData.Playlist || !fileData.PlaylistPath) {
-          // 建立 PlayList Temp
+        console.log('SocketFileData', SocketFileData)
+        this.fileData = SocketFileData
+        // 建立 PlayList Temp
+        if (SocketFileData.Command === 'OpenNew') {
           const NowPlayListFolder = await window.myAPI.setPlayListFolder()
           console.log('NowPlayListFolder', NowPlayListFolder)
           if (NowPlayListFolder.nowPlayListName.startsWith('@_Temp_Playlist_')) {
@@ -995,31 +1027,15 @@ export const useWidgetListStore = defineStore('widgetList', {
           this.nowPlayListName = NowPlayListFolder.nowPlayListName
           this.nowPlayListFolder = NowPlayListFolder.NovoFolder
           this.nowPlayListPath = NowPlayListFolder.NovoFolder + '/' + NowPlayListFolder.nowPlayListName
-        } else {
-          this.nowPlayListName = fileData.Playlist
-          this.nowPlayListFolder = fileData.PlaylistPath
-          this.nowPlayListPath = fileData.PlaylistPath + '/' + fileData.Playlist
         }
-
-        this._Layout_Type = fileData.LayoutType
-        this._Model_Type = fileData.ModelType
-        this.NovoDS.Pages.Page._Orientation = fileData.Orientation || 0
-        this.NovoDS.Pages.Page._FreeDesignerMode = 'false'
 
         return 'new'
       } catch (error) {
         console.error(`Error in SetOpenNewFileData: ${error}`)
       }
     },
-    // 讀Json內資料
-    SetLoadFileData(fileData = null) {
-      this.fileData = fileData
-      this.nowPlayListName = fileData.Playlist
-      this.nowPlayListFolder = fileData.PlaylistPath
-      this.nowPlayListPath = fileData.PlaylistPath + '/' + fileData.Playlist
-    },
-    // 讀檔 並設置Nove DS XML 將產生的單一物件改成陣列
-    async SetNovoDS(fileData, xml) {
+    // 開啟舊檔,設置Nove DS XML 將產生的單一物件改成陣列
+    async SetNovoDS(SocketFileData, xml) {
       try {
         const RawData = JSON.parse(JSON.stringify(xml))
         if (!RawData.NovoDS) {
@@ -1123,8 +1139,17 @@ export const useWidgetListStore = defineStore('widgetList', {
         this.NovoDS = this.parseObject(RawData.NovoDS)
         console.log('this.NovoDS', this.NovoDS)
 
-        if (fileData) {
-          this.SetLoadFileData(fileData)
+        if (SocketFileData.Command !== 'Reload') {
+          this.SetLoadFileData(SocketFileData)
+        } else {
+          const ReloadFileData = {
+            LayoutType: this.NovoDS._Layout_Type || 0,
+            ModelType: this.NovoDS._Model_Type || 'DS310',
+            Orientation: this.NovoDS.Pages.Page._Orientation || 0,
+            Playlist: SocketFileData.Playlist,
+            PlaylistPath: SocketFileData.PlaylistPath
+          }
+          this.SetLoadFileData(ReloadFileData)
         }
 
         // 使用 Promise.resolve() 返回解析後的數據
@@ -1149,6 +1174,16 @@ export const useWidgetListStore = defineStore('widgetList', {
       })
 
       return obj
+    },
+    // 處理檔案格式
+    SetLoadFileData(ReloadFileData = null) {
+      console.log('ReloadFileData', ReloadFileData)
+      this.fileData = ReloadFileData
+      this.NovoDS.Pages.Page._Orientation = ReloadFileData.Orientation || 0
+      this.NovoDS.Pages.Page._FreeDesignerMode = 'false'
+      this.nowPlayListName = ReloadFileData.Playlist
+      this.nowPlayListFolder = ReloadFileData.PlaylistPath
+      this.nowPlayListPath = ReloadFileData.PlaylistPath + '/' + ReloadFileData.Playlist
     },
     // Section
     ResetWidgetListData() {

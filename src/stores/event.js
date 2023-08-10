@@ -260,7 +260,20 @@ export const useEventListStore = defineStore('eventList', {
           _type: 'gpio',
           ...(gpio._key_action && { _key_action: gpio._key_action }), // add key_action if it exists
           ...(gpio._output_value && { _output_value: gpio._output_value }) // add output_value if it exists
-        })) || []
+        }))?.map(gpio => {
+          if (gpio._key_action === 'down') {
+            return {
+              ...gpio,
+              returnValue: 'Low'
+            }
+          } else if (gpio._key_action === 'up') {
+            return {
+              ...gpio,
+              returnValue: 'High'
+            }
+          }
+          return gpio
+        }) || []
 
       const mapRs232 = widgetStore?.NovoDS?.Hardware?.Rs232Settings?.Rs232
         ?.filter(rs232 => rs232 && rs232.Command)
