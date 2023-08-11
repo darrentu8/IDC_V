@@ -1138,8 +1138,9 @@ export default {
           delete this.GPIO[index]._key_action // 刪除_output_value屬性
           delete this.GPIO[index]._uuid // 刪除_output_value屬性
         }
-      } else {
+      } else if (role === 'keyevent') {
         this.GPIO[index]._name = 'GPIO' + (index + 1)
+        this.GPIO[index]._uuid = uid()
         this.GPIO[index]._key_action = 'down'
         if (this.GPIO[index]._output_value) {
           delete this.GPIO[index]._output_value // 刪除_output_value屬性
