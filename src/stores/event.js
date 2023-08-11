@@ -340,7 +340,7 @@ export const useEventListStore = defineStore('eventList', {
           _isEnabled: gpio._isEnabled,
           _gpio_number: gpio._gpio_number,
           _type: 'gpio',
-          ...(outputData._output_value && { _output_value: outputData._output_value }) // add output_value if it exists
+          ...(outputData._output_value !== null && { _output_value: outputData._output_value }) // add output_value if it exists
         })))
         .flat() || []
 

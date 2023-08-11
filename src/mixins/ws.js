@@ -41,6 +41,7 @@ export const mixinWebsocket = {
             widgetStore.ResetNovoDS()
           }
           console.log('Open', msg)
+          window.myAPI?.focusWindow()
           widgetStore.SetOpenNewFileData(msg)
           this.$router.push({ path: '/' })
         } else if (msg != null && msg.Command === 'Reload' && msg.Playlist && msg.PlaylistPath) {
