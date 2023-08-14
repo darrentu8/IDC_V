@@ -2,7 +2,7 @@
   <div class="column">
     <div class="col row overflow-hidden">
       <div class="q-pa-sm" style="width:550px">
-        <q-scroll-area style="height: 400px; width: 100%;">
+        <q-scroll-area class="border-r" style="height: 400px; width: 100%;">
           <div class="row q-gutter-sm">
             <GridViewStatic :selected="isChooseCustom" :isCustom="true" @click="toCustomize"
               :view-layout="customGrid.layout" :view-row-count="customGrid.rowCount"

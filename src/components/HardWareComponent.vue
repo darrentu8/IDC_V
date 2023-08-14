@@ -3,7 +3,7 @@
     <q-space />
     <div class="text-caption" style="margin:auto 20px">
       Help & resources
-      <q-btn round size="sm" color="grey" flat icon="help_outline" />
+      <q-btn round size="md" color="grey" flat icon="help_outline" />
     </div>
   </div>
   <div style="height:60px;margin-top: -20px ;">
@@ -17,9 +17,9 @@
   <div class="col">
     <q-tab-panels style="background-color: #F9F9F9;" v-model="panel">
       <!-- GPIO -->
-      <q-tab-panel :name="0">
-        <div class="">
-          <div class="row" style="min-height: 320px;">
+      <q-tab-panel :name="0" class="q-pa-none">
+        <div class="row scroll" style="max-height: 380px;">
+          <div class="row" style="min-height: 380px;">
             <div class="column q-ma-md flex flex-center">
               <div class="row">
                 <div @click="changeCurrentPIN(5)" class="pin-rect flex flex-center relative-position"
@@ -63,11 +63,11 @@
               </div>
               <div class="text-caption q-mt-sm">(Scheme of GPIO port)</div>
             </div>
-            <q-separator class="q-ma-md" inset vertical />
-            <div class="col q-pa-xs row">
-              <q-expansion-item class="brand-round-m bg-white q-mr-md q-mb-md" style="width:350px;height: fit-content;"
-                @before-show="showGPIOItem(index)" group="gpio" :ref="`GPIOItem${index}`" v-for="(pin, index) in GPIO"
-                :key="index" expand-icon-toggle>
+            <div class="bg-liner"></div>
+            <div class="col q-ma-md row">
+              <q-expansion-item class="shadow-2 brand-round-m bg-white q-mr-md q-mb-md"
+                style="width:350px;height: fit-content;" @before-show="showGPIOItem(index)" group="gpio"
+                :ref="`GPIOItem${index}`" v-for="(pin, index) in GPIO" :key="index" expand-icon-toggle>
                 <template v-slot:header>
                   <q-item-section>
                     <div v-if="pin._role === 'keyevent'" class="text-body1">
@@ -125,19 +125,19 @@
         </div>
       </q-tab-panel>
       <!-- RS232 -->
-      <q-tab-panel :name="1" style="min-height: 380px;">
-        <div class="row">
-          <q-tabs vertical v-model="subPanel" class="text-grey-8 q-mr-md" active-color="primary">
+      <q-tab-panel :name="1" class="q-pa-none" style="min-height: 380px;">
+        <div class="row scroll" style="max-height: 380px;">
+          <q-tabs vertical v-model="subPanel" class="text-grey-8 q-mr-md q-mt-md" active-color="primary">
             <q-tab name="on" label="On-board RS232 port" />
             <q-tab name="usb" label="USB-RS232 dongle" />
           </q-tabs>
           <q-tab-panels class="col" style="background-color: #F9F9F9;" v-model="subPanel">
-            <q-tab-panel class="flex" name="on">
-              <div class="col">
+            <q-tab-panel class="flex q-pa-none" name="on">
+              <div class="col q-ma-md">
                 <div class="text-body1 text-bold row">
                   <div>On-board RS232 port</div>
-                  <q-space />
-                  <q-toggle @click="disableAlert(index, RS232[0])" v-model="RS232[0]._isEnabled" dense color="primary" />
+                  <q-toggle class="q-ml-md" @click="disableAlert(index, RS232[0])" v-model="RS232[0]._isEnabled" dense
+                    color="primary" />
                 </div>
                 <q-separator class="q-mt-md q-mb-md" />
                 <q-form ref="Form" class="q-mt-md" @submit.stop="addRs0">
@@ -214,8 +214,8 @@
                   </div>
                 </q-form>
               </div>
-              <q-separator vertical class="q-ma-lg" />
-              <div class="col">
+              <div class="bg-liner"></div>
+              <div class="col q-ma-md">
                 <q-list bordered class="rounded-borders" v-if="RS232[0].Command.length > 0"
                   style="max-height: 500px;overflow: auto;">
                   <q-expansion-item group="tcp-tx" v-for="(rs0, index) in RS232[0].Command" :key="index" expand-separator>
@@ -254,12 +254,12 @@
                 </div>
               </div>
             </q-tab-panel>
-            <q-tab-panel class="flex" name="usb">
-              <div class="col">
+            <q-tab-panel class="flex q-pa-none" name="usb">
+              <div class="col q-ma-md">
                 <div class="text-body1 text-bold row">
                   <div>USB-RS232 dongle</div>
-                  <q-space />
-                  <q-toggle @click="disableAlert(index, RS232[1])" v-model="RS232[1]._isEnabled" dense color="primary" />
+                  <q-toggle class="q-ml-md" @click="disableAlert(index, RS232[1])" v-model="RS232[1]._isEnabled" dense
+                    color="primary" />
                 </div>
                 <q-separator class="q-mt-md q-mb-md" />
                 <q-form ref="Form" class="" @submit.stop="addRs1">
@@ -336,8 +336,8 @@
                   </div>
                 </q-form>
               </div>
-              <q-separator vertical class="q-ma-lg" />
-              <div class="col">
+              <div class="bg-liner"></div>
+              <div class="col q-ma-md">
                 <q-list bordered class="rounded-borders" v-if="RS232[1].Command.length > 0"
                   style="max-height: 500px;overflow: auto;">
                   <q-expansion-item group="tcp-tx" v-for="(rs1, index) in RS232[1].Command" :key="index" expand-separator>
@@ -380,14 +380,14 @@
         </div>
       </q-tab-panel>
       <!-- TCP/IP -->
-      <q-tab-panel :name="2" style="height: 380px;">
-        <div class="row">
-          <div class="col">
+      <q-tab-panel :name="2" class="q-pa-none">
+        <div class="row" style="max-height: 380px;min-height: 380px;">
+          <div class="col q-ma-md">
             <!-- TCPIP Receive -->
-            <div class="text-body1 row">
-              <div class="q-mb-sm">RX ( Receive )</div>
-              <q-space />
-              <q-toggle @click="disableAlert(index, TCPIP)" v-model="TCPIP._isEnabled" dense color="primary" />
+            <div class="text-body1 row q-mb-md">
+              <div class="">RX ( Receive )</div>
+              <q-toggle class="q-ml-md" @click="disableAlert(index, TCPIP)" v-model="TCPIP._isEnabled" dense
+                color="primary" />
             </div>
             <q-form ref="FormTrx" class="" @submit.stop="addTrx">
               <div class="row q-mt-sm items-top">
@@ -462,8 +462,8 @@
               </div>
             </q-form>
           </div>
-          <q-separator vertical class="q-ma-lg" />
-          <div class="col">
+          <div class="bg-liner"></div>
+          <div class="col q-ma-md">
             <q-tabs v-model="subTcpPanel" class="text-grey-8 q-mr-md" active-color="primary">
               <q-tab name="rx" label="RX ( Receive )" />
               <q-tab name="tx" label="TX ( Send )" />
@@ -561,15 +561,15 @@
         </div>
       </q-tab-panel>
       <!-- Timer -->
-      <q-tab-panel :name="3">
-        <div class="row" style="min-height: 350px;">
-          <div class="col q-pa-xs">
+      <q-tab-panel :name="3" class="q-pa-none" style="max-height: 380px;">
+        <div class="row scroll" style="min-height: 380px;">
+          <div class="col q-ma-md">
             <div class="text-body1 row">
-              <div>Software Timer</div>
+              <div>Name</div>
             </div>
             <q-form ref="Form" class="" @submit.stop="addTimer">
               <div class="row q-mt-sm">
-                <div class="col">
+                <div class="col-7">
                   <q-input label="Name" class="brand-round-m" bg-color="white" dense outlined type="text"
                     v-model="timer._name" lazy-rules :rules="[
                       (val) =>
@@ -577,23 +577,24 @@
                 </div>
               </div>
               <div class="row q-mt-sm">
-                <div class="col">
+                <div class="col-7">
                   <q-input label="Time" class="brand-round-m" bg-color="white" dense outlined type="number" maxlength="4"
-                    min="0" prefix="" suffix="sec" v-model.number="timer._duration" lazy-rules :rules="[
+                    min="0" prefix="" suffix="Sec" v-model.number="timer._duration" lazy-rules :rules="[
                       (val) =>
                         (val !== null && val !== '') || 'Need filled']" />
                 </div>
               </div>
               <div class="row q-mt-md">
+                <q-space />
                 <div style="margin: auto">
-                  <q-btn unelevated rounded color="primary" class="text-capitalize q-px-lg" @click="addTimer"
+                  <q-btn unelevated rounded color="primary" class="text-capitalize q-mt-xl q-px-lg" @click="addTimer"
                     label="Add" />
                 </div>
               </div>
             </q-form>
           </div>
-          <q-separator vertical class="q-ma-lg" />
-          <div class="col">
+          <div class="bg-liner"></div>
+          <div class="col q-ma-md">
             <q-list bordered class="rounded-borders" v-if="TimerSettings.Timer.length > 0"
               style="max-height: 500px;overflow: auto;">
               <q-expansion-item group="timer" v-for="(timer, Index) in TimerSettings.Timer" :key="Index" expand-separator>

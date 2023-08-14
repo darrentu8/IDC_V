@@ -4,7 +4,7 @@
       <div class="text-body1 text-bold" style="margin:auto 20px">Select layout | Customize</div>
     </div>
     <div class="row">
-      <div style="width:300px">
+      <div class="border-r" style="width:300px">
         <div class="row q-pa-sm">
           <div class="q-pa-sm" style="width:120px"> Row Count:</div>
           <div class="col">
