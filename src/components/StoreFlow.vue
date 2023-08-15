@@ -186,9 +186,9 @@ const delState = (UUID, _id) => {
   }).onOk(() => {
     widgetStore.DelState(UUID, _id)
   }).onCancel(() => {
-    console.log('Cancel')
+    // console.log('Cancel')
   }).onDismiss(() => {
-    console.log('Called on OK or Cancel')
+    // console.log('Called on OK or Cancel')
   })
 }
 const setVal = (stateIndex, scope) => {
@@ -207,15 +207,15 @@ const delAllStateEvent = (next_state_id, Index, EventIndex) => {
   }).onOk(() => {
     widgetStore.DelAllStateEvent(next_state_id, Index, EventIndex)
   }).onCancel(() => {
-    console.log('Cancel')
+    // console.log('Cancel')
   }).onDismiss(() => {
-    console.log('Called on OK or Cancel')
+    // console.log('Called on OK or Cancel')
   })
 }
 const mapCurrentStateOptions = computed(() => {
   return function (next_state_id) {
     const Data = currentStateOptions.value.filter(e => e._id === next_state_id)
-    console.log('Data', Data)
+    // console.log('Data', Data)
     if (Data && Data.length) {
       return Data[0]._name
     } else {
@@ -225,7 +225,7 @@ const mapCurrentStateOptions = computed(() => {
 })
 const filterCurrentStateOptions = computed(() => {
   return function (stateData) {
-    console.log('stateData', stateData)
+    // console.log('stateData', stateData)
     const differentIdElements = currentStateOptions.value.filter(
       option => !stateData.Event.some(event => event._next_state_id === option._id)
     )
@@ -265,14 +265,14 @@ function calcDiff(stateData = null) {
     }
   })
 
-  console.log('stateData', stateData)
+  // console.log('stateData', stateData)
   return stateData
 }
 function transformEventData(EventData = {}) {
-  console.log('transformEventData', EventData)
+  // console.log('transformEventData', EventData)
 
   if (!Array.isArray(EventData) || EventData.length === 0) {
-    console.log('Error: EventData is not an array or is empty')
+    // console.log('Error: EventData is not an array or is empty')
     return []
   }
 
@@ -286,7 +286,7 @@ function transformEventData(EventData = {}) {
     return acc
   }, [])
 
-  console.log('result', result)
+  // console.log('result', result)
   return result
 }
 

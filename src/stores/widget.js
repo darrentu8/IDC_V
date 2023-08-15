@@ -1012,13 +1012,13 @@ export const useWidgetListStore = defineStore('widgetList', {
     // 開新檔案
     async SetOpenNewFileData(SocketFileData) {
       try {
-        console.log('SocketFileData', SocketFileData)
+        // console.log('SocketFileData', SocketFileData)
         this.fileData = SocketFileData
         // 建立 PlayList Temp
         if (SocketFileData.Command === 'OpenNew') {
           this.SetLoadFileData(SocketFileData)
           const NowPlayListFolder = await window.myAPI.setPlayListFolder()
-          console.log('NowPlayListFolder', NowPlayListFolder)
+          // console.log('NowPlayListFolder', NowPlayListFolder)
           if (NowPlayListFolder.nowPlayListName.startsWith('@_Temp_Playlist_')) {
             const fileName = NowPlayListFolder.nowPlayListName.split('_')[2] + '_' + NowPlayListFolder.nowPlayListName.split('_')[3]
             this.SetPlaylistName(fileName)
@@ -1174,7 +1174,7 @@ export const useWidgetListStore = defineStore('widgetList', {
     },
     // 處理檔案格式
     SetLoadFileData(ReloadFileData = null) {
-      console.log('ReloadFileData', ReloadFileData)
+      // console.log('ReloadFileData', ReloadFileData)
       this.fileData = ReloadFileData
       this.NovoDS._Layout_Type = ReloadFileData.LayoutType || 0
       this.NovoDS._Model_Type = ReloadFileData.ModelType || 'DS310'
@@ -1214,7 +1214,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       this.NovoDS.Pages.Page.Section[Index]._ContentType = ContentType
     },
     SetPlaylistName(val) {
-      console.log('this.NovoDS._Playlist_Name', val)
+      // console.log('this.NovoDS._Playlist_Name', val)
       this.NovoDS._Playlist_Name = val
     },
     SetCheckVali(val) {
@@ -1336,7 +1336,7 @@ export const useWidgetListStore = defineStore('widgetList', {
       this.currentStateId = ID
     },
     SetFlowState(Index, EventId, selectStateData) {
-      console.log('selectStateData', selectStateData)
+      // console.log('selectStateData', selectStateData)
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
       const eventIndex = this.NovoDS.Pages.Page.Section[currentSection].Content.State[Index].Event.findIndex((event) => {

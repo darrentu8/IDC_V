@@ -40,14 +40,14 @@ export const mixinWebsocket = {
             window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
             widgetStore.ResetNovoDS()
           }
-          console.log('Open', msg)
+          // console.log('Open', msg)
           window.myAPI?.focusWindow()
           widgetStore.SetOpenNewFileData(msg)
           this.$router.push({ path: '/' })
         } else if (msg != null && msg.Command === 'Reload' && msg.Playlist && msg.PlaylistPath) {
           const targetFile = msg.PlaylistPath + '/' + msg.Playlist
           const result = window.myAPI?.transXml(targetFile)
-          console.log('Reload', msg)
+          // console.log('Reload', msg)
           if (result) {
             window.myAPI?.focusWindow()
             // console.log('result', result)
@@ -55,7 +55,7 @@ export const mixinWebsocket = {
               window.myAPI.delTempFolder(widgetStore.nowPlayListPath)
             }
             widgetStore.SetNovoDS(msg, result).then((result) => {
-              console.log('SetNovoDS', result)
+              // console.log('SetNovoDS', result)
               this.$router.push({ path: '/flow' })
               const dialog = this.$q.dialog({
                 title: widgetStore.NovoDS._Playlist_Name + ' ' + 'opening...',

@@ -1068,7 +1068,7 @@ export default {
       }
     },
     async disableAlert(index, Data) {
-      console.log('Data ', Data)
+      // console.log('Data ', Data)
       if (Data._isEnabled === false) {
         const result = await widgetStore.checkEvent(Data)
         console.log('result', result)
@@ -1095,7 +1095,7 @@ export default {
       }
     },
     async changeAlert(index, pin) {
-      console.log('pin ', pin)
+      // console.log('pin ', pin)
       if (pin._isEnabled === true || pin) {
         const result = await widgetStore.checkEvent(pin)
         console.log('result', result)

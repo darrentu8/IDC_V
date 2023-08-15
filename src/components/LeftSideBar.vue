@@ -106,7 +106,7 @@ const _layout = computed({
   }
 })
 const updateContentType = function (e) {
-  console.log('e', e)
+  // console.log('e', e)
   widgetStore.SetWidget(e.Index, e.val)
   widgetStore.ResetWidgetListData()
 }

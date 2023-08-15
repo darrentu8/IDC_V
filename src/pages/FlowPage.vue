@@ -84,13 +84,13 @@ const addState = () => {
 
 const tab = ref('source')
 function loadComponent(val) {
-  console.log('loadComponent;:', val)
+  // console.log('loadComponent;:', val)
   if (val) {
     widgetStore.SetLoading(false)
   }
 }
 watch(tab, (val) => {
-  console.log('watch:', val)
+  // console.log('watch:', val)
   loadComponent(val)
 })
 </script>

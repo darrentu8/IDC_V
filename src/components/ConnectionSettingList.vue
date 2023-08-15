@@ -32,7 +32,21 @@
                         <span class="text-grey ellipsis">{{ EventData._type._name }}</span>
                       </div>
                     </template> -->
-                    <template v-slot:option="scope">
+                    <template v-slot:before-options>
+                      <q-item dense>
+                        <q-item-section class="text-italic text-grey">
+                          Please select an event
+                        </q-item-section>
+                      </q-item>
+                    </template>
+                    <template v-slot:no-option>
+                      <q-item dense>
+                        <q-item-section class="text-italic text-grey">
+                          All events are selected.
+                        </q-item-section>
+                      </q-item>
+                    </template>
+                    <!-- <template v-slot:option="scope">
                       <q-item v-if="scope.opt.disable" class="q-pt-sm hidden" v-bind="scope.itemProps">
                         <q-item-label>{{ scope.opt._name }}</q-item-label>
                       </q-item>
@@ -42,7 +56,7 @@
                       <q-item v-else v-bind="scope.itemProps" class="q-pt-sm hidden">
                         <q-item-label class="text-grey">{{ scope.opt._name }}</q-item-label>
                       </q-item>
-                    </template>
+                    </template> -->
                     <template v-slot:after>
                       <img class="q-mr-sm q-mt-sm cursor-pointer" label="" size="md" @click="delEvent(EventData._id)"
                         round flat color="red" src="~assets/icon/delete.svg" />
@@ -82,7 +96,21 @@
                             <span class="text-grey ellipsis">{{ actionData._type._name }}</span>
                           </div>
                         </template> -->
-                        <template v-slot:option="scope">
+                        <template v-slot:before-options>
+                          <q-item dense>
+                            <q-item-section class="text-italic text-grey">
+                              Please select an action
+                            </q-item-section>
+                          </q-item>
+                        </template>
+                        <template v-slot:no-option>
+                          <q-item dense>
+                            <q-item-section class="text-italic text-grey">
+                              All actions are selected.
+                            </q-item-section>
+                          </q-item>
+                        </template>
+                        <!-- <template v-slot:option="scope">
                           <q-item v-if="scope.opt.disable" class="q-pt-sm hidden" v-bind="scope.itemProps">
                             <q-item-label>{{ scope.opt._name }}</q-item-label>
                           </q-item>
@@ -92,7 +120,7 @@
                           <q-item v-else v-bind="scope.itemProps" class="q-pt-sm hidden">
                             <q-item-label class="text-grey">{{ scope.opt._name }}</q-item-label>
                           </q-item>
-                        </template>
+                        </template> -->
                         <template v-slot:after>
                           <img class="q-mr-sm q-mt-sm cursor-pointer" label="" size="md"
                             @click="delAction(EventData._id, actionData._id)" round flat color="red"
@@ -211,62 +239,74 @@ const delEvent = (EventId) => {
   })
 }
 function transformEventData(eventData, currentStateId) {
-  console.log('eventData', eventData)
-  console.log('currentStateId', currentStateId)
+  // console.log('eventData', eventData)
+  // console.log('currentStateId', currentStateId)
   const resultEvent = eventData.filter(obj => obj._next_state_id === currentStateId)
 
-  console.log('resultEvent', resultEvent)
+  // console.log('resultEvent', resultEvent)
   return resultEvent
 }
 function filterEventTypeOptions(val, update) {
-  console.log('val', val)
-  console.log('update', update)
+  // console.log('val', val)
+  // console.log('update', update)
   // 確保 currentStateSelectedEvent 不為空陣列
   if (currentStateSelectedEvent.value.length === 0) {
     eventTypeOptionsData.value = eventTypeOptions.value
     return
   }
 
-  if (update) {
-    console.log('currentStateSelectedEvent.value', currentStateSelectedEvent.value)
-    update(() => {
-      eventTypeOptionsData.value = eventTypeOptions.value.map(option => {
-        if (!currentStateSelectedEvent.value.includes(option._uuid)) {
-          return option
-        } else {
-          return {
-            ...option,
-            disable: true
-          }
-        }
+  try {
+    if (update) {
+      update(() => {
+        eventTypeOptionsData.value = eventTypeOptions.value
+          .filter(option => option._isEnabled)
+          .map(option => {
+            if (!currentStateSelectedEvent.value.includes(option._uuid)) {
+              return option
+            } else {
+              return null
+            }
+          })
+          .filter(option => option !== null)
+
+        console.log('Flow events options', eventTypeOptionsData.value)
       })
-      console.log('eventTypeOptionsData.value', eventTypeOptionsData.value)
-    })
+    }
+  } catch (error) {
+    // Handle any errors here
+    console.error('An error occurred:', error)
   }
 }
+
 function filterActionTypeOptions(val, update) {
-  console.log('val', val)
-  console.log('update', update)
+  // console.log('val', val)
+  // console.log('update', update)
   if (currentStateSelectedAction.value.length === 0) {
     actionTypeOptionsData.value = actionTypeOptions.value
     return
   }
 
-  if (update) {
-    console.log('currentStateSelectedAction.value', currentStateSelectedAction.value)
-    update(() => {
-      actionTypeOptionsData.value = actionTypeOptions.value.map(option => {
-        if (!currentStateSelectedAction.value.includes(option._uuid)) {
-          return option
-        } else {
-          return {
-            ...option,
-            disable: true
-          }
-        }
+  try {
+    if (update) {
+      console.log('currentEventSelectedAction', currentStateSelectedAction.value)
+      update(() => {
+        actionTypeOptionsData.value = actionTypeOptions.value
+          .filter(option => option._isEnabled)
+          .map(option => {
+            if (!currentStateSelectedAction.value.includes(option._uuid)) {
+              return option
+            } else {
+              return null
+            }
+          })
+          .filter(option => option !== null)
+
+        console.log('Flow Actions Options', actionTypeOptionsData.value)
       })
-      console.log('actionTypeOptionsData.value', actionTypeOptionsData.value)
-    })
+    }
+  } catch (error) {
+    // Handle any errors here
+    console.error('An error occurred:', error)
   }
 }
 
