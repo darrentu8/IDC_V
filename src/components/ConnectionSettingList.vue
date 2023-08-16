@@ -32,7 +32,7 @@
                         <span class="text-grey ellipsis">{{ EventData._type._name }}</span>
                       </div>
                     </template> -->
-                    <template v-slot:before-options>
+                    <!-- <template v-slot:before-options>
                       <q-item dense>
                         <q-item-section class="text-italic text-grey">
                           Please select an event
@@ -45,18 +45,19 @@
                           All events are selected.
                         </q-item-section>
                       </q-item>
-                    </template>
-                    <!-- <template v-slot:option="scope">
-                      <q-item v-if="scope.opt.disable" class="q-pt-sm hidden" v-bind="scope.itemProps">
-                        <q-item-label>{{ scope.opt._name }}</q-item-label>
-                      </q-item>
-                      <q-item v-else-if="scope.opt._isEnabled" class="q-pt-sm" v-bind="scope.itemProps">
-                        <q-item-label>{{ scope.opt._name }}</q-item-label>
-                      </q-item>
-                      <q-item v-else v-bind="scope.itemProps" class="q-pt-sm hidden">
-                        <q-item-label class="text-grey">{{ scope.opt._name }}</q-item-label>
-                      </q-item>
                     </template> -->
+                    <template v-slot:option="scope">
+                      <q-item v-if="scope.opt.hidden" class="q-pt-sm hidden" v-bind="scope.itemProps">
+                        <q-item-label>{{ scope.opt._name }}</q-item-label>
+                      </q-item>
+                      <q-item v-else-if="scope.opt.disable" class="q-pt-sm text-italic text-grey"
+                        v-bind="scope.itemProps">
+                        <q-item-label>{{ scope.opt._name }}</q-item-label>
+                      </q-item>
+                      <q-item v-else v-bind="scope.itemProps" class="q-pt-sm">
+                        <q-item-label class="">{{ scope.opt._name }}</q-item-label>
+                      </q-item>
+                    </template>
                     <template v-slot:after>
                       <img class="q-mr-sm q-mt-sm cursor-pointer" label="" size="md" @click="delEvent(EventData._id)"
                         round flat color="red" src="~assets/icon/delete.svg" />
@@ -96,7 +97,7 @@
                             <span class="text-grey ellipsis">{{ actionData._type._name }}</span>
                           </div>
                         </template> -->
-                        <template v-slot:before-options>
+                        <!-- <template v-slot:before-options>
                           <q-item dense>
                             <q-item-section class="text-italic text-grey">
                               Please select an action
@@ -109,18 +110,19 @@
                               All actions are selected.
                             </q-item-section>
                           </q-item>
-                        </template>
-                        <!-- <template v-slot:option="scope">
-                          <q-item v-if="scope.opt.disable" class="q-pt-sm hidden" v-bind="scope.itemProps">
-                            <q-item-label>{{ scope.opt._name }}</q-item-label>
-                          </q-item>
-                          <q-item v-else-if="scope.opt._isEnabled" class="q-pt-sm" v-bind="scope.itemProps">
-                            <q-item-label>{{ scope.opt._name }}</q-item-label>
-                          </q-item>
-                          <q-item v-else v-bind="scope.itemProps" class="q-pt-sm hidden">
-                            <q-item-label class="text-grey">{{ scope.opt._name }}</q-item-label>
-                          </q-item>
                         </template> -->
+                        <template v-slot:option="scope">
+                          <q-item v-if="scope.opt.hidden" class="q-pt-sm hidden" v-bind="scope.itemProps">
+                            <q-item-label>{{ scope.opt._name }}</q-item-label>
+                          </q-item>
+                          <q-item v-else-if="scope.opt.disable" class="q-pt-sm text-italic text-grey"
+                            v-bind="scope.itemProps">
+                            <q-item-label>{{ scope.opt._name }}</q-item-label>
+                          </q-item>
+                          <q-item v-else v-bind="scope.itemProps" class="q-pt-sm">
+                            <q-item-label class="">{{ scope.opt._name }}</q-item-label>
+                          </q-item>
+                        </template>
                         <template v-slot:after>
                           <img class="q-mr-sm q-mt-sm cursor-pointer" label="" size="md"
                             @click="delAction(EventData._id, actionData._id)" round flat color="red"
@@ -264,11 +266,30 @@ function filterEventTypeOptions(val, update) {
             if (!currentStateSelectedEvent.value.includes(option._uuid)) {
               return option
             } else {
-              return null
+              return {
+                ...option,
+                hidden: true
+              }
             }
           })
-          .filter(option => option !== null)
 
+        // 檢查是否需要加入新的選項
+        const allDisabled = eventTypeOptionsData.value.every(option => option.hidden)
+        if (allDisabled) {
+          eventTypeOptionsData.value.push(
+            {
+              _name: 'All events are selected.',
+              _uuid: 0,
+              disable: true
+            })
+        } else {
+          eventTypeOptionsData.value.unshift(
+            {
+              _name: 'Please select an event',
+              _uuid: -1,
+              disable: true
+            })
+        }
         console.log('Flow events options', eventTypeOptionsData.value)
       })
     }
@@ -296,10 +317,30 @@ function filterActionTypeOptions(val, update) {
             if (!currentStateSelectedAction.value.includes(option._uuid)) {
               return option
             } else {
-              return null
+              return {
+                ...option,
+                hidden: true
+              }
             }
           })
-          .filter(option => option !== null)
+
+        // 檢查是否需要加入新的選項
+        const allDisabled = actionTypeOptionsData.value.every(option => option.hidden)
+        if (allDisabled) {
+          actionTypeOptionsData.value.push(
+            {
+              _name: 'All actions are selected.',
+              _uuid: 0,
+              disable: true
+            })
+        } else {
+          actionTypeOptionsData.value.unshift(
+            {
+              _name: 'Please select an action',
+              _uuid: -1,
+              disable: true
+            })
+        }
 
         console.log('Flow Actions Options', actionTypeOptionsData.value)
       })
