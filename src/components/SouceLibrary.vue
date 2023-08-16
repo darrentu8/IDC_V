@@ -114,7 +114,7 @@ const delState = (stateUUID, stateID) => {
 }
 
 const setDefaultState = async (stateID) => {
-  console.log('stateID', stateID)
+  // console.log('stateID', stateID)
   if (stateID !== null && stateID !== undefined) {
     const result = widgetStore.SetStateDefault(stateID)
     if (result) {

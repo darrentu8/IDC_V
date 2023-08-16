@@ -57,32 +57,38 @@ export const mixinWebsocket = {
             widgetStore.SetNovoDS(msg, result).then((result) => {
               // console.log('SetNovoDS', result)
               this.$router.push({ path: '/flow' })
-              const dialog = this.$q.dialog({
-                title: widgetStore.NovoDS._Playlist_Name + ' ' + 'opening...',
-                message: 'Processing... 0%',
-                progress: true, // we enable default settings
-                persistent: false, // we want the user to not be able to close it
-                ok: false // we want the user to not be able to close it
-              })
-
-              // we simulate some progress here...
-              let percentage = 0
-              const interval = setInterval(() => {
-                percentage = Math.min(100, percentage + Math.floor(Math.random() * 22))
-
-                // we update the dialog
-                dialog.update({
-                  message: `Processing... ${percentage}%`
+              if (this.$) {
+                const dialog = this.$q.dialog({
+                  title: widgetStore.NovoDS._Playlist_Name + ' ' + 'opening...',
+                  message: 'Processing... 0%',
+                  progress: true, // we enable default settings
+                  persistent: false, // we want the user to not be able to close it
+                  ok: false // we want the user to not be able to close it
                 })
 
-                // if we are done, we're gonna close it
-                if (percentage === 100) {
-                  clearInterval(interval)
-                  setTimeout(() => {
-                    dialog.hide()
-                  }, 150)
-                }
-              }, 100)
+                // we simulate some progress here...
+                let percentage = 0
+                const interval = setInterval(() => {
+                  percentage = Math.min(100, percentage + Math.floor(Math.random() * 22))
+
+                  // we update the dialog
+                  dialog.update({
+                    message: `Processing... ${percentage}%`
+                  })
+
+                  // if we are done, we're gonna close it
+                  if (percentage === 100) {
+                    clearInterval(interval)
+                    setTimeout(() => {
+                      try {
+                        dialog.hide()
+                      } catch (error) {
+                        // console.error(error)
+                      }
+                    }, 150)
+                  }
+                }, 100)
+              }
             })
           }
         }

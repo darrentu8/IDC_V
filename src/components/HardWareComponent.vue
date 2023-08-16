@@ -729,7 +729,7 @@ export default {
       return widgetStore.NovoDS.Hardware.TimerSettings
     },
     System() {
-      return widgetStore.NovoDS.Hardware.System
+      return widgetStore.NovoDS.Hardware.System.Output
     },
     gpioRoleOption() {
       return widgetStore.gpioRoleOption
@@ -1110,8 +1110,8 @@ export default {
               this.RS232[1]._isEnabled = true
             } else if (Data.ReceivedCommands) {
               this.TCPIP._isEnabled = true
-            } else if (!this.System[index]._isEnabled) {
-              this.System[index]._isEnabled = true
+            } else if (!this.System.Output[index]._isEnabled) {
+              this.System.Output[index]._isEnabled = true
             }
           })
         }
