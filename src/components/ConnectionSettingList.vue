@@ -249,8 +249,6 @@ function transformEventData(eventData, currentStateId) {
   return resultEvent
 }
 function filterEventTypeOptions(val, update) {
-  // console.log('val', val)
-  // console.log('update', update)
   // 確保 currentStateSelectedEvent 不為空陣列
   if (currentStateSelectedEvent.value.length === 0) {
     eventTypeOptionsData.value = eventTypeOptions.value
@@ -300,50 +298,51 @@ function filterEventTypeOptions(val, update) {
 }
 
 function filterActionTypeOptions(val, update) {
-  // console.log('val', val)
-  // console.log('update', update)
   if (currentStateSelectedAction.value.length === 0) {
     actionTypeOptionsData.value = actionTypeOptions.value
+    update()
     return
   }
 
   try {
     if (update) {
       console.log('currentEventSelectedAction', currentStateSelectedAction.value)
-      update(() => {
-        actionTypeOptionsData.value = actionTypeOptions.value
-          .filter(option => option._isEnabled)
-          .map(option => {
-            if (!currentStateSelectedAction.value.includes(option._uuid)) {
-              return option
-            } else {
-              return {
-                ...option,
-                hidden: true
+      setTimeout(() => {
+        update(() => {
+          actionTypeOptionsData.value = actionTypeOptions.value
+            .filter(option => option._isEnabled)
+            .map(option => {
+              if (!currentStateSelectedAction.value.includes(option._uuid)) {
+                return option
+              } else {
+                return {
+                  ...option,
+                  hidden: true
+                }
               }
-            }
-          })
-
-        // 檢查是否需要加入新的選項
-        const allDisabled = actionTypeOptionsData.value.every(option => option.hidden)
-        if (allDisabled) {
-          actionTypeOptionsData.value.push(
-            {
-              _name: 'All actions are selected.',
-              _uuid: 0,
-              disable: true
             })
-        } else {
-          actionTypeOptionsData.value.unshift(
-            {
-              _name: 'Please select an action',
-              _uuid: -1,
-              disable: true
-            })
-        }
 
-        console.log('Flow Actions Options', actionTypeOptionsData.value)
-      })
+          // 檢查是否需要加入新的選項
+          const allDisabled = actionTypeOptionsData.value.every(option => option.hidden)
+          if (allDisabled) {
+            actionTypeOptionsData.value.push(
+              {
+                _name: 'All actions are selected.',
+                _uuid: 0,
+                disable: true
+              })
+          } else {
+            actionTypeOptionsData.value.unshift(
+              {
+                _name: 'Please select an action',
+                _uuid: -1,
+                disable: true
+              })
+          }
+
+          console.log('Flow Actions Options', actionTypeOptionsData.value)
+        })
+      }, 100)
     }
   } catch (error) {
     // Handle any errors here
