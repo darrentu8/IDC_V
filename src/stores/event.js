@@ -336,7 +336,7 @@ export const useEventListStore = defineStore('eventList', {
           _type: 'timer'
         })) || []
 
-      const mapExtra = widgetStore?.NovoDS?.Hardware?.System
+      const mapExtra = widgetStore?.NovoDS?.Hardware?.System?.Output
         ?.filter(extra => extra)
         ?.map(extra => ({
           _uuid: extra._uuid || uid(),

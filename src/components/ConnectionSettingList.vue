@@ -82,7 +82,7 @@
                     </div>
                     <div class="col-12">
                       <!-- Action 選單 -->
-                      <q-select @click="setCurentEventID(EventData._id)" :loading="loadingFilter"
+                      <q-select @click="setCurentEventID(EventData._id)"
                         @update:model-value="(val) => setAction(EventData._id, actionData, val)"
                         @filter="filterActionTypeOptions" emit-value map-options class="theme brand-round-m"
                         options-selected-class="text-black" :disable="EventData._next_state_id === ''" bg-color="white"

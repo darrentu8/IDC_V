@@ -170,64 +170,66 @@ export const useWidgetListStore = defineStore('widgetList', {
             }
           ]
         },
-        System: [
-          {
-            _uuid: 'hdmi_onoff',
-            _isEnabled: true,
-            _name: 'Display (On/Off)',
-            _type: 'hdmi_control',
-            _output_value: '-1'
-          },
-          {
-            _uuid: 'hdmi_on',
-            _isEnabled: false,
-            _name: 'Display On',
-            _type: 'hdmi_control',
-            _output_value: '1'
-          },
-          {
-            _uuid: 'hdmi_off',
-            _isEnabled: false,
-            _name: 'Display Off',
-            _type: 'hdmi_control',
-            _output_value: '0'
-          },
-          {
-            _uuid: 'volume_muteunmute',
-            _isEnabled: true,
-            _name: 'Device (Mute/Unmute)',
-            _type: 'volume_mute',
-            _output_value: '-1'
-          },
-          {
-            _uuid: 'volume_mute',
-            _isEnabled: false,
-            _name: 'Device mute',
-            _type: 'volume_mute',
-            _output_value: '1'
-          },
-          {
-            _uuid: 'volume_unmute',
-            _isEnabled: false,
-            _name: 'Device unmute',
-            _type: 'volume_mute',
-            _output_value: '0'
-          },
-          {
-            _uuid: 'volume_up',
-            _isEnabled: false,
-            _name: 'Volume up',
-            _type: 'volume_control',
-            _output_value: '1'
-          },
-          {
-            _uuid: 'volume_down',
-            _isEnabled: false,
-            _name: 'Volume down',
-            _type: 'volume_control',
-            _output_value: '0'
-          }
-        ]
+        System: {
+          Output: [
+            {
+              _uuid: 'hdmi_onoff',
+              _isEnabled: true,
+              _name: 'Display (On/Off)',
+              _type: 'hdmi_control',
+              _output_value: '-1'
+            },
+            {
+              _uuid: 'hdmi_on',
+              _isEnabled: false,
+              _name: 'Display On',
+              _type: 'hdmi_control',
+              _output_value: '1'
+            },
+            {
+              _uuid: 'hdmi_off',
+              _isEnabled: false,
+              _name: 'Display Off',
+              _type: 'hdmi_control',
+              _output_value: '0'
+            },
+            {
+              _uuid: 'volume_muteunmute',
+              _isEnabled: true,
+              _name: 'Device (Mute/Unmute)',
+              _type: 'volume_mute',
+              _output_value: '-1'
+            },
+            {
+              _uuid: 'volume_mute',
+              _isEnabled: false,
+              _name: 'Device mute',
+              _type: 'volume_mute',
+              _output_value: '1'
+            },
+            {
+              _uuid: 'volume_unmute',
+              _isEnabled: false,
+              _name: 'Device unmute',
+              _type: 'volume_mute',
+              _output_value: '0'
+            },
+            {
+              _uuid: 'volume_up',
+              _isEnabled: false,
+              _name: 'Volume up',
+              _type: 'volume_control',
+              _output_value: '1'
+            },
+            {
+              _uuid: 'volume_down',
+              _isEnabled: false,
+              _name: 'Volume down',
+              _type: 'volume_control',
+              _output_value: '0'
+            }
+          ]
+        }
       },
       Pages: {
         Page: {
@@ -502,6 +504,66 @@ export const useWidgetListStore = defineStore('widgetList', {
               _uuid: uid(),
               _name: '20 seconds event',
               _duration: '20'
+            }
+          ]
+        },
+        System: {
+          Output: [
+            {
+              _uuid: 'hdmi_onoff',
+              _isEnabled: true,
+              _name: 'Display (On/Off)',
+              _type: 'hdmi_control',
+              _output_value: '-1'
+            },
+            {
+              _uuid: 'hdmi_on',
+              _isEnabled: false,
+              _name: 'Display On',
+              _type: 'hdmi_control',
+              _output_value: '1'
+            },
+            {
+              _uuid: 'hdmi_off',
+              _isEnabled: false,
+              _name: 'Display Off',
+              _type: 'hdmi_control',
+              _output_value: '0'
+            },
+            {
+              _uuid: 'volume_muteunmute',
+              _isEnabled: true,
+              _name: 'Device (Mute/Unmute)',
+              _type: 'volume_mute',
+              _output_value: '-1'
+            },
+            {
+              _uuid: 'volume_mute',
+              _isEnabled: false,
+              _name: 'Device mute',
+              _type: 'volume_mute',
+              _output_value: '1'
+            },
+            {
+              _uuid: 'volume_unmute',
+              _isEnabled: false,
+              _name: 'Device unmute',
+              _type: 'volume_mute',
+              _output_value: '0'
+            },
+            {
+              _uuid: 'volume_up',
+              _isEnabled: false,
+              _name: 'Volume up',
+              _type: 'volume_control',
+              _output_value: '1'
+            },
+            {
+              _uuid: 'volume_down',
+              _isEnabled: false,
+              _name: 'Volume down',
+              _type: 'volume_control',
+              _output_value: '0'
             }
           ]
         }
@@ -1553,9 +1615,12 @@ export const useWidgetListStore = defineStore('widgetList', {
 
       // 找到以"State "開頭的state之中_id的最大數字值
       const maxNumericId = this.findMaxIdWithPrefix(stateArray, 'State ')
+      // 取得 _id 的最大值，若無則設為 0
+      const maxId = stateArray.reduce((max, state) => Math.max(max, state._id), 0)
+
       // console.log('maxNumericId', maxNumericId)
       const newState = {
-        _id: maxNumericId + 1,
+        _id: maxId + 1,
         _uuid: uid(),
         _name: 'State' + ' ' + (maxNumericId + 1),
         _flowName: ''
