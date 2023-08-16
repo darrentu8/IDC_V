@@ -1092,7 +1092,7 @@ export default {
       // console.log('Data ', Data)
       if (Data._isEnabled === false) {
         const result = await widgetStore.checkEvent(Data)
-        console.log('result', result)
+        // console.log('result', result)
         if (result) {
           this.$q.dialog({
             component: AlertDialog,
@@ -1110,8 +1110,8 @@ export default {
               this.RS232[1]._isEnabled = true
             } else if (Data.ReceivedCommands) {
               this.TCPIP._isEnabled = true
-            } else if (!this.System.Output[index]._isEnabled) {
-              this.System.Output[index]._isEnabled = true
+            } else if (!this.System[index]._isEnabled) {
+              this.System[index]._isEnabled = true
             }
           })
         }

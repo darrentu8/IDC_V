@@ -218,9 +218,9 @@ const delAction = (EventId, ActionId) => {
   }).onOk(() => {
     widgetStore.DelAction(EventId, ActionId)
   }).onCancel(() => {
-    console.log('Cancel')
+    // console.log('Cancel')
   }).onDismiss(() => {
-    console.log('Called on OK or Cancel')
+    // console.log('Called on OK or Cancel')
   })
 }
 const delEvent = (EventId) => {
@@ -235,9 +235,9 @@ const delEvent = (EventId) => {
   }).onOk(() => {
     widgetStore.DelEvent(EventId)
   }).onCancel(() => {
-    console.log('Cancel')
+    // console.log('Cancel')
   }).onDismiss(() => {
-    console.log('Called on OK or Cancel')
+    // console.log('Called on OK or Cancel')
   })
 }
 function transformEventData(eventData, currentStateId) {

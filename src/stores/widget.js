@@ -958,7 +958,7 @@ export const useWidgetListStore = defineStore('widgetList', {
     },
     // 比對Configure EventsActions中是否有被選取的EventAction
     checkEvent(Data) {
-      console.log('Data', Data)
+      // console.log('Data', Data)
       if (Array.isArray(Data.Output)) {
         for (const output of Data.Output) {
           const UUID = output._uuid
@@ -1098,7 +1098,7 @@ export const useWidgetListStore = defineStore('widgetList', {
           if (Array.isArray(section.Content.State)) {
             for (let i = 0; i < section.Content.State.length; i++) {
               const state = section.Content.State[i]
-              console.log('section.Content.State', section.Content.State)
+              // console.log('section.Content.State', section.Content.State)
               if (state.Event) {
                 // 遍歷 Event 陣列
                 for (const event of state.Event) {

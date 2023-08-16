@@ -107,9 +107,9 @@ const delState = (stateUUID, stateID) => {
   }).onOk(() => {
     widgetStore.DelState(stateUUID, stateID)
   }).onCancel(() => {
-    console.log('Cancel')
+    // console.log('Cancel')
   }).onDismiss(() => {
-    console.log('Called on OK or Cancel')
+    // console.log('Called on OK or Cancel')
   })
 }
 

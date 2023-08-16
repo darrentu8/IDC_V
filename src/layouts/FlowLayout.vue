@@ -96,9 +96,9 @@ function showPageSettings() {
     component: PlaylistSettingsDialog
   }).onOk(() => {
   }).onCancel(() => {
-    console.log('Cancel')
+    // console.log('Cancel')
   }).onDismiss(() => {
-    console.log('Called on OK or Cancel')
+    // console.log('Called on OK or Cancel')
   })
 }
 
@@ -107,9 +107,9 @@ function showHardware() {
     component: ConfigureHardwareDialog
   }).onOk(() => {
   }).onCancel(() => {
-    console.log('Cancel')
+    // console.log('Cancel')
   }).onDismiss(() => {
-    console.log('Called on OK or Cancel')
+    // console.log('Called on OK or Cancel')
   })
 }
 function saveAlert() {
