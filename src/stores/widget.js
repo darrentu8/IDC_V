@@ -169,7 +169,65 @@ export const useWidgetListStore = defineStore('widgetList', {
               _duration: '20'
             }
           ]
-        }
+        },
+        System: [
+          {
+            _uuid: 'hdmi_onoff',
+            _isEnabled: true,
+            _name: 'Display (On/Off)',
+            _type: 'hdmi_control',
+            _output_value: '-1'
+          },
+          {
+            _uuid: 'hdmi_on',
+            _isEnabled: false,
+            _name: 'Display On',
+            _type: 'hdmi_control',
+            _output_value: '1'
+          },
+          {
+            _uuid: 'hdmi_off',
+            _isEnabled: false,
+            _name: 'Display Off',
+            _type: 'hdmi_control',
+            _output_value: '0'
+          },
+          {
+            _uuid: 'volume_muteunmute',
+            _isEnabled: true,
+            _name: 'Device (Mute/Unmute)',
+            _type: 'volume_mute',
+            _output_value: '-1'
+          },
+          {
+            _uuid: 'volume_mute',
+            _isEnabled: false,
+            _name: 'Device mute',
+            _type: 'volume_mute',
+            _output_value: '1'
+          },
+          {
+            _uuid: 'volume_unmute',
+            _isEnabled: false,
+            _name: 'Device unmute',
+            _type: 'volume_mute',
+            _output_value: '0'
+          },
+          {
+            _uuid: 'volume_up',
+            _isEnabled: false,
+            _name: 'Volume up',
+            _type: 'volume_control',
+            _output_value: '1'
+          },
+          {
+            _uuid: 'volume_down',
+            _isEnabled: false,
+            _name: 'Volume down',
+            _type: 'volume_control',
+            _output_value: '0'
+          }
+        ]
       },
       Pages: {
         Page: {
@@ -1450,6 +1508,39 @@ export const useWidgetListStore = defineStore('widgetList', {
         }
       }
     },
+    extractNumberFromStateName(stateName) {
+      // 從state名稱中提取數字部分
+      const numericPart = stateName.replace('State ', '')
+
+      // 如果numericPart不是數字，返回0
+      if (isNaN(numericPart)) {
+        return 0
+      }
+
+      // 將數字部分解析為數字並返回
+      return parseInt(numericPart)
+    },
+    findMaxIdWithPrefix(states, prefix) {
+      let maxId = 0
+      let hasStatePrefix = false
+
+      for (const state of states) {
+        if (state._name.startsWith(prefix)) {
+          const numericValue = this.extractNumberFromStateName(state._name)
+          maxId = Math.max(maxId, numericValue)
+          hasStatePrefix = true
+        } else {
+          maxId = Math.max(maxId, state._id)
+        }
+      }
+
+      // 如果沒有以'State '開頭的state，則將hasStatePrefix設為false
+      if (!hasStatePrefix) {
+        maxId = 0
+      }
+
+      return maxId
+    },
     AddState() {
       const layoutStore = useLayoutStore()
       const currentSection = layoutStore.currentSection
@@ -1460,14 +1551,13 @@ export const useWidgetListStore = defineStore('widgetList', {
       }
       const stateArray = content.State
 
-      // 取得 _id 的最大值，若無則設為 0
-      const maxId = stateArray.reduce((max, state) => Math.max(max, state._id), 0)
-
-      // 新增 State 物件
+      // 找到以"State "開頭的state之中_id的最大數字值
+      const maxNumericId = this.findMaxIdWithPrefix(stateArray, 'State ')
+      // console.log('maxNumericId', maxNumericId)
       const newState = {
-        _id: maxId + 1,
+        _id: maxNumericId + 1,
         _uuid: uid(),
-        _name: 'State' + ' ' + (maxId + 1),
+        _name: 'State' + ' ' + (maxNumericId + 1),
         _flowName: ''
       }
 

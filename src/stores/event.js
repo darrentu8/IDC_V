@@ -198,54 +198,6 @@ export const useEventListStore = defineStore('eventList', {
       }
     ],
     extraActionOption: [
-      {
-        _uuid: 'volume_muteunmute',
-        _name: 'Device (Mute/Unmute)',
-        _type: 'volume_mute',
-        _output_value: '-1'
-      },
-      {
-        _uuid: 'hdmi_onoff',
-        _name: 'HDMI (On/Off)',
-        _type: 'hdmi_control',
-        _output_value: '-1'
-      },
-      {
-        _uuid: 'volume_mute',
-        _name: 'Device mute',
-        _type: 'volume_mute',
-        _output_value: '1'
-      },
-      {
-        _uuid: 'volume_unmute',
-        _name: 'Device unmute',
-        _type: 'volume_mute',
-        _output_value: '0'
-      },
-      {
-        _uuid: 'volume_up',
-        _name: 'Volume up',
-        _type: 'volume_control',
-        _output_value: '1'
-      },
-      {
-        _uuid: 'volume_down',
-        _name: 'Volume down',
-        _type: 'volume_control',
-        _output_value: '0'
-      },
-      {
-        _uuid: 'hdmi_on',
-        _name: 'HDMI On',
-        _type: 'hdmi_control',
-        _output_value: '1'
-      },
-      {
-        _uuid: 'hdmi_off',
-        _name: 'HDMI Off',
-        _type: 'hdmi_control',
-        _output_value: '0'
-      }
     ]
   }),
   getters: {
@@ -305,7 +257,7 @@ export const useEventListStore = defineStore('eventList', {
           _uuid: timer._uuid || uid(),
           _name: `Timer-${timer._name}`,
           _timer_id: timer._id,
-          _isEnabled: true,
+          _isEnabled: true, // 預設開啟
           _type: 'timer'
         })) ?? []
 
@@ -314,7 +266,7 @@ export const useEventListStore = defineStore('eventList', {
         ?.map(extra => ({
           _uuid: extra._uuid || uid(),
           _name: extra._name,
-          _isEnabled: true,
+          _isEnabled: true, // 預設開啟
           _type: extra._type
         })) ?? []
 
@@ -369,7 +321,7 @@ export const useEventListStore = defineStore('eventList', {
           _tcpip_id: tcpip ? tcpip._id : null,
           _role: 'output',
           _command_id: command._id,
-          _isEnabled: true,
+          _isEnabled: widgetStore?.NovoDS?.Hardware?.TcpIpSettings._isEnabled,
           _type: 'tcp/ip'
         }
       })
@@ -380,16 +332,16 @@ export const useEventListStore = defineStore('eventList', {
           _uuid: timer._uuid || uid(),
           _name: `Timer-${timer._name}`,
           _timer_id: timer._id,
-          _isEnabled: true,
+          _isEnabled: timer._isEnabled,
           _type: 'timer'
         })) || []
 
-      const mapExtra = this.extraActionOption
+      const mapExtra = widgetStore?.NovoDS?.Hardware?.System
         ?.filter(extra => extra)
         ?.map(extra => ({
           _uuid: extra._uuid || uid(),
           _name: extra._name,
-          _isEnabled: true,
+          _isEnabled: extra._isEnabled,
           _type: extra._type,
           _output_value: extra._output_value
         })) ?? []

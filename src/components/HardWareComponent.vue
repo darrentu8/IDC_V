@@ -12,6 +12,7 @@
       <q-tab :name="1" label="RS232" />
       <q-tab :name="2" label="TCP/IP" />
       <q-tab :name="3" label="Software Timer" />
+      <q-tab :name="4" label="System" />
     </q-tabs>
   </div>
   <div class="col">
@@ -631,6 +632,23 @@
           </div>
         </div>
       </q-tab-panel>
+      <!-- System -->
+      <q-tab-panel :name="4" class="q-pa-none" style="max-height: 380px;">
+        <div class="row scroll q-gutter-md q-ma-md" style="min-height: 300px;">
+          <q-card class="shadow-2 brand-round-l" style="min-width:300px; height: fit-content;"
+            v-for="(sys, index) in System" :key="index">
+            <q-card-section class="row">
+              <div class="text-body1">
+                {{ `${sys._name || 'No Name'}` }}
+              </div>
+              <q-space />
+              <div>
+                <q-toggle @click="disableAlert(index, sys)" v-model="sys._isEnabled" dense color="primary" />
+              </div>
+            </q-card-section>
+          </q-card>
+        </div>
+      </q-tab-panel>
     </q-tab-panels>
     <!-- <ConfirmDialog /> -->
     <AlertDialog />
@@ -709,6 +727,9 @@ export default {
     },
     TimerSettings() {
       return widgetStore.NovoDS.Hardware.TimerSettings
+    },
+    System() {
+      return widgetStore.NovoDS.Hardware.System
     },
     gpioRoleOption() {
       return widgetStore.gpioRoleOption
@@ -1089,6 +1110,8 @@ export default {
               this.RS232[1]._isEnabled = true
             } else if (Data.ReceivedCommands) {
               this.TCPIP._isEnabled = true
+            } else if (!this.System[index]._isEnabled) {
+              this.System[index]._isEnabled = true
             }
           })
         }
